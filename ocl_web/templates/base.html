@@ -33,30 +33,16 @@
 
   <body>
 
-    <div class="header navbar">
-      <div class="container">
-        <a class="navbar-brand" href="/">OCL</a>
-        <ul class="nav navbar-nav">
-          <li class="active"><a href="{% url 'home' %}">Home</a></li>
-          <li><a href="{% url 'about' %}">About</a></li>
-
-          {% if request.user.is_authenticated %}
-            <li><a href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a></li>
-            <li><a href="{% url 'account_logout' %}">{% trans "Logout" %}</a></li>
-          {% else %}
-            <li><a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a></li>
-            <li><a href="{% url 'account_login' %}">{% trans "Log In" %}</a></li>
-          {% endif %}
-        </ul>
-      </div>
-    </div>
+    {% block nav %}
+      {% include 'includes/nav.html' %}
+    {% endblock nav %}
 
     <div class="container">
         
       {% if messages %}
-          {% for message in messages %}
-              <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
-          {% endfor %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
+        {% endfor %}
       {% endif %}
 
       {% block content %}
@@ -64,6 +50,14 @@
       {% endblock content %}
 
     </div> <!-- /container -->
+
+    <div class="container">
+
+      {% block footer %}
+        {% include 'includes/footer.html' %}
+      {% endblock footer %}
+
+    </div>
     
     {% block modal %}{% endblock modal %}
 
