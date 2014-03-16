@@ -19,7 +19,10 @@ urlpatterns = patterns('',
         name="about"),
     url(r'^search/$',
         TemplateView.as_view(template_name='pages/search.html'),
-        name="about"),
+        name="search"),
+    url(r'^features/$',
+        TemplateView.as_view(template_name='pages/features.html'),
+        name="features"),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
