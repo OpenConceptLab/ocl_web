@@ -1,12 +1,12 @@
 {% load staticfiles i18n %}<!DOCTYPE html>
 <div class="header navbar">
   <div class="container">
-    <a class="navbar-brand" href="/">OCL</a>
+    <a class="navbar-brand" href="/"><img src="{% static 'images/ocl-logo.png' %}" height="40" /></a>
     <ul class="nav navbar-nav">
       <li class="active"><a href="{% url 'home' %}">Home</a></li>
       <li><a href="#">Explore</a></li>
       <li><a href="{% url 'features' %}">Features</a></li>
-      <li><a href="#">Blog</a></li>
+      <li><a href="http://maternalconceptlab.tumblr.com/">Blog</a></li>
       <li><a href="#">Help</a></li>
 
       {% if request.user.is_authenticated %}
