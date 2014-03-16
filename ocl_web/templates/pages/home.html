@@ -1,1 +1,22 @@
 {% extends "base.html" %}
+
+{% block content %}
+
+    <div id="jumbo" class="jumbotron">
+      <div class="container">
+        <h1>
+          Community-driven
+          <br>
+          terminology management.
+        </h1>
+        <p>
+          Collaborative health terminology management, indicator mapping,
+          <br>
+          dictionary harmonization and analysis. Free for open projects.
+          <br>
+          <a href="{% url 'plans' %}">Private sources and advanced plans start at $10/mo.</a>
+        </p>
+      </div>
+    </div>
+
+{% endblock content %}

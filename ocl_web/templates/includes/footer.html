@@ -1,1 +1,42 @@
-{% load staticfiles i18n %}<!DOCTYPE html>
+{% load staticfiles i18n %}
+
+    <footer>
+      <div class="container">
+        <div class="site-footer">
+          <ul class="site-footer-links" style="float: right;">
+            <li>
+              <a href="">Link</a>
+            </li>
+            <li>
+              <a href="">Link</a>
+            </li>
+            <li>
+              <a href="{% url 'plans' %}">Plans</a>
+            </li>
+            <li>
+              <a href="{% url 'api' %}">API</a>
+            </li>
+            <li>
+              <a href="{% url 'about' %}">About</a>
+            </li>
+            <li>
+              <a href="{% url 'contact' %}">Contact</a>
+            </li>
+          </ul>
+          <a href="">
+            <span class="glyphicon glyphicon-glass"></span>
+          </a>
+          <ul class="site-footer-links" style="float: left;">
+            <li>
+              © 2014 OpenConceptLab Inc.
+            </li>
+            <li>
+              <a href="">Terms</a>
+            </li>
+            <li>
+              <a href="">Privacy</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </footer>
