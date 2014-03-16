@@ -32,6 +32,9 @@ urlpatterns = patterns('',
     url(r'^api/$',
         TemplateView.as_view(template_name='pages/api.html'),
         name="api"),
+    url(r'^explore/$',
+        TemplateView.as_view(template_name='pages/explore.html'),
+        name="explore"),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
