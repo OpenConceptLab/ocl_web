@@ -2,21 +2,27 @@
 
 {% block content %}
 
-    <div id="jumbo" class="jumbotron">
-      <div class="container">
-        <h1>
-          Community-driven
-          <br>
-          terminology management.
-        </h1>
-        <p>
-          Collaborative health terminology management, indicator mapping,
-          <br>
-          dictionary harmonization and analysis. Free for open projects.
-          <br>
-          <a href="{% url 'plans' %}">Private sources and advanced plans start at $10/mo.</a>
-        </p>
-      </div>
-    </div>
+<div id="jumbo" class="jumbotron">
+  <div class="container">
+    <h1>
+      Community-driven
+      <br>
+      terminology management.
+    </h1>
+    <p>
+      Collaborative health terminology management, indicator mapping,
+      <br>
+      dictionary harmonization and analysis. Free for open projects.
+      <br>
+      <a href="{% url 'plans' %}">Private sources and advanced plans start at $10/mo.</a>
+    </p>
+  </div>
+</div>
+
+<div class="container">
+  <h1>What's in your dictionary?</h1>
+  <p>Benefit from having world-class terminology standards and user-generated content from thousands of users all over the world in one place.<p>
+  <p>Learn why you'll love using Open Concept Lab by reviewing our <a href="{% url 'features' %}">Features</a>, or see what the community is building in <a href="{% url 'explore' %}">Explore</a>.
+</div>
 
 {% endblock content %}
