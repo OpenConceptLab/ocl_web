@@ -32,3 +32,44 @@
   background-color: #f2dede;
   border-color: #eed3d7;
 }
+
+/* header */
+/* line 36, ../sass/project.scss */
+.header {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+/* features */
+/* line 41, ../sass/project.scss */
+.feature-a {
+  text-align: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+/* line 46, ../sass/project.scss */
+.feature-b {
+  text-align: center;
+  background-color: #e5e5e5;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+/* footer */
+/* line 55, ../sass/project.scss */
+.site-footer {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  padding-top: 30px;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-top: 1px solid #e5e5e5;
+  text-align: center;
+}
+
+/* line 64, ../sass/project.scss */
+.site-footer-links li {
+  display: inline;
+  padding: 5px;
+  font-size: 10pt;
+}

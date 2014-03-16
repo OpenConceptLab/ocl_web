@@ -31,3 +31,38 @@
   background-color: #f2dede;
   border-color: #eed3d7;
 }
+
+/* header */
+.header {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+/* features */
+.feature-a {
+  text-align: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+.feature-b {
+  text-align: center;
+  background-color: #e5e5e5;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+
+/* footer */
+.site-footer {
+  margin-top:40px; 
+  margin-bottom:40px; 
+  padding-top:30px; 
+  padding-left:30px;
+  padding-right:30px;
+  border-top:1px solid #e5e5e5;
+  text-align: center;
+}
+.site-footer-links li {
+  display: inline;
+  padding: 5px;
+  font-size: 10pt;
+}
