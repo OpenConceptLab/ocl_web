@@ -46,6 +46,16 @@ form {
 /* header */
 .header {
   border-bottom: 1px solid #e5e5e5;
+  .container {
+      margin-top: 20px;
+  }
+
+  .navbar-brand { 
+    img {
+    height: 40px;
+    margin-top: -12px;
+    }
+  }
 }
 
 /* features */

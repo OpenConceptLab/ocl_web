@@ -19,7 +19,15 @@
 
       {% if request.user.is_authenticated %}
         <li><a href="{% url 'users:detail' request.user.username  %}">{% trans user.username %}</a></li>
-        <li><span class="caret"></span></li>
+{#        <li><span class="caret"></span></li>#}
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create<b class="caret"></b></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Create new Organization</a></li>
+            <li><a href="#">Create new Collection</a></li>
+            <li><a href="#">Create new Source</a></li>
+          </ul>
+        </li>
         <li><a hre="{% url 'account_logout' %}">{% trans "Logout" %}</a></li>
         {% else %}
         <li><a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a></li>
