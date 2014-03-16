@@ -117,7 +117,7 @@ class Common(Configuration):
 
     ########## DATABASE CONFIGURATION
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
-    DATABASES = values.DatabaseURLValue('postgres:///localhost/ocl_web')
+    DATABASES = values.DatabaseURLValue('postgres:///ocl_web')
     ########## END DATABASE CONFIGURATION
 
     ########## CACHING
