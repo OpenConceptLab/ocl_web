@@ -11,11 +11,10 @@
       </div>
     </form>
     <ul class="nav navbar-nav pull-right">
-      <li class="active"><a href="{% url 'home' %}">Home</a></li>
-      <li><a href="#">Explore</a></li>
+      <li><a href="{% url 'explore' %}">Explore</a></li>
       <li><a href="{% url 'features' %}">Features</a></li>
-      <li><a href="http://maternalconceptlab.tumblr.com/">Blog</a></li>
-      <li><a href="#">Help</a></li>
+      <li><a href="http://maternalconceptlab.tumblr.com/" target="_new">Blog</a></li>
+      <li><a href="{% url 'help' %}">Help</a></li>
 
       {% if request.user.is_authenticated %}
         <li><a href="{% url 'users:detail' request.user.username  %}">{% trans user.username %}</a></li>
@@ -28,6 +27,7 @@
             <li><a href="#">Create new Source</a></li>
           </ul>
         </li>
+        <li><a href="#"><span class="glyphicon glyphicon-cog"></span> </a>
         <li><a hre="{% url 'account_logout' %}">{% trans "Logout" %}</a></li>
         {% else %}
         <li><a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a></li>

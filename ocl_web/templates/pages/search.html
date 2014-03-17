@@ -1,5 +1,106 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <p>Bring on the search!</p>
+
+<div class="row">
+	<div class="col-md-3">
+		<ul class="nav nav-pills nav-stacked">
+		  <li class="active"><a href="#"><span class="glyphicon glyphicon-tag"></span> Concepts <span class="pull-right">32</span></a></li>
+		  <li><a href="#"><span class="glyphicon glyphicon-th-list"></span> Sources <span class="pull-right">6</span></a></li>
+		  <li><a href="#"><span class="glyphicon glyphicon-tags"></span> Collections <span class="pull-right">14</span></a></li>
+		  <li><a href="#"><span class="glyphicon glyphicon-home"></span> Organizations <span class="pull-right">3</span></a></li>
+		  <li><a href="#"><span class="glyphicon glyphicon-user"></span> Users <span class="pull-right">2</span></a></li>
+		</ul>
+		<h3>Concept Class</h3>
+		<ul class="nav nav-pills nav-stacked">
+		  <li><a href="#">Anatomy <span class="pull-right">12</span></a></li>
+		  <li><a href="#">Diagnosis <span class="pull-right">6</span></a></li>
+		  <li><a href="#">Drug <span class="pull-right">14</span></a></li>
+		  <li><a href="#">Finding <span class="pull-right">3</span></a></li>
+		  <li><a href="#">Symptom <span class="pull-right">2</span></a></li>
+		</ul>
+		<h3>Datatype</h3>
+		<ul class="nav nav-pills nav-stacked">
+		  <li><a href="#">Numeric <span class="pull-right">12</span></a></li>
+		  <li><a href="#">Text <span class="pull-right">6</span></a></li>
+		  <li><a href="#">Coded <span class="pull-right">14</span></a></li>
+		  <li><a href="#">N/A <span class="pull-right">3</span></a></li>
+		</ul>
+	</div>
+	<div class="col-md-9">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="btn-group pull-right">
+				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				    Sort <span class="caret"></span>
+				  </button>
+				  <ul class="dropdown-menu" role="menu">
+				    <li><a href="#">Sort</a></li>
+				    <li><a href="#">Another sort</a></li>
+				    <li><a href="#">Something else here</a></li>
+				  </ul>
+				</div>
+				<h4>We found [32] [concept] results.</h4>
+			</div>
+		</div>
+		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
+			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
+			<div style="display:inline-block;padding-left:20px">
+				<h4><span class="label label-primary"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</span>:<span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;ICD-10-WHO</span>:<span class="label label-warning"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;A01.2</span></h4>
+				<p>System Fibrosis<br />
+				[Clinical Concept] Diagnosis / N/A<br />
+				<span class="text-muted">v2.3.04 Last Updated August 12, 2012</span>
+				</p>
+			</div>
+		</div>
+		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
+			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-th-list"></span></div>
+			<div style="display:inline-block;padding-left:20px">
+				<h4><span class="label label-primary"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</span>:<span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;ICD-10-WHO</span></h4>
+				<p>International Classification of Diseases version 10, WHO Edition<br />
+				<span class="text-muted">v2.3.04 Last Updated August 12, 2012</span>
+				</p>
+			</div>
+		</div>
+		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
+			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tags"></span></div>
+			<div style="display:inline-block;padding-left:20px">
+				<h4><span class="label label-primary"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;paynejd</span>:<span class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Community-MCH</span></h4>
+				<p>Community Maternal-Child Health Core Dataset<br />
+				<span class="text-muted">v2.3.04 Last Updated August 12, 2012</span>
+				</p>
+			</div>
+		</div>
+		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
+			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-home"></span></div>
+			<div style="display:inline-block;padding-left:20px">
+				<h4><span class="label label-primary"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</span></h4>
+				<p>World Health Organization<br />
+				<span class="text-muted"><span class="glyphicon glyphicon-map-marker"></span> Geneva, Switzerland&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Joined July 9, 2010</span>
+				</p>
+			</div>
+		</div>
+		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
+			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-user"></span></div>
+			<div style="display:inline-block;padding-left:20px">
+				<h4><span class="label label-primary"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;paynejd</span></h4>
+				<p>Jonathan Payne<br />
+				<span class="text-muted"><span class="glyphicon glyphicon-map-marker"></span> Boston, MA, USA&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Joined July 9, 2010</span>
+				</p>
+			</div>
+		</div>
+		<div class="row" style="text-align:center;">
+			<ul class="pagination">
+			  <li><a href="#">&laquo;</a></li>
+			  <li><a href="#">1</a></li>
+			  <li><a href="#">2</a></li>
+			  <li><a href="#">3</a></li>
+			  <li><a href="#">4</a></li>
+			  <li><a href="#">5</a></li>
+			  <li><a href="#">&raquo;</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
 {% endblock content %}
