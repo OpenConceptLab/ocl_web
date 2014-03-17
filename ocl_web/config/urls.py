@@ -35,6 +35,9 @@ urlpatterns = patterns('',
     url(r'^explore/$',
         TemplateView.as_view(template_name='pages/explore.html'),
         name="explore"),
+    url(r'^help/$',
+        TemplateView.as_view(template_name='pages/help.html'),
+        name="help"),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
