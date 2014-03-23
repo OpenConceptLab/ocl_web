@@ -10,11 +10,11 @@
 
 	<div class="col-md-3">
 		<ul class="nav nav-pills nav-stacked">
-		  <li {% if args.type == "concepts" %}class="active"{% endif %}><a href="{% url "search" %}?type=concepts"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Concepts <span class="pull-right">32</span></a></li>
-		  <li {% if args.type == "sources" %}class="active"{% endif %}><a href="{% url "search" %}?type=sources"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Sources <span class="pull-right">6</span></a></li>
-		  <li {% if args.type == "collections" %}class="active"{% endif %}><a href="{% url "search" %}?type=collections"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Collections <span class="pull-right">14</span></a></li>
-		  <li {% if args.type == "orgs" %}class="active"{% endif %}><a href="{% url "search" %}?type=orgs"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Organizations <span class="pull-right">3</span></a></li>
-		  <li {% if args.type == "users" %}class="active"{% endif %}><a href="{% url "search" %}?type=users"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users <span class="pull-right">2</span></a></li>
+		  <li {% if searchType == "concepts" %}class="active"{% endif %}><a href="{% url "search" %}?type=concepts"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Concepts <span class="pull-right">32</span></a></li>
+		  <li {% if searchType == "sources" %}class="active"{% endif %}><a href="{% url "search" %}?type=sources"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Sources <span class="pull-right">6</span></a></li>
+		  <li {% if searchType == "collections" %}class="active"{% endif %}><a href="{% url "search" %}?type=collections"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Collections <span class="pull-right">14</span></a></li>
+		  <li {% if searchType == "orgs" %}class="active"{% endif %}><a href="{% url "search" %}?type=orgs"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Organizations <span class="pull-right">3</span></a></li>
+		  <li {% if searchType == "users" %}class="active"{% endif %}><a href="{% url "search" %}?type=users"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users <span class="pull-right">2</span></a></li>
 		</ul>
 		<h3>Concept Class</h3>
 		<ul class="nav nav-pills nav-stacked">
@@ -53,9 +53,9 @@
 				    <li><a href="#">Something else here</a></li>
 				  </ul>
 				</div>
-				<h4>We found {{ results|length }} {{ args.type }}.</h4>
+				<h4>We found {{ results|length }} {{ searchType }}.</h4>
 {% else %}
-				<h4>We found 0 {{ args.type }}.</h4>
+				<h4>We found 0 {{ searchType }}.</h4>
 {% endif %}
 			</div>
 		</div>
@@ -64,7 +64,7 @@
 
 {% for result in results %}
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-	{% if args.type == 'concepts' %}
+	{% if searchType == 'concepts' %}
 			<div class="col-md-1" style="text-align:right;padding-top:14px;">
 				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
 			</div>
@@ -77,9 +77,9 @@
 					<span class="caption">{{ result.displayName }} <small><em>[{{ result.displayLocale }}]</em></small></span><br />
 					<em>Class:</em> {{ result.conceptClass }}, <em>Datatype:</em> {{ result.datatype }}
 				</p>
-				{% if args.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
-	{% elif args.type == 'sources' %}
+	{% elif searchType == 'sources' %}
 			<div class="col-md-1" style="text-align:right;padding-top:14px;">
 				<span class="glyphicon glyphicon-th-list" style="font-size:32pt;color:#e5e5e5;"></span>
 			</div>
@@ -91,9 +91,9 @@
 				<p>
 					<span class="caption">{{ result.name }}</span>
 				</p>
-				{% if args.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
-	{% elif args.type == 'collections' %}
+	{% elif searchType == 'collections' %}
 			<div class="col-md-1" style="text-align:right;padding-top:14px;">
 				<span class="glyphicon glyphicon-tags" style="font-size:32pt;color:#e5e5e5;"></span>
 			</div>
@@ -108,9 +108,9 @@
 					{% if result.lastUpdated %}<br /><span class="text-muted small">{{ result.lastUpdated }}</span>{% endif %}
 				</p>
 
-				{% if args.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
-	{% elif args.type == 'orgs' %}
+	{% elif searchType == 'orgs' %}
 			<div class="col-md-1" style="text-align:right;padding-top:14px;">
 				<span class="glyphicon glyphicon-home" style="font-size:32pt;color:#e5e5e5;"></span>
 			</div>
@@ -123,9 +123,9 @@
 					<span class="concept-name">{{ result.name }}</span><br />
 				</p>
 
-				{% if args.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
-	{% elif args.type == 'users' %}
+	{% elif searchType == 'users' %}
 			<div class="col-md-1" style="text-align:right;padding-top:14px;">
 				<span class="glyphicon glyphicon-user" style="font-size:32pt;color:#e5e5e5;"></span>
 			</div>
@@ -138,7 +138,7 @@
 					<span class="caption">{{ result.name }}</span>
 				</p>
 
-				{% if args.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 	{% endif %}
 		</div>
@@ -150,12 +150,12 @@
 <!-- Additional Example Results -->
 
 		<h4><small>Additional Static Examples:</small></h4>
-	{% if args.type == 'concepts' %}
+	{% if searchType == 'concepts' %}
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
 			<div style="display:inline-block;padding-left:20px">
 				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10-WHO / E84.9 &ndash; Cystic Fibrosis, unspecified</span></a></h4>
-				<p><span class="concept-name">Cystic Fibrosis, unspecified <small><em>[{{ result.displayLocale }}]</em></small></span><br />
+				<p><span class="concept-name">Cystic Fibrosis, unspecified <small><em>[[en]]</em></small></span><br />
 				Diagnosis / N/A<br />
 				<span class="text-muted small">Last Updated 2010</span>
 				</p>
@@ -165,7 +165,7 @@
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
 			<div style="display:inline-block;padding-left:20px">
 				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;MCL / Community-MCH / 5596 &ndash; EDD</span></a></h4>
-				<p><span class="concept-name">Estimated Delivery Date</span> <small><em>[{{ result.displayLocale }}]</em></small><br />
+				<p><span class="concept-name">Estimated Delivery Date</span> <small><em>[[en]]</em></small><br />
 				Question / Date<br />
 				<span class="text-muted small">v2.3.04 Last Updated August 12, 2012</span>
 				</p>
@@ -175,7 +175,7 @@
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
 			<div style="display:inline-block;padding-left:20px">
 				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;CIEL / CIEL / 1427 &ndash; LMP</span></a></h4>
-				<p><span class="concept-name">Last Menstrual Period</span> <small><em>[{{ result.displayLocale }}]</em></small><br />
+				<p><span class="concept-name">Last Menstrual Period</span> <small><em>[[en]]</em></small><br />
 				Finding / Date<br />
 				<span class="text-muted small">Last Updated December 17, 2006</span>
 				</p>
@@ -185,7 +185,7 @@
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
 			<div style="display:inline-block;padding-left:20px">
 				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;IHTSDO / SNOMED CT / 364325004 &ndash; Parity</span></a></h4>
-				<p><span class="concept-name">Parity</span> <small><em>[{{ result.displayLocale }}]</em></small><br />
+				<p><span class="concept-name">Parity</span> <small><em>[[en]]</em></small><br />
 				Finding / Numeric<br />
 				<span class="text-muted small">v2.3.04 Last Updated August 12, 2012</span>
 				</p>
@@ -213,7 +213,7 @@
 				</p>
 			</div>
 		</div>
-	{% elif args.type == 'sources' %}
+	{% elif searchType == 'sources' %}
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-th-list"></span></div>
 			<div style="display:inline-block;padding-left:20px">
@@ -223,7 +223,7 @@
 				</p>
 			</div>
 		</div>
-	{% elif args.type == 'collections' %}
+	{% elif searchType == 'collections' %}
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tags"></span></div>
 			<div style="display:inline-block;padding-left:20px">
@@ -233,7 +233,7 @@
 				</p>
 			</div>
 		</div>
-	{% elif args.type == 'orgs' %}
+	{% elif searchType == 'orgs' %}
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-home"></span></div>
 			<div style="display:inline-block;padding-left:20px">
@@ -243,7 +243,7 @@
 				</p>
 			</div>
 		</div>
-	{% elif args.type == 'users' %}
+	{% elif searchType == 'users' %}
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-user"></span></div>
 			<div style="display:inline-block;padding-left:20px">
