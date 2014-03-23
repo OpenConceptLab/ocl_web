@@ -17,6 +17,11 @@ urlpatterns = patterns('',
     ######### Concepts
     # List
 
+    # Detail
+    url(r'^concept/$',
+        TemplateView.as_view(template_name='pages/concept.html'),
+        name="concept"),
+
     ######### Sources
     # List
 
@@ -28,6 +33,7 @@ urlpatterns = patterns('',
 
     ######### Search
     url(r'^search/$', HomeSearchView.as_view(), name="search"),
+
     url(r'^$',
         TemplateView.as_view(template_name='pages/home.html'),
         name="home"),
@@ -64,9 +70,6 @@ urlpatterns = patterns('',
     url(r'^collection/$',
         TemplateView.as_view(template_name='pages/collection.html'),
         name="collection"),
-    url(r'^concept/$',
-        TemplateView.as_view(template_name='pages/concept.html'),
-        name="concept"),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
