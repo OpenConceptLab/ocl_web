@@ -15,9 +15,6 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 
-    ######### Concepts
-    # List
-
     # Detail
     url(r'^concept/$',
         TemplateView.as_view(template_name='pages/concept.html'),
@@ -28,11 +25,16 @@ urlpatterns = patterns('',
 
     ######### Orgs
     # List
+    url(r'^orgs/', include('apps.orgs.urls')),
+
+
+    ######### Concepts
+    # List
 
     # Detail
-    url(r'^orgs/(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept_version>[a-zA-Z0-9\-\.]+)/$',
-        OrgDetailView.as_view(),
-        name="org_detail"),
+#    url(r'^/(?P<owner_type>[a-zA-Z0-9\-\.]+)/(?P<owner>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept_name>[a-zA-Z0-9\-\.]+)/$',
+#        OrgDetailView.as_view(),
+#        name="org_detail"),
 
     ######### Users
     # List
@@ -40,6 +42,7 @@ urlpatterns = patterns('',
     ######### Search
     url(r'^search/$', HomeSearchView.as_view(), name="search"),
 
+    ######### Misc Pages (some to be moved into Dynamic views later)
     url(r'^$',
         TemplateView.as_view(template_name='pages/home.html'),
         name="home"),
