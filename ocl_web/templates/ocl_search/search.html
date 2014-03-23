@@ -2,16 +2,19 @@
 
 {% block content %}
 
-{{ results }}
+<!-- Start content row -->
 
 <div class="row">
+
+<!-- Left Navigation and Filters -->
+
 	<div class="col-md-3">
 		<ul class="nav nav-pills nav-stacked">
-		  <li class="active"><a href="#"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Concepts <span class="pull-right">32</span></a></li>
-		  <li><a href="#"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Sources <span class="pull-right">6</span></a></li>
-		  <li><a href="#"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Collections <span class="pull-right">14</span></a></li>
-		  <li><a href="#"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Organizations <span class="pull-right">3</span></a></li>
-		  <li><a href="#"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users <span class="pull-right">2</span></a></li>
+		  <li {% if searchType == "concepts" %}class="active"{% endif %}><a href="{% url "search" %}?type=concepts"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Concepts <span class="pull-right">32</span></a></li>
+		  <li {% if searchType == "sources" %}class="active"{% endif %}><a href="{% url "search" %}?type=sources"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Sources <span class="pull-right">6</span></a></li>
+		  <li {% if searchType == "collections" %}class="active"{% endif %}><a href="{% url "search" %}?type=collections"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Collections <span class="pull-right">14</span></a></li>
+		  <li {% if searchType == "orgs" %}class="active"{% endif %}><a href="{% url "search" %}?type=orgs"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Organizations <span class="pull-right">3</span></a></li>
+		  <li {% if searchType == "users" %}class="active"{% endif %}><a href="{% url "search" %}?type=users"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users <span class="pull-right">2</span></a></li>
 		</ul>
 		<h3>Concept Class</h3>
 		<ul class="nav nav-pills nav-stacked">
@@ -30,9 +33,16 @@
 		  <li><a href="#"><small>More &blacktriangledown;</small></a></li>
 		</ul>
 	</div>
+
+<!-- Start search results section -->
+
 	<div class="col-md-9">
+
+<!-- Search Results Summary and Sorting -->
+
 		<div class="row">
 			<div class="col-md-12">
+{% if results %}
 				<div class="btn-group pull-right">
 				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 				    Sort <span class="caret"></span>
@@ -43,14 +53,109 @@
 				    <li><a href="#">Something else here</a></li>
 				  </ul>
 				</div>
-				<h4>We found [32] [concept] results.</h4>
+				<h4>We found {{ results|length }} {{ searchType }}.</h4>
+{% else %}
+				<h4>We found 0 {{ searchType }}.</h4>
+{% endif %}
 			</div>
 		</div>
+
+<!-- Search Results -->
+
+{% for result in results %}
+		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
+	{% if searchType == 'concepts' %}
+			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
+			</div>
+			<div class="col-md-11">
+				<h4>
+					<a href="{% url "concept" %}">
+						<span class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</span></a>
+				</h4>
+				<p>
+					<span class="caption">{{ result.displayName }} <small><em>[{{ result.displayLocale }}]</em></small></span><br />
+					<em>Class:</em> {{ result.conceptClass }}, <em>Datatype:</em> {{ result.datatype }}
+				</p>
+				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+			</div>
+	{% elif searchType == 'sources' %}
+			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+				<span class="glyphicon glyphicon-th-list" style="font-size:32pt;color:#e5e5e5;"></span>
+			</div>
+			<div class="col-md-11">
+				<h4>
+					<a href="{% url "source" %}">
+						<span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.shortCode }}</span></a>
+				</h4>
+				<p>
+					<span class="caption">{{ result.name }}</span>
+				</p>
+				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+			</div>
+	{% elif searchType == 'collections' %}
+			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+				<span class="glyphicon glyphicon-tags" style="font-size:32pt;color:#e5e5e5;"></span>
+			</div>
+			<div class="col-md-11">
+				<h4>
+					<a href="{% url "collection" %}">
+						<span class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</span></a>
+				</h4>
+				<p>
+					<span class="concept-name">{{ result.displayName }} <em>[{{ result.displayLocale }}]</em></span><br />
+					<em>Class:</em> {{ result.conceptClass }}, <em>Datatype:</em> {{ result.datatype }}
+					{% if result.lastUpdated %}<br /><span class="text-muted small">{{ result.lastUpdated }}</span>{% endif %}
+				</p>
+
+				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+			</div>
+	{% elif searchType == 'orgs' %}
+			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+				<span class="glyphicon glyphicon-home" style="font-size:32pt;color:#e5e5e5;"></span>
+			</div>
+			<div class="col-md-11">
+				<h4>
+					<a href="{% url "entity" %}">
+						<span class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.id }}</span></a>
+				</h4>
+				<p>
+					<span class="concept-name">{{ result.name }}</span><br />
+				</p>
+
+				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+			</div>
+	{% elif searchType == 'users' %}
+			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+				<span class="glyphicon glyphicon-user" style="font-size:32pt;color:#e5e5e5;"></span>
+			</div>
+			<div class="col-md-11">
+				<h4>
+					<a href="{% url "entity" %}">
+						<span class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.username }}</span></a>
+				</h4>
+				<p>
+					<span class="caption">{{ result.name }}</span>
+				</p>
+
+				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+			</div>
+	{% endif %}
+		</div>
+{% empty %}
+
+{% endfor %}
+
+
+<!-- Additional Example Results -->
+
+		<h4><small>Additional Static Examples:</small></h4>
+	{% if searchType == 'concepts' %}
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
 			<div style="display:inline-block;padding-left:20px">
 				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10-WHO / E84.9 &ndash; Cystic Fibrosis, unspecified</span></a></h4>
-				<p><span class="concept-name">Cystic Fibrosis, unspecified</span><br />
+				<p><span class="concept-name">Cystic Fibrosis, unspecified <small><em>[[en]]</em></small></span><br />
 				Diagnosis / N/A<br />
 				<span class="text-muted small">Last Updated 2010</span>
 				</p>
@@ -60,7 +165,7 @@
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
 			<div style="display:inline-block;padding-left:20px">
 				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;MCL / Community-MCH / 5596 &ndash; EDD</span></a></h4>
-				<p><span class="concept-name">Estimated Delivery Date</span><br />
+				<p><span class="concept-name">Estimated Delivery Date</span> <small><em>[[en]]</em></small><br />
 				Question / Date<br />
 				<span class="text-muted small">v2.3.04 Last Updated August 12, 2012</span>
 				</p>
@@ -70,7 +175,7 @@
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
 			<div style="display:inline-block;padding-left:20px">
 				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;CIEL / CIEL / 1427 &ndash; LMP</span></a></h4>
-				<p><span class="concept-name">Last Menstrual Period</span><br />
+				<p><span class="concept-name">Last Menstrual Period</span> <small><em>[[en]]</em></small><br />
 				Finding / Date<br />
 				<span class="text-muted small">Last Updated December 17, 2006</span>
 				</p>
@@ -80,45 +185,9 @@
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
 			<div style="display:inline-block;padding-left:20px">
 				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;IHTSDO / SNOMED CT / 364325004 &ndash; Parity</span></a></h4>
-				<p><span class="concept-name">Parity</span><br />
+				<p><span class="concept-name">Parity</span> <small><em>[[en]]</em></small><br />
 				Finding / Numeric<br />
 				<span class="text-muted small">v2.3.04 Last Updated August 12, 2012</span>
-				</p>
-			</div>
-		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-th-list"></span></div>
-			<div style="display:inline-block;padding-left:20px">
-				<h4><a href="{% url "source" %}"><span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;WHO / ICD-10-WHO</span></a></h4>
-				<p>International Classification of Diseases version 10, WHO Edition<br />
-				<span class="text-muted small">v2.3.04 Last Updated August 12, 2012</span>
-				</p>
-			</div>
-		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tags"></span></div>
-			<div style="display:inline-block;padding-left:20px">
-				<h4><a href="{% url "collection" %}"><span class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;paynejd / Community-MCH</span></a></h4>
-				<p>Community Maternal-Child Health Core Dataset<br />
-				<span class="text-muted small">v2.3.04 Last Updated August 12, 2012</span>
-				</p>
-			</div>
-		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-home"></span></div>
-			<div style="display:inline-block;padding-left:20px">
-				<h4><a href="{% url "entity" %}"><span class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</span></a></h4>
-				<p>World Health Organization<br />
-				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span> Geneva, Switzerland&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Created July 9, 2009</span>
-				</p>
-			</div>
-		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-user"></span></div>
-			<div style="display:inline-block;padding-left:20px">
-				<h4><a href="{% url "entity" %}"><span class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;paynejd</span></a></h4>
-				<p>Jonathan Payne<br />
-				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span> Boston, MA, USA&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Joined July 9, 2010</span>
 				</p>
 			</div>
 		</div>
@@ -144,6 +213,51 @@
 				</p>
 			</div>
 		</div>
+	{% elif searchType == 'sources' %}
+		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
+			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-th-list"></span></div>
+			<div style="display:inline-block;padding-left:20px">
+				<h4><a href="{% url "source" %}"><span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;WHO / ICD-10-WHO</span></a></h4>
+				<p>International Classification of Diseases version 10, WHO Edition<br />
+				<span class="text-muted small">v2.3.04 Last Updated August 12, 2012</span>
+				</p>
+			</div>
+		</div>
+	{% elif searchType == 'collections' %}
+		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
+			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tags"></span></div>
+			<div style="display:inline-block;padding-left:20px">
+				<h4><a href="{% url "collection" %}"><span class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;paynejd / Community-MCH</span></a></h4>
+				<p>Community Maternal-Child Health Core Dataset<br />
+				<span class="text-muted small">v2.3.04 Last Updated August 12, 2012</span>
+				</p>
+			</div>
+		</div>
+	{% elif searchType == 'orgs' %}
+		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
+			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-home"></span></div>
+			<div style="display:inline-block;padding-left:20px">
+				<h4><a href="{% url "entity" %}"><span class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</span></a></h4>
+				<p>World Health Organization<br />
+				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span> Geneva, Switzerland&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Created July 9, 2009</span>
+				</p>
+			</div>
+		</div>
+	{% elif searchType == 'users' %}
+		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
+			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-user"></span></div>
+			<div style="display:inline-block;padding-left:20px">
+				<h4><a href="{% url "entity" %}"><span class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;paynejd</span></a></h4>
+				<p>Jonathan Payne<br />
+				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span> Boston, MA, USA&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Joined July 9, 2010</span>
+				</p>
+			</div>
+		</div>
+	{% endif %}	
+
+<!-- Pagination -->
+
+{% if results %}
 		<div class="row" style="text-align:center;">
 			<ul class="pagination">
 			  <li><a href="#">&laquo;</a></li>
@@ -155,7 +269,14 @@
 			  <li><a href="#">&raquo;</a></li>
 			</ul>
 		</div>
+{% endif %}
+
+<!-- End search results section -->
+
 	</div>
+
+<!-- End content row -->
+
 </div>
 
 {% endblock content %}

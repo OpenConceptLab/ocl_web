@@ -21,13 +21,16 @@ class HomeSearchView(TemplateView):
         SEARCH_TYPE_PATHS = {
             'concepts': '/v1/orgs/WHO/sources/ICD-10/concepts/',
             'sources': '/v1/orgs/WHO/sources/',
+            'collections': '/v1/orgs/WHO/collections/',
             'orgs': '/v1/orgs/',
             'users': '/v1/users/'}
 
         try:
             uri_path = SEARCH_TYPE_PATHS[self.request.GET['type']]
+            searchType = self.request.GET['type']
         except KeyError:  # Either there is no 'type' in GET, or we don't support what was sent in.
             uri_path = SEARCH_TYPE_PATHS['concepts']
+            searchType = 'concepts'
 
         host = settings.API_HOST
         auth_token = settings.API_TOKEN
@@ -36,5 +39,6 @@ class HomeSearchView(TemplateView):
 
         results = requests.get(full_path, headers=headers)
         context['results'] = results.json()
+        context['searchType'] = searchType
 
         return context
