@@ -35,6 +35,7 @@ class HomeSearchView(TemplateView):
         headers = {'Authorization': auth_token}
 
         results = requests.get(full_path, headers=headers)
-        context['results'] = results.content
+        context['results'] = results.json()
+        context['args'] = self.request.GET
 
         return context
