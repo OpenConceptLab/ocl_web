@@ -2,14 +2,129 @@
 
 {% block content %}
 
-<h1>Concept Details</h1>
+<div class="row" style="border-bottom:1px solid #e5e5e5;padding-top:20px;padding-bottom:20px;margin-bottom:20px;">
+	<div class="col-md-3" style="text-align:right;padding-top:10px;">
+		<span style="font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></span>
+	</div>
+	<div class="col-md-9">
+		<h4>
+			<a href="{% url "entity" %}"><span class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</span></a>
+			/
+			<a href="{% url "source" %}"><span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;ICD-10-WHO</span></a>
+			/
+			<span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;E84.1</span>
+		</h4>
+		<p>Cystic Fibrosis with intestinal manifestations
+			<span id="element-info" data-toggle="tooltip" data-placement="right" title="Primary name in user's preferred language."><span class="glyphicon glyphicon-info-sign"></span></span>
+			<br />
+			<span class="text-muted">Last Updated 2010</span>
+		</p>
+		<p><a href="#">More &blacktriangledown;</a></p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;">
+		<span style="font-weight:bold;color:#999;">Preferred Name</span>
+		<span id="preferred-name-info" data-toggle="tooltip" data-placement="right" title="Primary name in user's preferred language."><span class="glyphicon glyphicon-info-sign"></span></span>
+	</div>
+	<div class="col-md-9">
+		Cystic Fibrosis with intestinal manifestations <em>[en]</em>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Synonyms
+	</div>
+	<div class="col-md-9">
+		<em>None</em>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Class
+	</div>
+	<div class="col-md-9">
+		Diagnosis
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Datatype
+	</div>
+	<div class="col-md-9">
+		None
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Description
+	</div>
+	<div class="col-md-9">
+		Distal intestinal obstruction syndrome<br />
+		Meconium ileus in cystic fibrosis+ (P75*)<br />
+		Excl.:<br />
+		meconium obstruction in cases where cystic fibrosis is known not to be present (P76.0)
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Relationships
+	</div>
+	<div class="col-md-9">
+		Parent - <a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10-WHO / E84 &ndash; Cystic fibrosis</span></a>
+	</div>
+</div>
 
-<h4>
-	<a href="{% url "entity" %}"><span class="label label-primary"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</span></a>
-	/
-	<a href="{% url "repo" %}"><span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;ICD-10-WHO</span></a>
-	/
-	<a href="{% url "concept" %}"><span class="label label-warning"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;A01.2</span></a>
-</a></h4>
+<div class="row" style="border-bottom:1px solid #e5e5e5;padding-top:20px;margin-bottom:20px;">
+</div>
+
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Date Created
+	</div>
+	<div class="col-md-9">
+		2004-10-01 2:40PM
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Last Updated
+	</div>
+	<div class="col-md-9">
+		2005-02-12 9:14AM
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Retired
+	</div>
+	<div class="col-md-9">
+		No
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Owner
+	</div>
+	<div class="col-md-9">
+		WHO
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Owner Type
+	</div>
+	<div class="col-md-9">
+		Organization
+	</div>
+</div>
+
 
 {% endblock content %}
+
+{% block extrajavascript %}
+<script>
+$('#element-info').tooltip();
+$('#preferred-name-info').tooltip();
+</script>
+{% endblock extrajavascript %}
