@@ -271,6 +271,8 @@ class Common(Configuration):
 
 
     ########## Your common stuff: Below this line define 3rd party libary settings
+    API_HOST = 'http://65.99.230.144'
+    API_TOKEN = 'Token ' + '%s' % os.environ.get('OCL_API_TOKEN')
 
 
 class Local(Common):

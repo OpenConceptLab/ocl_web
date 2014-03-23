@@ -6,20 +6,34 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
+from apps.ocl_search.views import HomeSearchView
+
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+
+    ######### Concepts
+    # List
+
+    ######### Sources
+    # List
+
+    ######### Orgs
+    # List
+
+    ######### Users
+    # List
+
+    ######### Search
+    url(r'^search/$', HomeSearchView.as_view(), name="search"),
     url(r'^$',
         TemplateView.as_view(template_name='pages/home.html'),
         name="home"),
     url(r'^about/$',
         TemplateView.as_view(template_name='pages/about.html'),
         name="about"),
-    url(r'^search/$',
-        TemplateView.as_view(template_name='pages/search.html'),
-        name="search"),
     url(r'^features/$',
         TemplateView.as_view(template_name='pages/features.html'),
         name="features"),
