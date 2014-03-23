@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 from apps.ocl_search.views import HomeSearchView
+from apps.orgs.views import OrgDetailView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -17,17 +18,28 @@ urlpatterns = patterns('',
     ######### Concepts
     # List
 
+    # Detail
+    url(r'^concept/$',
+        TemplateView.as_view(template_name='pages/concept.html'),
+        name="concept"),
+
     ######### Sources
     # List
 
     ######### Orgs
     # List
 
+    # Detail
+    url(r'^orgs/(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept_version>[a-zA-Z0-9\-\.]+)/$',
+        OrgDetailView.as_view(),
+        name="org_detail"),
+
     ######### Users
     # List
 
     ######### Search
     url(r'^search/$', HomeSearchView.as_view(), name="search"),
+
     url(r'^$',
         TemplateView.as_view(template_name='pages/home.html'),
         name="home"),
@@ -64,9 +76,6 @@ urlpatterns = patterns('',
     url(r'^collection/$',
         TemplateView.as_view(template_name='pages/collection.html'),
         name="collection"),
-    url(r'^concept/$',
-        TemplateView.as_view(template_name='pages/concept.html'),
-        name="concept"),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
