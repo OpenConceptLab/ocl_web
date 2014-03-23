@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 from apps.ocl_search.views import HomeSearchView
+from apps.orgs.views import OrgDetailView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -27,6 +28,11 @@ urlpatterns = patterns('',
 
     ######### Orgs
     # List
+
+    # Detail
+    url(r'^orgs/(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept_version>[a-zA-Z0-9\-\.]+)/$',
+        OrgDetailView.as_view(),
+        name="org_detail"),
 
     ######### Users
     # List
