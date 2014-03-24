@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1><span class="glyphicon glyphicon-th-list" style="color:#e5e5e5;"></span>&nbsp;&nbsp;New Source</h1>
+&nbsp;
+
+<form role="form" method="post">
+
+  <!-- owner -->
+  <div class="form-group">
+    <label for="sourceOwner">Owner</label>
+    <div class="input-group">
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          <li><a href="#"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ request.user }}</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</a></li>
+        </ul>
+      </div><!-- /btn-group -->
+    </div><!-- /input-group -->
+  </div>
+
+  <!-- id -->
+  <div class="form-group">
+    <label for="orgShortName">Source Short Name</label>
+    <input type="text" class="form-control" id="orgShortName" placeholder="Short Name (e.g. ICD-10)">
+    <p class="help-block">Your organization will live at: https://OpenConceptLab.org/orgs/<span id="org-name"></span></p>
+  </div>
+
+  <!-- name -->
+  <div class="form-group">
+    <label for="orgFullName">Source Full Name</label>
+    <input type="text" class="form-control" id="orgFullName" placeholder="Full Name (e.g. International Classification for Diseases v10)">
+  </div>
+
+  <!-- website -->
+  <div class="form-group">
+    <label for="website">Website</label>
+    <input type="text" class="form-control" id="website" placeholder="Website (e.g. http://apps.who.int/classifications/icd10)">
+  </div>
+
+  <!-- description -->
+  <div class="form-group">
+    <label for="sourceDescription">Description</label>
+    <textarea class="form-control" id="sourceDescription" rows="3"></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+{% endblock content %}
