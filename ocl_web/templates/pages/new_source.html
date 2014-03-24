@@ -12,7 +12,7 @@
     <label for="sourceOwner">Owner</label>
     <div class="input-group">
       <div class="input-group-btn">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span></button>
+        <button type="button" id="sourceOwner" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span></button>
         <ul class="dropdown-menu">
           <li><a href="#"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ request.user }}</a></li>
           <li><a href="#"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</a></li>
@@ -23,9 +23,9 @@
 
   <!-- id -->
   <div class="form-group">
-    <label for="orgShortName">Source Short Name</label>
-    <input type="text" class="form-control" id="orgShortName" placeholder="Short Name (e.g. ICD-10)">
-    <p class="help-block">Your organization will live at: https://OpenConceptLab.org/orgs/<span id="org-name"></span></p>
+    <label for="sourceShortName">Source Short Name</label>
+    <input type="text" class="form-control" id="sourceShortName" placeholder="Short Name (e.g. ICD-10)">
+    <p class="help-block">Your new source will live at: https://OpenConceptLab.org/[OwnerType]/[Owner]/sources/<span id="source-name">[SourceName]</span></p>
   </div>
 
   <!-- name -->

@@ -9,10 +9,10 @@
 
   <!-- owner -->
   <div class="form-group">
-    <label for="sourceOwner">Owner</label>
+    <label for="collectionOwner">Owner</label>
     <div class="input-group">
       <div class="input-group-btn">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span></button>
+        <button type="button" id="collectionOwner" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span></button>
         <ul class="dropdown-menu">
           <li><a href="#"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ request.user }}</a></li>
           <li><a href="#"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</a></li>
@@ -25,7 +25,7 @@
   <div class="form-group">
     <label for="collectionShortName">Collection Short Name</label>
     <input type="text" class="form-control" id="collectionShortName" placeholder="Short Name (e.g. Community-MCH)">
-    <p class="help-block">Your organization will live at: https://OpenConceptLab.org/orgs/.../collections/<span id="collection-name"></span></p>
+    <p class="help-block">Your collection will live at: https://OpenConceptLab.org/[OwnerType]/[Owner]/collections/<span id="collection-name">[CollectionName]</span></p>
   </div>
 
   <!-- name -->
