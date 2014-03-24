@@ -70,7 +70,7 @@
 			</div>
 			<div class="col-md-11">
 				<h4>
-					<a href="{% url "concept" %}">
+					<a href="{% url "concept-detail" org=result.owner source=result.source concept=result.id %}">
 						<span class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</span></a>
 				</h4>
 				<p>
@@ -79,6 +79,7 @@
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
+
 	{% elif searchType == 'sources' %}
 			<div class="col-md-1" style="text-align:right;padding-top:14px;">
 				<span class="glyphicon glyphicon-th-list" style="font-size:32pt;color:#e5e5e5;"></span>
@@ -155,8 +156,9 @@
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
 			<div style="display:inline-block;padding-left:20px">
 				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10-WHO / E84.9 &ndash; Cystic Fibrosis, unspecified</span></a></h4>
-				<p><span class="concept-name">Cystic Fibrosis, unspecified <small><em>[[en]]</em></small></span><br />
-				Diagnosis / N/A<br />
+				<p><span class="concept-name">Cystic Fibrosis, unspecified <small><em>[en]</em></small></span><br />
+				<em>Class:</em> Diagnosis, <em>Datatype:</em> N/A<br />
+				<em>Collections:</em> <span class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;MCH Core Dataset</span><br />
 				<span class="text-muted small">Last Updated 2010</span>
 				</p>
 			</div>
@@ -165,7 +167,7 @@
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
 			<div style="display:inline-block;padding-left:20px">
 				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;MCL / Community-MCH / 5596 &ndash; EDD</span></a></h4>
-				<p><span class="concept-name">Estimated Delivery Date</span> <small><em>[[en]]</em></small><br />
+				<p><span class="concept-name">Estimated Delivery Date</span> <small><em>[en]</em></small><br />
 				Question / Date<br />
 				<span class="text-muted small">v2.3.04 Last Updated August 12, 2012</span>
 				</p>
@@ -175,7 +177,7 @@
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
 			<div style="display:inline-block;padding-left:20px">
 				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;CIEL / CIEL / 1427 &ndash; LMP</span></a></h4>
-				<p><span class="concept-name">Last Menstrual Period</span> <small><em>[[en]]</em></small><br />
+				<p><span class="concept-name">Last Menstrual Period</span> <small><em>[en]</em></small><br />
 				Finding / Date<br />
 				<span class="text-muted small">Last Updated December 17, 2006</span>
 				</p>
@@ -185,7 +187,7 @@
 			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
 			<div style="display:inline-block;padding-left:20px">
 				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;IHTSDO / SNOMED CT / 364325004 &ndash; Parity</span></a></h4>
-				<p><span class="concept-name">Parity</span> <small><em>[[en]]</em></small><br />
+				<p><span class="concept-name">Parity</span> <small><em>[en]</em></small><br />
 				Finding / Numeric<br />
 				<span class="text-muted small">v2.3.04 Last Updated August 12, 2012</span>
 				</p>
