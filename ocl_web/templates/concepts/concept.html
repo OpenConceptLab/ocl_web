@@ -21,6 +21,9 @@
 		</p>
 		<p><a href="#">More &blacktriangledown;</a></p>
 	</div>
+    {% if request.GET.debug %}
+    {{ concept }}
+    {% endif %}
 </div>
 <div class="row">
 	<div class="col-md-3" style="text-align:right;">

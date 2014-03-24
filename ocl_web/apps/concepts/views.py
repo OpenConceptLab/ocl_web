@@ -1,6 +1,5 @@
 from django.views.generic import TemplateView
 from django.conf import settings
-import requests
 
 
 class ConceptDetailView(TemplateView):
@@ -10,15 +9,21 @@ class ConceptDetailView(TemplateView):
 
         context = super(ConceptDetailView, self).get_context_data(*args, **kwargs)
 
-        host = settings.API_HOST
-        auth_token = settings.API_TOKEN
-        full_path = host + uri_path
-        headers = {'Authorization': auth_token}
+        fake_concept = dict(
+            id="A15.1",
+            conceptClass="Diagnosis",
+            datatype="None",
+            retired=False,
+            source="ICD-10",
+            owner="WHO",
+            ownerType="Organization",
+            displayName="Tuberculosis of lung, confirmed by culture only",
+            displayLocale="en",
+            url="http://65.99.230.144/v1/orgs/WHO/sources/ICD-10/concepts/A15.1/52957df350d61b2b63e18f88/",
+        )
 
-        results = requests.get(full_path, headers=headers)
-        context['results'] = results.json()
+        context['concept'] = fake_concept
 
-        import pdb; pdb.set_trace()
         return context
 
 
