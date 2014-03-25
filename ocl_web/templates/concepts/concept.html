@@ -20,10 +20,11 @@
 			/
 			<span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ concept.id }}</span>
 		</h4>
-		<p>{{ concept.displayName }} {% if concept.displayLocale %}<span class="small"><em>[{{ concept.displayLocale }}]</em></span>{% endif %}
+		<p>
+			{{ concept.displayName }} {% if concept.displayLocale %}<span class="small"><em>[{{ concept.displayLocale }}]</em></span>{% endif %}&nbsp;&nbsp;<span id="element-info" data-toggle="tooltip" data-placement="right" title="Preferred name in selected language"><span class="glyphicon glyphicon-info-sign"></span></span><br />
+			<em>Class:</em> {{ concept.conceptClass }}<br />
+			<em>Datatype:</em> {{ concept.datatype }}
 			<!--
-				<span id="element-info" data-toggle="tooltip" data-placement="right" title="Primary name in user's preferred language."><span class="glyphicon glyphicon-info-sign"></span></span>
-				<br />
 				<span class="text-muted">Last Updated 2010</span>
 			-->
 		</p>
@@ -41,18 +42,6 @@
 </div>
 <div class="row">
 	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
-		Synonyms
-	</div>
-	<div class="col-md-9">
-		{% if concept.names %}
-			{{ concept.names|pprint }}
-		{% else %}
-			<span class="small"><em>None</em></span>
-		{% endif %}
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
 		Class
 	</div>
 	<div class="col-md-9">
@@ -65,6 +54,38 @@
 	</div>
 	<div class="col-md-9">
 		{{ concept.datatype }}
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Synonyms
+	</div>
+	<div class="col-md-9">
+		<ul class="list-group">
+		{% for name in concept.names %}
+			<li class="list-group-item {% if name.localePreferred %}list-group-item-info{% endif %}">{{ name.name }} <span class="small"><em>[{{ name.locale }}]</em></span> 
+				{% if name.localePreferred %}&nbsp;<span id="locale-preferred-name-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
+				{% if request.GET.debug %}<br /><pre>{{ name|pprint }}</pre>{% endif %}</li>
+		{% empty %}
+			<li class="small"><em>None</em></li>
+		{% endfor %}
+		</ul>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Description
+	</div>
+	<div class="col-md-9">
+		<ul class="list-group">
+		{% for desc in concept.descriptions %}
+			<li class="list-group-item {% if desc.localePreferred %}list-group-item-info{% endif %}">{{ desc.name }} <span class="small"><em>[{{ desc.locale }}]</em></span> 
+				{% if desc.localePreferred %}&nbsp;<span id="locale-preferred-desc-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
+				{% if request.GET.debug %}<br /><pre>{{ desc|pprint }}</pre>{% endif %}</li>
+		{% empty %}
+			<li class="small"><em>None</em></li>
+		{% endfor %}
+		</ul>
 	</div>
 </div>
 
@@ -111,5 +132,6 @@
 <script>
 $('#element-info').tooltip();
 $('#preferred-name-info').tooltip();
+$('#locale-preferred-name-tooltip1').tooltip();
 </script>
 {% endblock extrajavascript %}
