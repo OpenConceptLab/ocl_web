@@ -6,32 +6,107 @@
 
 <div class="row">
 
-<!-- Left Navigation and Filters -->
+<!-- Start Left Column -->
 
 	<div class="col-md-3">
-		<ul class="nav nav-pills nav-stacked">
-		  <li {% if searchType == "concepts" %}class="active"{% endif %}><a href="{% url "search" %}?type=concepts"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Concepts <span class="pull-right">32</span></a></li>
-		  <li {% if searchType == "sources" %}class="active"{% endif %}><a href="{% url "search" %}?type=sources"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Sources <span class="pull-right">6</span></a></li>
-		  <li {% if searchType == "collections" %}class="active"{% endif %}><a href="{% url "search" %}?type=collections"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Collections <span class="pull-right">14</span></a></li>
-		  <li {% if searchType == "orgs" %}class="active"{% endif %}><a href="{% url "search" %}?type=orgs"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Organizations <span class="pull-right">3</span></a></li>
-		  <li {% if searchType == "users" %}class="active"{% endif %}><a href="{% url "search" %}?type=users"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users <span class="pull-right">2</span></a></li>
-		</ul>
-		<h3>Concept Class</h3>
-		<ul class="nav nav-pills nav-stacked">
-		  <li><a href="#"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;Diagnosis <span class="pull-right">6</span></a></li>
-		  <li><a href="#"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;Drug <span class="pull-right">14</span></a></li>
-		  <li><a href="#"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;Finding <span class="pull-right">3</span></a></li>
-		  <li><a href="#"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;Symptom <span class="pull-right">2</span></a></li>
-		  <li><a href="#"><small>More &blacktriangledown;</small></a></li>
-		</ul>
-		<h3>Datatype</h3>
-		<ul class="nav nav-pills nav-stacked">
-		  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Numeric <span class="pull-right">12</span></a></li>
-		  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Text <span class="pull-right">6</span></a></li>
-		  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Coded <span class="pull-right">14</span></a></li>
-		  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;N/A <span class="pull-right">3</span></a></li>
-		  <li><a href="#"><small>More &blacktriangledown;</small></a></li>
-		</ul>
+
+<!-- Search Categories -->
+
+		<div class="list-group">
+			<a href="{% url 'search' %}?type=concepts" class="list-group-item {% if searchType == 'concepts' %}active{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Concepts <span class="badge">32</span></a>
+			<a href="{% url 'search' %}?type=sources" class="list-group-item {% if searchType == 'sources' %}active{% endif %}"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Sources <span class="badge">6</span></a>
+			<a href="{% url 'search' %}?type=collections" class="list-group-item {% if searchType == 'collections' %}active{% endif %}"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Collections <span class="badge">14</span></a>
+			<a href="{% url 'search' %}?type=orgs" class="list-group-item {% if searchType == 'orgs' %}active{% endif %}"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Organizations <span class="badge">3</span></a>
+			<a href="{% url 'search' %}?type=users" class="list-group-item {% if searchType == 'users' %}active{% endif %}"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users <span class="badge">2</span></a>
+  		</div>
+
+<!-- Filters -->
+
+{% if results %}
+		<div role="form">
+
+	{% if searchType == 'concepts' %}
+			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Concept Class</small></h4>
+			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
+				<div class="checkbox"><label><input type="checkbox"> Anatomy</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Diagnosis</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Drug</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Finding</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Symptom</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Test</label></div>
+				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			</div>
+
+			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Datatype</small></h4>
+			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
+				<div class="checkbox"><label><input type="checkbox"> Boolean</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Coded</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Date</label></div>
+				<div class="checkbox"><label><input type="checkbox"> N/A</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Numeric</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Text</label></div>
+				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			</div>
+			
+			<!--
+			<ul class="nav nav-pills nav-stacked">
+			  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Numeric <span class="pull-right">12</span></a></li>
+			  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Text <span class="pull-right">6</span></a></li>
+			  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Coded <span class="pull-right">14</span></a></li>
+			  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;N/A <span class="pull-right">3</span></a></li>
+			  <li><a href="#"><small>More &blacktriangledown;</small></a></li>
+			</ul>
+			-->
+
+
+	{% elif searchType == 'sources' %}
+			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Source Type</small></h4>
+			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
+				<div class="checkbox"><label><input type="checkbox"> Interface Terminology</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Reference Terminology</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Indicators</label></div>
+				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			</div>
+
+			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Organization</small></h4>
+			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
+				<div class="checkbox"><label><input type="checkbox"> CIEL</label></div>
+				<div class="checkbox"><label><input type="checkbox"> IHTSDO</label></div>
+				<div class="checkbox"><label><input type="checkbox"> MCL</label></div>
+				<div class="checkbox"><label><input type="checkbox"> WHO</label></div>
+				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			</div>
+
+	{% elif searchType == 'collections' %}
+			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Collection Type</small></h4>
+			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
+				<div class="checkbox"><label><input type="checkbox"> Dictionary Subset</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Value Set</label></div>
+				<div class="checkbox"><label><input type="checkbox"> ...</label></div>
+				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			</div>
+
+			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Organization</small></h4>
+			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
+				<div class="checkbox"><label><input type="checkbox"> CIEL</label></div>
+				<div class="checkbox"><label><input type="checkbox"> IHTSDO</label></div>
+				<div class="checkbox"><label><input type="checkbox"> MCL</label></div>
+				<div class="checkbox"><label><input type="checkbox"> WHO</label></div>
+				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			</div>
+
+	{% elif searchType == 'orgs' %}
+
+	{% elif searchType == 'users' %}
+
+	{% endif %}
+
+		</div> <!-- end div:role=form -->
+
+{% endif %}
+
+<!-- End left column -->
+
 	</div>
 
 <!-- Start search results section -->
@@ -71,8 +146,7 @@
 			</div>
 			<div class="col-md-11">
 				<h4>
-					<a href="{% url "concept-detail" org=result.owner source=result.source concept=result.id %}">
-						<span class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</span></a>
+					<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</a>
 				</h4>
 				<p>
 					<span class="caption">{{ result.displayName }} <small><em>[{{ result.displayLocale }}]</em></small></span><br />
@@ -87,8 +161,7 @@
 			</div>
 			<div class="col-md-11">
 				<h4>
-					<a href="{% url "source" %}">
-						<span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.shortCode }}</span></a>
+					<a href="{% url 'source' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.shortCode }}</a>
 				</h4>
 				<p>
 					<span class="caption">{{ result.name }}</span>
@@ -102,8 +175,7 @@
 			</div>
 			<div class="col-md-11">
 				<h4>
-					<a href="{% url "collection" %}">
-						<span class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</span></a>
+					<a href="{% url 'collection' %}" class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</a>
 				</h4>
 				<p>
 					<span class="concept-name">{{ result.displayName }} <em>[{{ result.displayLocale }}]</em></span><br />
@@ -120,8 +192,7 @@
 			</div>
 			<div class="col-md-11">
 				<h4>
-					<a href="{% url "entity" %}">
-						<span class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.id }}</span></a>
+					<a href="{% url 'org' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.id }}</span></a>
 				</h4>
 				<p>
 					<span class="concept-name">{{ result.name }}</span><br />
@@ -136,8 +207,7 @@
 			</div>
 			<div class="col-md-11">
 				<h4>
-					<a href="{% url "entity" %}">
-						<span class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.username }}</span></a>
+					<a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.username }}</a>
 				</h4>
 				<p>
 					<span class="caption">{{ result.name }}</span>
@@ -158,24 +228,42 @@
 		<h4><small>Additional Static Examples:</small></h4>
 	{% if searchType == 'concepts' %}
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
-			<div style="display:inline-block;padding-left:20px">
-				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;CIEL / CIEL / 1427</span></a></h4>
-				<p><span class="concept-name">Last Menstrual Period</span> <small><em>[en]</em></small><br />
-				<em>Class:</em> Finding, <em>Datatype:</em> Date<br />
-				<em>Collections:</em> <span class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;MCH Core Dataset</span><br />
-				<span class="text-muted small">Last Updated 6 years ago</span>
-				</p>
+			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
+			</div>
+			<div class="col-md-11">
+				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;1</a>
+				</div>
+				<h4><a href="{% url 'source' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;CIEL / CIEL / 1427</a></h4>
+				<p><span class="caption">Last Menstrual Period</span> <small><em>[en]</em></small><br />
+					<em>Class:</em> Finding, <em>Datatype:</em> Date<br />
+					<em>Collections:</em> 
+						<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;MCL / MCH Core Dataset</a>
+						<br />
+					<small class="text-muted">Last Updated 6 years ago</small></p>
 			</div>
 		</div>
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
-			<div style="display:inline-block;padding-left:20px">
-				<h4><a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;IHTSDO / SNOMED CT / 364325004</span></a></h4>
-				<p><span class="concept-name">Parity</span> <small><em>[en]</em></small><br />
-				<em>Class:</em> Finding, <em>Datatype:</em> Numeric<br />
-				<span class="text-muted small">Last Updated 2 years ago</span>
-				</p>
+			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
+			</div>
+			<div class="col-md-11">
+				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;12</a>
+				</div>
+				<h4>
+					<a href="{% url 'source' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;IHTSDO / SNOMED CT / 364325004</a>
+				</h4>
+				<p><span class="caption">Parity</span> <small><em>[en]</em></small><br />
+					<em>Class:</em> Finding, <em>Datatype:</em> Numeric<br />
+					<em>Collections:</em>
+						<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;MCL / MCH Core Dataset</a>&nbsp;&nbsp;
+						<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Rwanda MOH / Rwanda MCH</a>&nbsp;&nbsp;
+						<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;paynejd / Community-MCH</a>&nbsp;&nbsp;
+						...
+						<br />
+					<small class="text-muted">Last Updated 2 years ago</small></p>
 			</div>
 		</div>
 
@@ -185,9 +273,11 @@
 				<span class="glyphicon glyphicon-th-list" style="font-size:32pt;color:#e5e5e5;"></span>
 			</div>
 			<div class="col-md-11">
+				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#"><span class="glyphicon glyphicon-tag" title="Concepts in source"></span>&nbsp;&nbsp;25,720</a>
+				</div>
 				<h4>
-					<a href="{% url "source" %}">
-						<span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;WHO / ICD-10</span></a>
+					<a href="{% url 'source' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;WHO / ICD-10</a>
 				</h4>
 				<p><span class="caption">International Classification of Diseases, 10th Edition</span><br />
 					<small class="text-muted">Last Updated 2 years ago</small></p>
@@ -198,9 +288,11 @@
 				<span class="glyphicon glyphicon-th-list" style="font-size:32pt;color:#e5e5e5;"></span>
 			</div>
 			<div class="col-md-11">
+				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#"><span class="glyphicon glyphicon-tag" title="Concepts in source"></span>&nbsp;&nbsp;40,200</a>
+				</div>
 				<h4>
-					<a href="{% url "source" %}">
-						<span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;CIEL / CIEL</span></a>
+					<a href="{% url 'source' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;CIEL / CIEL</a>
 				</h4>
 				<p><span class="caption">Columbia University International eHealth Laboratory</span><br />
 					<small class="text-muted">Last Updated 3 weeks ago</small></p>
@@ -211,9 +303,11 @@
 				<span class="glyphicon glyphicon-th-list" style="font-size:32pt;color:#e5e5e5;"></span>
 			</div>
 			<div class="col-md-11">
+				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#"><span class="glyphicon glyphicon-tag" title="Concepts in source"></span>&nbsp;&nbsp;120,406</a>
+				</div>
 				<h4>
-					<a href="{% url "source" %}">
-						<span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;IHTSDO / SNOMED CT</span></a>
+					<a href="{% url 'source' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;IHTSDO / SNOMED CT</a>
 				</h4>
 				<p><span class="caption">Systematized Nomenclature of Medicine Clinical Terms</span><br />
 					<small class="text-muted">Last Updated 1 year ago</small></p>
@@ -222,12 +316,18 @@
 
 	{% elif searchType == 'collections' %}
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div style="width:48px;height:48px;margin-left:20px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tags"></span></div>
-			<div style="display:inline-block;padding-left:20px">
-				<h4><a href="{% url "collection" %}"><span class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;paynejd / Community-MCH</span></a></h4>
-				<p>Community Maternal and Child Health Core Dataset<br />
-				<span class="text-muted small">v2.3.04 Last Updated August 12, 2012</span>
-				</p>
+			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+				<span class="glyphicon glyphicon-tags" style="font-size:32pt;color:#e5e5e5;"></span>
+			</div>
+			<div class="col-md-11">
+				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#" title="Concepts in collection"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;122</a>
+				</div>
+				<h4>
+					<a href="{% url 'collection' %}" class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;paynejd / Community-MCH</a>
+				</h4>
+				<p><span class="caption">Community Maternal and Child Health Core Dataset</span><br />
+				<span class="text-muted small">Last Updated August 12, 2012</span></p>
 			</div>
 		</div>
 
@@ -238,13 +338,12 @@
 			</div>
 			<div class="col-md-11">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;4</a>
+					<a href="#" title="Sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;4</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;0</a>
+					<a href="#" title="Collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;0</a>
 				</div>
 				<h4>
-					<a href="{% url "source" %}">
-						<span class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</span></a>
+					<a href="{% url 'org' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</a>
 				</h4>
 				<p><span class="caption">World Health Organization</span><br />
 				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Geneva, Switzerland&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Created July 9, 2009</span></p>
@@ -256,13 +355,12 @@
 			</div>
 			<div class="col-md-11">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;1</a>
+					<a href="#" title="Sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;1</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;0</a>
+					<a href="#" title="Collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;0</a>
 				</div>
 				<h4>
-					<a href="{% url "source" %}">
-						<span class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;IHTSDO</span></a>
+					<a href="{% url 'org' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;IHTSDO</a>
 				</h4>
 				<p><span class="caption">International Health Terminology Standards Organization</span><br />
 				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Denmark&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Created August 17, 2012</span></p>
@@ -274,13 +372,12 @@
 			</div>
 			<div class="col-md-11">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;2</a>
+					<a href="#" title="Sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;2</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;9</a>
+					<a href="#" title="Collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;9</a>
 				</div>
 				<h4>
-					<a href="{% url "source" %}">
-						<span class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;CIEL</span></a>
+					<a href="{% url 'org' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;CIEL</a>
 				</h4>
 				<p><span class="caption">Columbia University International eHealth Laboratory</span><br />
 				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;New York, USA&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Created January 1, 2006</span></p>
@@ -294,13 +391,12 @@
 			</div>
 			<div class="col-md-11">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;2</a>
+					<a href="#" title="Sources owned by user"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;2</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;12</a>
+					<a href="#" title="Collections owned by user"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;12</a>
 				</div>
 				<h4>
-					<a href="{% url "source" %}">
-						<span class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;paynejd</span></a>
+					<a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;paynejd</a>
 				</h4>
 				<p><span class="caption">Jonathan Payne</span><br />
 				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Boston, MA, USA&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined July 9, 2009</span></p>
