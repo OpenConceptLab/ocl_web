@@ -20,8 +20,10 @@ urlpatterns = patterns('',
         TemplateView.as_view(template_name='pages/concept.html'),
         name="concept"),
 
+
     ######### Sources
     # List
+
 
     ######### Orgs
     # List
@@ -36,11 +38,14 @@ urlpatterns = patterns('',
 #        OrgDetailView.as_view(),
 #        name="org_detail"),
 
+
     ######### Users
     # List
 
+
     ######### Search
     url(r'^search/$', HomeSearchView.as_view(), name="search"),
+
 
     ######### Misc Pages (some to be moved into Dynamic views later)
     url(r'^$',
@@ -88,6 +93,10 @@ urlpatterns = patterns('',
     url(r'^new_collection/$',
         TemplateView.as_view(template_name='pages/new_collection.html'),
         name="new_collection"),
+    url(r'^new_concept/$',
+        TemplateView.as_view(template_name='pages/new_concept.html'),
+        name="new_concept"),
+
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),

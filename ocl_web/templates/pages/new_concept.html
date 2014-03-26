@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1><span class="glyphicon glyphicon-tag" style="color:#e5e5e5;"></span>&nbsp;&nbsp;New Concept</h1>
+&nbsp;
+
+<form role="form" method="post">
+
+  <!-- Concept Source -->
+  <div class="form-group">
+    <label for="conceptSource">Source</label>
+    <div class="input-group">
+      <div class="input-group-btn">
+        <button type="button" id="conceptSource" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Source <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          <li><a href="#"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;CIEL v2.0</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;My Source</a></li>
+          <li class="divider"></li>
+          <li><a href="#"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;New Source...</a></li>
+          <li class="divider"></li>
+          <li><a href="#"><span class="glyphicon glyphicon-inbox"></span>&nbsp;&nbsp;My Workspace</a></li>
+        </ul>
+      </div><!-- /btn-group -->
+    </div><!-- /input-group -->
+  </div>
+
+  <!-- Concept Class -->
+  <div class="form-group">
+    <label for="conceptClass">Concept Class</label>
+    <div class="input-group">
+      <div class="input-group-btn">
+        <button type="button" id="conceptClass" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;Class <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          <li><a href="#"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;Diagnosis</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;Drug</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;Finding</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;Symptom</a></li>
+          <li><a href="#">...</a></li>
+        </ul>
+      </div><!-- /btn-group -->
+    </div><!-- /input-group -->
+  </div>
+
+  <!-- Concept Datatype -->
+  <div class="form-group">
+    <label for="conceptDatatype">Concept Datatype</label>
+    <div class="input-group">
+      <div class="input-group-btn">
+        <button type="button" id="conceptDatatype" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Datatype <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Numeric</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Text</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Coded</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;N/A</a></li>
+          <li><a href="#">...</a></li>
+        </ul>
+      </div><!-- /btn-group -->
+    </div><!-- /input-group -->
+  </div>
+
+  <!-- Concept Names -->
+  <div class="form-group">
+    <p>
+    <label for="conceptName1">Concept Names</label>
+    <input type="text" class="form-control" id="conceptName1" placeholder="Concept Name 1"></p>
+    <p><a href="#"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Add Synonym</a></p>
+  </div>
+
+  <!-- Concept Descriptions -->
+  <div class="form-group">
+    <p>
+    <label for="sourceDescription1">Descriptions</label>
+    <textarea class="form-control" id="sourceDescription1" rows="3"></textarea></p>
+    <p><a href="#"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Add Description</a></p>
+  </div>
+
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+{% endblock content %}
