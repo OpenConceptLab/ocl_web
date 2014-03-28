@@ -9,8 +9,9 @@
     <div class="thumbnail">
       <div class="caption">
         <h3>Featured Resources</h3>
-        <p>...</p>
-        <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+        <h4><a href="{% url "collection" %}" class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;paynejd / Community-MCH</a></h4>
+        <p class="caption">Community Maternal and Child Health Core Dataset<br />
+        <p><a href="#">More &blacktriangledown;</a></p>
       </div>
     </div>
   </div>
@@ -18,17 +19,25 @@
     <div class="thumbnail">
       <div class="caption">
         <h3>Recently Updated Sources</h3>
-        <p>...</p>
-        <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+        <h4><a href="{% url "collection" %}" class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;paynejd / Community-MCH</a></h4>
+        <p><a href="#">More &blacktriangledown;</a></p>
       </div>
     </div>
   </div>
   <div class="col-sm-6 col-md-4">
     <div class="thumbnail">
       <div class="caption">
-        <h3>Newest Members</h3>
-        <p>...</p>
-        <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+        <h3>New Members</h3>
+        <h4><a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;johndoe</a>&nbsp;&nbsp;&nbsp;John Doe</h4>
+        <p><span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Arizona, USA&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined today</span></p>
+
+        <h4><a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;susanboyle</a>&nbsp;&nbsp;&nbsp;Susan Boyle</h4>
+        <p><span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Arizona, USA&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined last week</span></p>
+
+        <h4><a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;abelincoln</a>&nbsp;&nbsp;&nbsp;Abraham Lincoln</h4>
+        <p><span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Philadelphia, PA, USA&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined 300 years ago</span></p>
+
+        <p><a href="#">More &blacktriangledown;</a></p>
       </div>
     </div>
   </div>
