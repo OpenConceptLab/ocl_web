@@ -62,16 +62,16 @@ form div.input-group {
 /* line 62, ../sass/project.scss */
 .feature-a {
   text-align: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
 
 /* line 67, ../sass/project.scss */
 .feature-b {
   text-align: center;
   background-color: #e5e5e5;
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
 
 /* footer */
