@@ -10,7 +10,7 @@
 	</div>
 	<div class="col-md-9">
 		<h4>
-			<a href="{% url 'entity' %}" class="label label-warning">
+			<a href="{% url 'org' %}" class="label label-warning">
 				<span class="glyphicon glyphicon-{% if concept.ownerType == 'Organization' %}home{% elif concept.ownerType == 'User' %}user{% endif %}"></span>&nbsp;&nbsp;{{ concept.owner }}</a>
 			/
 			<a href="{% url "source" %}" class="label label-success">
