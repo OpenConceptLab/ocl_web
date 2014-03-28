@@ -1,5 +1,5 @@
 {% load staticfiles i18n %}<!DOCTYPE html>
-<div class="header navbar">
+<div class="header navbar" style="margin-bottom:0;">
   <div class="container">
     <a class="navbar-brand" href="{% url 'home'%}"><img src="{% static 'images/ocl-logo.png' %}" height="40" /></a>
     <form class="navbar-form navbar-left" role="search" action="{% url 'search'%}" method="get">
