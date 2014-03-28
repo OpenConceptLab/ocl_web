@@ -37,19 +37,21 @@
       {% include 'includes/nav.html' %}
     {% endblock nav %}
 
-    <div class="container">
-        
-      {% if messages %}
+    {% if messages %}
+      <div class="container">
         {% for message in messages %}
           <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
         {% endfor %}
-      {% endif %}
+      </div> <!-- /container -->
+    {% endif %}
 
-      {% block content %}
-        <p>Use this document as a way to quick start any new project.</p>
-      {% endblock content %}
-
-    </div> <!-- /container -->
+    {% block content-no-container %}
+      <div class="container" style="margin-top:20px;">
+        {% block content %}
+          <p>Use this document as a way to quick start any new project.</p>
+        {% endblock content %}
+      </div> <!-- /container -->
+    {% endblock content-no-container %}
 
     <div class="container">
 
