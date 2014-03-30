@@ -12,7 +12,12 @@
 			<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;New York, USA&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Created January 1, 2006</span></p>
 			<p><a href="#">More &blacktriangledown;</a></p>
 		</div>
-        {% if request.GET.debug %}<br /><pre>{{ org|pprint }}</pre>{% endif %}</li>
+        {% if request.GET.debug %}
+          Org: <br /><pre>{{ org|pprint }}</pre>
+          Sources: <br /><pre>{{ sources|pprint }}</pre>
+          Collections: <br /><pre>{{ collections|pprint }}</pre>
+          Members: <br /><pre>{{ members|pprint }}</pre>
+        {% endif %}
 	</div>
 </div>
 <div class="row">
@@ -76,7 +81,6 @@
 
 <!-- Display source search results -->
 
-        {% if request.GET.debug %}<br /><pre>{{ concepts|pprint }}</pre>{% endif %}</li>
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
 			<div class="col-md-1" style="text-align:right;padding-top:14px;">
 				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
