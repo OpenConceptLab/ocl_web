@@ -7,7 +7,7 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 from apps.ocl_search.views import HomeSearchView
-from apps.orgs.views import OrgDetailView
+from apps.orgs.views import OrganizationDetailView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
