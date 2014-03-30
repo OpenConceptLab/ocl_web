@@ -279,6 +279,7 @@ class Local(Common):
 
     ########## INSTALLED_APPS
     INSTALLED_APPS = Common.INSTALLED_APPS
+    INSTALLED_APPS += ('django_extensions',)
     ########## END INSTALLED_APPS
 
     ########## Mail settings
