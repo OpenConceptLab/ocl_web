@@ -26,22 +26,13 @@ urlpatterns = patterns('',
 
 
     ######### Orgs
-    # List
-    url(r'^orgs/', include('apps.orgs.urls')),
 
 
     ######### Concepts
     # List
 
-    # Detail
-#    url(r'^/(?P<owner_type>[a-zA-Z0-9\-\.]+)/(?P<owner>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept_name>[a-zA-Z0-9\-\.]+)/$',
-#        OrgDetailView.as_view(),
-#        name="org_detail"),
-
-
     ######### Users
     # List
-
 
     ######### Search
     url(r'^search/$', HomeSearchView.as_view(), name="search"),
@@ -72,14 +63,11 @@ urlpatterns = patterns('',
     url(r'^help/$',
         TemplateView.as_view(template_name='pages/help.html'),
         name="help"),
-    url(r'^org/$',
-        TemplateView.as_view(template_name='pages/org.html'),
-        name="org"),
     url(r'^user/$',
         TemplateView.as_view(template_name='pages/user.html'),
         name="user"),
     url(r'^source/$',
-        TemplateView.as_view(template_name='pages/source.html'),
+        TemplateView.as_view(template_name='sources/source.html'),
         name="source"),
     url(r'^collection/$',
         TemplateView.as_view(template_name='pages/collection.html'),
@@ -107,6 +95,9 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable avatars
     url(r'^avatar/', include('avatar.urls')),
+
+    # List
+    url(r'^orgs/', include('apps.orgs.urls')),
 
     # Your stuff: custom urls go here
 
