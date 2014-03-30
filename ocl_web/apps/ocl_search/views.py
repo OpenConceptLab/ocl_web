@@ -19,7 +19,7 @@ class HomeSearchView(TemplateView):
         context = super(HomeSearchView, self).get_context_data(*args, **kwargs)
 
         SEARCH_TYPE_PATHS = {
-            'concepts': '/v1/orgs/WHO/sources/ICD-10/concepts/',
+            'concepts': '/v1/concepts/',
             'sources': '/v1/orgs/WHO/sources/',
             'collections': '/v1/orgs/WHO/collections/',
             'orgs': '/v1/orgs/',
