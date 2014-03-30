@@ -68,12 +68,12 @@
 				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
 			</div>
 
-			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Organization</small></h4>
+			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Language</small></h4>
 			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
-				<div class="checkbox"><label><input type="checkbox"> CIEL</label></div>
-				<div class="checkbox"><label><input type="checkbox"> IHTSDO</label></div>
-				<div class="checkbox"><label><input type="checkbox"> MCL</label></div>
-				<div class="checkbox"><label><input type="checkbox"> WHO</label></div>
+				<div class="checkbox"><label><input type="checkbox"> English <em><small>[en]</small></em></label></div>
+				<div class="checkbox"><label><input type="checkbox"> French <em><small>[fr]</small></em></label></div>
+				<div class="checkbox"><label><input type="checkbox"> Spanish <em><small>[es]</small></em></label></div>
+				<div class="checkbox"><label><input type="checkbox"> Swahili <em><small>[sw]</small></em></label></div>
 				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
 			</div>
 
@@ -86,18 +86,39 @@
 				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
 			</div>
 
-			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Organization</small></h4>
+			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Language</small></h4>
 			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
-				<div class="checkbox"><label><input type="checkbox"> CIEL</label></div>
-				<div class="checkbox"><label><input type="checkbox"> IHTSDO</label></div>
-				<div class="checkbox"><label><input type="checkbox"> MCL</label></div>
-				<div class="checkbox"><label><input type="checkbox"> WHO</label></div>
+				<div class="checkbox"><label><input type="checkbox"> English <em><small>[en]</small></em></label></div>
+				<div class="checkbox"><label><input type="checkbox"> French <em><small>[fr]</small></em></label></div>
+				<div class="checkbox"><label><input type="checkbox"> Spanish <em><small>[es]</small></em></label></div>
+				<div class="checkbox"><label><input type="checkbox"> Swahili <em><small>[sw]</small></em></label></div>
 				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
 			</div>
 
 	{% elif searchType == 'orgs' %}
+			<!--h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Location</small></h4>
+			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
+				<div class="checkbox"><label><input type="checkbox"> Africa</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Asia</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Australia</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Europe</label></div>
+				<div class="checkbox"><label><input type="checkbox"> North America</label></div>
+				<div class="checkbox"><label><input type="checkbox"> South America</label></div>
+				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			</div-->
 
 	{% elif searchType == 'users' %}
+			<!--h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Location</small></h4>
+			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
+				<div class="checkbox"><label><input type="checkbox"> Africa</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Asia</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Australia</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Europe</label></div>
+				<div class="checkbox"><label><input type="checkbox"> North America</label></div>
+				<div class="checkbox"><label><input type="checkbox"> South America</label></div>
+				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			</div-->
+
 
 	{% endif %}
 
@@ -142,9 +163,12 @@
 
 	{% if searchType == 'concepts' %}
 			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+				<input type="checkbox" />
+			</div>
+			<div class="col-md-1" style="text-align:right;padding-top:14px;">
 				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-10">
 				<h4>
 					<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</a>
 				</h4>
@@ -229,10 +253,15 @@
 	{% if searchType == 'concepts' %}
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
 			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+				<input type="checkbox" />
+			</div>
+			<div class="col-md-1" style="text-align:right;padding-top:14px;">
 				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-10">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;3</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;1</a>
 				</div>
 				<h4><a href="{% url 'source' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;CIEL / CIEL / 1427</a></h4>
@@ -246,10 +275,15 @@
 		</div>
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
 			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+				<input type="checkbox" />
+			</div>
+			<div class="col-md-1" style="text-align:right;padding-top:14px;">
 				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-10">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;14</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;12</a>
 				</div>
 				<h4>
@@ -274,6 +308,8 @@
 			</div>
 			<div class="col-md-11">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;12</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="#"><span class="glyphicon glyphicon-tag" title="Concepts in source"></span>&nbsp;&nbsp;25,720</a>
 				</div>
 				<h4>
@@ -289,6 +325,8 @@
 			</div>
 			<div class="col-md-11">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;11</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="#"><span class="glyphicon glyphicon-tag" title="Concepts in source"></span>&nbsp;&nbsp;40,200</a>
 				</div>
 				<h4>
@@ -304,6 +342,8 @@
 			</div>
 			<div class="col-md-11">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;72</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="#"><span class="glyphicon glyphicon-tag" title="Concepts in source"></span>&nbsp;&nbsp;120,406</a>
 				</div>
 				<h4>
@@ -321,6 +361,8 @@
 			</div>
 			<div class="col-md-11">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;4</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="#" title="Concepts in collection"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;122</a>
 				</div>
 				<h4>
@@ -338,9 +380,11 @@
 			</div>
 			<div class="col-md-11">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;4</a>
+					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;1</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;0</a>
+					<a href="#" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;4</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;0</a>
 				</div>
 				<h4>
 					<a href="{% url 'org' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</a>
@@ -355,9 +399,11 @@
 			</div>
 			<div class="col-md-11">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;1</a>
+					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;5</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;0</a>
+					<a href="#" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;1</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;0</a>
 				</div>
 				<h4>
 					<a href="{% url 'org' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;IHTSDO</a>
@@ -372,9 +418,11 @@
 			</div>
 			<div class="col-md-11">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;2</a>
+					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;2</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;9</a>
+					<a href="#" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;2</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;9</a>
 				</div>
 				<h4>
 					<a href="{% url 'org' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;CIEL</a>
@@ -391,9 +439,11 @@
 			</div>
 			<div class="col-md-11">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Sources owned by user"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;2</a>
+					<a href="#" title="Followers"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;2</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Collections owned by user"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;12</a>
+					<a href="#" title="Public sources owned by user"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;2</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" title="Public collections owned by user"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;12</a>
 				</div>
 				<h4>
 					<a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;paynejd</a>

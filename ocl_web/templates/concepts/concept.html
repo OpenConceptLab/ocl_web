@@ -120,10 +120,19 @@
 		Relationships
 	</div>
 	<div class="col-md-9">
-		Parent - <a href="{% url "concept" %}"><span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10-WHO / E84 &ndash; Cystic fibrosis</span></a>
+		Parent - <a href="{% url "concept" %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10-WHO / E84 &ndash; Cystic fibrosis</a>
 	</div>
 </div>
-
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Collections
+	</div>
+	<div class="col-md-9">
+		<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;MCL / MCH Core Dataset</a><br />
+		<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Rwanda MOH / Rwanda MCH</a><br />
+		<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;paynejd / Community-MCH</a>
+	</div>
+</div>
 {% endblock content %}
 
 {% block extrajavascript %}
