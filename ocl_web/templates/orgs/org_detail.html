@@ -19,34 +19,38 @@
 				</span>
 			</p>
 			<p><a href="#">More &blacktriangledown;</a></p>
+			<div class="panel panel-default">
+				<div class="panel-heading">All Organization Fields:</div>
+				<div class="panel-body">
+					{% for key, value in org.items %}
+					<div class="row">
+						<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">{{ key }}</div>
+						<div class="col-md-9">{{ value }}</div>
+					</div>
+					{% endfor %}
+				</div>
+			</div> <!-- /panel -->
 		</div>
+
         {% if request.GET.debug %}
+        <p>
           Org: <br /><pre>{{ org|pprint }}</pre>
           Sources: <br /><pre>{{ sources|pprint }}</pre>
           Collections: <br /><pre>{{ collections|pprint }}</pre>
           Members: <br /><pre>{{ members|pprint }}</pre>
+        </p>
         {% endif %}
 	</div>
 </div>
+
 <div class="row">
-	<div class="col-md-3">
-		<h3>Concept Class</h3>
-		<ul class="nav nav-pills nav-stacked">
-		  <li><a href="#">Anatomy <span class="pull-right">12</span></a></li>
-		  <li><a href="#">Diagnosis <span class="pull-right">6</span></a></li>
-		  <li><a href="#">Drug <span class="pull-right">14</span></a></li>
-		  <li><a href="#">Finding <span class="pull-right">3</span></a></li>
-		  <li><a href="#">Symptom <span class="pull-right">2</span></a></li>
-		</ul>
-		<h3>Datatype</h3>
-		<ul class="nav nav-pills nav-stacked">
-		  <li><a href="#">Numeric <span class="pull-right">12</span></a></li>
-		  <li><a href="#">Text <span class="pull-right">6</span></a></li>
-		  <li><a href="#">Coded <span class="pull-right">14</span></a></li>
-		  <li><a href="#">N/A <span class="pull-right">3</span></a></li>
-		</ul>
-	</div>
-	<div class="col-md-9">
+
+<!-- Start org resource listing section -->
+
+	<div class="col-md-8">
+
+<!-- Sort / filter -->
+
 		<div class="row" style="padding-top:20px;">
 			<div class="col-md-12">
 				<div class="btn-group pull-right">
@@ -59,157 +63,46 @@
 				    <li><a href="#">Something else here</a></li>
 				  </ul>
 				</div>
-				<div class="btn-group">
-				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-				    Version <span class="caret"></span>
-				  </button>
-				  <ul class="dropdown-menu" role="menu">
-				    <li><a href="#">Head</a></li>
-				    <li><a href="#">Latest Version</a></li>
-				    <li><a href="#">An older version</a></li>
-				  </ul>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12" style="padding-top:20px;padding-bottom:20px;">
-		      <div class="input-group">
-		        <input type="text" class="form-control" placeholder="Search Source">
-		         <span class="input-group-btn">
-		        <button class="btn btn-default" type="button">Search</button>
-		      </span>
-		      </div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<h4>We found 2,016 concept results in this source.</h4>
 			</div>
 		</div>
 
-<!-- Display source search results -->
+<!-- Display org resources -->
 
+	{% for source in sources %}
 		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
 			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
+				<span class="glyphicon glyphicon-th-list" style="font-size:32pt;color:#e5e5e5;"></span>
 			</div>
 			<div class="col-md-11">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;1</a>
-				</div>
-				<h4><a href="{% url 'concept-detail' org='WHO' source='ICD-10' concept='A01.2' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10 / E85</a></h4>
-				<p><span class="caption">Amyloidosis</span> <span class="small"><em>[en]</em></span><br />
-				<em>Class:</em> Diagnosis, <em>Datatype:</em> None<br />
-				<span class="text-muted">Last Updated 6 years ago</span>
+				<h4>
+					<a href="{% url 'source' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ org.id }} / {{ source.shortCode }}</a>
+				</h4>
+				<p>
+					<span class="caption">{{ source.name }}</span>
 				</p>
-			</div>
-		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
-			</div>
-			<div class="col-md-11">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;1</a>
-				</div>
-				<h4><a href="{% url 'concept-detail' org='WHO' source='ICD-10' concept='A01.2' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10 / E85.0</a></h4>
-				<p><span class="caption">Non-neuropathic heredofamilial amyloidosis</span> <span class="small"><em>[en]</em></span><br />
-				<em>Class:</em> Diagnosis, <em>Datatype:</em> None<br />
-				<span class="text-muted">Last Updated 6 years ago</span>
-				</p>
-			</div>
-		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
-			</div>
-			<div class="col-md-11">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;1</a>
-				</div>
-				<h4><a href="{% url 'concept-detail' org='WHO' source='ICD-10' concept='A01.2' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10 / E85.1</a></h4>
-				<p><span class="caption">Neuropathic heredofamilial amyloidosis</span> <span class="small"><em>[en]</em></span><br />
-				<em>Class:</em> Diagnosis, <em>Datatype:</em> None<br />
-				<span class="text-muted">Last Updated 6 years ago</span>
-				</p>
-			</div>
-		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
-			</div>
-			<div class="col-md-11">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;1</a>
-				</div>
-				<h4><a href="{% url 'concept-detail' org='WHO' source='ICD-10' concept='A01.2' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10 / E85.2</a></h4>
-				<p><span class="caption">Heredofamilial amyloidosis, unspecified</span> <span class="small"><em>[en]</em></span><br />
-				<em>Class:</em> Diagnosis, <em>Datatype:</em> None<br />
-				<span class="text-muted">Last Updated 6 years ago</span>
-				</p>
-			</div>
-		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
-			</div>
-			<div class="col-md-11">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;1</a>
-				</div>
-				<h4><a href="{% url 'concept-detail' org='WHO' source='ICD-10' concept='A01.2' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10 / E85.3</a></h4>
-				<p><span class="caption">Secondary systemic amyloidosis</span> <span class="small"><em>[en]</em></span><br />
-				<em>Class:</em> Diagnosis, <em>Datatype:</em> None<br />
-				<span class="text-muted">Last Updated 6 years ago</span>
-				</p>
-			</div>
-		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
-			</div>
-			<div class="col-md-11">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;1</a>
-				</div>
-				<h4><a href="{% url 'concept-detail' org='WHO' source='ICD-10' concept='A01.2' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10 / E85.4</a></h4>
-				<p><span class="caption">Organ-limited amyloidosis</span> <span class="small"><em>[en]</em></span><br />
-				<em>Class:</em> Diagnosis, <em>Datatype:</em> None<br />
-				<span class="text-muted">Last Updated 6 years ago</span>
-				</p>
-			</div>
-		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
-			</div>
-			<div class="col-md-11">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;1</a>
-				</div>
-				<h4><a href="{% url 'concept-detail' org='WHO' source='ICD-10' concept='A01.2' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10 / E85.8</a></h4>
-				<p><span class="caption">Other amyloidosis</span> <span class="small"><em>[en]</em></span><br />
-				<em>Class:</em> Diagnosis, <em>Datatype:</em> None<br />
-				<span class="text-muted">Last Updated 6 years ago</span>
-				</p>
-			</div>
-		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
-			</div>
-			<div class="col-md-11">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;1</a>
-				</div>
-				<h4><a href="{% url 'concept-detail' org='WHO' source='ICD-10' concept='A01.2' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10 / E85.9</a></h4>
-				<p><span class="caption">Amyloidosis, unspecified</span> <span class="small"><em>[en]</em></span><br />
-				<em>Class:</em> Diagnosis, <em>Datatype:</em> None<br />
-				<span class="text-muted">Last Updated 6 years ago</span>
-				</p>
+				{% if request.GET.debug %}<pre>{{ source|pprint }}</pre>{% endif %}
 			</div>
 		</div>
 
+	{% endfor %}
+
+	{% for collection in collections %}
+		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
+			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+				<span class="glyphicon glyphicon-tags" style="font-size:32pt;color:#e5e5e5;"></span>
+			</div>
+			<div class="col-md-11">
+				<h4>
+					<a href="{% url 'collection' %}" class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ org.id }} / {{ collection.id }}</a>
+				</h4>
+				<p>
+					<span class="caption">{{ collection.name }}</span>
+				</p>
+				{% if request.GET.debug %}<pre>{{ collection|pprint }}</pre>{% endif %}
+			</div>
+		</div>
+
+	{% endfor %}
 
 <!-- Pagination -->
 
@@ -225,8 +118,26 @@
 			</ul>
 		</div>
 
+<!-- End Org resource listing -->
 
 	</div>
+
+<!-- Org Members -->
+
+	<div class="col-md-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Members</h3>
+			</div>
+			<div class="panel-body">
+				{% for member in members %}
+					<h4><a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ member.username }}</a></h4>
+					{% if request.GET.debug %}<pre>{{ member|pprint }}</pre>{% endif %}
+				{% endfor %}
+			</div>
+		</div>	
+	</div>
+
 </div>
 
 {% endblock content %}
