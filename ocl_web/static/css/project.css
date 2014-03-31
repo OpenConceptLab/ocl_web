@@ -74,6 +74,53 @@ form div.input-group {
   padding-bottom: 50px;
 }
 
+/* search results */
+.row-search-result {
+  border-top:1px solid #e5e5e5;
+  padding-bottom:8px;
+  padding-top:8px;
+}
+.search-result-col-checkbox {
+  text-align:right;
+  padding-top:14px;
+}
+.search-result-col-icon {
+  text-align:right;
+  padding-top:14px;
+}
+.search-result-icon {
+  font-size:32pt;
+  color:#e5e5e5;
+}
+.search-result-col-content {
+}
+.row-pagination {
+  text-align:center;
+}
+
+
+/* filters */
+.filter-group {
+
+}
+.filter-group .filter-group-header {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  height: auto;
+  line-height: 13.5px;
+  width: auto;
+  border-bottom:1px solid #e5e5e5;
+  padding-bottom:5px;
+  margin-top:20px;
+  color: rgb(153, 153, 153);
+}
+.filter-group .filter-group-body {
+  padding-left:15px;
+  padding-right:15px;
+}
+
+
 /* footer */
 /* line 76, ../sass/project.scss */
 .site-footer {

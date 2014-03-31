@@ -26,97 +26,102 @@
 		<div role="form">
 
 	{% if searchType == 'concepts' %}
-			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Concept Class</small></h4>
-			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
-				<div class="checkbox"><label><input type="checkbox"> Anatomy</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Diagnosis</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Drug</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Finding</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Symptom</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Test</label></div>
-				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			<div class="filter-group">
+				<div class="filter-group-header">Concept Class</div>
+				<div class="filter-group-body">
+					<div class="checkbox"><label><input type="checkbox"> Anatomy</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Diagnosis</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Drug</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Finding</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Symptom</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Test</label></div>
+					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+				</div>
 			</div>
 
-			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Datatype</small></h4>
-			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
-				<div class="checkbox"><label><input type="checkbox"> Boolean</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Coded</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Date</label></div>
-				<div class="checkbox"><label><input type="checkbox"> N/A</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Numeric</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Text</label></div>
-				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			<div class="filter-group">
+				<div class="filter-group-header">Datatypes</div>
+				<div class="filter-group-body">
+					<div class="checkbox"><label><input type="checkbox"> Boolean</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Coded</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Date</label></div>
+					<div class="checkbox"><label><input type="checkbox"> N/A</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Numeric</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Text</label></div>
+					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+				</div>
 			</div>
-			
-			<!--
-			<ul class="nav nav-pills nav-stacked">
-			  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Numeric <span class="pull-right">12</span></a></li>
-			  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Text <span class="pull-right">6</span></a></li>
-			  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Coded <span class="pull-right">14</span></a></li>
-			  <li><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;N/A <span class="pull-right">3</span></a></li>
-			  <li><a href="#"><small>More &blacktriangledown;</small></a></li>
-			</ul>
-			-->
-
 
 	{% elif searchType == 'sources' %}
-			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Source Type</small></h4>
-			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
-				<div class="checkbox"><label><input type="checkbox"> Interface Terminology</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Reference Terminology</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Indicators</label></div>
-				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			<div class="filter-group">
+				<div class="filter-group-header">Source Type</div>
+				<div class="filter-group-body">
+					<div class="checkbox"><label><input type="checkbox"> Interface Terminology</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Reference Terminology</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Indicators</label></div>
+					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+				</div>
 			</div>
 
-			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Language</small></h4>
-			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
-				<div class="checkbox"><label><input type="checkbox"> English <em><small>[en]</small></em></label></div>
-				<div class="checkbox"><label><input type="checkbox"> French <em><small>[fr]</small></em></label></div>
-				<div class="checkbox"><label><input type="checkbox"> Spanish <em><small>[es]</small></em></label></div>
-				<div class="checkbox"><label><input type="checkbox"> Swahili <em><small>[sw]</small></em></label></div>
-				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			<div class="filter-group">
+				<div class="filter-group-header">Language</div>
+				<div class="filter-group-body">
+					<div class="checkbox"><label><input type="checkbox"> English <em><small>[en]</small></em></label></div>
+					<div class="checkbox"><label><input type="checkbox"> French <em><small>[fr]</small></em></label></div>
+					<div class="checkbox"><label><input type="checkbox"> Spanish <em><small>[es]</small></em></label></div>
+					<div class="checkbox"><label><input type="checkbox"> Swahili <em><small>[sw]</small></em></label></div>
+					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+				</div>
 			</div>
 
 	{% elif searchType == 'collections' %}
-			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Collection Type</small></h4>
-			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
-				<div class="checkbox"><label><input type="checkbox"> Dictionary Subset</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Value Set</label></div>
-				<div class="checkbox"><label><input type="checkbox"> ...</label></div>
-				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			<div class="filter-group">
+				<div class="filter-group-header">Collection Type</div>
+				<div class="filter-group-body">
+					<div class="checkbox"><label><input type="checkbox"> Dictionary Subset</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Value Set</label></div>
+					<div class="checkbox"><label><input type="checkbox"> ...</label></div>
+					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+				</div>
 			</div>
 
-			<h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Language</small></h4>
-			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
-				<div class="checkbox"><label><input type="checkbox"> English <em><small>[en]</small></em></label></div>
-				<div class="checkbox"><label><input type="checkbox"> French <em><small>[fr]</small></em></label></div>
-				<div class="checkbox"><label><input type="checkbox"> Spanish <em><small>[es]</small></em></label></div>
-				<div class="checkbox"><label><input type="checkbox"> Swahili <em><small>[sw]</small></em></label></div>
-				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			<div class="filter-group">
+				<div class="filter-group-header">Language</div>
+				<div class="filter-group-body">
+					<div class="checkbox"><label><input type="checkbox"> English <em><small>[en]</small></em></label></div>
+					<div class="checkbox"><label><input type="checkbox"> French <em><small>[fr]</small></em></label></div>
+					<div class="checkbox"><label><input type="checkbox"> Spanish <em><small>[es]</small></em></label></div>
+					<div class="checkbox"><label><input type="checkbox"> Swahili <em><small>[sw]</small></em></label></div>
+					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+				</div>
 			</div>
 
 	{% elif searchType == 'orgs' %}
-			<!--h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Location</small></h4>
-			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
-				<div class="checkbox"><label><input type="checkbox"> Africa</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Asia</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Australia</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Europe</label></div>
-				<div class="checkbox"><label><input type="checkbox"> North America</label></div>
-				<div class="checkbox"><label><input type="checkbox"> South America</label></div>
-				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			<!--div class="filter-group">
+				<div class="filter-group-header">Location</div>
+				<div class="filter-group-body">
+					<div class="checkbox"><label><input type="checkbox"> Africa</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Asia</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Australia</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Europe</label></div>
+					<div class="checkbox"><label><input type="checkbox"> North America</label></div>
+					<div class="checkbox"><label><input type="checkbox"> South America</label></div>
+					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+				</div>
 			</div-->
 
 	{% elif searchType == 'users' %}
-			<!--h4 style="border-bottom:1px solid #e5e5e5;padding-bottom:5px;margin-top:20px;"><small>Location</small></h4>
-			<div class="filter-group" style="padding-left:15px;padding-right:15px;">
-				<div class="checkbox"><label><input type="checkbox"> Africa</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Asia</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Australia</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Europe</label></div>
-				<div class="checkbox"><label><input type="checkbox"> North America</label></div>
-				<div class="checkbox"><label><input type="checkbox"> South America</label></div>
-				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			<!--div class="filter-group">
+				<div class="filter-group-header">Location</div>
+				<div class="filter-group-body">
+					<div class="checkbox"><label><input type="checkbox"> Africa</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Asia</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Australia</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Europe</label></div>
+					<div class="checkbox"><label><input type="checkbox"> North America</label></div>
+					<div class="checkbox"><label><input type="checkbox"> South America</label></div>
+					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+				</div>
 			</div-->
 
 
@@ -159,16 +164,16 @@
 <!-- Search Results -->
 
 {% for result in results %}
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
+		<div class="row row-search-result">
 
 	{% if searchType == 'concepts' %}
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+			<div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
 			</div>
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-tag search-result-icon"></span>
 			</div>
-			<div class="col-md-10">
+			<div class="col-md-10 search-result-col-content">
 				<h4>
 					<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</a>
 				</h4>
@@ -180,10 +185,10 @@
 			</div>
 
 	{% elif searchType == 'sources' %}
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-th-list" style="font-size:32pt;color:#e5e5e5;"></span>
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-th-list search-result-icon"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-11 search-result-col-content">
 				<h4>
 					<a href="{% url 'source' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.shortCode }}</a>
 				</h4>
@@ -194,10 +199,10 @@
 			</div>
 
 	{% elif searchType == 'collections' %}
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tags" style="font-size:32pt;color:#e5e5e5;"></span>
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-tags search-result-icon"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-11 search-result-col-content">
 				<h4>
 					<a href="{% url 'collection' %}" class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</a>
 				</h4>
@@ -211,12 +216,12 @@
 			</div>
 
 	{% elif searchType == 'orgs' %}
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-home" style="font-size:32pt;color:#e5e5e5;"></span>
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-home search-result-icon"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-11 search-result-col-content">
 				<h4>
-					<a href="{% url 'org' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.id }}</span></a>
+					<a href="{% url 'organization-detail' org=result.id %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.id }}</span></a>
 				</h4>
 				<p>
 					<span class="concept-name">{{ result.name }}</span><br />
@@ -226,10 +231,10 @@
 			</div>
 
 	{% elif searchType == 'users' %}
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-user" style="font-size:32pt;color:#e5e5e5;"></span>
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-user search-result-icon"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-11 search-result-col-content">
 				<h4>
 					<a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.username }}</a>
 				</h4>
@@ -251,14 +256,14 @@
 
 		<h4><small>Additional Static Examples:</small></h4>
 	{% if searchType == 'concepts' %}
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+		<div class="row row-search-result">
+			<div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
 			</div>
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-tag search-result-icon"></span>
 			</div>
-			<div class="col-md-10">
+			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;3</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -273,14 +278,14 @@
 					<small class="text-muted">Last Updated 6 years ago</small></p>
 			</div>
 		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
+		<div class="row row-search-result">
+			<div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
 			</div>
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-tag search-result-icon"></span>
 			</div>
-			<div class="col-md-10">
+			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;14</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -302,11 +307,11 @@
 		</div>
 
 	{% elif searchType == 'sources' %}
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-th-list" style="font-size:32pt;color:#e5e5e5;"></span>
+		<div class="row row-search-result">
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-th-list search-result-icon"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-11 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;12</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -319,11 +324,11 @@
 					<small class="text-muted">Last Updated 2 years ago</small></p>
 			</div>
 		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-th-list" style="font-size:32pt;color:#e5e5e5;"></span>
+		<div class="row row-search-result">
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-th-list search-result-icon"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-11 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;11</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -336,11 +341,11 @@
 					<small class="text-muted">Last Updated 3 weeks ago</small></p>
 			</div>
 		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-th-list" style="font-size:32pt;color:#e5e5e5;"></span>
+		<div class="row row-search-result">
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-th-list search-result-icon"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-11 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;72</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -355,11 +360,11 @@
 		</div>
 
 	{% elif searchType == 'collections' %}
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tags" style="font-size:32pt;color:#e5e5e5;"></span>
+		<div class="row row-search-result">
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-tags search-result-icon"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-11 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;4</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -374,11 +379,11 @@
 		</div>
 
 	{% elif searchType == 'orgs' %}
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-home" style="font-size:32pt;color:#e5e5e5;"></span>
+		<div class="row row-search-result">
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-home search-result-icon"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-11 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;1</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -387,17 +392,17 @@
 					<a href="#" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;0</a>
 				</div>
 				<h4>
-					<a href="{% url 'org' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</a>
+					<a href="{% url 'organization-detail' org='WHO' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</a>
 				</h4>
 				<p><span class="caption">World Health Organization</span><br />
 				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Geneva, Switzerland&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Created July 9, 2009</span></p>
 			</div>
 		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-home" style="font-size:32pt;color:#e5e5e5;"></span>
+		<div class="row row-search-result">
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-home search-result-icon"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-11 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;5</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -406,17 +411,17 @@
 					<a href="#" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;0</a>
 				</div>
 				<h4>
-					<a href="{% url 'org' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;IHTSDO</a>
+					<a href="{% url 'organization-detail' org='IHTSDO' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;IHTSDO</a>
 				</h4>
-				<p><span class="caption">International Health Terminology Standards Organization</span><br />
+				<p><span class="caption">International Health Terminology Standards Development Organization</span><br />
 				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Denmark&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Created August 17, 2012</span></p>
 			</div>
 		</div>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-home" style="font-size:32pt;color:#e5e5e5;"></span>
+		<div class="row row-search-result">
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-home search-result-icon"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-11 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;2</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -425,7 +430,7 @@
 					<a href="#" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;9</a>
 				</div>
 				<h4>
-					<a href="{% url 'org' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;CIEL</a>
+					<a href="{% url 'organization-detail' org='CIEL' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;CIEL</a>
 				</h4>
 				<p><span class="caption">Columbia University International eHealth Laboratory</span><br />
 				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;New York, USA&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Created January 1, 2006</span></p>
@@ -433,11 +438,11 @@
 		</div>
 
 	{% elif searchType == 'users' %}
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-user" style="font-size:32pt;color:#e5e5e5;"></span>
+		<div class="row row-search-result">
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-user search-result-icon"></span>
 			</div>
-			<div class="col-md-11">
+			<div class="col-md-11 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="#" title="Followers"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;2</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -453,13 +458,12 @@
 			</div>
 		</div>
 
-
 	{% endif %}	
 
 <!-- Pagination -->
 
 {% if results %}
-		<div class="row" style="text-align:center;">
+		<div class="row row-pagination">
 			<ul class="pagination">
 			  <li><a href="#">&laquo;</a></li>
 			  <li><a href="#">1</a></li>
