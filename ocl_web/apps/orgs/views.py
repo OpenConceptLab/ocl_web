@@ -37,24 +37,6 @@ class OrganizationDetailView(TemplateView):
         members_url = org['members_url']
         members = requests.get(members_url, headers=headers).json()
 
-        mock_members = [
-            {
-                "username": "johnnytest",
-                "name": "Johnny Test",
-                "url": "http://65.99.230.144/v1/users/johnnytest/"
-            },
-            {
-                "username": "bobbytest",
-                "name": "Bobby Test",
-                "url": "http://65.99.230.144/v1/users/bobbytest/"
-            },
-            {
-                "username": "paynetest2",
-                "name": "Jonathan Payne",
-                "url": "http://65.99.230.144/v1/users/paynetest2/"
-            }
-        ]
-
         mock_collections = [
             {
                 "type": "Collection",
@@ -117,8 +99,7 @@ class OrganizationDetailView(TemplateView):
         context['org'] = org
         context['sources'] = sources
         context['collections'] = mock_collections
-        context['members'] = mock_members
 #        context['collections'] = collections  # Uncomment to add the real collections (whenever the API is ready)
-#        context['members'] = members  # Uncomment to add the real collections (whenever the API is ready)
+        context['members'] = members  # Uncomment to add the real collections (whenever the API is ready)
 
         return context
