@@ -7,9 +7,17 @@
 	<div class="col-md-10">
 		<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-home"></span></div>
 		<div style="display:inline-block;padding-left:20px">
-			<h4><span class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;CIEL</span></h4>
-			<p>Columbia University International eHealth Laboratory<br />
-			<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;New York, USA&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Created January 1, 2006</span></p>
+			<h4><span class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ org.id }}</span></h4>
+			<p>
+				{{ org.name }}<br />
+				<span class="text-muted small">
+				{% if org.location %}
+					<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ org.location }}
+					&nbsp;&nbsp;&nbsp;
+				{% endif %}
+				<span class="glyphicon glyphicon-calendar"></span> Created {{ org.createdOn|date:"F j, Y" }} ({{ org.createdOn }})
+				</span>
+			</p>
 			<p><a href="#">More &blacktriangledown;</a></p>
 		</div>
         {% if request.GET.debug %}
