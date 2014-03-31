@@ -18,16 +18,19 @@
 				<span class="glyphicon glyphicon-calendar"></span> Created {{ org.createdOn|date:"F j, Y" }} ({{ org.createdOn }})
 				</span>
 			</p>
-			<p><a href="#">More &blacktriangledown;</a></p>
 			<div class="panel panel-default">
-				<div class="panel-heading">All Organization Fields:</div>
-				<div class="panel-body">
+				<div class="panel-heading">Organization Details: <span class="pull-right"><a href="#">&blacktriangleright;</a></span></div>
+				<div class="panel-body hidden">
+					<dl class="dl-horizontal">
 					{% for key, value in org.items %}
-					<div class="row">
-						<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">{{ key }}</div>
-						<div class="col-md-9">{{ value }}</div>
-					</div>
+						<!--div class="row">
+							<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">{{ key }}</div>
+							<div class="col-md-9">{{ value }}</div>
+						</div-->
+						<dt>{{ key }}</dt>
+  						<dd>{{ value }}</dd>
 					{% endfor %}
+					</dl>
 				</div>
 			</div> <!-- /panel -->
 		</div>
