@@ -84,6 +84,9 @@ urlpatterns = patterns('',
     url(r'^new_concept/$',
         TemplateView.as_view(template_name='pages/new_concept.html'),
         name="new_concept"),
+    url(r'^edit_source/$',
+        TemplateView.as_view(template_name='pages/edit_source.html'),
+        name="edit_source"),
 
 
     # Uncomment the next line to enable the admin:
