@@ -23,7 +23,16 @@ class HomeSearchView(TemplateView):
             'sources': '/v1/sources/',
             'collections': '/v1/collections/',
             'orgs': '/v1/orgs/',
-            'users': '/v1/users/'}
+            'users': '/v1/users/'
+        }
+
+        searchTypeNames = {
+            'concepts': 'concept',
+            'sources': 'source',
+            'collections': 'collection',
+            'orgs': 'organization',
+            'users': 'user'
+        }
 
         try:
             uri_path = SEARCH_TYPE_PATHS[self.request.GET['type']]
@@ -39,16 +48,23 @@ class HomeSearchView(TemplateView):
         headers = {'Authorization': auth_token}
         results = requests.get(full_path, headers=headers).json()
 
-        # Get full source details (since some required fields are not currently included in the list query)
+        # Get full source and collection details (since some required fields are not currently included in the list query)
         if (searchType == 'sources'):
             sources_detail = []
             for source in results:
-                source = requests.get(source['url'], headers=headers).json()
-                sources_detail.append(source)
+                s = requests.get(source['url'], headers=headers).json()
+                sources_detail.append(s)
             results = sources_detail
+        elif (searchType == 'collections'):
+            collections_detail = []
+            for collection in results:
+                c = requests.get(collection['url'], headers=headers).json()
+                collections_detail.append(c)
+            results = collections_detail
 
         # Add data to the context
         context['results'] = results
         context['searchType'] = searchType
+        context['searchTypeName'] = searchTypeNames[searchType]
 
         return context
