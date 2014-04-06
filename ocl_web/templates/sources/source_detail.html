@@ -98,13 +98,11 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<h4>We found 2,016 concept results in this source.</h4>
+				<h4>We found {{ concepts|length }} concepts in this source.</h4>
 			</div>
 		</div>
 
 <!-- Display source search results -->
-
-        {% if request.GET.debug %}<br /><pre>{{ concepts|pprint }}</pre>{% endif %}</li>
 
         {% for concept in concepts %}
 			<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
@@ -113,9 +111,11 @@
 				</div>
 				<div class="col-md-11">
 					<h4><a href="{% url 'concept-detail' org=source.owner source=source.id concept=concept.id %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ source.owner }} / {{ source.id }} / {{ concept.id }}</a></h4>
-					<p><span class="caption">{{ concept.displayName }}</span> <span class="small"><em>[{{ concept.displayLocale }}]</em></span><br />
-					<em>Class:</em> {{ concept.conceptClass }}, <em>Datatype:</em> {{ concept.datatype }}
+					<p>
+						<span class="caption">{{ concept.displayName }}</span> <span class="small"><em>[{{ concept.displayLocale }}]</em></span><br />
+						<em>Class:</em> {{ concept.conceptClass }}, <em>Datatype:</em> {{ concept.datatype }}
 					</p>
+					{% if request.GET.debug %}<pre>{{ concept|pprint }}</pre>{% endif %}
 				</div>
 			</div>
 		{% endfor %}
