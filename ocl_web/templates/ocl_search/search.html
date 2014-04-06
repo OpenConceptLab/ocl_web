@@ -174,10 +174,20 @@
 				<span class="glyphicon glyphicon-tag search-result-icon"></span>
 			</div>
 			<div class="col-md-10 search-result-col-content">
+				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;?</a>
+				</div>
 				<h4><a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</a></h4>
 				<p>
 					<span class="caption">{{ result.displayName }} <small><em>[{{ result.displayLocale }}]</em></small></span><br />
-					<em>Class:</em> {{ result.conceptClass }}, <em>Datatype:</em> {{ result.datatype }}
+					<em>Class:</em> {{ result.conceptClass }}, <em>Datatype:</em> {{ result.datatype }}<br />
+					<em>Collections:</em>
+						<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Fake / Bogus Value Set</a>
+						&nbsp;&nbsp;
+						<br />
+					{% if result.updatedOn %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -187,9 +197,15 @@
 				<span class="glyphicon glyphicon-th-list search-result-icon"></span>
 			</div>
 			<div class="col-md-11 search-result-col-content">
+				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;?</a>
+				</div>
 				<h4><a href="{% url 'source-detail' org=result.owner source=result.id %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.shortCode }}</a></h4>
 				<p>
 					<span class="caption">{{ result.name }}</span>
+					{% if result.updatedOn %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -199,6 +215,11 @@
 				<span class="glyphicon glyphicon-tags search-result-icon"></span>
 			</div>
 			<div class="col-md-11 search-result-col-content">
+				<div class="pull-right small text-muted" style="padding-top:12px;">
+					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" title="Concepts in collection"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;?</a>
+				</div>
 				<h4><a href="{% url 'collection' %}" class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.shortCode }}</a></h4>
 				<p>
 					<span class="concept-name">{{ result.name }}</span>
@@ -215,12 +236,20 @@
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="#" title="Members in organization"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.members }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="#" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.publicSources }}</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;?</a>
 				</div>
 				<h4><a href="{% url 'organization-detail' org=result.id %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.id }}</span></a></h4>
 				<p>
 					<span class="concept-name">{{ result.name }}</span><br />
-					<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created {{ result.createdOn }}</span>
+					<span class="text-muted small">
+						<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;[Location]
+						&nbsp;&nbsp;&nbsp;
+						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created {{ result.createdOn }}
+					</span>
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -233,12 +262,20 @@
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="#" title="Organizations"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.orgs }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" title="Followers"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="#" title="Public sources owned by user"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.publicSources }}</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" title="Public collections owned by user"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;?</a>
 				</div>
 				<h4><a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.username }}</a></h4>
 				<p>
 					<span class="caption">{{ result.name }}</span><br />
-					<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined {{ result.createdOn }}</span>
+					<span class="text-muted small">
+						<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;[Location]
+						&nbsp;&nbsp;&nbsp;
+						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined {{ result.createdOn }}
+					</span>
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -248,185 +285,6 @@
 {% empty %}
 
 {% endfor %}
-
-
-<!-- Additional Example Results -->
-
-		<h4><small>Additional Static Examples:</small></h4>
-	{% if searchType == 'concepts' %}
-		<div class="row row-search-result">
-			<div class="col-md-1 search-result-col-checkbox">
-				<input type="checkbox" />
-			</div>
-			<div class="col-md-1 search-result-col-icon">
-				<span class="glyphicon glyphicon-tag search-result-icon"></span>
-			</div>
-			<div class="col-md-10 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;3</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;1</a>
-				</div>
-				<h4><a href="{% url 'source' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;CIEL / CIEL / 1427</a></h4>
-				<p><span class="caption">Last Menstrual Period</span> <small><em>[en]</em></small><br />
-					<em>Class:</em> Finding, <em>Datatype:</em> Date<br />
-					<em>Collections:</em> 
-						<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;MCL / MCH Core Dataset</a>
-						<br />
-					<small class="text-muted">Last Updated 6 years ago</small></p>
-			</div>
-		</div>
-		<div class="row row-search-result">
-			<div class="col-md-1 search-result-col-checkbox">
-				<input type="checkbox" />
-			</div>
-			<div class="col-md-1 search-result-col-icon">
-				<span class="glyphicon glyphicon-tag search-result-icon"></span>
-			</div>
-			<div class="col-md-10 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;14</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;12</a>
-				</div>
-				<h4>
-					<a href="{% url 'source' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;IHTSDO / SNOMED CT / 364325004</a>
-				</h4>
-				<p><span class="caption">Parity</span> <small><em>[en]</em></small><br />
-					<em>Class:</em> Finding, <em>Datatype:</em> Numeric<br />
-					<em>Collections:</em>
-						<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;MCL / MCH Core Dataset</a>&nbsp;&nbsp;
-						<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Rwanda MOH / Rwanda MCH</a>&nbsp;&nbsp;
-						<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;paynejd / Community-MCH</a>&nbsp;&nbsp;
-						...
-						<br />
-					<small class="text-muted">Last Updated 2 years ago</small></p>
-			</div>
-		</div>
-
-	{% elif searchType == 'sources' %}
-		<div class="row row-search-result">
-			<div class="col-md-1 search-result-col-icon">
-				<span class="glyphicon glyphicon-th-list search-result-icon"></span>
-			</div>
-			<div class="col-md-11 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;11</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#"><span class="glyphicon glyphicon-tag" title="Concepts in source"></span>&nbsp;&nbsp;40,200</a>
-				</div>
-				<h4>
-					<a href="{% url 'source-detail' org='CIEL' source='CIEL' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;CIEL / CIEL</a>
-				</h4>
-				<p><span class="caption">Columbia University International eHealth Laboratory</span><br />
-					<small class="text-muted">Last Updated 3 weeks ago</small></p>
-			</div>
-		</div>
-		<div class="row row-search-result">
-			<div class="col-md-1 search-result-col-icon">
-				<span class="glyphicon glyphicon-th-list search-result-icon"></span>
-			</div>
-			<div class="col-md-11 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;72</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#"><span class="glyphicon glyphicon-tag" title="Concepts in source"></span>&nbsp;&nbsp;120,406</a>
-				</div>
-				<h4>
-					<a href="{% url 'source-detail' org='IHTSDO' source='SNOMED-CT' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;IHTSDO / SNOMED-CT</a>
-				</h4>
-				<p><span class="caption">Systematized Nomenclature of Medicine: Clinical Terms</span><br />
-					<small class="text-muted">Last Updated 1 year ago</small></p>
-			</div>
-		</div>
-
-	{% elif searchType == 'collections' %}
-		<div class="row row-search-result">
-			<div class="col-md-1 search-result-col-icon">
-				<span class="glyphicon glyphicon-tags search-result-icon"></span>
-			</div>
-			<div class="col-md-11 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;4</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Concepts in collection"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;122</a>
-				</div>
-				<h4>
-					<a href="{% url 'collection' %}" class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;paynejd / Community-MCH</a>
-				</h4>
-				<p><span class="caption">Community Maternal and Child Health Core Dataset</span><br />
-				<span class="text-muted small">Last Updated August 12, 2012</span></p>
-			</div>
-		</div>
-
-	{% elif searchType == 'orgs' %}
-		<div class="row row-search-result">
-			<div class="col-md-1 search-result-col-icon">
-				<span class="glyphicon glyphicon-home search-result-icon"></span>
-			</div>
-			<div class="col-md-11 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Members"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;4</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;5</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;1</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;0</a>
-				</div>
-				<h4>
-					<a href="{% url 'organization-detail' org='IHTSDO' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;IHTSDO</a>
-				</h4>
-				<p><span class="caption">International Health Terminology Standards Development Organization</span><br />
-				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Denmark&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Created August 17, 2012</span></p>
-			</div>
-		</div>
-		<div class="row row-search-result">
-			<div class="col-md-1 search-result-col-icon">
-				<span class="glyphicon glyphicon-home search-result-icon"></span>
-			</div>
-			<div class="col-md-11 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Members"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;2</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;2</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;2</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;9</a>
-				</div>
-				<h4>
-					<a href="{% url 'organization-detail' org='CIEL' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;CIEL</a>
-				</h4>
-				<p><span class="caption">Columbia University International eHealth Laboratory</span><br />
-				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;New York, USA&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Created January 1, 2006</span></p>
-			</div>
-		</div>
-
-	{% elif searchType == 'users' %}
-		<div class="row row-search-result">
-			<div class="col-md-1 search-result-col-icon">
-				<span class="glyphicon glyphicon-user search-result-icon"></span>
-			</div>
-			<div class="col-md-11 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Organizations"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;3</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Followers"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;2</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Public sources owned by user"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;2</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Public collections owned by user"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;12</a>
-				</div>
-				<h4>
-					<a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;paynejd</a>
-				</h4>
-				<p><span class="caption">Jonathan Payne</span><br />
-				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Boston, MA, USA&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined July 9, 2009</span></p>
-			</div>
-		</div>
-
-	{% endif %}	
 
 <!-- Pagination -->
 
