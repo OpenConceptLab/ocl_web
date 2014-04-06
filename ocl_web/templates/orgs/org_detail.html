@@ -78,7 +78,7 @@
 			</div>
 			<div class="col-md-11">
 				<h4>
-					<a href="{% url 'source' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ org.id }} / {{ source.shortCode }}</a>
+					<a href="{% url 'source-detail' org=source.owner source=source.id %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ org.id }} / {{ source.shortCode }}</a>
 				</h4>
 				<p>
 					<span class="caption">{{ source.name }}</span>

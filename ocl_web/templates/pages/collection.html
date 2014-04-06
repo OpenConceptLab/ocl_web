@@ -9,7 +9,7 @@
 	<div class="col-md-10">
 		<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tags"></span></div>
 		<div style="display:inline-block;padding-left:20px">
-			<h4><a href="{% url "user" %}"><span class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;paynejd</span></a> / <span class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Community-MCH</span></h4>
+			<h4><a href="{% url "user" %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;paynejd</a> / <span class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Community-MCH</span></h4>
 			<p class="caption">Community Maternal and Child Health Core Dataset<br />
 			<span class="text-muted">Last Updated August 12, 2012</span></p>
 			<p><a href="#">More &blacktriangledown;</a></p>
@@ -18,21 +18,31 @@
 </div>
 <div class="row">
 	<div class="col-md-3">
-		<h3>Concept Class</h3>
-		<ul class="nav nav-pills nav-stacked">
-		  <li><a href="#">Anatomy <span class="pull-right">12</span></a></li>
-		  <li><a href="#">Diagnosis <span class="pull-right">6</span></a></li>
-		  <li><a href="#">Drug <span class="pull-right">14</span></a></li>
-		  <li><a href="#">Finding <span class="pull-right">3</span></a></li>
-		  <li><a href="#">Symptom <span class="pull-right">2</span></a></li>
-		</ul>
-		<h3>Datatype</h3>
-		<ul class="nav nav-pills nav-stacked">
-		  <li><a href="#">Numeric <span class="pull-right">12</span></a></li>
-		  <li><a href="#">Text <span class="pull-right">6</span></a></li>
-		  <li><a href="#">Coded <span class="pull-right">14</span></a></li>
-		  <li><a href="#">N/A <span class="pull-right">3</span></a></li>
-		</ul>
+		<div class="filter-group">
+			<div class="filter-group-header">Concept Class</div>
+			<div class="filter-group-body">
+				<div class="checkbox"><label><input type="checkbox"> Anatomy</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Diagnosis</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Drug</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Finding</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Symptom</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Test</label></div>
+				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			</div>
+		</div>
+
+		<div class="filter-group">
+			<div class="filter-group-header">Datatypes</div>
+			<div class="filter-group-body">
+				<div class="checkbox"><label><input type="checkbox"> Boolean</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Coded</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Date</label></div>
+				<div class="checkbox"><label><input type="checkbox"> N/A</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Numeric</label></div>
+				<div class="checkbox"><label><input type="checkbox"> Text</label></div>
+				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+			</div>
+		</div>
 	</div>
 	<div class="col-md-9">
 		<div class="row" style="padding-top:20px;">
