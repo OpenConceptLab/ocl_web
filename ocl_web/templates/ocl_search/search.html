@@ -190,7 +190,7 @@
 			</div>
 			<div class="col-md-11 search-result-col-content">
 				<h4>
-					<a href="{% url 'source' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.shortCode }}</a>
+					<a href="{% url 'source-detail' org=result.owner source=result.id %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.shortCode }}</a>
 				</h4>
 				<p>
 					<span class="caption">{{ result.name }}</span>
@@ -313,29 +313,12 @@
 			</div>
 			<div class="col-md-11 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;12</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#"><span class="glyphicon glyphicon-tag" title="Concepts in source"></span>&nbsp;&nbsp;25,720</a>
-				</div>
-				<h4>
-					<a href="{% url 'source' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;WHO / ICD-10</a>
-				</h4>
-				<p><span class="caption">International Classification of Diseases, 10th Edition</span><br />
-					<small class="text-muted">Last Updated 2 years ago</small></p>
-			</div>
-		</div>
-		<div class="row row-search-result">
-			<div class="col-md-1 search-result-col-icon">
-				<span class="glyphicon glyphicon-th-list search-result-icon"></span>
-			</div>
-			<div class="col-md-11 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;11</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="#"><span class="glyphicon glyphicon-tag" title="Concepts in source"></span>&nbsp;&nbsp;40,200</a>
 				</div>
 				<h4>
-					<a href="{% url 'source' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;CIEL / CIEL</a>
+					<a href="{% url 'source-detail' org='CIEL' source='CIEL' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;CIEL / CIEL</a>
 				</h4>
 				<p><span class="caption">Columbia University International eHealth Laboratory</span><br />
 					<small class="text-muted">Last Updated 3 weeks ago</small></p>
@@ -352,9 +335,9 @@
 					<a href="#"><span class="glyphicon glyphicon-tag" title="Concepts in source"></span>&nbsp;&nbsp;120,406</a>
 				</div>
 				<h4>
-					<a href="{% url 'source' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;IHTSDO / SNOMED CT</a>
+					<a href="{% url 'source-detail' org='IHTSDO' source='SNOMED-CT' %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;IHTSDO / SNOMED-CT</a>
 				</h4>
-				<p><span class="caption">Systematized Nomenclature of Medicine Clinical Terms</span><br />
+				<p><span class="caption">Systematized Nomenclature of Medicine: Clinical Terms</span><br />
 					<small class="text-muted">Last Updated 1 year ago</small></p>
 			</div>
 		</div>
@@ -379,25 +362,6 @@
 		</div>
 
 	{% elif searchType == 'orgs' %}
-		<div class="row row-search-result">
-			<div class="col-md-1 search-result-col-icon">
-				<span class="glyphicon glyphicon-home search-result-icon"></span>
-			</div>
-			<div class="col-md-11 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;1</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;4</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;0</a>
-				</div>
-				<h4>
-					<a href="{% url 'organization-detail' org='WHO' %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;WHO</a>
-				</h4>
-				<p><span class="caption">World Health Organization</span><br />
-				<span class="text-muted small"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Geneva, Switzerland&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Created July 9, 2009</span></p>
-			</div>
-		</div>
 		<div class="row row-search-result">
 			<div class="col-md-1 search-result-col-icon">
 				<span class="glyphicon glyphicon-home search-result-icon"></span>
