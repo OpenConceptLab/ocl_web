@@ -20,8 +20,8 @@ class HomeSearchView(TemplateView):
 
         SEARCH_TYPE_PATHS = {
             'concepts': '/v1/concepts/',
-            'sources': '/v1/orgs/WHO/sources/',
-            'collections': '/v1/orgs/WHO/collections/',
+            'sources': '/v1/sources/',
+            'collections': '/v1/collections/',
             'orgs': '/v1/orgs/',
             'users': '/v1/users/'}
 
@@ -32,13 +32,23 @@ class HomeSearchView(TemplateView):
             uri_path = SEARCH_TYPE_PATHS['concepts']
             searchType = 'concepts'
 
+        # Perform the search using the API
         host = settings.API_HOST
         auth_token = settings.API_TOKEN
         full_path = host + uri_path
         headers = {'Authorization': auth_token}
+        results = requests.get(full_path, headers=headers).json()
 
-        results = requests.get(full_path, headers=headers)
-        context['results'] = results.json()
+        # Get full source details (since some required fields are not currently included in the list query)
+        if (searchType == 'sources'):
+            sources_detail = []
+            for source in results:
+                source = requests.get(source['url'], headers=headers).json()
+                sources_detail.append(source)
+            results = sources_detail
+
+        # Add data to the context
+        context['results'] = results
         context['searchType'] = searchType
 
         return context

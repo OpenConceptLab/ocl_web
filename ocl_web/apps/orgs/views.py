@@ -14,7 +14,9 @@ class OrganizationDetailView(TemplateView):
         Final context
         -------------
         context['org'] -- The org.
-        context['concepts'] -- All the concepts from the org.
+        context['sources']
+        context['collections']
+        context['members']
 
         """
 
@@ -28,14 +30,27 @@ class OrganizationDetailView(TemplateView):
         org_url = host + org_path
         headers = {'Authorization': auth_token}
 
+        # Get org details from API
         org = requests.get(org_url, headers=headers).json()
+
+        # Get sources owned by the org
         sources_url = org['sources_url']
         sources = requests.get(sources_url, headers=headers).json()
+
+        # Get collections owned by the org
         collections_path = "/v1/orgs/%s/collections/" % kwargs['org']  # The org object should have this in the future.
         collections_url = host + collections_path
         collections = requests.get(collections_url, headers=headers).json()
+
+        # Get members of the org
         members_url = org['members_url']
         members = requests.get(members_url, headers=headers).json()
+
+        # Get additional source details (since currently not included in the list query)
+        sources_detail = []
+        for source in sources:
+            source = requests.get(source['url'], headers=headers).json()
+            sources_detail.append(source)
 
         mock_collections = [
             {
@@ -97,9 +112,10 @@ class OrganizationDetailView(TemplateView):
         ]
 
         context['org'] = org
-        context['sources'] = sources
+#        context['sources'] = sources
+        context['sources'] = sources_detail
         context['collections'] = mock_collections
-#        context['collections'] = collections  # Uncomment to add the real collections (whenever the API is ready)
+#       context['collections'] = collections  # Uncomment to add the real collections (whenever the API is ready)
         context['members'] = members  # Uncomment to add the real collections (whenever the API is ready)
 
         return context
