@@ -154,9 +154,9 @@
 				    <li><a href="#">Something else here</a></li>
 				  </ul>
 				</div>
-				<h4>We found {{ results|length }} {{ searchType }}.</h4>
+				<h4>We found {{ results|length }} {{ searchTypeName }}{{ results|length|pluralize }}.</h4>
 {% else %}
-				<h4>We found 0 {{ searchType }}.</h4>
+				<h4>We found 0 {{ searchTypeName }}{{ 0|pluralize }}.</h4>
 {% endif %}
 			</div>
 		</div>
@@ -204,12 +204,11 @@
 			</div>
 			<div class="col-md-11 search-result-col-content">
 				<h4>
-					<a href="{% url 'collection' %}" class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</a>
+					<a href="{% url 'collection' %}" class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.shortCode }}</a>
 				</h4>
 				<p>
-					<span class="concept-name">{{ result.displayName }} <em>[{{ result.displayLocale }}]</em></span><br />
-					<em>Class:</em> {{ result.conceptClass }}, <em>Datatype:</em> {{ result.datatype }}
-					{% if result.lastUpdated %}<br /><span class="text-muted small">{{ result.lastUpdated }}</span>{% endif %}
+					<span class="concept-name">{{ result.name }}</span>
+					{% if result.updatedOn %}<br /><span class="text-muted small">Last Updated {{ result.updatedOn }}</span>{% endif %}
 				</p>
 
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
