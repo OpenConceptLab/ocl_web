@@ -18,6 +18,7 @@ class HomeSearchView(TemplateView):
 
         context = super(HomeSearchView, self).get_context_data(*args, **kwargs)
 
+        # Resolves search type to the API path
         SEARCH_TYPE_PATHS = {
             'concepts': '/v1/concepts/',
             'sources': '/v1/sources/',
@@ -26,6 +27,7 @@ class HomeSearchView(TemplateView):
             'users': '/v1/users/'
         }
 
+        # Resolves search type to the English singular word form
         searchTypeNames = {
             'concepts': 'concept',
             'sources': 'source',
@@ -34,6 +36,7 @@ class HomeSearchView(TemplateView):
             'users': 'user'
         }
 
+        # Default search type to 'concepts' if not valid
         try:
             uri_path = SEARCH_TYPE_PATHS[self.request.GET['type']]
             searchType = self.request.GET['type']
@@ -48,7 +51,8 @@ class HomeSearchView(TemplateView):
         headers = {'Authorization': auth_token}
         results = requests.get(full_path, headers=headers).json()
 
-        # Get full source and collection details (since some required fields are not currently included in the list query)
+        # Load full resource details (since many required fields are not currently included in the list query)
+        # NOTE: This is a temporary fix until the API supports field selection as a GET parameter
         if (searchType in ['sources', 'collections', 'orgs', 'users']):
             results_detail = []
             for result_summary in results:
