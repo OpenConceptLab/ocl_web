@@ -49,18 +49,12 @@ class HomeSearchView(TemplateView):
         results = requests.get(full_path, headers=headers).json()
 
         # Get full source and collection details (since some required fields are not currently included in the list query)
-        if (searchType == 'sources'):
-            sources_detail = []
-            for source in results:
-                s = requests.get(source['url'], headers=headers).json()
-                sources_detail.append(s)
-            results = sources_detail
-        elif (searchType == 'collections'):
-            collections_detail = []
-            for collection in results:
-                c = requests.get(collection['url'], headers=headers).json()
-                collections_detail.append(c)
-            results = collections_detail
+        if (searchType in ['sources', 'collections', 'orgs', 'users']):
+            results_detail = []
+            for result_summary in results:
+                result_detail = requests.get(result_summary['url'], headers=headers).json()
+                results_detail.append(result_detail)
+            results = results_detail
 
         # Add data to the context
         context['results'] = results
