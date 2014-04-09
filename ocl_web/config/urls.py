@@ -100,7 +100,7 @@ urlpatterns = patterns('',
     url(r'^avatar/', include('avatar.urls')),
 
     # List
-    url(r'^orgs/', include('apps.orgs.urls')),
+    url(r'^orgs/', include('apps.orgs.urls', namespace="orgs")),
 
     # Your stuff: custom urls go here
 

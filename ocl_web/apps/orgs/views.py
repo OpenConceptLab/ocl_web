@@ -1,6 +1,8 @@
 from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
 from django.conf import settings
 import requests
+from .forms import OrganizationCreateForm
 
 
 class OrganizationDetailView(TemplateView):
@@ -13,7 +15,7 @@ class OrganizationDetailView(TemplateView):
 
         Final context
         -------------
-        context['org'] -- The org.
+        context['org']
         context['sources']
         context['collections']
         context['members']
@@ -23,7 +25,8 @@ class OrganizationDetailView(TemplateView):
         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
 
         # TODO:  This request patten is duplicated across views.  Figure out how to
-        # make DRY.
+        # make DRY:  utils.ocl_requests.get()
+
         host = settings.API_HOST
         auth_token = settings.API_TOKEN
         org_path = "/v1/orgs/%s" % kwargs['org']
@@ -119,3 +122,11 @@ class OrganizationDetailView(TemplateView):
         context['members'] = members  # Uncomment to add the real collections (whenever the API is ready)
 
         return context
+
+class OrganizationCreateView(FormView):
+
+    form_class = OrganizationCreateForm
+    template_name = "orgs/org_create.html"
+
+    def form_valid(self, form, *args, **kwargs):
+        pass
