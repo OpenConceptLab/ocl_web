@@ -1,3 +1,14 @@
+# Python
+import os
+
+# Django
+from django.conf import settings
+
+# Third Party
+import requests
+import simplejson as json
+
+# Ours
 from api_resource import ApiResource
 from collection import Collection
 from concept import Concept
@@ -36,3 +47,51 @@ def object_hooker(dct):
             # handle error - Class is not defined
             pass
     return dct
+
+
+api_key = os.environ.get('OCL_API_TOKEN', None)
+host = settings.API_HOST
+
+
+class APIRequestor(object):
+
+    def __init__(self, api_key=api_key):
+        self.api_key = api_key
+        self.headers = {'Authorization': 'Token %s' % api_key}
+        self.headers['Content-Type'] = 'application/json'
+        self.host = host
+
+    def instance_url(self, cls):
+
+        return '/v1/%ss/' % cls.__name__.lower()
+
+    def post(self, url, params):
+
+        json_params = json.dumps(params)
+        import pdb; pdb.set_trace()
+        return requests.post(self.host + url, params=json_params, headers=self.headers)
+
+
+class Org(object):
+
+    @classmethod
+    def create(cls, short_name, full_name, website):
+
+        requestor = APIRequestor(api_key=api_key)
+        url = requestor.instance_url(cls)
+        results = requestor.post(
+            url,
+            {'id': short_name,
+             'name': full_name,
+             'website': website})
+
+        return results
+
+        # Return the org
+        # Return the response object as Python
+
+
+
+
+
+

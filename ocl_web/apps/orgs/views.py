@@ -1,8 +1,10 @@
+from django.conf import settings
+from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
-from django.conf import settings
 import requests
 from .forms import OrganizationCreateForm
+from libs import ocl
 
 
 class OrganizationDetailView(TemplateView):
@@ -129,4 +131,16 @@ class OrganizationCreateView(FormView):
     template_name = "orgs/org_create.html"
 
     def form_valid(self, form, *args, **kwargs):
-        pass
+
+        results = ocl.Org.create(form.cleaned_data['short_name'],
+                       form.cleaned_data['full_name'],
+                       form.cleaned_data['website'])
+
+        if results.ok:
+            return redirect("form-success")
+
+        import pdb; pdb.set_trace()
+        # Figure out why things went wrong
+        # Tell the user by raising form_invalid
+        # Probably just need to pass the message on
+
