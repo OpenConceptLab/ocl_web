@@ -4,10 +4,10 @@
     <a class="navbar-brand" href="{% url 'home'%}"><img src="{% static 'images/ocl-logo.png' %}" height="40" /></a>
     <form class="navbar-form navbar-left" role="search" action="{% url 'search'%}" method="get">
       <div class="input-group input-group-sm">
-        <input name="q" type="text" class="form-control" placeholder="Search OCL">
-         <span class="input-group-btn">
-        <button class="btn btn-default" type="submit">Search</button>
-      </span>
+        <input name="q" type="text" class="form-control" placeholder="Search OCL" />
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+        </span>
       </div>
     </form>
     <ul class="nav navbar-nav pull-right">

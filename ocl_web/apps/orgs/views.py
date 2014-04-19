@@ -46,75 +46,20 @@ class OrganizationDetailView(TemplateView):
         members_url = org['members_url']
         members = requests.get(members_url, headers=headers).json()
 
-        # Get additional source details (since currently not included in the list query)
+        # Get additional details for sources and collections (since currently not included in the list query)
         sources_detail = []
         for source in sources:
             source = requests.get(source['url'], headers=headers).json()
             sources_detail.append(source)
-
-        mock_collections = [
-            {
-                "type": "Collection",
-                "uuid": "8d492ee0-c2cc-11de-8d13-0010c6dffd0f",
-                "id": "Community-MCH",
-
-                "shortCode": "Community-MCH",
-                "name": "Community-MCH Core Dataset",
-                "fullName": "Community Maternal-Child Health Core Dataset",
-                "publicAccess": "View",
-                "supportedLocales": "en,es",
-                "website": "",
-                "description": "",
-
-                "owner": "MCL",
-                "ownerType": "organization",
-                "ownerUrl": "https://api.openconceptlab.org/v1/orgs/MCL",
-
-                "url": "https://www.openconceptlab.org/v1/orgs/MCL/collections/Community-MCH",
-                "versionsUrl": "https://www.openconceptlab.org/v1/orgs/MCL/collections/Community-MCH/versions",
-                "conceptsUrl": "https://www.openconceptlab.org/v1/orgs/MCL/collections/Community-MCH/concepts",
-
-                "versions": 4,
-                "activeConcepts": 92,
-                "stars": 17,
-
-                "createdOn": "2008-01-14T04:33:35Z",
-                "updatedOn": "2008-02-18T09:10:16Z"
-            },
-            {
-                "type": "Collection",
-                "uuid": "8d492ee0-c2cc-11de-8d13-0010c6dffd0f",
-                "id": "Community-MCH",
-
-                "shortCode": "Community-MCH",
-                "name": "Community-MCH Core Dataset",
-                "fullName": "Community Maternal-Child Health Core Dataset",
-                "publicAccess": "View",
-                "supportedLocales": "en,es",
-                "website": "",
-                "description": "",
-
-                "owner": "MCL",
-                "ownerType": "organization",
-                "ownerUrl": "https://api.openconceptlab.org/v1/orgs/MCL",
-
-                "url": "https://www.openconceptlab.org/v1/orgs/MCL/collections/Community-MCH",
-                "versionsUrl": "https://www.openconceptlab.org/v1/orgs/MCL/collections/Community-MCH/versions",
-                "conceptsUrl": "https://www.openconceptlab.org/v1/orgs/MCL/collections/Community-MCH/concepts",
-
-                "versions": 4,
-                "activeConcepts": 92,
-                "stars": 17,
-
-                "createdOn": "2008-01-14T04:33:35Z",
-                "updatedOn": "2008-02-18T09:10:16Z"
-            }
-        ]
+        collections_detail = []
+        for collection in collections:
+            collection = requests.get(collection['url'], headers=headers).json()
+            collections_detail.append(collection)
 
         context['org'] = org
-#        context['sources'] = sources
         context['sources'] = sources_detail
-        context['collections'] = mock_collections
+        context['collections'] = collections_detail
+#       context['sources'] = sources
 #       context['collections'] = collections  # Uncomment to add the real collections (whenever the API is ready)
         context['members'] = members  # Uncomment to add the real collections (whenever the API is ready)
 

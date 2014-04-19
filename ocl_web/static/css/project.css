@@ -139,3 +139,23 @@ form div.input-group {
   padding: 5px;
   font-size: 10pt;
 }
+
+.concept-label {
+}
+.concept-label .concept-label-id {
+  display: inline;padding: .2em .6em .3em .6em;font-size: 75%;font-weight: 700;line-height: 1;color: #fff;text-align: center;
+  white-space: nowrap;vertical-align: baseline;border-radius: .25em 0 0 .25em;background-color: #428bca;
+}
+.concept-label .concept-label-name {
+  display: inline;padding: .2em .6em .3em .6em;font-size: 75%;font-weight: 200;line-height: 1;color: #fff;text-align: center;
+  white-space: nowrap;vertical-align: baseline;border-radius: 0 .25em .25em 0;background-color: #eee;color: Black;
+}
+
+
+.org-header {
+  background-color:rgb(252,252,252);
+  padding-top:20px;
+  padding-bottom:20px;
+  border-bottom:1px solid #e5e5e5;
+  margin-bottom:20px;
+}
