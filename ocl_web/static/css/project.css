@@ -159,3 +159,7 @@ form div.input-group {
   border-bottom:1px solid #e5e5e5;
   margin-bottom:20px;
 }
+
+.ocl-nav-menu li a {
+  font-size: 10pt;
+}
