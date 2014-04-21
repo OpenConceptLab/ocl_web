@@ -152,7 +152,9 @@ form div.input-group {
 }
 
 
-.org-header {
+.org-header,
+.source-header 
+{
   background-color:rgb(252,252,252);
   padding-top:20px;
   padding-bottom:20px;
