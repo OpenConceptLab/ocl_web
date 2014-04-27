@@ -1,146 +1,199 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block content-no-container %}
 
-<div class="row" style="border-bottom:1px solid #e5e5e5;padding-top:20px;padding-bottom:20px;">
-	<div class="col-md-2"></div>
-	<div class="col-md-10">
-		<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-home"></span></div>
-		<div style="display:inline-block;padding-left:20px">
-			<h4><span class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ org.id }}</span></h4>
-			<p>
-				{{ org.name }}<br />
-				<span class="text-muted small">
-				{% if org.location %}
-					<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ org.location }}
-					&nbsp;&nbsp;&nbsp;
+<header class="org-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8">
+
+				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-home"></span></div>
+				<div style="display:inline-block;padding-left:20px">
+					<h3>
+						<span class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ org.id }}</span>
+						<a href="#" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
+					</h3>
+					<p>
+						<h4>{{ org.name }}</h4>
+						<span class="text-muted small">
+						{% if org.location %}
+							<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ org.location }}
+							&nbsp;&nbsp;&nbsp;
+						{% endif %}
+						<span class="glyphicon glyphicon-calendar"></span> Created {{ org.createdOn|date:"F j, Y" }} ({{ org.createdOn }})
+						</span>
+					</p>
+				</div>
+
+				{% if request.GET.debug %}
+				<p>
+				  Org: <br /><pre>{{ org|pprint }}</pre>
+				  Sources: <br /><pre>{{ sources|pprint }}</pre>
+				  Collections: <br /><pre>{{ collections|pprint }}</pre>
+				  Members: <br /><pre>{{ members|pprint }}</pre>
+				</p>
 				{% endif %}
-				<span class="glyphicon glyphicon-calendar"></span> Created {{ org.createdOn|date:"F j, Y" }} ({{ org.createdOn }})
-				</span>
-			</p>
+
+			</div> <!-- /col-md-8 -->
+		</div> <!-- /row -->
+	</div> <!-- /container -->
+</header>
+
+<!-- Start content section of org -->
+
+<div class="container">
+	<div class="row">
+
+<!-- Listing of sources and collections -->
+
+		<div class="col-md-8">
+
+<!-- Sort / filter -->
+
+			<div class="row" style="margin-bottom:20px;">
+				<div class="col-md-12">
+
+					<div class="btn-group pull-right">
+					  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+						<span class="text-muted">Sort:</span> <strong>Best Match</strong> <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu" role="menu">
+						<li><a href="#">Best Match</a></li>
+						<li><a href="#">Another sort</a></li>
+						<li><a href="#">Something else here</a></li>
+					  </ul>
+					</div>
+
+					<form class="form-inline">
+						<div class="form-group">
+							<div class="btn-group">
+							  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+								<span class="text-muted">Filter:</span> <strong>None</strong> <span class="caret"></span>
+							  </button>
+							  <ul class="dropdown-menu" role="menu">
+								<li><a href="#">Public</a></li>
+								<li><a href="#">Private</a></li>
+								<li><a href="#">Sources</a></li>
+								<li><a href="#">Collections</a></li>
+							  </ul>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="input-group input-group-sm">
+								<input name="f" id="resourceFilter" type="text" class="form-control" placeholder="Filter Resources" />
+								<span class="input-group-btn">
+									<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+								</span>
+							</div>
+						</div>
+					</form>
+
+				</div>
+			</div> <!-- /row -->
+
+<!-- Display sources that belong to this org -->
+
+		{% for result in sources %}
+			<div class="row row-search-result">
+				<div class="col-md-1 search-result-col-icon">
+					<span class="glyphicon glyphicon-th-list search-result-icon"></span>
+				</div>
+				<div class="col-md-11 search-result-col-content">
+					<div class="pull-right small text-muted" style="padding-top:12px;">
+						<a href="{% url 'source-detail' org=result.owner source=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="{% url 'source-detail' org=result.owner source=result.id %}#concepts" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;?</a>
+					</div>
+					<h4><a href="{% url 'source-detail' org=result.owner source=result.id %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.shortCode }}</a></h4>
+					<p>
+						<span class="caption">{{ result.name }}</span>
+						{% if result.updatedOn %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
+					</p>
+					{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+				</div>
+			</div>
+		{% endfor %}
+
+<!-- Display collections that belong to this org -->
+
+		{% for result in collections %}
+			<div class="row row-search-result">
+				<div class="col-md-1 search-result-col-icon">
+					<span class="glyphicon glyphicon-tags search-result-icon"></span>
+				</div>
+				<div class="col-md-11 search-result-col-content">
+					<div class="pull-right small text-muted" style="padding-top:12px;">
+						<a href="{% url 'collection' %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="{% url 'collection' %}#concepts" title="Concepts in collection"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;?</a>
+					</div>
+					<h4><a href="{% url 'collection' %}" class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.shortCode }}</a></h4>
+					<p>
+						<span class="concept-name">{{ result.name }}</span>
+						{% if result.updatedOn %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
+					</p>
+					{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+				</div>
+			</div>
+		{% endfor %}
+
+<!-- Pagination -->
+
+			<div class="row" style="text-align:center;">
+				<ul class="pagination">
+				  <li><a href="#">&laquo;</a></li>
+				  <li><a href="#">1</a></li>
+				  <li><a href="#">2</a></li>
+				  <li><a href="#">3</a></li>
+				  <li><a href="#">4</a></li>
+				  <li><a href="#">5</a></li>
+				  <li><a href="#">&raquo;</a></li>
+				</ul>
+			</div>
+
+<!-- End Org resource listing -->
+
+		</div> <!-- /col-md-8 -->
+
+<!-- Org details pane -->
+
+		<div class="col-md-4" style="margin-top:-120px;">
+
+<!-- Org attributes -->
+
 			<div class="panel panel-default">
-				<div class="panel-heading">Organization Details: <span class="pull-right"><a href="#">&blacktriangleright;</a></span></div>
+				<div class="panel-heading">
+					<h3 class="panel-title">Organization Details <span class="pull-right">&blacktriangleright;</span></h3>
+				</div>
 				<div class="panel-body hidden">
-					<dl class="dl-horizontal">
+					<dl style="margin-bottom:0;">
 					{% for key, value in org.items %}
-						<!--div class="row">
-							<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">{{ key }}</div>
-							<div class="col-md-9">{{ value }}</div>
-						</div-->
-						<dt>{{ key }}</dt>
-  						<dd>{{ value }}</dd>
+						<dt class="small">{{ key }}:</dt>
+						<dd class="small" style="padding-bottom:6px;">{{ value }}</dd>
 					{% endfor %}
 					</dl>
 				</div>
 			</div> <!-- /panel -->
-		</div>
 
-        {% if request.GET.debug %}
-        <p>
-          Org: <br /><pre>{{ org|pprint }}</pre>
-          Sources: <br /><pre>{{ sources|pprint }}</pre>
-          Collections: <br /><pre>{{ collections|pprint }}</pre>
-          Members: <br /><pre>{{ members|pprint }}</pre>
-        </p>
-        {% endif %}
-	</div>
-</div>
+<!-- Org members -->
 
-<div class="row">
-
-<!-- Start org resource listing section -->
-
-	<div class="col-md-8">
-
-<!-- Sort / filter -->
-
-		<div class="row" style="padding-top:20px;">
-			<div class="col-md-12">
-				<div class="btn-group pull-right">
-				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-				    Sort <span class="caret"></span>
-				  </button>
-				  <ul class="dropdown-menu" role="menu">
-				    <li><a href="#">Sort</a></li>
-				    <li><a href="#">Another sort</a></li>
-				    <li><a href="#">Something else here</a></li>
-				  </ul>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Members</h3>
 				</div>
-			</div>
-		</div>
+				<div class="panel-body">
+					{% for member in members %}
+						<h4><a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ member.username }}</a></h4>
+						{% if request.GET.debug %}<pre>{{ member|pprint }}</pre>{% endif %}
+					{% endfor %}
+				</div>
+			</div> <!-- /panel -->
 
-<!-- Display org resources -->
+		</div> <!-- /col-md-4 -->
 
-	{% for source in sources %}
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-th-list" style="font-size:32pt;color:#e5e5e5;"></span>
-			</div>
-			<div class="col-md-11">
-				<h4>
-					<a href="{% url 'source-detail' org=source.owner source=source.id %}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ org.id }} / {{ source.shortCode }}</a>
-				</h4>
-				<p>
-					<span class="caption">{{ source.name }}</span>
-				</p>
-				{% if request.GET.debug %}<pre>{{ source|pprint }}</pre>{% endif %}
-			</div>
-		</div>
+	</div> <!-- /row -->
 
-	{% endfor %}
+</div> <!-- /container -->
 
-	{% for collection in collections %}
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tags" style="font-size:32pt;color:#e5e5e5;"></span>
-			</div>
-			<div class="col-md-11">
-				<h4>
-					<a href="{% url 'collection' %}" class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ org.id }} / {{ collection.id }}</a>
-				</h4>
-				<p>
-					<span class="caption">{{ collection.name }}</span>
-				</p>
-				{% if request.GET.debug %}<pre>{{ collection|pprint }}</pre>{% endif %}
-			</div>
-		</div>
-
-	{% endfor %}
-
-<!-- Pagination -->
-
-		<div class="row" style="text-align:center;">
-			<ul class="pagination">
-			  <li><a href="#">&laquo;</a></li>
-			  <li><a href="#">1</a></li>
-			  <li><a href="#">2</a></li>
-			  <li><a href="#">3</a></li>
-			  <li><a href="#">4</a></li>
-			  <li><a href="#">5</a></li>
-			  <li><a href="#">&raquo;</a></li>
-			</ul>
-		</div>
-
-<!-- End Org resource listing -->
-
-	</div>
-
-<!-- Org Members -->
-
-	<div class="col-md-4">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">Members</h3>
-			</div>
-			<div class="panel-body">
-				{% for member in members %}
-					<h4><a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ member.username }}</a></h4>
-					{% if request.GET.debug %}<pre>{{ member|pprint }}</pre>{% endif %}
-				{% endfor %}
-			</div>
-		</div>	
-	</div>
-
-</div>
-
-{% endblock content %}
+{% endblock content-no-container %}

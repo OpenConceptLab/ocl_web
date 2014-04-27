@@ -1,161 +1,180 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block content-no-container %}
 
-<div class="row" style="border-bottom:1px solid #e5e5e5;padding-top:20px;padding-bottom:20px;">
-	<div class="col-md-2">
-		<p class="text-muted pull-right" style="font-size:10pt;padding-top:12px;">PUBLIC</p>
-	</div>
-	<div class="col-md-10">
-		<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-th-list"></span></div>
-		<div style="display:inline-block;padding-left:20px">
-			<h4>
-				<a href="#" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ source.owner }}</a>
-				/
-				<span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ source.id }}</span>
-			</h4>
-			<p>{{ source.fullName }}<br />
-			<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ source.updatedOn }})</span>
-			</p>
-			<p><a href="#">More &blacktriangledown;</a></p>
-			<div class="panel panel-default">
-				<div class="panel-heading">All Source Fields:</div>
-				<div class="panel-body">
-					{% for key, value in source.items %}
-					<div class="row">
-						<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">{{ key }}</div>
-						<div class="col-md-9">{{ value }}</div>
-					</div>
-					{% endfor %}
-				</div>
-			</div> <!-- /panel -->
-		</div>
-        {% if request.GET.debug %}<br /><pre>{{ source|pprint }}</pre>{% endif %}</li>
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-3">
-		<div class="filter-group">
-			<div class="filter-group-header">Concept Class</div>
-			<div class="filter-group-body">
-				<div class="checkbox"><label><input type="checkbox"> Anatomy</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Diagnosis</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Drug</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Finding</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Symptom</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Test</label></div>
-				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
-			</div>
-		</div>
-
-		<div class="filter-group">
-			<div class="filter-group-header">Datatype</div>
-			<div class="filter-group-body">
-				<div class="checkbox"><label><input type="checkbox"> Boolean</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Coded</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Date</label></div>
-				<div class="checkbox"><label><input type="checkbox"> N/A</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Numeric</label></div>
-				<div class="checkbox"><label><input type="checkbox"> Text</label></div>
-				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-9">
-		<div class="row" style="padding-top:20px;">
-			<div class="col-md-12">
-				<div class="btn-group pull-right">
-				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-				    Sort <span class="caret"></span>
-				  </button>
-				  <ul class="dropdown-menu" role="menu">
-				    <li><a href="#">Sort</a></li>
-				    <li><a href="#">Another sort</a></li>
-				    <li><a href="#">Something else here</a></li>
-				  </ul>
-				</div>
-				<div class="btn-group">
-				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-				    Version <span class="caret"></span>
-				  </button>
-				  <ul class="dropdown-menu" role="menu">
-				    <li><a href="#">Head</a></li>
-				    <li><a href="#">Latest Version</a></li>
-				    <li><a href="#">An older version</a></li>
-				  </ul>
-				</div>
-			</div>
-		</div>
+<header class="source-header">
+	<div class="container">
 		<div class="row">
-			<div class="col-md-12" style="padding-top:20px;padding-bottom:20px;">
-		      <div class="input-group">
-		        <input type="text" class="form-control" placeholder="Search Source">
-		         <span class="input-group-btn">
-		        <button class="btn btn-default" type="button">Search</button>
-		      </span>
-		      </div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<h4>We found {{ concepts|length }} concepts in this source.</h4>
-			</div>
-		</div>
-
-<!-- Display source search results -->
-
-        {% for concept in concepts %}
-			<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-				<div class="col-md-1" style="text-align:right;padding-top:14px;">
-					<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
+			<div class="col-md-10">
+				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;">
+					<span class="glyphicon glyphicon-th-list"></span>
 				</div>
-				<div class="col-md-11">
-					<h4><a href="{% url 'concept-detail' org=source.owner source=source.id concept=concept.id %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ source.owner }} / {{ source.id }} / {{ concept.id }}</a></h4>
-					<p>
-						<span class="caption">{{ concept.displayName }}</span> <span class="small"><em>[{{ concept.displayLocale }}]</em></span><br />
-						<em>Class:</em> {{ concept.conceptClass }}, <em>Datatype:</em> {{ concept.datatype }}
+				<div style="display:inline-block;padding-left:20px">
+					<h3>
+						<a href="{% url 'organization-detail' org=source.owner %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ source.owner }}</a>
+						/
+						<span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ source.id }}</span>
+					</h3>
+					<h4>{{ source.fullName }}</h4>
+					<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ source.updatedOn }})</span>
 					</p>
-					{% if request.GET.debug %}<pre>{{ concept|pprint }}</pre>{% endif %}
+					<p><a href="#">More &blacktriangledown;</a></p>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">All Source Fields <span class="pull-right">&blacktriangleright;</span></h3>
+						</div>
+						<div class="panel-body hidden">
+							{% for key, value in source.items %}
+							<div class="row">
+								<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">{{ key }}</div>
+								<div class="col-md-9">{{ value }}</div>
+							</div>
+							{% endfor %}
+						</div>
+					</div> <!-- /panel -->
+				</div>
+		        {% if request.GET.debug %}
+		        	<h5>Source</h5><pre>{{ source|pprint }}</pre>
+		        	<h5>Concepts</h5><pre>{{ concepts|pprint }}</pre>
+		        {% endif %}</li>
+			</div>
+		</div> <!-- /row -->
+	</div> <!-- /container -->
+</header>
+
+<!-- Start content section -->
+
+<div class="container">
+	<div class="row">
+
+<!-- Filters -->
+
+		<div class="col-md-3">
+			<div class="filter-group">
+				<div class="filter-group-header">Concept Class</div>
+				<div class="filter-group-body">
+					<div class="checkbox"><label><input type="checkbox"> Anatomy</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Diagnosis</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Drug</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Finding</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Symptom</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Test</label></div>
+					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
 				</div>
 			</div>
-		{% endfor %}
 
-<!-- Additional static examples -->
-
-		<h4><small>Additional Static Examples:</small></h4>
-		<div class="row" style="border-top:1px solid #e5e5e5;padding-bottom:8px;padding-top:8px;">
-			<div class="col-md-1" style="text-align:right;padding-top:14px;">
-				<span class="glyphicon glyphicon-tag" style="font-size:32pt;color:#e5e5e5;"></span>
-			</div>
-			<div class="col-md-11">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="#" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;1</a>
+			<div class="filter-group">
+				<div class="filter-group-header">Datatype</div>
+				<div class="filter-group-body">
+					<div class="checkbox"><label><input type="checkbox"> Boolean</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Coded</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Date</label></div>
+					<div class="checkbox"><label><input type="checkbox"> N/A</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Numeric</label></div>
+					<div class="checkbox"><label><input type="checkbox"> Text</label></div>
+					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
 				</div>
-				<h4><a href="{% url 'concept-detail' org='WHO' source='ICD-10' concept='A01.2' %}" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10 / E85.0</a></h4>
-				<p><span class="caption">Non-neuropathic heredofamilial amyloidosis</span> <span class="small"><em>[en]</em></span><br />
-				<em>Class:</em> Diagnosis, <em>Datatype:</em> None<br />
-				<span class="text-muted">Last Updated 6 years ago</span>
-				</p>
 			</div>
 		</div>
 
+<!-- Search selecters -->
 
-<!-- Pagination -->
+		<div class="col-md-9">
+			<div class="row" style="padding-top:20px;">
+				<div class="col-md-12">
+					<div class="btn-group pull-right">
+					  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+					    Sort <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu" role="menu">
+					    <li><a href="#">Sort</a></li>
+					    <li><a href="#">Another sort</a></li>
+					    <li><a href="#">Something else here</a></li>
+					  </ul>
+					</div>
+					<div class="btn-group">
+					  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+					    Version <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu" role="menu">
+					    <li><a href="#">Head</a></li>
+					    <li><a href="#">Latest Version</a></li>
+					    <li><a href="#">An older version</a></li>
+					  </ul>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12" style="padding-top:20px;padding-bottom:20px;">
+			      <div class="input-group">
+			        <input type="text" class="form-control" placeholder="Search Source">
+			         <span class="input-group-btn">
+			        <button class="btn btn-default" type="button">Search</button>
+			      </span>
+			      </div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h4>We found {{ concepts|length }} concepts in this source.</h4>
+				</div>
+			</div>
 
-		<div class="row" style="text-align:center;">
-			<ul class="pagination">
-			  <li><a href="#">&laquo;</a></li>
-			  <li><a href="#">1</a></li>
-			  <li><a href="#">2</a></li>
-			  <li><a href="#">3</a></li>
-			  <li><a href="#">4</a></li>
-			  <li><a href="#">5</a></li>
-			  <li><a href="#">&raquo;</a></li>
-			</ul>
+	<!-- Display source search results -->
+
+	        {% for result in concepts %}
+				<div class="row row-search-result">
+					<div class="col-md-1 search-result-col-checkbox">
+						<input type="checkbox" />
+					</div>
+					<div class="col-md-1 search-result-col-icon">
+						<span class="glyphicon glyphicon-tag search-result-icon"></span>
+					</div>
+					<div class="col-md-10 search-result-col-content">
+						<div class="pull-right small text-muted" style="padding-top:12px;">
+							<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}#collections" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;?</a>
+						</div>
+						<!--h4><a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</a></h4-->
+
+						<h4><a href="#" style="text-decoration: none;">
+							<span class="concept-label">
+								<span class="concept-label-id"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</span><span class="concept-label-name">{{ result.displayName }}</span>
+							</span>
+						</a></h4>
+
+						<p>
+							<!--span class="caption">{{ result.displayName }} <small><em>[{{ result.displayLocale }}]</em></small></span><br /-->
+							<em>Class:</em> {{ result.conceptClass }}, <em>Datatype:</em> {{ result.datatype }}<br />
+							<em>Collections:</em>
+								<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Fake / Bogus Value Set</a>
+								&nbsp;&nbsp;
+								<br />
+							{% if result.updatedOn %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
+						</p>
+						{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+					</div>
+				</div> <!-- /row -->
+			{% endfor %}
+
+	<!-- Pagination -->
+
+			<div class="row" style="text-align:center;">
+				<ul class="pagination">
+				  <li><a href="#">&laquo;</a></li>
+				  <li><a href="#">1</a></li>
+				  <li><a href="#">2</a></li>
+				  <li><a href="#">3</a></li>
+				  <li><a href="#">4</a></li>
+				  <li><a href="#">5</a></li>
+				  <li><a href="#">&raquo;</a></li>
+				</ul>
+			</div>
+
+
 		</div>
+	</div> <!-- /row -->
+</div> <!-- /container -->
 
-
-	</div>
-</div>
-
-{% endblock content %}
+{% endblock content-no-container %}
