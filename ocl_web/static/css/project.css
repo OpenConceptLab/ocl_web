@@ -152,14 +152,31 @@ form div.input-group {
 }
 
 
-.org-header,
-.source-header 
+.org-header
 {
   background-color:rgb(252,252,252);
   padding-top:20px;
   padding-bottom:20px;
   border-bottom:1px solid #e5e5e5;
   margin-bottom:20px;
+}
+.source-header 
+{
+  background-color:rgb(252,252,252);
+  padding-top:20px;
+  padding-bottom:0;
+  border-bottom:1px solid #e5e5e5;
+  margin-bottom:20px;
+}
+
+.org-privacy {
+  position: absolute;
+  font-size: 11pt;
+  font-weight: normal;
+  text-transform: uppercase;
+  color: #b9b9b9;
+  margin-left: 10px;
+  margin-top: 10px;
 }
 
 .ocl-nav-menu li a {
