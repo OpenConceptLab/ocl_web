@@ -14,12 +14,11 @@
 						<a href="{% url 'organization-detail' org=source.owner %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ source.owner }}</a>
 						/
 						<span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ source.id }}</span>
+						<span class="org-privacy">public</span>
 					</h3>
-					<h4>{{ source.fullName }}</h4>
+					<h4>{{ source.name }}</h4>
 					<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ source.updatedOn }})</span>
-					</p>
-					<p><a href="#">More &blacktriangledown;</a></p>
-					<div class="panel panel-default">
+					<!--div class="panel panel-default">
 						<div class="panel-heading">
 							<h3 class="panel-title">All Source Fields <span class="pull-right">&blacktriangleright;</span></h3>
 						</div>
@@ -31,7 +30,7 @@
 							</div>
 							{% endfor %}
 						</div>
-					</div> <!-- /panel -->
+					</div--> <!-- /panel -->
 				</div>
 		        {% if request.GET.debug %}
 		        	<h5>Source</h5><pre>{{ source|pprint }}</pre>
@@ -39,12 +38,22 @@
 		        {% endif %}</li>
 			</div>
 		</div> <!-- /row -->
+	
+		<div style="margin-left:50px;margin-top:30px;margin-bottom:-1px;">
+			<ul class="nav nav-tabs small">
+				<li><a href="#home">Home</a></li>
+				<li><a href="#details">Details</a></li>
+				<li class="active"><a href="#concepts">Concepts</a></li>
+				<li><a href="#about">About</a></li>
+				<li><a href="#terms">Terms of Use</a></li>
+			</ul>
+		</div>
 	</div> <!-- /container -->
 </header>
 
-<!-- Start content section -->
+<!-- Start concepts section -->
 
-<div class="container">
+<div id="concepts" class="container">
 	<div class="row">
 
 <!-- Filters -->
@@ -83,8 +92,8 @@
 			<div class="row" style="padding-top:20px;">
 				<div class="col-md-12">
 					<div class="btn-group pull-right">
-					  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-					    Sort <span class="caret"></span>
+					  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+					    <span class="text-muted">Sort:</span> <strong>Best Match</strong> <span class="caret"></span>
 					  </button>
 					  <ul class="dropdown-menu" role="menu">
 					    <li><a href="#">Sort</a></li>
@@ -93,8 +102,8 @@
 					  </ul>
 					</div>
 					<div class="btn-group">
-					  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-					    Version <span class="caret"></span>
+					  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+					    <span class="text-muted">Version:</span> <strong>Latest</strong> <span class="caret"></span>
 					  </button>
 					  <ul class="dropdown-menu" role="menu">
 					    <li><a href="#">Head</a></li>
@@ -175,6 +184,128 @@
 
 		</div>
 	</div> <!-- /row -->
-</div> <!-- /container -->
+</div> <!-- /container#concepts -->
+
+
+<!-- Start about section -->
+
+<div id="about" class="container">
+	<div class="row">
+		<h2>Columbia International eHealth Lab's (CIEL) OpenMRS Concept Dictionary</h2>
+		<p class="p1"><b>Be sure to read the wiki: <a href="https://wiki.openmrs.org/display/docs/Getting+and+Using+the+MVP-CIEL+Concept+Dictionary">https://wiki.openmrs.org/display/docs/Getting+and+Using+the+MVP-CIEL+Concept+Dictionary</a></b></p>
+		<p class="p4"><b>A new GLOBAL_PROPERTY has been added to the SQL. This will create a global property called: ciel.conceptsVersion<span class="Apple-converted-space"> </span></b></p>
+		<p class="p4"><b>It contains a date or version number for the release. In this case, it is the date of the release. We will be using dates in the form YYYYMMDD.</b></p>
+		<h3>BACKGROUND</h3>
+		<p class="p1">The Millennium Villages Project (MVP), based at the Earth Institute at Columbia University, is a new bottom-up approach to lift developing country villages out of the poverty trap that afflicts more than a billion people worldwide, and help them get on the path of self-sustaining development. Millennium Villages are either existing or being developed in 10 countries throughout Africa (there are 12 millennium village sites running in 10 countries in Sub-Saharan Africa). </p>
+		<p class="p1">To achieve this goal, the MVP requires an information and communication system which can provide both necessary infrastructure for monitoring and evaluation, and tools for communicating among villages, cities and countries at and between several clinical and administrative levels. This system is called the Millennium Villages Global-Network (MVG-Net). It will take advantage of the latest in open source software (OpenMRS), databases (MySQL), interface terminology, centralized concept dictionary, and use appropriate technology locally for data entry.</p>
+		<p class="p1">The centralized concept dictionary requires a website for the management and collaborative generation of the fundamental elements required by the system's multi-lingual, multi-layered functionality. The site will present the terms and other data elements, descriptions, definitions and concepts used or destined for the system and will provide the medium for participation by the project's partners on terminological choices and relationships, translation, normalization and other inter-community semantic concerns.</p>
+		<h3>IMPORTING THE CONCEPT DICTIONARY</h3>
+		<p class="p1">Note that this database dump will overwrite the existing concept* tables. Please make a back-up of your database before doing anything with this SQL file. The concept tables are imported after several modifications are required:</p>
+		<ol>
+			<li>You must modify the max_allowed_packet variable (&lt;<a href="http://dev.mysql.com/doc/refman/5.0/en/server-system-variables.html#sysvar_max_allowed_packet">http://dev.mysql.com/doc/refman/5.0/en/server-system-variables.html#sysvar_max_allowed_packet</a>&gt;) to allow for large files. This is done in the my.ini for Windows or my.cnf for Linux. Add max_allowed_packet=128M. Do this below the MAX_CONNECTIONS line of the file. Save the file after editing.</li>
+			<li>Then MySQL needs to be restarted before attempting the import.</li>
+			<li>Import the files using Mysqladmin or Mysql or SQLYog or other program for importing the .sql file. For Mysql, ensure you are set to the proper database (e.g., USE OPENMRS;) then type SOURCE &lt;path&gt;/openmrs_concepts…sql and the import should begin. It can take 10-15 min on some systems.</li>
+		</ol>
+		<h3>NULL DATE-TIME ERROR FIX</h3>
+		<p class="p1">It is possible that you can receive an error when using this dictionary in OpenMRS because some of the dates have null times. You can easily fix this by ensuring that your connect string in the runtime.properties file has the following:</p>
+		<p class="p1">connection.url=jdbc:mysql://localhost:3306/openmrsdev?autoReconnect=true<b>&amp;zeroDateTimeBehavior=convertToNull</b></p>
+		<p class="p1">Note the appended command.</p>
+		<h3>DATABASE VERSION</h3>
+		<p class="p1">The Columbia International eHealth Lab (CIEL) concept dictionary is based upon the OpenMRS concept architecture as implemented by the Millennium Villages Project among others. The structure of the dictionary is intimately tied to the OpenMRS system and therefore follows the OpenMRS data model. The current format of the MVP tables corresponds to the 1.9.7 version of the database. The MVP/CIEL dictionary comes as standard with the new standalone version of OpenMRS (version 1.9+). Additional versions are available in the dropbox.</p>
+		<h3>MAPPING ASSISTANCE</h3>
+		<p class="p1">The mapping from the concepts to SNOMED CT, ICD-10-WHO and others is provided by a gracious donation of assistance from Intelligent Medical Objects, Inc. (http://www.e-imo.com). If you need comprehensive concepts, more interface terminology, or maps to ICD-9-CM, ICD-10-CA or<b> ICD-10-CM</b> you can contact IMO for licensing information.</p>
+		<h3>CHANGES/ADDITIONS:</h3>
+		<p class="p1"><b>If you have any comments about this dictionary, suggested changes to the coding, etc. please send an email to </b><span class="s2"><b>andrew.kanter@dbmi.columbia.edu</b></span><b>. We will be providing regular updates to the database.</b></p>
+	</div> <!-- /row -->
+</div> <!-- /container#about -->
+
+
+<!-- Start terms section -->
+
+<div id="terms" class="container">
+	<div class="row">
+		<p class="p1"><b>TERMS OF USE</b></p>
+		<p class="p2"><br></p>
+		<p class="p1">The Columbia International eHealth Laboratory (CIEL) dictionary is a shared open concept dictionary.<span class="Apple-converted-space">  </span>CIEL is protected by copyright.</p>
+		<p class="p1">Portions of CIEL content were created by and/or are owned by other entities.<span class="Apple-converted-space">  </span>This content includes, but is not limited to, Intelligent Medical Objects, Inc. (IMO) lexical codes.<span class="Apple-converted-space">  </span>IMO is the sole owner of the copyrights in the IMO lexical codes, which are protected by copyright and similar rights separate and apart from any rights (i) existing in CIEL content or (ii) deriving from the compilation of CIEL and other proprietary materials, including but not limited to the IMO lexical codes.</p>
+		<p class="p2"><br></p>
+		<p class="p1">The rights granted under this license are limited to the right to use and reproduce the CIEL licensed material and the proprietary material incorporated therein, including but not limited to the IMO lexical codes.<span class="Apple-converted-space">  </span>Nothing in this license shall be interpreted to constitute an ownership interest in CIEL or the proprietary material included therein.</p>
+		<p class="p2"><br></p>
+		<p class="p1">Content made available through CIEL may be used, reproduced, and shared: by any entity making Non-Commercial use of the CIEL licensed material; worldwide; including or not including derivative works; provided that the CIEL licensee or end user provides proper attribution to the source material, whether it be derived from CIEL or another entity.</p>
+		<p class="p2"><br></p>
+		<p class="p1">When any licensee or end user uses, reproduces, or shares the CIEL licensed material, including in modified or derivative form, the licensee or end user must retain the following information: identification of the creator(s) of the CIEL licensed material and any others designated to receive attribution; a copyright notice; and, a notice that refers to this license.<span class="Apple-converted-space">  </span>Attribution is required for any and all content creators of the CIEL licensed material, including but not limited to CIEL and IMO.<span class="Apple-converted-space">  </span>The right to use, reproduce and share the CIEL licensed material is contingent upon the licensee or end user’s compliance with this attribution requirement.</p>
+		<p class="p2"><br></p>
+		<p class="p1">No modification or derivative works based on the CIEL licensed material and the proprietary material included therein will be deemed to destroy or supersede any copyright or similar rights that do or will exist in the CIEL licensed material and the proprietary material included therein.</p>
+		<p class="p2"><br></p>
+		<p class="p1">No modification or derivative works based on the CIEL licensed material and the proprietary material included therein will be deemed to nullify or destroy the right to attribution to each and every content creator and owner of the CIEL licensed material and the proprietary material included therein.</p>
+		<p class="p2"><br></p>
+		<p class="p1"><b>When any licensee or end user reproduces or shares the CIEL licensed material, that licensee or end user must do so UNDER EXACTLY THE SAME TERMS AS THIS LICENSE.</b></p>
+		<p class="p2"><br></p>
+		<p class="p1">All copyrights and similar rights and all rights to attribution will survive the termination of this license.</p>
+		<p class="p2"><br></p>
+		<p class="p1"><b>MODIFIED CREATIVE COMMONS ATTRIBUTION-NONCOMMERCIAL LICENSE</b></p>
+		<p class="p2"><br></p>
+		<p class="p1">By exercising the Licensed Rights (defined below), Licensee accepts and agrees to be bound by the terms and conditions of this CIEL License (“License”).<span class="Apple-converted-space">  </span>To the extent this License may be interpreted as a contract, Licensee is granted the Licensed Rights in consideration of Licensee’s acceptance of these terms and conditions, and the Licensor grants Licensee such rights in consideration of benefit the Licensor receives from making the Licensed Material available under these terms and conditions.</p>
+		<p class="p2"><br></p>
+		<p class="p1">Section 1 – Definitions.</p>
+		<p class="p1">a.<span class="Apple-tab-span">	</span>Copyright and Similar Rights means copyright and/or similar rights closely related to copyright including, without limitation, performance, broadcast, sound recording, and Sui Generis Database Rights, without regard to how the rights are labeled or categorized.</p>
+		<p class="p1">b.<span class="Apple-tab-span">	</span>Derivative Works means material subject to Copyright and Similar Rights that is derived from or based upon the Licensed Material and in which the Licensed Material is translated, altered, arranged, transformed, or otherwise modified in a manner requiring permission under the Copyright and Similar Rights held by the Licensor.</p>
+		<p class="p1">c.<span class="Apple-tab-span">	</span>Effective Technological Measures means those measures that, in the absence of proper authority, may not be circumvented under laws fulfilling obligations under Article 11 of the WIPO Copyright Treaty adopted on December 20, 1996, and/or similar international agreements.</p>
+		<p class="p1">d.<span class="Apple-tab-span">	</span>Licensed Material means the Columbia International eHealth Laboratory (CIEL) concept dictionary and portions of CIEL created and/or owned by other entities including but not limited to Intelligent Medical Objects, Inc. (IMO) and IMO lexical codes.</p>
+		<p class="p1">e.<span class="Apple-tab-span">	</span>Licensed Rights means the rights granted to Licensee subject to the terms and conditions of this License, which are limited to all Copyright and Similar Rights that apply to Licensee’s use of the Licensed Material and that the Licensor has authority to license.</p>
+		<p class="p1">f.<span class="Apple-tab-span">	</span>Licensee means the individual or entity exercising the Licensed Rights under this License.</p>
+		<p class="p1">g.<span class="Apple-tab-span">	</span>Licensor means the individual(s) or entity(ies) granting rights under this License, namely the Columbia International eHealth Laboratory (CIEL) dictionary and Intelligent Medical Objects, Inc. (IMO®) (“IMO”).</p>
+		<p class="p1">h.<span class="Apple-tab-span">	</span>Non-Commercial means not primarily intended for or directed towards commercial advantage or monetary compensation.</p>
+		<p class="p1">i.<span class="Apple-tab-span">	</span>Share means to provide material to the public by any means or process that requires permission under the Licensed Rights, such as reproduction, public display, distribution, dissemination, communication, or importation, and to make material available to the public including in ways that members of the public may access the material from a place and at a time individually chosen by them.</p>
+		<p class="p1">j.<span class="Apple-tab-span">	</span>Sui Generis Database Rights means rights other than copyright resulting from Directive 96/9/EC of the European Parliament and of the Council of 11 March 1996 on the legal protection of databases, as amended and/or succeeded, as well as other essentially equivalent rights anywhere in the world.</p>
+		<p class="p2"><br></p>
+		<p class="p1">Section 2 – Scope.</p>
+		<p class="p1">a.<span class="Apple-tab-span">	</span>License Grant.</p>
+		<p class="p1">1.<span class="Apple-tab-span">	</span>The Columbia International eHealth Laboratory dictionary (CIEL) is a shared open concept dictionary.<span class="Apple-converted-space">  </span>CIEL is protected by copyright.</p>
+		<p class="p1">2.<span class="Apple-tab-span">	</span>Portions of CIEL content were created by and/or are owned by other entities.<span class="Apple-converted-space">  </span>This content includes, but is not limited to, Intelligent Medical Objects, Inc. (IMO) lexical codes.<span class="Apple-converted-space">  </span>IMO is the sole owner of the copyrights in the IMO lexical codes, which are protected by copyright separate and apart from any Copyright and Similar Rights (i) existing in CIEL content or (ii) deriving from the compilation of CIEL and IMO proprietary materials.</p>
+		<p class="p1">3.<span class="Apple-tab-span">	</span>Content made available through CIEL may be used, reproduced, and Shared:</p>
+		<p class="p1">A.<span class="Apple-tab-span">	</span>By any entity making Non-Commercial use of the Licensed Material;</p>
+		<p class="p1">B.<span class="Apple-tab-span">	</span>Worldwide;</p>
+		<p class="p1">C.<span class="Apple-tab-span">	</span>Including or not including Derivative Works;</p>
+		<p class="p1">D.<span class="Apple-tab-span">	</span>Provided that Licensee provides proper attribution, as explicitly detailed in Section 3 of this License.</p>
+		<p class="p1">4.<span class="Apple-tab-span">	</span>Media and formats; technical modifications allowed. The Licensor authorizes Licensee to make technical modifications necessary to exercise the Licensed Rights in all media and formats whether now known or hereafter created. The Licensor waives and/or agrees not to assert any right or authority to forbid Licensee from making technical modifications necessary to exercise the Licensed Rights. For purposes of this License, simply making modifications authorized by this Section 2(a)(4) never produces Derivative Works.</p>
+		<p class="p1">5.<span class="Apple-tab-span">	</span>Downstream recipients.</p>
+		<p class="p1">A.<span class="Apple-tab-span">	</span>Offer from the Licensor – Licensed Material. Every recipient of the Licensed Material automatically receives an offer from the Licensor to exercise the Licensed Rights under the terms and conditions of this License.</p>
+		<p class="p1">B.<span class="Apple-tab-span">	</span>No downstream restrictions. You may not offer or impose any additional or different terms or conditions on, or apply any Effective Technological Measures to, the Licensed Material if doing so restricts exercise of the Licensed Rights by any recipient of the Licensed Material</p>
+		<p class="p1">b.<span class="Apple-tab-span">	</span>Other rights.</p>
+		<p class="p1">1.<span class="Apple-tab-span">	</span>Patent and trademark rights are not licensed under this License.</p>
+		<p class="p1">2.<span class="Apple-tab-span">	</span>The Licensor expressly reserves any right to collect royalties, including but not limited to when the Licensed Material is used other than for Non-Commercial purposes.</p>
+		<p class="p2"><br></p>
+		<p class="p1">Section 3 – License Conditions.</p>
+		<p class="p1">Licensee’s exercise of the Licensed Rights is expressly made subject to the following conditions.</p>
+		<p class="p1">a.<span class="Apple-tab-span">	</span>Attribution.</p>
+		<p class="p1">1.<span class="Apple-tab-span">	</span>If Licensee Shares the Licensed Material (including in modified form), Licensee must:</p>
+		<p class="p1">A.<span class="Apple-tab-span">	</span>Retain the following if it is supplied by the Licensor with the Licensed Material:</p>
+		<p class="p1">i.<span class="Apple-tab-span">	</span>identification of the creator(s) of the Licensed Material and any others designated to receive attribution;</p>
+		<p class="p1">ii.<span class="Apple-tab-span">	</span>a copyright notice;</p>
+		<p class="p1">iii.<span class="Apple-tab-span">	</span>a notice that refers to this License;</p>
+		<p class="p1">iv.<span class="Apple-tab-span">	</span>a URI or hyperlink to the Licensed Material to the extent reasonably practicable;</p>
+		<p class="p1">B.<span class="Apple-tab-span">	</span>Indicate if Licensee modified the Licensed Material to the extent reasonably practicable.</p>
+		<p class="p1">C.<span class="Apple-tab-span">	</span>Indicate the Licensed Material is licensed under this License.</p>
+		<p class="p1">2.<span class="Apple-tab-span">	</span>If Licensee Shares a Derivative Work produced by Licensee, Licensee must not prevent recipients of the Derivative Work from complying with this License.</p>
+		<p class="p1">3.<span class="Apple-tab-span">	</span>All attribution by Licensee must differentiate between CIEL Licensed Material and other proprietary material distributed in conjunction with CIEL including but not limited to the IMO lexical codes.</p>
+		<p class="p2"><br></p>
+		<p class="p1">Section 4 – Sui Generis Database Rights.</p>
+		<p class="p1">Where the Licensed Rights include Sui Generis Database Rights that apply to Licensee’s use of the Licensed Material:</p>
+		<p class="p1">a.<span class="Apple-tab-span">	</span>For the avoidance of doubt, Section 2(a) grants Licensee the right to reuse, reproduce, and Share all or any portion of the contents of the database for Non-Commercial purposes only;</p>
+		<p class="p1">b.<span class="Apple-tab-span">	</span>If Licensee includes all or a substantial portion of the database contents in a database in which Licensee has Sui Generis Database Rights, then the database in which Licensee have Sui Generis Database Rights (but not its individual contents) is a Derivative Work; and,</p>
+		<p class="p1">c.<span class="Apple-tab-span">	</span>Licensee must comply with the conditions in Section 3(a) if Licensee Shares all or any portion of the contents of the database.</p>
+		<p class="p1">For the avoidance of doubt, this Section 4 supplements and does not replace Licensee’s obligations under this License where the Licensed Rights include other Copyright and Similar Rights.</p>
+		<p class="p2"><br></p>
+		<p class="p1">Section 5 – Other Terms and Conditions.</p>
+		<p class="p1">a.<span class="Apple-tab-span">	</span>This License applies for the term of the Copyright and Similar Rights licensed here. However, if Licensee fail to comply with this License, then Licensee’s rights under this License terminate automatically.</p>
+		<p class="p1">b.<span class="Apple-tab-span">	</span>For the avoidance of doubt, the Licensor may also offer the Licensed Material under separate terms or conditions or stop distributing the Licensed Material at any time.</p>
+		<p class="p1">c.<span class="Apple-tab-span">	</span>The Licensor shall not be bound by any additional or different terms or conditions communicated by Licensee unless expressly agreed. <span class="Apple-converted-space"> </span></p>
+		<p class="p1">d.<span class="Apple-tab-span">	</span>Any arrangements, understandings, or agreements regarding the Licensed Material not stated herein are separate from and independent of the terms and conditions of this License.</p>
+		<p class="p1">e.<span class="Apple-tab-span">	</span>Sections 1 and 5 survive termination of this License.</p>
+		<p class="p1">f.<span class="Apple-tab-span">	</span>To the extent possible, if any provision of this License is deemed unenforceable, it shall be automatically reformed to the minimum extent necessary to make it enforceable. If the provision cannot be reformed, it shall be severed from this License without affecting the enforceability of the remaining terms and conditions.</p>		
+	</div> <!-- /row -->
+</div> <!-- /container#terms -->
+
 
 {% endblock content-no-container %}
