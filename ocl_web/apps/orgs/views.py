@@ -64,9 +64,7 @@ class OrganizationDetailView(TemplateView):
         context['org'] = org
         context['sources'] = sources_detail
         context['collections'] = collections_detail
-#       context['sources'] = sources
-#       context['collections'] = collections  # Uncomment to add the real collections (whenever the API is ready)
-        context['members'] = members  # Uncomment to add the real collections (whenever the API is ready)
+        context['members'] = members
 
         return context
 
@@ -77,15 +75,16 @@ class OrganizationCreateView(FormView):
 
     def form_valid(self, form, *args, **kwargs):
 
-        results = ocl.Org.create(form.cleaned_data['short_name'],
-                       form.cleaned_data['full_name'],
-                       form.cleaned_data['website'])
+        org_id = form.cleaned_data.pop('short_name')
+        name = form.cleaned_data.pop('full_name')
 
+        results = ocl.Org.create(org_id, name, **form.cleaned_data)
+
+        # TODO:  Catch exceptions that will be raised by
+        # Ocl lib.
         if results.ok:
-            return redirect("form-success")
+            return redirect("orgs:organization-create-success")
 
-        import pdb; pdb.set_trace()
-        # Figure out why things went wrong
-        # Tell the user by raising form_invalid
-        # Probably just need to pass the message on
-
+        # TODO:  Add error messages from API to form.
+        else:
+            return super(OrganizationCreateView, self).form_invalid(self, *args, **kwargs)

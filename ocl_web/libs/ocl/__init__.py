@@ -65,33 +65,25 @@ class APIRequestor(object):
 
         return '/v1/%ss/' % cls.__name__.lower()
 
-    def post(self, url, params):
+    def post(self, url, **kwargs):
 
-        json_params = json.dumps(params)
-        import pdb; pdb.set_trace()
-        return requests.post(self.host + url, params=json_params, headers=self.headers)
+        results = requests.post(
+            self.host + url,
+            data=json.dumps(kwargs),
+            headers=self.headers)
+
+        return results
 
 
 class Org(object):
 
     @classmethod
-    def create(cls, short_name, full_name, website):
+    def create(cls, org_id, name, **kwargs):
 
         requestor = APIRequestor(api_key=api_key)
         url = requestor.instance_url(cls)
-        results = requestor.post(
-            url,
-            {'id': short_name,
-             'name': full_name,
-             'website': website})
+        results = requestor.post(url, id=org_id, name=name, **kwargs)
 
+        # TODO: Raise bad requests here?  Yes, via Exceptions.
+        # TODO: Return the org in a leaner format?
         return results
-
-        # Return the org
-        # Return the response object as Python
-
-
-
-
-
-
