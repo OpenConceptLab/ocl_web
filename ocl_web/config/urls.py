@@ -54,6 +54,9 @@ urlpatterns = patterns('',
     url(r'^contact/$',
         TemplateView.as_view(template_name='pages/contact.html'),
         name="contact"),
+    url(r'^success/$',
+        TemplateView.as_view(template_name='pages/success.html'),
+        name="form-success"),
     url(r'^api/$',
         TemplateView.as_view(template_name='pages/api.html'),
         name="api"),
@@ -100,7 +103,7 @@ urlpatterns = patterns('',
     url(r'^avatar/', include('avatar.urls')),
 
     # List
-    url(r'^orgs/', include('apps.orgs.urls')),
+    url(r'^orgs/', include('apps.orgs.urls', namespace="orgs")),
 
     # Your stuff: custom urls go here
 

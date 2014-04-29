@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 
 from users import views
 
 urlpatterns = patterns('',
     # URL pattern for the UserListView
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/', include('apps.sources.urls')),
     url(
         regex=r'^$',
         view=views.UserListView.as_view(),

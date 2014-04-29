@@ -1,6 +1,10 @@
-from django.views.generic import TemplateView
 from django.conf import settings
+from django.shortcuts import redirect
+from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
 import requests
+from .forms import OrganizationCreateForm
+from libs import ocl
 
 
 class OrganizationDetailView(TemplateView):
@@ -13,7 +17,7 @@ class OrganizationDetailView(TemplateView):
 
         Final context
         -------------
-        context['org'] -- The org.
+        context['org']
         context['sources']
         context['collections']
         context['members']
@@ -23,7 +27,8 @@ class OrganizationDetailView(TemplateView):
         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
 
         # TODO:  This request patten is duplicated across views.  Figure out how to
-        # make DRY.
+        # make DRY:  utils.ocl_requests.get()
+
         host = settings.API_HOST
         auth_token = settings.API_TOKEN
         org_path = "/v1/orgs/%s" % kwargs['org']
@@ -59,8 +64,27 @@ class OrganizationDetailView(TemplateView):
         context['org'] = org
         context['sources'] = sources_detail
         context['collections'] = collections_detail
-#       context['sources'] = sources
-#       context['collections'] = collections  # Uncomment to add the real collections (whenever the API is ready)
-        context['members'] = members  # Uncomment to add the real collections (whenever the API is ready)
+        context['members'] = members
 
         return context
+
+class OrganizationCreateView(FormView):
+
+    form_class = OrganizationCreateForm
+    template_name = "orgs/org_create.html"
+
+    def form_valid(self, form, *args, **kwargs):
+
+        org_id = form.cleaned_data.pop('short_name')
+        name = form.cleaned_data.pop('full_name')
+
+        results = ocl.Org.create(org_id, name, **form.cleaned_data)
+
+        # TODO:  Catch exceptions that will be raised by
+        # Ocl lib.
+        if results.ok:
+            return redirect("orgs:organization-create-success")
+
+        # TODO:  Add error messages from API to form.
+        else:
+            return super(OrganizationCreateView, self).form_invalid(self, *args, **kwargs)

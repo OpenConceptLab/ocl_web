@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1><span class="glyphicon glyphicon-home" style="color:#e5e5e5;"></span>&nbsp;&nbsp;New Organization</h1>
+&nbsp;
+
+<form role="form" method="post" action="">
+  {% csrf_token %}
+
+  <!-- id -->
+  <div class="form-group">
+    <label for="orgShortName">{{ form.short_name.label }}</label>
+    {{ form.short_name }}
+    <p class="help-block">Your organization will live at: https://OpenConceptLab.org/orgs/<span id="org-name">[OrganizationName]</span></p>
+  </div>
+
+  <!-- name -->
+  <div class="form-group">
+    <label for="orgFullName">{{ form.full_name.label }}</label>
+    {{ form.full_name }}
+  </div>
+
+  <!-- website -->
+  <div class="form-group">
+    <label for="orgWebsite">{{ form.website.label }}</label>
+    {{ form.website }}
+  </div>
+
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+{% endblock content %}

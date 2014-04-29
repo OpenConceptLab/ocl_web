@@ -33,5 +33,6 @@ django-autoslug==1.7.2
 # Useful things
 django-avatar==2.0
 
-
 # Your custom requirements go here
+simplejson==3.4.0
+

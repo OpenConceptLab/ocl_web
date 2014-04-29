@@ -54,7 +54,3 @@ class ConceptDetailView(TemplateView):
         context['concept'] = fake_concept
 
         return context
-
-
-
-
