@@ -83,7 +83,7 @@ class OrganizationCreateView(FormView):
         # TODO:  Catch exceptions that will be raised by
         # Ocl lib.
         if results.ok:
-            return redirect("orgs:organization-create-success")
+            return redirect("organization-create-success")
 
         # TODO:  Add error messages from API to form.
         else:
