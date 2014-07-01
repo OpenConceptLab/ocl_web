@@ -140,15 +140,125 @@ form div.input-group {
   font-size: 10pt;
 }
 
+
+
+.resource-label {
+  font-size: 13pt;
+  line-height: 22pt;
+}
+.resource-label .resource-label-id {
+  display: inline;
+  padding: .2em .6em .3em .6em;
+  color: #666;
+  background-color: #eee;
+  font-weight: 200;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em 0 0 .25em;
+}
+.resource-label .resource-label-id .resource-label-id-icon {
+}
+.resource-label .resource-label-id .resource-label-id-breadcrumb {
+  font-size: 80%;
+}
+.resource-label .resource-label-id .resource-label-id-code {
+  font-size: 90%;
+  font-weight: 600;
+  color: Black;
+}
+.resource-label .resource-label-name {
+  display: inline;
+  padding: .2em .6em .3em .6em;
+  color: #fff;
+  background-color: #428bca;
+  font-weight: 300;
+  letter-spacing:-0.1pt;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0 .25em .25em 0;
+}
+.resource-label.concept .resource-label-name {
+  background-color: #428bca;
+  color: White;
+}
+.resource-label.source .resource-label-name {
+  background-color: #5cb85c;
+  color: White;
+}
+.resource-label.collection .resource-label-name {
+  background-color: #5cb85c;
+  color: White;
+}
+.resource-label.organization .resource-label-name {
+  background-color: #f0ad4e;
+  color: White;
+}
+.resource-label.user .resource-label-name {
+  background-color: #f0ad4e;
+  color: White;
+}
+.resource-label.small { 
+  font-size: 11pt;
+  line-height: 18pt;
+}
+.resource-label.large { 
+  font-size: 16pt;
+  line-height: 26pt;
+}
+
+
+
+
 .concept-label {
 }
 .concept-label .concept-label-id {
-  display: inline;padding: .2em .6em .3em .6em;font-size: 75%;font-weight: 700;line-height: 1;color: #fff;text-align: center;
-  white-space: nowrap;vertical-align: baseline;border-radius: .25em 0 0 .25em;background-color: #428bca;
+  display: inline;
+  padding: .2em .6em .3em .6em;
+  font-size: 10pt;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em 0 0 .25em;
+  background-color: #eee;
+  color: #666;
+  line-height: 16pt;
+}
+.concept-label .concept-label-id .concept-label-id-icon {
+  font-weight: normal;
+  font-size: 10pt;
+}
+.concept-label .concept-label-id .concept-label-id-breadcrumb {
+  font-weight: 200;
+  font-size: 9pt;  
+}
+.concept-label .concept-label-id .concept-label-id-code {
+  font-size: 10pt;
+  font-weight: 700;
+  color: Black;
 }
 .concept-label .concept-label-name {
-  display: inline;padding: .2em .6em .3em .6em;font-size: 75%;font-weight: 200;line-height: 1;color: #fff;text-align: center;
-  white-space: nowrap;vertical-align: baseline;border-radius: 0 .25em .25em 0;background-color: #eee;color: Black;
+  display: inline;
+  padding: .2em .6em .3em .6em;
+  font-size: 75%;
+  font-weight: 200;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0 .25em .25em 0;
+  background-color: #eee;
+
+  background-color: #428bca;
+  color: White;
+  font-weight: 600;
+  font-size: 10pt;
+  line-height: 16pt;
 }
 
 
