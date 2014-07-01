@@ -71,7 +71,7 @@ class OrganizationDetailView(TemplateView):
 class OrganizationCreateView(FormView):
 
     form_class = OrganizationCreateForm
-    template_name = "orgs/org_create.html"
+    template_name = "orgs/org_new.html"
 
     def form_valid(self, form, *args, **kwargs):
 
@@ -83,7 +83,7 @@ class OrganizationCreateView(FormView):
         # TODO:  Catch exceptions that will be raised by
         # Ocl lib.
         if results.ok:
-            return redirect("organization-create-success")
+            return redirect("org-new-success")
 
         # TODO:  Add error messages from API to form.
         else:

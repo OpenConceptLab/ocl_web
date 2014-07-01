@@ -10,7 +10,7 @@
 	</div>
 	<div class="col-md-9">
 		<h4>
-			<a href="{% url 'organization-detail' org=concept.owner %}" class="label label-warning">
+			<a href="{% url 'org-detail' org=concept.owner %}" class="label label-warning">
 				<span class="glyphicon glyphicon-{% if concept.ownerType == 'Organization' %}home{% elif concept.ownerType == 'User' %}user{% endif %}"></span>&nbsp;&nbsp;{{ concept.owner }}</a>
 			/
 			<a href="{% url 'source-detail' org=concept.owner source=concept.source %}" class="label label-success">
@@ -20,13 +20,11 @@
 		</h4>
 		<p>
 			{{ concept.displayName }} {% if concept.displayLocale %}<span class="small"><em>[{{ concept.displayLocale }}]</em></span>{% endif %}&nbsp;&nbsp;<span id="element-info" data-toggle="tooltip" data-placement="right" title="Preferred name in selected language"><span class="glyphicon glyphicon-info-sign"></span></span><br />
-			<em>Class:</em> {{ concept.conceptClass }}<br />
+			<em>Class:</em> {{ concept.conceptClass }},
 			<em>Datatype:</em> {{ concept.datatype }}
-			<!--
-				<span class="text-muted">Last Updated 2010</span>
-			-->
+			<!--span class="text-muted">Last Updated 2010</span-->
 		</p>
-		<!-- <p><a href="#">More &blacktriangledown;</a></p> -->
+		<!--p><a href="#">More &blacktriangledown;</a></p-->
 	</div>
 </div>
 <div class="row">
@@ -101,6 +99,7 @@
 
 
 
+<!--
 <h4 style="padding-top:20px;"><small>Static Examples:</small></h4>
 <div class="row" style="border-bottom:1px solid #e5e5e5;margin-bottom:20px;"></div>
 
@@ -133,6 +132,7 @@
 		<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;paynejd / Community-MCH</a>
 	</div>
 </div>
+-->
 {% endblock content %}
 
 {% block extrajavascript %}

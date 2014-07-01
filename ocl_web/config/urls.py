@@ -15,21 +15,19 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 
-    # Detail
+    # Concept Detail
     url(r'^concept/$',
         TemplateView.as_view(template_name='pages/concept.html'),
         name="concept"),
 
 
     ######### Sources
-    # List
-
+    url(r'^source/$',
+        TemplateView.as_view(template_name='sources/source.html'),
+        name="source"),
 
     ######### Orgs
-
-
-    ######### Concepts
-    # List
+    url(r'^orgs/', include('apps.orgs.urls')),
 
     ######### Users
     # List
@@ -38,7 +36,7 @@ urlpatterns = patterns('',
     url(r'^search/$', HomeSearchView.as_view(), name="search"),
 
 
-    ######### Misc Pages (some to be moved into Dynamic views later)
+    ######### Static Pages (some to be moved into Dynamic views later)
     url(r'^$',
         TemplateView.as_view(template_name='pages/home.html'),
         name="home"),
@@ -69,9 +67,6 @@ urlpatterns = patterns('',
     url(r'^user/$',
         TemplateView.as_view(template_name='pages/user.html'),
         name="user"),
-    url(r'^source/$',
-        TemplateView.as_view(template_name='sources/source.html'),
-        name="source"),
     url(r'^collection/$',
         TemplateView.as_view(template_name='pages/collection.html'),
         name="collection"),
@@ -91,7 +86,6 @@ urlpatterns = patterns('',
         TemplateView.as_view(template_name='pages/edit_source.html'),
         name="edit_source"),
 
-
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
@@ -102,9 +96,5 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable avatars
     url(r'^avatar/', include('avatar.urls')),
 
-    # List
-    url(r'^orgs/', include('apps.orgs.urls')),
-
-    # Your stuff: custom urls go here
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
