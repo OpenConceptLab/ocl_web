@@ -211,10 +211,13 @@
 			</div>
 
 	{% elif searchType == 'sources' %}
+			<div class="col-md-1 search-result-col-checkbox">
+				<input type="checkbox" />
+			</div>
 			<div class="col-md-1 search-result-col-icon">
 				<span class="glyphicon glyphicon-th-list search-result-icon"></span>
 			</div>
-			<div class="col-md-11 search-result-col-content">
+			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="{% url 'source-detail' org=result.owner source=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -236,10 +239,13 @@
 			</div>
 
 	{% elif searchType == 'collections' %}
+			<div class="col-md-1 search-result-col-checkbox">
+				<input type="checkbox" />
+			</div>
 			<div class="col-md-1 search-result-col-icon">
 				<span class="glyphicon glyphicon-tags search-result-icon"></span>
 			</div>
-			<div class="col-md-11 search-result-col-content">
+			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="{% url 'collection' %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -263,10 +269,13 @@
 			</div>
 
 	{% elif searchType == 'orgs' %}
+			<div class="col-md-1 search-result-col-checkbox">
+				<input type="checkbox" />
+			</div>
 			<div class="col-md-1 search-result-col-icon">
 				<span class="glyphicon glyphicon-home search-result-icon"></span>
 			</div>
-			<div class="col-md-11 search-result-col-content">
+			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="{% url 'org-detail' org=result.id %}#members" title="Members in organization"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.members }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -298,10 +307,13 @@
 			</div>
 
 	{% elif searchType == 'users' %}
+			<div class="col-md-1 search-result-col-checkbox">
+				<input type="checkbox" />
+			</div>
 			<div class="col-md-1 search-result-col-icon">
 				<span class="glyphicon glyphicon-user search-result-icon"></span>
 			</div>
-			<div class="col-md-11 search-result-col-content">
+			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="{% url 'user' %}#orgs" title="Organizations"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.orgs }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;

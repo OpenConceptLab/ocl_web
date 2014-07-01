@@ -146,12 +146,21 @@ form div.input-group {
   font-size: 13pt;
   line-height: 22pt;
 }
+.resource-label.small { 
+  font-size: 10pt;
+  line-height: 16pt;
+}
+.resource-label.large { 
+  font-size: 16pt;
+  line-height: 26pt;
+}
 .resource-label .resource-label-id {
   display: inline;
   padding: .2em .6em .3em .6em;
   color: #666;
   background-color: #eee;
   font-weight: 200;
+  letter-spacing:-0.1pt;
   text-align: center;
   white-space: nowrap;
   vertical-align: baseline;
@@ -160,10 +169,9 @@ form div.input-group {
 .resource-label .resource-label-id .resource-label-id-icon {
 }
 .resource-label .resource-label-id .resource-label-id-breadcrumb {
-  font-size: 80%;
+  font-size: 87%;
 }
 .resource-label .resource-label-id .resource-label-id-code {
-  font-size: 90%;
   font-weight: 600;
   color: Black;
 }
@@ -198,14 +206,6 @@ form div.input-group {
 .resource-label.user .resource-label-name {
   background-color: #f0ad4e;
   color: White;
-}
-.resource-label.small { 
-  font-size: 11pt;
-  line-height: 18pt;
-}
-.resource-label.large { 
-  font-size: 16pt;
-  line-height: 26pt;
 }
 
 
