@@ -20,11 +20,15 @@ urlpatterns = patterns('',
         TemplateView.as_view(template_name='pages/concept.html'),
         name="concept"),
 
-
     ######### Sources
     url(r'^source/$',
         TemplateView.as_view(template_name='sources/source.html'),
         name="source"),
+
+    ######### Collections
+    url(r'^collection/$',
+        TemplateView.as_view(template_name='conceptcollections/conceptcollection_detail.html'),
+        name="collection"),
 
     ######### Orgs
     url(r'^orgs/', include('apps.orgs.urls')),
@@ -34,6 +38,24 @@ urlpatterns = patterns('',
 
     ######### Search
     url(r'^search/$', HomeSearchView.as_view(), name="search"),
+
+
+    ######### New/Edit Resources
+    url(r'^new_org/$',
+        TemplateView.as_view(template_name='pages/new_org.html'),
+        name="new_org"),
+    url(r'^new_source/$',
+        TemplateView.as_view(template_name='pages/new_source.html'),
+        name="new_source"),
+    url(r'^new_collection/$',
+        TemplateView.as_view(template_name='pages/new_collection.html'),
+        name="new_collection"),
+    url(r'^new_concept/$',
+        TemplateView.as_view(template_name='pages/new_concept.html'),
+        name="new_concept"),
+    url(r'^edit_source/$',
+        TemplateView.as_view(template_name='pages/edit_source.html'),
+        name="edit_source"),
 
 
     ######### Static Pages (some to be moved into Dynamic views later)
@@ -67,24 +89,9 @@ urlpatterns = patterns('',
     url(r'^user/$',
         TemplateView.as_view(template_name='pages/user.html'),
         name="user"),
-    url(r'^collection/$',
-        TemplateView.as_view(template_name='pages/collection.html'),
-        name="collection"),
-    url(r'^new_org/$',
-        TemplateView.as_view(template_name='pages/new_org.html'),
-        name="new_org"),
-    url(r'^new_source/$',
-        TemplateView.as_view(template_name='pages/new_source.html'),
-        name="new_source"),
-    url(r'^new_collection/$',
-        TemplateView.as_view(template_name='pages/new_collection.html'),
-        name="new_collection"),
-    url(r'^new_concept/$',
-        TemplateView.as_view(template_name='pages/new_concept.html'),
-        name="new_concept"),
-    url(r'^edit_source/$',
-        TemplateView.as_view(template_name='pages/edit_source.html'),
-        name="edit_source"),
+    #url(r'^collection/$',
+        #TemplateView.as_view(template_name='pages/collection.html'),
+        #name="collection"),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
