@@ -44,19 +44,28 @@ class HomeSearchView(TemplateView):
             uri_path = SEARCH_TYPE_PATHS['concepts']
             searchType = 'concepts'
 
-        # Perform the search using the API
+        # Setup the primary search
         host = settings.API_HOST
         auth_token = settings.API_TOKEN
         full_path = host + uri_path
-        headers = {'Authorization': auth_token}
-        results = requests.get(full_path, headers=headers).json()
+        requestHeaders = {'Authorization': auth_token}
+
+        # Perform the primary search using the API
+        try:
+            response = requests.get(full_path, headers=requestHeaders)
+            results = response.json()
+            responseHeaders = response.headers
+        except:
+            response = None
+            results = []
+            responseHeaders = None
 
         # Load full resource details (since many required fields are not currently included in the list query)
         # NOTE: This is a temporary fix until the API supports field selection as a GET parameter
         if (searchType in ['sources', 'collections', 'orgs', 'users']):
             results_detail = []
             for result_summary in results:
-                result_detail = requests.get(result_summary['url'], headers=headers).json()
+                result_detail = requests.get(result_summary['url'], headers=requestHeaders).json()
                 results_detail.append(result_detail)
             results = results_detail
 
@@ -64,5 +73,6 @@ class HomeSearchView(TemplateView):
         context['results'] = results
         context['searchType'] = searchType
         context['searchTypeName'] = searchTypeNames[searchType]
+        context['responseHeaders'] = responseHeaders
 
         return context
