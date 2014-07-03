@@ -139,6 +139,18 @@
 
 	<div class="col-md-9">
 
+<!-- Debug -->
+
+	{% if request.GET.debug %}
+		<div class="row">
+			<div class="col-md-12">
+
+				<pre><strong>Response Headers:</strong><br />{{ responseHeaders|pprint }}</pre>
+			</div>
+		</div>
+	{% endif %}
+
+
 <!-- Search Results Summary and Sorting -->
 
 		<div class="row">
@@ -190,8 +202,6 @@
 					<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}#collections" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;?</a>
 				</div>
 
-				<!--h4><a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" class="label label-{% if result.retired %}default{% else %}primary{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.source }} / {{ result.id }}</a></h4-->
-
 				<h4><a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
 					<span class="resource-label small concept">
 						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span><span class="resource-label-id-code">{{ result.id }}</span></span><span class="resource-label-name">{{ result.displayName }}</span>
@@ -201,6 +211,7 @@
 				<p>
 					<!--span class="caption">{{ result.displayName }} <small><em>[{{ result.displayLocale }}]</em></small></span><br /-->
 					<em>Class:</em> {{ result.conceptClass }}, <em>Datatype:</em> {{ result.datatype }}<br />
+					{% if result.description %}<p>{{ result.description }}</p>{% endif %}
 					<!--em>Collections:</em>
 						<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Fake / Bogus Value Set</a>
 						&nbsp;&nbsp;
@@ -233,7 +244,8 @@
 
 				<p>
 					<!--span class="caption">{{ result.name }}</span-->
-					{% if result.updatedOn %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
+					{% if result.description %}<p>{{ result.description }}</p>{% endif %}
+					{% if result.updatedOn %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -263,6 +275,7 @@
 
 				<p>
 					<!--span class="concept-name">{{ result.name }}</span-->
+					{% if result.description %}<p>{{ result.description }}</p>{% endif %}
 					{% if result.updatedOn %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
@@ -297,6 +310,7 @@
 
 				<p>
 					<!--span class="concept-name">{{ result.name }}</span><br /-->
+					{% if result.description %}<p>{{ result.description }}</p>{% endif %}
 					<span class="text-muted small">
 						<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;[Location]
 						&nbsp;&nbsp;&nbsp;
@@ -336,8 +350,8 @@
 				<p>
 					<!--span class="caption">{{ result.name }}</span><br /-->
 					<span class="text-muted small">
-						<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;[Location]
-						&nbsp;&nbsp;&nbsp;
+						{% if result.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ result.location }}
+						&nbsp;&nbsp;&nbsp;{% endif %}
 						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined {{ result.createdOn }}
 					</span>
 				</p>
