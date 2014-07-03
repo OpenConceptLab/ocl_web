@@ -18,24 +18,15 @@ class SourceDetailView(TemplateView):
         concept_path = "/v1/orgs/%s/sources/%s/concepts/" % (kwargs['org'], kwargs['source'])
         source_url = host + source_path
         concept_url = host + concept_path
-        headers = {'Authorization': auth_token}
+        requestHeaders = {'Authorization': auth_token}
 
         # API calls for source details and concepts
-        source = requests.get(source_url, headers=headers).json()
-        concepts = requests.get(concept_url, headers=headers).json()
+        source = requests.get(source_url, headers=requestHeaders).json()
+        concepts = requests.get(concept_url, headers=requestHeaders).json()
 
-        # Get additional details for concepts (since currently not included in list query)
-        concepts_detail = []
-        for concept in concepts:
-            # this is a total hack to address a bug in how the API creates URLs
-            concept_url = concept['url'].replace('INITIAL/','')
-            # this part is a hack since the API doesn't let me customize the fields returned
-            concept = requests.get(concept_url, headers=headers).json()
-            concepts_detail.append(concept)
-
+        # Set the context
         context['source'] = source
-        #context['concepts'] = concepts
-        context['concepts'] = concepts_detail
+        context['concepts'] = concepts
 
         return context
 
