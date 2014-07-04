@@ -5,6 +5,7 @@ from django.views.generic.edit import FormView
 import requests
 from .forms import OrganizationCreateForm
 from libs import ocl
+from django.core.urlresolvers import reverse
 
 
 class OrganizationDetailView(TemplateView):
@@ -82,7 +83,7 @@ class OrganizationCreateView(FormView):
         # TODO:  Catch exceptions that will be raised by
         # Ocl lib.
         if results.ok:
-            return redirect("org-new-success")
+            return redirect(reverse('org-detail', kwargs={'org':org_id}))
 
         # TODO:  Add error messages from API to form.
         else:
