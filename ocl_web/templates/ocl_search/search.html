@@ -212,10 +212,12 @@
 					<!--span class="caption">{{ result.displayName }} <small><em>[{{ result.displayLocale }}]</em></small></span><br /-->
 					<em>Class:</em> {{ result.conceptClass }}, <em>Datatype:</em> {{ result.datatype }}<br />
 					{% if result.description %}<p>{{ result.description }}</p>{% endif %}
-					<!--em>Collections:</em>
-						<a href="{% url 'collection' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Fake / Bogus Value Set</a>
+					{% comment %}
+						<!--em>Collections:</em>
+						<a href="{% url 'collection-detail' %}" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Fake / Bogus Value Set</a>
 						&nbsp;&nbsp;
 						<br /-->
+					{% endcomment %}
 					{% if result.updatedOn %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
@@ -259,24 +261,22 @@
 			</div>
 			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="{% url 'collection' %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
+					<a href="{% url 'collection-detail' org=result.owner collection=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="{% url 'collection' %}#concepts" title="Concepts in collection"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;?</a>
+					<a href="{% url 'collection-detail' org=result.owner collection=result.id %}#concepts" title="Concepts in collection"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;?</a>
 				</div>
 
-				<h4><a href="{% url 'collection' %}" style="text-decoration: none;">
+				<h4><a href="{% url 'collection-detail' org=result.owner collection=result.id %}" style="text-decoration: none;">
 					<span class="resource-label small collection">
 						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tags"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / </span><span class="resource-label-id-code">{{ result.shortCode }}</span>
 						</span><span class="resource-label-name">{{ result.name }}</span>
 					</span>
 				</a></h4>
 
-				<!--h4><a href="{% url 'collection' %}" class="label label-success"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.owner }} / {{ result.shortCode }}</a></h4-->
+				{% if result.description %}<p>{{ result.description }}</p>{% endif %}
 
 				<p>
-					<!--span class="concept-name">{{ result.name }}</span-->
-					{% if result.description %}<p>{{ result.description }}</p>{% endif %}
-					{% if result.updatedOn %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
+					{% if result.updatedOn %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
