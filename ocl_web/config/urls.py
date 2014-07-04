@@ -20,16 +20,6 @@ urlpatterns = patterns('',
         TemplateView.as_view(template_name='pages/concept.html'),
         name="concept"),
 
-    ######### Sources
-    url(r'^source/$',
-        TemplateView.as_view(template_name='sources/source.html'),
-        name="source"),
-
-    ######### Collections
-    url(r'^collection/$',
-        TemplateView.as_view(template_name='conceptcollections/conceptcollection_detail.html'),
-        name="collection"),
-
     ######### Orgs
     url(r'^orgs/', include('apps.orgs.urls')),
 
