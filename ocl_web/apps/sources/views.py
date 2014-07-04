@@ -29,4 +29,3 @@ class SourceDetailView(TemplateView):
         context['concepts'] = concepts
 
         return context
-
