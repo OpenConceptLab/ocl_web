@@ -24,7 +24,7 @@ class OrganizationCreateForm(floppyforms.Form):
         required=False,
         widget=floppyforms.URLInput(
             attrs={'id': 'orgWebsite',
-                   'placeholder': "Website (e.g. http://www.who.int",
+                   'placeholder': "Website (e.g. http://www.who.int)",
                    'class': 'form-control'}))
 
 
