@@ -32,4 +32,5 @@ node_modules/
 
 # Ours
 media/
+*.sublime-*
 
