@@ -8,27 +8,45 @@
 <div class="container">
 
   <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-3">
+      <div>{% avatar user size=200 %}</div>
+      <h2>{{ ocl_user.name }}<br /><small>{{ object.username }}</small></h2>
+      <hr />
+      <div><strong>Company:</strong> {{ ocl_user.company }}</div>
+      <div><strong>Location:</strong> {{ ocl_user.location }}</div>
+      <div><strong>Website:</strong> {{ ocl_user.website }}</div>
+      <div><strong>Email:</strong> {{ ocl_user.email }}</div>
+      <div><strong>Joined:</strong> {{ ocl_user.createdOn }}</div>
+      <hr />
+      <h4>Organizations</h4>
+      <ul>
+      {% for org in orgs %}
+        <li><a href="">{{ org.name }}</a></li>
+      {% endfor %}
+      </ul>
+    </div>
+    <div class="col-sm-9">
+      
+      <!-- Action buttons -->
+      {% if object == request.user %}
+      <div class="row">
+        <div class="pull-right">
+          <a class="btn btn-primary" href="#">Edit Profile</a>
+          <a class="btn btn-primary" href="{% url 'users:update' %}">My Info</a>
+          <a class="btn btn-primary" href="{% url 'account_email' %}">E-Mail</a>
+          <a class="btn btn-info" href="{% url 'avatar_change' %}">Avatar</a>
+        </div>
+      </div>
+      {% endif %}
+      <!-- End Action buttons -->
 
-      <h2>{{ object.username }}</h2>
+      <div class="row">
+        <pre>{{ ocl_user|pprint }}</pre>
+      </div>
+
+
     </div>
   </div>
-
-{% if object == request.user %}
-<!-- Action buttons -->     
-<div class="row">
-
-  <div class="col-sm-12 ">
-    <a class="btn btn-primary" href="{% url 'users:update' %}">My Info</a>
-    <a class="btn btn-primary" href="{% url 'account_email' %}">E-Mail</a>
-    <a class="btn btn-info" href="{% url 'avatar_change' %}">Avatar</a>
-    <!-- Your Stuff: Custom user template urls -->
-  </div>
-
-</div>
-<!-- End Action buttons -->
-{% endif %}
-
 
 </div>
 {% endblock content %}

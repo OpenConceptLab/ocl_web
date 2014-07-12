@@ -8,6 +8,9 @@ from django.views.generic import RedirectView
 from django.views.generic import UpdateView
 from django.views.generic import ListView
 
+from django.conf import settings
+import requests
+
 # Only authenticated users can access views using this.
 from braces.views import LoginRequiredMixin
 
@@ -18,11 +21,35 @@ from .forms import UserForm
 from .models import User
 
 
+
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     # These next two lines tell the view to index lookups by username
     slug_field = "username"
     slug_url_kwarg = "username"
+
+    def get_context_data(self, *args, **kwargs):
+
+        context = super(UserDetailView, self).get_context_data(*args, **kwargs)
+
+        # Setup API calls
+        username = (kwargs["object"].username)
+        host = settings.API_HOST
+        auth_token = settings.API_TOKEN
+
+        ocl_user_url = "%s/v1/users/%s/" % (host, username)
+        ocl_user_orgs_url = ocl_user_url + "orgs/"
+        requestHeaders = {'Authorization': auth_token}
+
+        # API calls
+        ocl_user = requests.get(ocl_user_url, headers=requestHeaders).json()
+        ocl_user_orgs = requests.get(ocl_user_orgs_url, headers=requestHeaders).json()
+
+        # Set the context
+        context['ocl_user'] = ocl_user
+        context['orgs'] = ocl_user_orgs
+
+        return context
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):

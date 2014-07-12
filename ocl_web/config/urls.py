@@ -15,25 +15,22 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 
-    # Concept Detail
-    url(r'^concept/$',
-        TemplateView.as_view(template_name='pages/concept.html'),
-        name="concept"),
+    ######### Search
+    url(r'^search/$', HomeSearchView.as_view(), name="search"),
 
     ######### Orgs
     url(r'^orgs/', include('apps.orgs.urls')),
 
     ######### Users
-    # List
+    ## User management
+    url(r'^users/', include("users.urls", namespace="users")),
+    url(r'^accounts/', include('allauth.urls')),
 
-    ######### Search
-    url(r'^search/$', HomeSearchView.as_view(), name="search"),
+    ## Uncomment the next line to enable avatars
+    url(r'^avatar/', include('avatar.urls')),
 
 
     ######### New/Edit Resources
-    url(r'^new_org/$',
-        TemplateView.as_view(template_name='pages/new_org.html'),
-        name="new_org"),
     url(r'^new_source/$',
         TemplateView.as_view(template_name='pages/new_source.html'),
         name="new_source"),
@@ -46,7 +43,6 @@ urlpatterns = patterns('',
     url(r'^edit_source/$',
         TemplateView.as_view(template_name='pages/edit_source.html'),
         name="edit_source"),
-
 
     ######### Static Pages (some to be moved into Dynamic views later)
     url(r'^$',
@@ -85,13 +81,6 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-
-    # User management
-    url(r'^users/', include("users.urls", namespace="users")),
-    url(r'^accounts/', include('allauth.urls')),
-
-    # Uncomment the next line to enable avatars
-    url(r'^avatar/', include('avatar.urls')),
 
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
