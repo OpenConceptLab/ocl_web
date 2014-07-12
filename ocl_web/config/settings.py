@@ -92,7 +92,7 @@ class Common(Configuration):
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
     # Note: This key only used for development and testing.
     #       In production, this is changed to a values.SecretValue() setting
-    SECRET_KEY = "CHANGEME!!!"
+    SECRET_KEY = "s3ow(RP$sLI2*opDDI6q{IgG/3iD57"
     ########## END SECRET CONFIGURATION
 
     ########## FIXTURE CONFIGURATION
@@ -110,6 +110,7 @@ class Common(Configuration):
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
     ADMINS = (
         ('Jon Payne', 'paynejd@gmail.com'),
+        ('Brian Dant', 'briandant414@gmail.com'),
     )
 
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
