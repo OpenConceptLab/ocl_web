@@ -395,7 +395,7 @@ class Production(Common):
     ########## CACHING
     # Only do this here because thanks to django-pylibmc-sasl and pylibmc
     # memcacheify is painful to install on windows.
-    CACHES = values.CacheURLValue(default="memcached://127.0.0.1:11211")
+    CACHES = values.CacheURLValue(default="memcached://127.0.0.1:11211", environ_name='MEMCACHIER_SERVERS')
 
     os.environ['MEMCACHE_SERVERS'] = os.environ.get('MEMCACHIER_SERVERS', '').replace(',', ';')
     os.environ['MEMCACHE_USERNAME'] = os.environ.get('MEMCACHIER_USERNAME', '')
