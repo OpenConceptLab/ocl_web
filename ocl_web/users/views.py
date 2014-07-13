@@ -39,15 +39,21 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 
         ocl_user_url = "%s/v1/users/%s/" % (host, username)
         ocl_user_orgs_url = ocl_user_url + "orgs/"
+        ocl_user_sources_url = ocl_user_url + "sources/"
+        ocl_user_collections_url = ocl_user_url + "collections/"
         requestHeaders = {'Authorization': auth_token}
 
         # API calls
         ocl_user = requests.get(ocl_user_url, headers=requestHeaders).json()
         ocl_user_orgs = requests.get(ocl_user_orgs_url, headers=requestHeaders).json()
+        ocl_user_sources = requests.get(ocl_user_sources_url, headers=requestHeaders).json()
+        ocl_user_collections = requests.get(ocl_user_collections_url, headers=requestHeaders).json()
 
         # Set the context
         context['ocl_user'] = ocl_user
         context['orgs'] = ocl_user_orgs
+        context['sources'] = ocl_user_sources
+        context['collections'] = ocl_user_collections
 
         return context
 
