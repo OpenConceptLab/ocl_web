@@ -65,8 +65,11 @@ class HomeSearchView(TemplateView):
         if (searchType in ['sources', 'collections', 'orgs', 'users']):
             results_detail = []
             for result_summary in results:
-                result_detail = requests.get(result_summary['url'], headers=requestHeaders).json()
-                results_detail.append(result_detail)
+                try:
+                    result_detail = requests.get(result_summary['url'], headers=requestHeaders).json()
+                    results_detail.append(result_detail)
+                except:
+                    results_detail.append(result_summary)
             results = results_detail
 
         # Add data to the context
