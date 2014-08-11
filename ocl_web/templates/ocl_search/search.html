@@ -13,11 +13,11 @@
 <!-- Search Categories -->
 
 		<div class="list-group">
-			<a href="{% url 'search' %}?type=concepts{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'concepts' %}active{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Concepts <span class="badge">32</span></a>
-			<a href="{% url 'search' %}?type=sources{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'sources' %}active{% endif %}"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Sources <span class="badge">6</span></a>
-			<a href="{% url 'search' %}?type=collections{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'collections' %}active{% endif %}"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Collections <span class="badge">14</span></a>
-			<a href="{% url 'search' %}?type=orgs{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'orgs' %}active{% endif %}"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Organizations <span class="badge">3</span></a>
-			<a href="{% url 'search' %}?type=users{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'users' %}active{% endif %}"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users <span class="badge">2</span></a>
+			<a href="{% url 'search' %}?type=concepts{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'concepts' %}active{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Concepts <span class="badge">{{ resourceCount.concepts }}</span></a>
+			<a href="{% url 'search' %}?type=sources{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'sources' %}active{% endif %}"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Sources <span class="badge">{{ resourceCount.sources }}</span></a>
+			<a href="{% url 'search' %}?type=collections{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'collections' %}active{% endif %}"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Collections <span class="badge">{{ resourceCount.collections }}</span></a>
+			<a href="{% url 'search' %}?type=orgs{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'orgs' %}active{% endif %}"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Organizations <span class="badge">{{ resourceCount.orgs }}</span></a>
+			<a href="{% url 'search' %}?type=users{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'users' %}active{% endif %}"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users <span class="badge">{{ resourceCount.users }}</span></a>
   		</div>
 
 <!-- Filters -->
@@ -144,6 +144,7 @@
 	{% if request.GET.debug %}
 		<div class="row">
 			<div class="col-md-12">
+				<pre><strong>API Search Query:</strong><br />{{ apiSearchQuery|pprint }}</pre>
 
 				<pre><strong>Response Headers:</strong><br />{{ responseHeaders|pprint }}</pre>
 			</div>
@@ -166,7 +167,14 @@
 				    <li><a href="#">Something else here</a></li>
 				  </ul>
 				</div>
-				<div class="btn-group pull-right">
+				<div class="btn-group pull-right" style="margin-right:15px;">
+					<a href="{% if pagination.urlPrevious %}{{ pagination.urlPrevious }}{% else %}#{% endif %}" class="btn btn-default btn-sm {% if pagination.urlPrevious %}{% else %}disabled{% endif %}"><strong>&lt;</strong></a>
+					<a href="{% if pagination.urlNext %}{{ pagination.urlNext }}{% else %}#{% endif %}" class="btn btn-default btn-sm {% if pagination.urlNext %}{% else %}disabled{% endif %}"><strong>&gt;</strong></a>
+				</div>
+				<div class="pull-right" style="margin-right:15px;">
+					<h5>{{ pagination.start }}-{{ pagination.stop }} of {{ responseHeaders.num_found }} {{ searchTypeName }}{{ responseHeaders.num_found|pluralize }}</h5>
+				</div>
+				<div class="btn-group">
 				  &nbsp;&nbsp;
 				  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 				    <strong>Actions</strong> <span class="caret"></span>
@@ -176,7 +184,7 @@
 				  </ul>
 				  &nbsp;&nbsp;
 				</div>
-				<h4>We found {{ results|length }} {{ searchTypeName }}{{ results|length|pluralize }}.</h4>
+				<!--h4>We found {{ responseHeaders.num_found }} {{ searchTypeName }}{{ responseHeaders.num_found|pluralize }}.</h4-->
 {% else %}
 				<h4>We found 0 {{ searchTypeName }}{{ 0|pluralize }}.</h4>
 {% endif %}
@@ -237,7 +245,7 @@
 					<a href="{% url 'source-detail' org=result.owner source=result.id %}#concepts" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;?</a>
 				</div>
 
-				<h4><a href="{% url 'source-detail' org=result.owner source=result.id %}" style="text-decoration: none;">
+				<h4><a href="{% url 'source-detail' org=result.owner source=result.shortCode %}" style="text-decoration: none;">
 					<span class="resource-label small source">
 						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-th-list"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / </span><span class="resource-label-id-code">{{ result.shortCode }}</span>
 						</span><span class="resource-label-name">{{ result.name }}</span>
@@ -366,18 +374,17 @@
 
 <!-- Pagination -->
 
-{% if results %}
-		<div class="row row-pagination">
-			<ul class="pagination">
-			  <li><a href="#">&laquo;</a></li>
-			  <li><a href="#">1</a></li>
-			  <li><a href="#">2</a></li>
-			  <li><a href="#">3</a></li>
-			  <li><a href="#">4</a></li>
-			  <li><a href="#">5</a></li>
-			  <li><a href="#">&raquo;</a></li>
-			</ul>
-		</div>
+{% if results and pagination.totalPages > 1 %}
+	<div class="row row-pagination">
+		<ul class="pagination">
+		    <li {% if pagination.currentPage == 1 %}class="disabled"{% endif %}><a href="#">&laquo;</a></li>
+			{% for p in pagination.pages %}
+				<li {% if p == '...'%}class="disabled"{% elif p == pagination.currentPage %}class="active"{% endif %}><a href="#">{{ p }}</a></li>
+			{% endfor %}
+		    <li {% if pagination.currentPage == pagination.totalPages %}class="disabled"{% endif %}><a href="#">&raquo;</a></li>
+		  <li>Page {{ pagination.currentPage }} of {{ pagination.totalPages }}</li>
+		</ul>
+	</div>
 {% endif %}
 
 <!-- End search results section -->
