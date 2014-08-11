@@ -154,7 +154,7 @@
 
 <!-- Search Results Summary and Sorting -->
 
-		<div class="row">
+		<div class="row" style="margin-bottom:10px;">
 			<div class="col-md-12">
 {% if results %}
 				<div class="btn-group pull-right">
@@ -171,8 +171,8 @@
 					<a href="{% if pagination.urlPrevious %}{{ pagination.urlPrevious }}{% else %}#{% endif %}" class="btn btn-default btn-sm {% if pagination.urlPrevious %}{% else %}disabled{% endif %}"><strong>&lt;</strong></a>
 					<a href="{% if pagination.urlNext %}{{ pagination.urlNext }}{% else %}#{% endif %}" class="btn btn-default btn-sm {% if pagination.urlNext %}{% else %}disabled{% endif %}"><strong>&gt;</strong></a>
 				</div>
-				<div class="pull-right" style="margin-right:15px;">
-					<h5>{{ pagination.start }}-{{ pagination.stop }} of {{ responseHeaders.num_found }} {{ searchTypeName }}{{ responseHeaders.num_found|pluralize }}</h5>
+				<div class="pull-right" style="margin-right:15px;padding-top:6px;">
+					<strong>{{ pagination.start }}&ndash;{{ pagination.stop }}</strong> of <strong>{{ responseHeaders.num_found }}</strong> {{ searchTypeName }}{{ responseHeaders.num_found|pluralize }}
 				</div>
 				<div class="btn-group">
 				  &nbsp;&nbsp;
@@ -184,7 +184,6 @@
 				  </ul>
 				  &nbsp;&nbsp;
 				</div>
-				<!--h4>We found {{ responseHeaders.num_found }} {{ searchTypeName }}{{ responseHeaders.num_found|pluralize }}.</h4-->
 {% else %}
 				<h4>We found 0 {{ searchTypeName }}{{ 0|pluralize }}.</h4>
 {% endif %}
@@ -218,7 +217,7 @@
 
 				<p>
 					<!--span class="caption">{{ result.displayName }} <small><em>[{{ result.displayLocale }}]</em></small></span><br /-->
-					<em>Class:</em> {{ result.conceptClass }}, <em>Datatype:</em> {{ result.datatype }}<br />
+					<em>Class:</em> {{ result.conceptClass }}, <em>Datatype:</em> {{ result.datatype }}
 					{% if result.description %}<p>{{ result.description }}</p>{% endif %}
 					{% comment %}
 						<!--em>Collections:</em>
@@ -226,7 +225,7 @@
 						&nbsp;&nbsp;
 						<br /-->
 					{% endcomment %}
-					{% if result.updatedOn %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
+					<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated {{ result.updatedOn }}3 years ago</span>
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
