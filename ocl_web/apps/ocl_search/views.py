@@ -47,16 +47,14 @@ class HomeSearchView(TemplateView):
         # Grab API settings
         host = settings.API_HOST
         auth_token = settings.API_TOKEN
-        num_per_page = 1
+        num_per_page = 2
 
         # Setup the primary search
         search_params = {}
         search_params['limit'] = num_per_page
+        search_params['verbose'] = 'true'
         if 'q' in self.request.GET:
             search_params['q'] = self.request.GET['q']
-        # HACK: This is a hack until the verbose concept bug is fixed
-        if search_type != 'concepts':
-            search_params['verbose'] = 'true'
         search_url = host + search_type_paths[search_type]
         if search_params:
             search_url = search_url + '?' + urllib.urlencode(search_params)
