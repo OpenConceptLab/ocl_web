@@ -56,6 +56,11 @@ class HomeSearchView(TemplateView):
         if 'q' in self.request.GET:
             search_params['q'] = self.request.GET['q']
         search_url = host + search_type_paths[search_type]
+        if 'page' in self.request.GET:
+            try:
+                search_params['page'] = int(self.request.GET['page'])
+            except:
+                pass
         if search_params:
             search_url = search_url + '?' + urllib.urlencode(search_params)
         request_headers = {'Authorization': auth_token}
