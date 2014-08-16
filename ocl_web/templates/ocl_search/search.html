@@ -13,11 +13,11 @@
 <!-- Search Categories -->
 
 		<div class="list-group">
-			<a href="{% url 'search' %}?type=concepts{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'concepts' %}active{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Concepts <span class="badge">{{ resourceCount.concepts }}</span></a>
-			<a href="{% url 'search' %}?type=sources{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'sources' %}active{% endif %}"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Sources <span class="badge">{{ resourceCount.sources }}</span></a>
-			<a href="{% url 'search' %}?type=collections{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'collections' %}active{% endif %}"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Collections <span class="badge">{{ resourceCount.collections }}</span></a>
-			<a href="{% url 'search' %}?type=orgs{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'orgs' %}active{% endif %}"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Organizations <span class="badge">{{ resourceCount.orgs }}</span></a>
-			<a href="{% url 'search' %}?type=users{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if searchType == 'users' %}active{% endif %}"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users <span class="badge">{{ resourceCount.users }}</span></a>
+			<a href="{% url 'search' %}?type=concepts{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if search_type == 'concepts' %}active{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Concepts <span class="badge">{{ resource_count.concepts }}</span></a>
+			<a href="{% url 'search' %}?type=sources{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if search_type == 'sources' %}active{% endif %}"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Sources <span class="badge">{{ resource_count.sources }}</span></a>
+			<a href="{% url 'search' %}?type=collections{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if search_type == 'collections' %}active{% endif %}"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Collections <span class="badge">{{ resource_count.collections }}</span></a>
+			<a href="{% url 'search' %}?type=orgs{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if search_type == 'orgs' %}active{% endif %}"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Organizations <span class="badge">{{ resource_count.orgs }}</span></a>
+			<a href="{% url 'search' %}?type=users{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if search_type == 'users' %}active{% endif %}"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users <span class="badge">{{ resource_count.users }}</span></a>
   		</div>
 
 <!-- Filters -->
@@ -25,7 +25,7 @@
 {% if results %}
 		<div role="form">
 
-	{% if searchType == 'concepts' %}
+	{% if search_type == 'concepts' %}
 			<div class="filter-group">
 				<div class="filter-group-header">Concept Class</div>
 				<div class="filter-group-body">
@@ -52,7 +52,7 @@
 				</div>
 			</div>
 
-	{% elif searchType == 'sources' %}
+	{% elif search_type == 'sources' %}
 			<div class="filter-group">
 				<div class="filter-group-header">Source Type</div>
 				<div class="filter-group-body">
@@ -74,7 +74,7 @@
 				</div>
 			</div>
 
-	{% elif searchType == 'collections' %}
+	{% elif search_type == 'collections' %}
 			<div class="filter-group">
 				<div class="filter-group-header">Collection Type</div>
 				<div class="filter-group-body">
@@ -96,7 +96,7 @@
 				</div>
 			</div>
 
-	{% elif searchType == 'orgs' %}
+	{% elif search_type == 'orgs' %}
 			<!--div class="filter-group">
 				<div class="filter-group-header">Location</div>
 				<div class="filter-group-body">
@@ -110,7 +110,7 @@
 				</div>
 			</div-->
 
-	{% elif searchType == 'users' %}
+	{% elif search_type == 'users' %}
 			<!--div class="filter-group">
 				<div class="filter-group-header">Location</div>
 				<div class="filter-group-body">
@@ -144,9 +144,9 @@
 	{% if request.GET.debug %}
 		<div class="row">
 			<div class="col-md-12">
-				<pre><strong>API Search Query:</strong><br />{{ apiSearchQuery|pprint }}</pre>
+				<pre><strong>API Search Query:</strong><br />{{ api_search_query|pprint }}</pre>
 
-				<pre><strong>Response Headers:</strong><br />{{ responseHeaders|pprint }}</pre>
+				<pre><strong>Response Headers:</strong><br />{{ search_response_headers|pprint }}</pre>
 			</div>
 		</div>
 	{% endif %}
@@ -168,11 +168,11 @@
 				  </ul>
 				</div>
 				<div class="btn-group pull-right" style="margin-right:15px;">
-					<a href="{% if pagination.urlPrevious %}{{ pagination.urlPrevious }}{% else %}#{% endif %}" class="btn btn-default btn-sm {% if pagination.urlPrevious %}{% else %}disabled{% endif %}"><strong>&lt;</strong></a>
-					<a href="{% if pagination.urlNext %}{{ pagination.urlNext }}{% else %}#{% endif %}" class="btn btn-default btn-sm {% if pagination.urlNext %}{% else %}disabled{% endif %}"><strong>&gt;</strong></a>
+					<a href="{% if pagination.search_url_prev_page %}{{ pagination.search_url_prev_page }}{% else %}#{% endif %}" class="btn btn-default btn-sm {% if pagination.search_url_prev_page %}{% else %}disabled{% endif %}"><strong>&lt;</strong></a>
+					<a href="{% if pagination.search_url_next_page %}{{ pagination.search_url_next_page }}{% else %}#{% endif %}" class="btn btn-default btn-sm {% if pagination.search_url_next_page %}{% else %}disabled{% endif %}"><strong>&gt;</strong></a>
 				</div>
 				<div class="pull-right" style="margin-right:15px;padding-top:6px;">
-					<strong>{{ pagination.start }}&ndash;{{ pagination.stop }}</strong> of <strong>{{ responseHeaders.num_found }}</strong> {{ searchTypeName }}{{ responseHeaders.num_found|pluralize }}
+					<strong>{{ pagination.results_start_index }}&ndash;{{ pagination.results_stop_index }}</strong> of <strong>{{ search_response_headers.num_found }}</strong> {{ search_type_name }}{{ search_response_headers.num_found|pluralize }}
 				</div>
 				<div class="btn-group">
 				  &nbsp;&nbsp;
@@ -185,7 +185,7 @@
 				  &nbsp;&nbsp;
 				</div>
 {% else %}
-				<h4>We found 0 {{ searchTypeName }}{{ 0|pluralize }}.</h4>
+				<h4>We found 0 {{ search_type_name }}{{ 0|pluralize }}.</h4>
 {% endif %}
 			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
@@ -195,7 +195,7 @@
 {% for result in results %}
 		<div class="row row-search-result">
 
-	{% if searchType == 'concepts' %}
+	{% if search_type == 'concepts' %}
 			<div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
 			</div>
@@ -230,7 +230,7 @@
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 
-	{% elif searchType == 'sources' %}
+	{% elif search_type == 'sources' %}
 			<div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
 			</div>
@@ -259,7 +259,7 @@
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 
-	{% elif searchType == 'collections' %}
+	{% elif search_type == 'collections' %}
 			<div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
 			</div>
@@ -288,7 +288,7 @@
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 
-	{% elif searchType == 'orgs' %}
+	{% elif search_type == 'orgs' %}
 			<div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
 			</div>
@@ -327,7 +327,7 @@
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 
-	{% elif searchType == 'users' %}
+	{% elif search_type == 'users' %}
 			<div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
 			</div>
@@ -373,15 +373,15 @@
 
 <!-- Pagination -->
 
-{% if results and pagination.totalPages > 1 %}
+{% if results and pagination.total_pages > 1 %}
 	<div class="row row-pagination">
 		<ul class="pagination">
-		    <li {% if pagination.currentPage == 1 %}class="disabled"{% endif %}><a href="#">&laquo;</a></li>
-			{% for p in pagination.pages %}
-				<li {% if p == '...'%}class="disabled"{% elif p == pagination.currentPage %}class="active"{% endif %}><a href="#">{{ p }}</a></li>
+		    <li {% if pagination.current_page == 1 %}class="disabled"{% endif %}><a href="#">&laquo;</a></li>
+			{% for p in pagination.paginator_bar %}
+				<li {% if p == '...'%}class="disabled"{% elif p == pagination.current_page %}class="active"{% endif %}><a href="#">{{ p }}</a></li>
 			{% endfor %}
-		    <li {% if pagination.currentPage == pagination.totalPages %}class="disabled"{% endif %}><a href="#">&raquo;</a></li>
-		  <li>Page {{ pagination.currentPage }} of {{ pagination.totalPages }}</li>
+		    <li {% if pagination.current_page == pagination.total_pages %}class="disabled"{% endif %}><a href="#">&raquo;</a></li>
+		  <li>Page {{ pagination.current_page }} of {{ pagination.total_pages }}</li>
 		</ul>
 	</div>
 {% endif %}
