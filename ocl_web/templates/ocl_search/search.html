@@ -373,15 +373,14 @@
 
 <!-- Pagination -->
 
-{% if results and pagination.total_pages > 1 %}
+{% if pagination.show_paginator_bar %}
 	<div class="row row-pagination">
 		<ul class="pagination">
-		    <li {% if pagination.current_page == 1 %}class="disabled"{% endif %}><a href="#">&laquo;</a></li>
+		    <li {% if pagination.current_page == 1 %}class="disabled"{% endif %}><a href="{{ pagination.search_url_prev_page }}">&laquo;</a></li>
 			{% for p in pagination.paginator_bar %}
-				<li {% if p == '...'%}class="disabled"{% elif p == pagination.current_page %}class="active"{% endif %}><a href="#">{{ p }}</a></li>
+				<li {% if p.disabled %}class="disabled"{% elif p.current_page %}class="active"{% endif %}><a href="{{ p.url }}">{{ p.display }}</a></li>	
 			{% endfor %}
-		    <li {% if pagination.current_page == pagination.total_pages %}class="disabled"{% endif %}><a href="#">&raquo;</a></li>
-		  <li>Page {{ pagination.current_page }} of {{ pagination.total_pages }}</li>
+		    <li {% if pagination.current_page == pagination.total_pages %}class="disabled"{% endif %}><a href="{{ pagination.search_url_next_page }}">&raquo;</a></li>
 		</ul>
 	</div>
 {% endif %}

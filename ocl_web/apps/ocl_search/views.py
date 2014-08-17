@@ -96,6 +96,7 @@ class HomeSearchView(TemplateView):
 
         # Setup pagination
         paginator_bar = []
+        show_paginator_bar = False
         results_display_start = results_display_stop = 0
         num_pages = current_page = 0
         page_url_prev = ''
@@ -121,27 +122,19 @@ class HomeSearchView(TemplateView):
                 page_params_next['page'] = current_page + 1
                 page_url_next = page_url + '?' + urllib.urlencode(page_params_next)
 
-            # HACK: Setup paginator bar
-            x = 0
-            while x < min(num_pages, 2):
-                x = x + 1
-                paginator_bar.append(x)
-            if current_page > 3:
-                paginator_bar.append('...')
-            if current_page > 2:
-                paginator_bar.append(current_page)
-            if num_pages > 2 and current_page < (num_pages - 2):
-                paginator_bar.append('...')
-            if num_pages > 2 and current_page < (num_pages - 1):
-                paginator_bar.append(num_pages - 1)
-            if num_pages > 2 and current_page < num_pages:
-                paginator_bar.append(num_pages)
+            # Build paginator bar
+            if num_pages > 1:
+                show_paginator_bar = True
+                paginator_bar = self.buildPaginatorBar(base_url=page_url, 
+                    default_url_params=self.request.GET, num_pages=num_pages, 
+                    current_page=current_page)
 
         pagination = {
             'results_start_index': results_display_start,
             'results_stop_index': results_display_stop,
             'current_page': current_page,
             'total_pages': num_pages,
+            'show_paginator_bar': show_paginator_bar,
             'paginator_bar': paginator_bar,
             'search_url_next_page': page_url_next,
             'search_url_prev_page': page_url_prev
@@ -167,5 +160,47 @@ class HomeSearchView(TemplateView):
         context['search_response_headers'] = search_response_headers
         context['resource_count'] = resource_count
         context['pagination'] = pagination
-
         return context
+
+    def buildPaginatorBar(self, base_url='', default_url_params={}, 
+        num_pages=1, current_page=1):
+        paginator_bar = []
+        for i in range(1, 3):
+            if i <= num_pages:
+                paginator_bar.append(self.buildPaginatorPage(base_url=base_url, 
+                    default_url_params=default_url_params, display=i, page_number=i, 
+                    current_page=current_page))
+        if (current_page - 4) > 3:
+            paginator_bar.append(self.buildPaginatorPage(display='...', disabled=True))
+        for i in range(current_page - 4, current_page + 5):
+            if i <= num_pages and i > 2:
+                paginator_bar.append(self.buildPaginatorPage(base_url=base_url, 
+                    default_url_params=default_url_params, display=i, page_number=i, 
+                    current_page=current_page))
+        if num_pages - 2 > current_page + 4 + 1:
+            paginator_bar.append(self.buildPaginatorPage(display='...', disabled=True))
+        for i in range (num_pages - 1, num_pages + 1):
+            if i > current_page + 4:
+                paginator_bar.append(self.buildPaginatorPage(base_url=base_url, 
+                    default_url_params=default_url_params, display=i, page_number=i, 
+                    current_page=current_page))
+        return paginator_bar
+
+    def buildPaginatorPage(self, base_url='', default_url_params=None, display='', 
+        page_number=None, current_page=None, disabled=False):
+        paginator_page = {
+            'display': display
+        }
+        if page_number is not None:
+            paginator_page['page_num'] = page_number
+            if page_number == current_page:
+                paginator_page['current_page'] = True
+        if disabled:
+            paginator_page['disabled'] = True
+        else:
+            url_params = default_url_params.copy()
+            if page_number is not None:
+                url_params['page'] = page_number
+            paginator_page['url'] = base_url + '?' + urllib.urlencode(url_params)
+        return paginator_page
+ 
