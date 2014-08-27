@@ -225,7 +225,7 @@
 						&nbsp;&nbsp;
 						<br /-->
 					{% endcomment %}
-					<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated {{ result.updated_on }}3 years ago</span>
+					<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|date:"d-M-Y" }}</span>
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -239,7 +239,7 @@
 			</div>
 			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="{% url 'source-detail' org=result.owner source=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
+					<a href="{% url 'source-detail' org=result.owner source=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="{% url 'source-detail' org=result.owner source=result.id %}#concepts" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;?</a>
 				</div>
@@ -252,9 +252,8 @@
 				</a></h4>
 
 				<p>
-					<!--span class="caption">{{ result.name }}</span-->
 					{% if result.description %}<p>{{ result.description }}</p>{% endif %}
-					{% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updated_on }}</span>{% endif %}
+					{% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|date:"d-M-Y" }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -283,7 +282,7 @@
 				{% if result.description %}<p>{{ result.description }}</p>{% endif %}
 
 				<p>
-					{% if result.updated_on %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updated_on }}</span>{% endif %}
+					{% if result.updated_on %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|date:"d-M-Y" }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -299,14 +298,12 @@
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="{% url 'org-detail' org=result.id %}#members" title="Members in organization"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.members }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="{% url 'org-detail' org=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
+					<!--a href="{% url 'org-detail' org=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;-->
 					<a href="{% url 'org-detail' org=result.id %}#sources" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="{% url 'org-detail' org=result.id %}#collections" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;?</a>
+					<a href="{% url 'org-detail' org=result.id %}#collections" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections }}</a>
 				</div>
-
-				<!--h4><a href="{% url 'org-detail' org=result.id %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.id }}</span></a></h4-->
 
 				<h4><a href="{% url 'org-detail' org=result.id %}" style="text-decoration: none;">
 					<span class="resource-label small organization">
@@ -316,12 +313,11 @@
 				</a></h4>
 
 				<p>
-					<!--span class="concept-name">{{ result.name }}</span><br /-->
-					{% if result.description %}<p>{{ result.description }}</p>{% endif %}
+					{% if result.description %}<p>{{ result.description|truncatechars:180 }}</p>{% endif %}
 					<span class="text-muted small">
-						<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;[Location]
-						&nbsp;&nbsp;&nbsp;
-						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created {{ result.createdOn }}
+						{% if result.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ result.location }}
+						&nbsp;&nbsp;&nbsp;{% endif %}
+						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ result.created_on|date:"d-M-Y" }}
 					</span>
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
@@ -338,14 +334,12 @@
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="{% url 'user' %}#orgs" title="Organizations"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.orgs }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="{% url 'user' %}#followers" title="Followers"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
+					<!--a href="{% url 'user' %}#followers" title="Followers"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;-->
 					<a href="{% url 'user' %}#sources" title="Public sources owned by user"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="{% url 'user' %}#collections" title="Public collections owned by user"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;?</a>
+					<a href="{% url 'user' %}#collections" title="Public collections owned by user"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections }}</a>
 				</div>
-
-				<!--h4><a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.username }}</a></h4-->
 
 				<h4><a href="{% url 'user' %}" style="text-decoration: none;">
 					<span class="resource-label small user">
@@ -355,11 +349,10 @@
 				</a></h4>
 
 				<p>
-					<!--span class="caption">{{ result.name }}</span><br /-->
 					<span class="text-muted small">
 						{% if result.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ result.location }}
 						&nbsp;&nbsp;&nbsp;{% endif %}
-						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined {{ result.createdOn }}
+						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined on {{ result.created_on|date:"M d, Y" }}
 					</span>
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
@@ -368,7 +361,7 @@
 	{% endif %}
 		</div>
 {% empty %}
-
+	
 {% endfor %}
 
 <!-- Pagination -->
