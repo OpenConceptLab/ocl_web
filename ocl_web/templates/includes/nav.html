@@ -5,6 +5,14 @@
     <form class="navbar-form navbar-left" role="search" action="{% url 'search'%}" method="get">
       <div class="input-group input-group-sm">
         <input name="q" type="text" class="form-control" placeholder="Search OCL" value="{{ request.GET.q }}" />
+
+        {% if request.GET.type %}
+          <input type="hidden" name="type" value="{{ request.GET.type }}" />
+        {% endif %}
+        {% if request.GET.debug %}
+          <input type="hidden" name="debug" value="{{ request.GET.debug }}" />
+        {% endif %}
+
         <span class="input-group-btn">
           <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
         </span>

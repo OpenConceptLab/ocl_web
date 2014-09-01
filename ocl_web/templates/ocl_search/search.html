@@ -25,110 +25,22 @@
 {% if results %}
 		<div role="form">
 
-	{% if search_type == 'concepts' %}
+	<!--pre style="font-size:7pt;">{{ search_filter|pprint }}</pre-->
+	{% if search_filter %}
+		{% for filter_key, filter_data in search_filter.items %}
 			<div class="filter-group">
-				<div class="filter-group-header">Concept Class</div>
+				<div class="filter-group-header">{{ filter_data.name }}</div>
 				<div class="filter-group-body">
-					<div class="checkbox"><label><input type="checkbox"> Anatomy</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Diagnosis</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Drug</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Finding</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Symptom</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Test</label></div>
-					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+				{% for f in filter_data.options %}
+					<div class="checkbox"><label><input type="checkbox"><span style="font-size:9pt;">{{ f }}</span></label></div>
+				{% endfor %}
+				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
 				</div>
 			</div>
-
-			<div class="filter-group">
-				<div class="filter-group-header">Datatypes</div>
-				<div class="filter-group-body">
-					<div class="checkbox"><label><input type="checkbox"> Boolean</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Coded</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Date</label></div>
-					<div class="checkbox"><label><input type="checkbox"> N/A</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Numeric</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Text</label></div>
-					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
-				</div>
-			</div>
-
-	{% elif search_type == 'sources' %}
-			<div class="filter-group">
-				<div class="filter-group-header">Source Type</div>
-				<div class="filter-group-body">
-					<div class="checkbox"><label><input type="checkbox"> Interface Terminology</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Reference Terminology</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Indicators</label></div>
-					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
-				</div>
-			</div>
-
-			<div class="filter-group">
-				<div class="filter-group-header">Language</div>
-				<div class="filter-group-body">
-					<div class="checkbox"><label><input type="checkbox"> English <em><small>[en]</small></em></label></div>
-					<div class="checkbox"><label><input type="checkbox"> French <em><small>[fr]</small></em></label></div>
-					<div class="checkbox"><label><input type="checkbox"> Spanish <em><small>[es]</small></em></label></div>
-					<div class="checkbox"><label><input type="checkbox"> Swahili <em><small>[sw]</small></em></label></div>
-					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
-				</div>
-			</div>
-
-	{% elif search_type == 'collections' %}
-			<div class="filter-group">
-				<div class="filter-group-header">Collection Type</div>
-				<div class="filter-group-body">
-					<div class="checkbox"><label><input type="checkbox"> Dictionary Subset</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Value Set</label></div>
-					<div class="checkbox"><label><input type="checkbox"> ...</label></div>
-					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
-				</div>
-			</div>
-
-			<div class="filter-group">
-				<div class="filter-group-header">Language</div>
-				<div class="filter-group-body">
-					<div class="checkbox"><label><input type="checkbox"> English <em><small>[en]</small></em></label></div>
-					<div class="checkbox"><label><input type="checkbox"> French <em><small>[fr]</small></em></label></div>
-					<div class="checkbox"><label><input type="checkbox"> Spanish <em><small>[es]</small></em></label></div>
-					<div class="checkbox"><label><input type="checkbox"> Swahili <em><small>[sw]</small></em></label></div>
-					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
-				</div>
-			</div>
-
-	{% elif search_type == 'orgs' %}
-			<!--div class="filter-group">
-				<div class="filter-group-header">Location</div>
-				<div class="filter-group-body">
-					<div class="checkbox"><label><input type="checkbox"> Africa</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Asia</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Australia</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Europe</label></div>
-					<div class="checkbox"><label><input type="checkbox"> North America</label></div>
-					<div class="checkbox"><label><input type="checkbox"> South America</label></div>
-					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
-				</div>
-			</div-->
-
-	{% elif search_type == 'users' %}
-			<!--div class="filter-group">
-				<div class="filter-group-header">Location</div>
-				<div class="filter-group-body">
-					<div class="checkbox"><label><input type="checkbox"> Africa</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Asia</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Australia</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Europe</label></div>
-					<div class="checkbox"><label><input type="checkbox"> North America</label></div>
-					<div class="checkbox"><label><input type="checkbox"> South America</label></div>
-					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
-				</div>
-			</div-->
-
-
+		{% endfor %}
 	{% endif %}
 
 		</div> <!-- end div:role=form -->
-
 {% endif %}
 
 <!-- End left column -->
@@ -144,6 +56,8 @@
 	{% if request.GET.debug %}
 		<div class="row">
 			<div class="col-md-12">
+				<pre><strong>API Search Params:</strong><br />{{ search_params|pprint }}</pre>
+
 				<pre><strong>API Search Query:</strong><br />{{ api_search_query|pprint }}</pre>
 
 				<pre><strong>Response Headers:</strong><br />{{ search_response_headers|pprint }}</pre>
@@ -203,11 +117,11 @@
 				<span class="glyphicon glyphicon-tag search-result-icon"></span>
 			</div>
 			<div class="col-md-10 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
+				<!--div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}#collections" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;?</a>
-				</div>
+				</div-->
 
 				<h4><a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
 					<span class="resource-label small concept">
@@ -239,9 +153,9 @@
 			</div>
 			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="{% url 'source-detail' org=result.owner source=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="{% url 'source-detail' org=result.owner source=result.id %}#concepts" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;?</a>
+					<!--a href="{% url 'source-detail' org=result.owner source=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;-->
+					<a href="{% url 'source-detail' org=result.owner source=result.id %}#concepts" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts }}</a>
 				</div>
 
 				<h4><a href="{% url 'source-detail' org=result.owner source=result.short_code %}" style="text-decoration: none;">
@@ -252,7 +166,7 @@
 				</a></h4>
 
 				<p>
-					{% if result.description %}<p>{{ result.description }}</p>{% endif %}
+					{% if result.description %}{{ result.description }}<br />{% endif %}
 					{% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|date:"d-M-Y" }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
@@ -267,9 +181,9 @@
 			</div>
 			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="{% url 'collection-detail' org=result.owner collection=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="{% url 'collection-detail' org=result.owner collection=result.id %}#concepts" title="Concepts in collection"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;?</a>
+					<!--a href="{% url 'collection-detail' org=result.owner collection=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;-->
+					<a href="{% url 'collection-detail' org=result.owner collection=result.id %}#concepts" title="Concepts in collection"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts }}</a>
 				</div>
 
 				<h4><a href="{% url 'collection-detail' org=result.owner collection=result.id %}" style="text-decoration: none;">
@@ -279,9 +193,8 @@
 					</span>
 				</a></h4>
 
-				{% if result.description %}<p>{{ result.description }}</p>{% endif %}
-
 				<p>
+					{% if result.description %}{{ result.description }}<br />{% endif %}
 					{% if result.updated_on %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|date:"d-M-Y" }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}

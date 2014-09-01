@@ -46,14 +46,106 @@ class HomeSearchView(TemplateView):
             'users': 'user'
         }
 
+        # URL parameters that can be passed on to the search API (excluding paging)
+        allowed_api_parameters = {
+            'concept_class': 'concept_class',
+            'datatype': 'concept_class',
+            'source_type': 'concept_class',
+            'collection_type': 'concept_class',
+            'locale': 'concept_class',
+            'q': 'concept_class'
+        }
+
+        # Setup filters
+        # Note: this should be automatically populated based on the data
+        search_filter = {}
+        search_filter['concepts'] = {}
+        search_filter['concepts']['concept_class'] = {
+            'filter_id': 'concept_class',
+            'name': 'Concept Classes',
+            'options': [
+                'Anatomy',
+                'Diagnosis',
+                'Drug',
+                'Finding',
+                'Symptom',
+                'Test',
+                'Procedure',
+                'Indicator',
+                'Frequency',
+                'Misc',
+                'ConvSet',
+                'Organism',
+                'Question',
+                'Program'
+            ]
+        }
+        search_filter['concepts']['datatype'] = {
+            'filter_id': 'datatype',
+            'name': 'Datatypes',
+            'options': [
+                'Boolean',
+                'Coded',
+                'Complex',
+                'Date',
+                'Datetime',
+                'Document',
+                'None',
+                'Numeric',
+                'Rule',
+                'Structured Numeric',
+                'Text',
+                'Time'
+            ]
+        }
+        search_filter['sources'] = {}
+        search_filter['sources']['source_type'] = {
+            'filter_id': 'source_type',
+            'name': 'Source Types',
+            'options': [
+                'Dictionary',
+                'Interface Terminology',
+                'Indicator Registry'
+            ]
+        }
+        search_filter['sources']['locale'] = {
+            'filter_id': 'locale',
+            'name': 'Locales',
+            'options': [
+                'en', 'sw', 'fr', 'sp', 'ru'
+            ]
+        }
+        search_filter['collections'] = {}
+        search_filter['collections']['collection_type'] = {
+            'filter_id': 'collection_type',
+            'name': 'Collection Types',
+            'options': [
+                'Subset',
+                'Starter Set'
+            ]
+        }
+        search_filter['collections']['locale'] = {
+            'filter_id': 'locale',
+            'name': 'Locales',
+            'options': [
+                'en', 'sw', 'fr', 'sp', 'ru'
+            ]
+        }
+        search_filter['users'] = {}
+        search_filter['orgs'] = {}
+
         # Setup the resource count dictionary        
         resource_count = {}
         for resource_type in search_type_names:
             resource_count[resource_type] = 0
 
+        # Copy the GET parameters
+        get_params = self.request.GET.copy()
+
         # Default search type if missing or invalid
-        if 'type' in self.request.GET and self.request.GET['type'] in search_type_names:
-            search_type = self.request.GET['type']
+        if 'type' in get_params and get_params['type'] in search_type_names:
+            search_type = get_params['type']
+            del get_params['type']
         else:
             search_type = default_search_type
 
@@ -61,11 +153,11 @@ class HomeSearchView(TemplateView):
         search_params = {
             'verbose': 'true'
         }
-        if 'q' in self.request.GET:
-            search_params['q'] = self.request.GET['q']
-        if 'page' in self.request.GET:
+        # pagination parameters
+        if 'page' in get_params:
             try:
-                search_params['page'] = current_page = int(self.request.GET['page'])
+                search_params['page'] = current_page = int(get_params['page'])
+                del get_params['page']
             except:
                 current_page = 1
         if 'limit' in self.request.GET:
@@ -75,6 +167,11 @@ class HomeSearchView(TemplateView):
                 search_params['limit'] = num_per_page = default_num_per_page
         else:
             search_params['limit'] = num_per_page = default_num_per_page
+        # all the other parameters
+        for key in get_params.keys():
+            if key in allowed_api_parameters:
+                search_params[key] = get_params.pop(key)
+                search_params[key] = self.request.GET[key]
 
         # Setup API request headers
         search_request_headers = {'Authorization': auth_token}
@@ -163,6 +260,8 @@ class HomeSearchView(TemplateView):
                     resource_count[resource_type] = 0
 
         # Add data to the context
+        context['search_filter'] = search_filter[search_type]
+        context['search_params'] = search_params
         context['api_search_query'] = search_url
         context['results'] = search_results
         context['search_type'] = search_type
