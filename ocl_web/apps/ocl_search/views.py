@@ -23,7 +23,7 @@ class HomeSearchView(TemplateView):
 
         # Defaults
         default_search_type = 'concepts'
-        default_num_per_page = 2
+        default_num_per_page = 5
         host = settings.API_HOST
         auth_token = settings.API_TOKEN
         page_url = '/search/'
