@@ -254,7 +254,7 @@
 					<a href="{% url 'user' %}#collections" title="Public collections owned by user"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections }}</a>
 				</div>
 
-				<h4><a href="{% url 'user' %}" style="text-decoration: none;">
+				<h4><a href="{% url 'users:detail' result.username %}" style="text-decoration: none;">
 					<span class="resource-label small user">
 						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-user"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ result.username }}</span>
 						</span><span class="resource-label-name">{{ result.name }}</span>

@@ -49,6 +49,7 @@ class Common(Configuration):
         'crispy_forms',  #  Form layouts
         'avatar',  #  For user avatars
         'floppyforms',  #  Form layouts and more widgets
+        'bootstrap3',
     )
 
     # Apps specific for this project go here.
@@ -228,6 +229,7 @@ class Common(Configuration):
     ACCOUNT_AUTHENTICATION_METHOD = "username"
     ACCOUNT_EMAIL_REQUIRED = True
     ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+    ACCOUNT_SIGNUP_FORM_CLASS = 'users.forms.UserForm'
     ########## END AUTHENTICATION CONFIGURATION
 
     ########## Custom user app defaults

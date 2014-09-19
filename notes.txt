@@ -1,0 +1,130 @@
+database:   
+
+or
+postgis://USER:PASSWORD@HOST:PORT/NAME
+
+export DATABASE_URL='sqlite:///ocl.db'
+
+export OCL_API_TOKEN='6ca1e714a530fe29f0ab69d05dd5f730fc8a15'9 
+export OCL_API_HOST='65.99.230.144'
+
+
+Questions
+===========
+
+1. user
+---------
+* where is the hook to create the backend user?
+* does not exists yet. CUrrently pre-gen admin and anonymous user token
+* need to add create user code to create auth code
+
+General
+---------
+where are we putting the CRUD actions?
+- add is in the "+"
+- delete inside object detail view?
+
+Others
+--------
+- "home" link
+- time reference (updated N days ago, smart time lapse)
+
+user
+-------
+- timezone and locale 
+
+general
+---------
+- new resources have dynamic user extra data fields
+-
+
+
+list
+----------
+- user settings
+- sorting, does it work yet at API? (Jon)
+- trailing links at end of org etc (members, etc)
+- user detail link under user list
+- user data should come from the API
+- user data:
+- - repositories, sources, collections (ownership vs participate)
+
+- org
+- - This is the main UI template
+- - use tab to show details | collections | sources
+- - sorting is not important
+- - all data is public for now
+- - gear/edit by owner
+- - deacdtivate(delete) on the edit page
+- - github uses filter for the tab concept
+- - add new member (existing user) to org, users to org is many-to-many
+- - Q: "owner" of a user is the creator for now
+- - org has only audit fields but not versioning (created by, created on etc)
+- - add new need dynamic validation, uniqueness
+
+source
+- search source not yet working
+- source related text (about, Term of use)
+- search by version
+- tabs: details | concepts | versions
+- about can be a link
+- details tab, inside support edit/delete
+- respect "public_vew" flag, if none do not show details, if edit allow world edit
+- new: owner choice = [me, or org that I am a member of]
+- new: source type: dropdown+new
+
+Concepts
+- detail view: 
+- - audit history, retire(delete), add new (default to current source)
+- language (system wide default)
+- how to deal with multiple language content (show all for now)
+- extra data editing -- support a better editing -- add just one without replace all of them
+
+
+mapping
+- top level resource
+- but has to tied to a concept
+- relationship starts with a fixed set (same as, narrower etc)
+- from source has to be in our database
+- but "to source" can be outside data source
+
+- some sort of picker widget that takes drop down to find the "to source"
+
+- class and datatype - has starter set from snomed, but allow user created values, just stored as text fields. (dropdown primed with starter set)
+- update comment for versioning
+- when mapping is changed for a "from source concept", the concept version is incremented
+
+collections
+- tab: details, concept reference, concept, atom feeds
+- 
+
+atom feeds
+-----------
+concepts / collections and sources
+
+
+
+
+Questions 9/17
+-----------------
+Something strange about migration under users...?
+
+
+allauth
+-----------
+- signals -- signed_up vs email_confirmed which only gives email_address, not user
+
+forms
+-------
+floppyform vs crispyform vs...
+
+aaron
+------
+rest_framework -- head request does not pass the query on
+direct query to mongo
+machine access - ssh key
+purge=true for delete
+find out where we are with atom feed
+
+
+
