@@ -11,11 +11,11 @@ class UserTestCase(TestCase):
 #        ocl = OCLapi(debug=True)
         ocl = OCLapi()
 
-        username = 'testuser998'
+        username = 'testuser997'
         data = {
                 "username": username,
-                "name": "Test User998",
-                "email": "testuser998@me.com",
+                "name": "Test User997",
+                "email": "testuser997@me.com",
                 'hashed_password': "aaaaaa",
                 "company": "Some Company",
                 "location": "Eldoret, Kenya",
