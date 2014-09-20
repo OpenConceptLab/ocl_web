@@ -78,3 +78,4 @@ Run these commands to deploy the project to Heroku:
     heroku run python ocl_web/manage.py syncdb --noinput --settings=config.settings
     heroku run python ocl_web/manage.py migrate --settings=config.settings
     heroku run python ocl_web/manage.py collectstatic --settings=config.settings
+
