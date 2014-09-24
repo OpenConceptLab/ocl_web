@@ -192,15 +192,6 @@ class HomeSearchView(TemplateView):
             search_results = []
             search_response_headers = None
 
-        # Results pre-processing
-        if search_response:
-            for r in search_results:
-                # Convert dates to useful format
-                if r['created_on']:
-                    r['created_on'] = dateutil.parser.parse(r['created_on'])
-                if r['updated_on']:
-                    r['updated_on'] = dateutil.parser.parse(r['updated_on'])
-
         # Setup pagination
         paginator_bar = []
         show_paginator_bar = False

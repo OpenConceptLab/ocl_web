@@ -128,3 +128,18 @@ find out where we are with atom feed
 
 
 
+Internationalization
+----------------------
+
+* Remember to use \_() in model and form labels.
+
+QUESTIONS 9/23
+------------
+- Source: ID -- is this unique? Unique across?
+- source -- must be owned by either a org or a user?
+
+
+Concept Issues
+================
+- can be created and owned by source+usr or source+org
+- depending on 'owner type'

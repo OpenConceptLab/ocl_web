@@ -280,8 +280,9 @@ form div.input-group {
 }
 
 .org-privacy {
-  position: absolute;
-  font-size: 11pt;
+/*  position: absolute; */
+/* Just a fixed font/color tag? */
+  font-size: 8pt;
   font-weight: normal;
   text-transform: uppercase;
   color: #b9b9b9;

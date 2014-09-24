@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load ocl_tags %}
 {% block content %}
 
 <!-- Start content row -->
@@ -139,7 +139,7 @@
 						&nbsp;&nbsp;
 						<br /-->
 					{% endcomment %}
-					<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|date:"d-M-Y" }}</span>
+					<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -167,7 +167,7 @@
 
 				<p>
 					{% if result.description %}{{ result.description }}<br />{% endif %}
-					{% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|date:"d-M-Y" }}</span>{% endif %}
+					{% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -195,7 +195,7 @@
 
 				<p>
 					{% if result.description %}{{ result.description }}<br />{% endif %}
-					{% if result.updated_on %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|date:"d-M-Y" }}</span>{% endif %}
+					{% if result.updated_on %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -230,7 +230,7 @@
 					<span class="text-muted small">
 						{% if result.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ result.location }}
 						&nbsp;&nbsp;&nbsp;{% endif %}
-						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ result.created_on|date:"d-M-Y" }}
+						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ result.created_on|smart_date }}
 					</span>
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
@@ -265,7 +265,7 @@
 					<span class="text-muted small">
 						{% if result.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ result.location }}
 						&nbsp;&nbsp;&nbsp;{% endif %}
-						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined on {{ result.created_on|date:"M d, Y" }}
+						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined on {{ result.created_on|smart_date}}
 					</span>
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}

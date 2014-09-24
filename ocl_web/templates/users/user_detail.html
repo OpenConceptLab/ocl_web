@@ -32,13 +32,17 @@
       <div class="row">
         <div class="pull-right">
           <a class="btn btn-primary" href="{% url 'users:update' ocl_user.username %}">Edit Profile</a>
-          <a class="btn btn-primary" href="{% url 'users:update' ocl_user.username %}">My Info</a>
-          <a class="btn btn-primary" href="{% url 'account_email' %}">E-Mail</a>
-          <a class="btn btn-info" href="{% url 'avatar_change' %}">Avatar</a>
+          <a class="btn" href="{% url 'users:update' ocl_user.username %}">My Info</a>
+          <a class="btn" href="{% url 'account_email' %}">E-Mail</a>
+          <a class="btn" href="{% url 'avatar_change' %}">Avatar</a>
         </div>
       </div>
       {% endif %}
       <!-- End Action buttons -->
+
+      <div class="row">
+        <p></p>
+      </div>
 
       <div class="row">
         <div class="col-sm-6">
@@ -46,6 +50,8 @@
             <div class="list-group-item"><h4>Sources</h4></div>
             {% for source in sources %}
               <a class="list-group-item" href="#">{{ source.name }}<br />{{ source|pprint }}</a>
+            {% empty %}
+            <span class="list-group-item">No Sources.</span>
             {% endfor %}
           </div>
         </div>
@@ -54,6 +60,8 @@
             <div class="list-group-item"><h4>Collections</h4></div>
             {% for collection in collections %}
               <a class="list-group-item" href="#">{{ collection.name }}<br />{{ collection|pprint }}</a>
+            {% empty %}
+            <span class="list-group-item">No collections.</span>
             {% endfor %}
           </div>
         </div>

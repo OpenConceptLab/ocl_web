@@ -3,13 +3,21 @@
 from django.test import TestCase
 
 from libs.ocl import OCLapi
+from users.models import User
+
+class FakeRequest(object):
+    def __init__(self):
+        self.session = {}
 
 class UserTestCase(TestCase):
+
+    username = 'testuser996'
+    password = 'pbkdf2_sha256$12000$txd3yUA9l4mv$88BDS8RweS3vGcrQtVdRKkcUcypHVsOZ/NczuPuyQxA='
 
     def test_create_user(self):
 
 #        ocl = OCLapi(debug=True)
-        ocl = OCLapi()
+        ocl = OCLapi(admin=True)
 
         username = 'testuser997'
         data = {
@@ -39,9 +47,82 @@ class UserTestCase(TestCase):
         print 'get auth:', result.status_code
         if len(result.text) > 0: print result.json()
 
-#        result = ocl.delete_user(username)
-#        print result
-#        print result, result.status_code, # result.json()
 
-#        result = ocl.reactivate_user(username)
-#        print result
+    def test_user_login(self):
+        """ Note that password is hardcoded for now.
+         """
+        ocl = OCLapi(admin=True, debug=True)
+
+        user = User.objects.create_user(username=self.username)
+        user.password=self.password
+        user.save()
+
+        result = ocl.get_user_auth(user.username, user.password)
+        print 'get auth:', result.status_code
+        if len(result.text) > 0: print result.json()
+
+
+    def test_user_update(self):
+        """ Test user partial data update.
+            Need to login first with hard coded password.
+         """
+        ocl = OCLapi(admin=True, debug=True)
+
+        user = User.objects.create_user(username=self.username)
+        user.password=self.password
+        user.save()
+
+        result = ocl.get_user_auth(user.username, user.password)
+        print 'get auth:', result.status_code
+        if len(result.text) > 0: print result.json()
+
+        request = FakeRequest()
+        ocl.save_auth_token(request, result.json())
+
+
+        ocl = OCLapi(request, debug=True)
+        print ocl.get('users', user.username).json()
+
+        data = {'company': 'company one'}
+        result = ocl.post('user', **data)
+        print result.status_code
+        if len(result.text) > 0: print result.json()
+
+    def test_concept_create(self):
+        """ Test concept create
+            Need to login first with hard coded password.
+         """
+        ocl = OCLapi(admin=True, debug=True)
+
+        user = User.objects.create_user(username=self.username)
+        user.password=self.password
+        user.save()
+
+        result = ocl.get_user_auth(user.username, user.password)
+        print 'get auth:', result.status_code
+        if len(result.text) > 0: print result.json()
+
+        request = FakeRequest()
+        ocl.save_auth_token(request, result.json())
+
+
+        ocl = OCLapi(request, debug=True)
+        org_id = 'TESTORG1'
+        source_id = 'S1'
+
+
+        data = {
+            'id': 'CTEST001',
+            'concept_class': 'Diagnosis',
+            'datatype': 'String',
+            }
+        names = [{
+            'name': 'concept name',
+            'locale': 'en',
+            },
+            ]
+        result = ocl.create_concept(org_id, source_id, data, names=names)
+        print result.status_code
+        print result
+        if len(result.text) > 0: print result.json()        
+                        

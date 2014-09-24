@@ -2,11 +2,14 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
+from django.core.urlresolvers import reverse
+
 import requests
 from .forms import OrganizationCreateForm
 from libs import ocl
-from django.core.urlresolvers import reverse
 
+
+from libs.ocl import OCLapi
 
 class OrganizationDetailView(TemplateView):
 
@@ -69,11 +72,20 @@ class OrganizationCreateView(FormView):
         org_id = form.cleaned_data.pop('short_name')
         name = form.cleaned_data.pop('full_name')
 
-        results = ocl.Org.create(org_id, name, **form.cleaned_data)
+        api = OCLapi(self.request, debug=True)
+
+        data = {
+            'id': org_id,
+            'name': name,
+        }
+        data.update(form.cleaned_data)
+        print form.cleaned_data
+        print data
+        result = api.create_org(data)
 
         # TODO:  Catch exceptions that will be raised by
         # Ocl lib.
-        if results.ok:
+        if result.ok:
             return redirect(reverse('org-detail', kwargs={'org':org_id}))
 
         # TODO:  Add error messages from API to form.

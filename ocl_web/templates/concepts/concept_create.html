@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}{% trans "Add Concept" %}{% endblock %}
+{% block content %}
+
+	<h3>
+		<a href="{% url 'org-detail' org=source.owner %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ source.owner }}</a>
+		/
+		<a href="{% url 'source-detail' org=source.owner source=source.id %}"<span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ source.id }}</span></a>
+	</h3>
+
+<h1><span class="glyphicon glyphicon-tag" style="color:#e5e5e5;"></span>&nbsp;&nbsp;Add Concept</h1>
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+
+
+
+<form class="form-horizontal" id="concept_create_form" method="post" action=".">
+  {% csrf_token %}
+
+  <div class="form-group required"><label class="col-md-2 control-label">Source</label>
+    <div class="col-md-4">{{ source.name }}</div></div>
+
+  {% bootstrap_form form layout="horizontal" %}
+
+
+  {% buttons layout="horizontal" %}
+  <button type="submit" class="btn btn-primary">
+    {% trans "Add" %}
+  </button>
+  {% endbuttons %}
+
+    </form>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

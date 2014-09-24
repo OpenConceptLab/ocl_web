@@ -18,8 +18,9 @@ urlpatterns = patterns('',
     ######### Search
     url(r'^search/$', HomeSearchView.as_view(), name="search"),
 
-    ######### Orgs
     url(r'^orgs/', include('apps.orgs.urls')),
+    url(r'^concepts/', include('apps.concepts.urls')),
+    url(r'^sources/', include('apps.sources.urls')),
 
     ######### Users
     ## User management

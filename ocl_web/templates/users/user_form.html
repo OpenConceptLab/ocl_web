@@ -1,23 +1,38 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
+{% load url from future %}
+{% load i18n %}
+{% load bootstrap3 %}
 
-{% block title %}User: {{ user.username }}{% endblock %}
+{% block title %}{% trans "User" %}: {{ user.username }}{% endblock %}
 
 {% block content %}
 
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <h1>{% block header %}User: {{ user.username }}{% endblock %}</h1>
-            <form class="form-horizontal" method="post" action="{% url 'users:update' %}">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <div class="control-group">
-                  <div class="controls">
-                    <button type="submit" class="btn">Update</button>
-                  </div>
-                </div>
-            </form>
+
+
+
+            <h1>{% block header %}{% trans "Edit User" %}{% endblock %}</h1>
+
+
+<form class="form-horizontal" id="user_update_form" method="post" action=".">
+  {% csrf_token %}
+
+  <div class="form-group required"><label class="col-md-2 control-label">Username</label>
+    <div class="col-md-4">{{ user.username }}</div></div>
+
+  {% bootstrap_form form layout="horizontal" %}
+
+
+  {% buttons layout="horizontal" %}
+  <button type="submit" class="btn btn-primary">
+    {% trans "Update" %}
+  </button>
+  {% endbuttons %}
+
+    </form>
+
         </div>
     </div>
 </div>

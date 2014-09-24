@@ -21,32 +21,7 @@ from source import Source
 from star import Star
 from user import User
 
-
-def object_hooker(dct):
-    class_names = {
-        'OclMapType': MapType,
-        'OclConcept': Concept,
-        'OclConceptClass': ConceptClass,
-        'OclConceptList': ConceptList,
-        'OclConceptDataType': ConceptDataType,
-        'OclCollection': Collection,
-        'OclMapping': Mapping,
-        'OclSource': Source,
-        'OclStar': Star,
-        'OclUser': User
-    }
-
-    if '__type__' in dct:
-        class_name = dct['__type__']
-        try:
-            # Instantiate class based on value in the variable
-            x = class_names[class_name]()
-            x.set_values(dct)
-            return x
-        except KeyError:
-            # handle error - Class is not defined
-            pass
-    return dct
+SESSION_TOKEN_KEY = 'API_USER_TOKEN'
 
 
 class OCLapi(object):
@@ -55,8 +30,11 @@ class OCLapi(object):
         Also contain helper and utility functions.
     """
 
-    def __init__(self, debug=False):
-
+    def __init__(self, request=None, debug=False, admin=False):
+        """
+        :param admin: optional, if set to True, access API as admin user. Needed for create_user.
+        :param request: gives the API access to the current active session, to get Authorization etc.
+        """
         self.debug = debug
         self.host = settings.API_HOST  # backend location
         self.headers = {'Content-Type': 'application/json'}
@@ -64,20 +42,25 @@ class OCLapi(object):
         # The admin api key should only be used for admin functions (duh)
         self.admin_api_key = os.environ.get('OCL_API_TOKEN', None)
 
-        self.headers['Authorization'] = 'Token %s' % self.admin_api_key
+        if admin:
+            self.headers['Authorization'] = 'Token %s' % self.admin_api_key
+        else:
+            if request:
+                # Todo: the KEY constant needs to be somewhere else
+                key = request.session.get(SESSION_TOKEN_KEY)
+                self.headers['Authorization'] = 'Token %s' % key
 
-
-    def post(self, type_name, **kwargs):
+    def post(self, type_name, *args, **kwargs):
         """ Issue Post request to API.
 
             :param type_name: is a string specifying the type of the object according
                                 to the API.
         """                                
         url = '%s/v1/%s/' % (self.host, type_name)
-
+        if len(args) > 0:
+            url = url + '/'.join(args) + '/'
         if self.debug:
             print 'POST %s %s %s' % (url, json.dumps(kwargs), self.headers)
-            return None
 
         results = requests.post(url, data=json.dumps(kwargs),
                                 headers=self.headers)
@@ -117,6 +100,29 @@ class OCLapi(object):
                                 headers=self.headers)
         return results
 
+    def get(self, type_name, *args, **kwargs):
+        """ Issue get request to API.
+
+            :param type_name: is a string specifying the type of the object according
+                                to the API.
+        """                                
+        url = '%s/v1/%s/' % (self.host, type_name)
+        if len(args) > 0:
+            url = url + '/'.join(args) + '/'
+        if self.debug:
+            print 'GET %s %s %s' % (url, json.dumps(kwargs), self.headers)
+
+        results = requests.get(url, data=json.dumps(kwargs),
+                                headers=self.headers)
+        return results
+
+    def save_auth_token(self, request, json_data):
+        """ Save API user token into session table for online use.
+
+            :param request: is the django http request
+            :param api_json_data: contains the backend auth token.
+        """
+        request.session[SESSION_TOKEN_KEY] = json_data['token']
 
     def create_user(self, **kwargs):
         """ Create a user in the system. This call is a bit special because
@@ -154,13 +160,110 @@ class OCLapi(object):
 
             :returns: ??
         """
-        result = self.post('users/login/', username=username,
+        result = self.post('users/login', username=username,
             password=password)
         return result
+
+    def sync_password(self, user):
+        """
+        sync password with backend
+        """
+        result = self.post('users/%s/' % user.username, hashed_password=user.password)
+        return result
+
+
+    def create_concept(self, org_id, source_id, base_data, names=[], descriptions=[], extras=[]):
+        """ Create a concept.
+            NOTE: currently add by org+source, but there are other options... TODO
+            
+            :param org_id: is the ID of the owner org
+            :param source_id: is the ID of the owner source
+            :param base_data: is a dictionary of all the data fields
+            :param names: is a list of dictionary of name fields, optional.
+            :param descriptions: is a list of dictionary of name fields, optional.
+            :param extras: is a list of dictionary of name fields, optional.
+
+            :returns: POST result from requests package.
+        """
+        data = {}
+        data.update(base_data)
+
+        list_data = []
+        for n in names:
+            list_data.append(n)
+        if len(list_data) > 0:
+            data['names'] = list_data
+
+        list_data = []
+        for d in descriptions:
+            list_data.append(d)
+        if len(list_data) > 0:
+            data['descriptions'] = list_data
+
+        list_data = []
+        for e in extras:
+            list_data.append(e)
+        if len(list_data) > 0:
+            data['extras'] = list_data
+
+        result = self.post('orgs', org_id, 'sources', source_id, 'concepts', **data)
+        return result
+
+    def create_org(self, base_data, extras=[]):
+        """
+        """
+        data = {}
+        data.update(base_data)
+        result = self.post('orgs', **data)
+        return result
+
+    def create_source_by_org(self, org_id, base_data, extras=[]):
+        """
+        """
+        data = {}
+        data.update(base_data)
+        result = self.post('orgs', org_id, 'sources', **data)
+        return result
+
+    def create_source_by_me(self, base_data, extras=[]):
+        """
+        """
+        data = {}
+        data.update(base_data)
+        result = self.post('users', 'sources', **data)
+        return result
+
 
 
 api_key = os.environ.get('OCL_API_TOKEN', None)
 host = settings.API_HOST
+
+
+def object_hooker(dct):
+    class_names = {
+        'OclMapType': MapType,
+        'OclConcept': Concept,
+        'OclConceptClass': ConceptClass,
+        'OclConceptList': ConceptList,
+        'OclConceptDataType': ConceptDataType,
+        'OclCollection': Collection,
+        'OclMapping': Mapping,
+        'OclSource': Source,
+        'OclStar': Star,
+        'OclUser': User
+    }
+
+    if '__type__' in dct:
+        class_name = dct['__type__']
+        try:
+            # Instantiate class based on value in the variable
+            x = class_names[class_name]()
+            x.set_values(dct)
+            return x
+        except KeyError:
+            # handle error - Class is not defined
+            pass
+    return dct
 
 
 class APIRequestor(object):
@@ -186,6 +289,7 @@ class APIRequestor(object):
 
 
 class Org(object):
+    """ Not used anymore """
 
     @classmethod
     def create(cls, org_id, name, **kwargs):
