@@ -21,23 +21,6 @@ class User(AbstractUser):
     def __unicode__(self):
         return self.username
 
-    def save_auth_token(self, request, token):
-        """ Save API user token into session table for online use.
-
-            :param request: is the django http request
-            :param token: is the backend auth token.
-        """
-        request.session['API_USER_TOKEN'] = token
-
-    def get_auth_token(self, request):
-        """ Get previously seaved API user token for accessing OCL API.
-
-            :param request: is the django http request
-            :returns: auth token or maybe the anonymous user token?
-        """
-        return request.session.get('API_USER_TOKEN', '???')
-
-
 
 # Hook up signals to django-allauth
 user_signed_up.connect(user_created_handler)

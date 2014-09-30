@@ -1,0 +1,7 @@
+{% if concept.owner_type == 'Organization' %}
+<a href="{% url 'concept-detail' org=concept.owner source=concept.source concept=concept.id %}" class="label label-primary">
+{% else %}
+<a href="{% url 'concept-detail' user=concept.owner source=concept.source concept=concept.id %}" class="label label-primary">
+{% endif %}
+<span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ concept.id }}</a>
+

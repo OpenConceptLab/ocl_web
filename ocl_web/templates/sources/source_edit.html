@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load ocl_tags %}
+
+{% block title %}{% trans "Edit Source" %}{% endblock %}
+{% block content %}
+
+	<h3>
+  {% source_owner_label source %} / {% source_label source %} / {% trans "Edit Source" %}
+    {# TODO: Only show if admin or owner #}
+    <a href="#" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+	</h3>
+
+
+
+<div class="container">
+
+<div class="row">
+
+  <div class="col-md-4">
+<table class="table">
+<tr><td>Created by:</td><td>{{ source.created_by }}</td></tr>
+<tr><td>Created on:</td><td>{{ source.created_on|smart_date }}</td></tr>
+<tr><td>Owner:</td><td>{{ source.owner}}</td></tr>
+</table>
+
+</div>
+</div> {# row #}
+
+
+<div class="row">
+    <div class="col-md-8">
+
+<form id="concept_create_form" method="post" action=".">
+  {% csrf_token %}
+
+
+  {% bootstrap_form form %}
+
+
+  {% buttons %}
+  <button type="submit" class="btn btn-primary">
+    {% trans "Update" %}
+  </button>
+  {% endbuttons %}
+
+    </form>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

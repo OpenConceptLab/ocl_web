@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load ocl_tags %}
+
+{% block title %}{{ concept.id }}{% endblock title %}
+
+{% block content-no-container %}
+
+
+<header class="org-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8">
+
+				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
+				<div style="display:inline-block;padding-left:20px">
+
+					<h3>
+						{% source_owner_label source %} / {% source_label source %} / {% concept_label concept %}
+
+						{% if source.owner_type == 'Organization' %}
+						<a href="{% url 'concept-edit' org=source.owner source=source.id concept=concept.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
+						{% else %}
+						<a href="{% url 'concept-edit' user=source.owner source=source.id concept=concept.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
+						{% endif %}
+
+
+					</h3>
+
+
+					<p>
+						{{ concept.display_name }} {% if concept.display_locale %}<span class="small"><em>[{{ concept.display_locale }}]</em></span>{% endif %}&nbsp;&nbsp;<span id="element-info" data-toggle="tooltip" data-placement="right" title="Preferred name in selected language"><span class="glyphicon glyphicon-info-sign"></span></span><br />
+						<em>Class:</em> {{ concept.concept_class }},
+						<em>Datatype:</em> {{ concept.datatype }}
+
+						<span class="glyphicon glyphicon-calendar"></span> Created on ({{ concept.created_on|smart_date }})
+						</span>
+
+					</p>
+
+
+				</div>
+
+{% if request.GET.debug %}<pre>{{ concept|pprint }}</pre>{% endif %}
+
+			</div> <!-- /col-md-8 -->
+		</div> <!-- /row -->
+	</div> <!-- /container -->
+</header>
+
+
+<div class="row"> {# outer #}
+<div class="col-md-11"> {# col11 #}
+<div class="row">
+		<div class="pull-right">
+		<a class="btn btn-default" href="{% url 'concept-names-update' concept.owner concept.source concept.id %}">Edit Names</a>
+   		</div>
+</div>
+
+<div class="row">
+	<div class="col-md-3" style="text-align:right;">
+		<span style="font-weight:bold;color:#999;">Preferred Name</span>
+		<span id="preferred-name-info" data-toggle="tooltip" data-placement="right" title="Primary name in user's preferred language."><span class="glyphicon glyphicon-info-sign"></span></span>
+	</div>
+	<div class="col-md-9">
+		{{ concept.display_name }} <span class="small"><em>[{{ concept.display_locale }}]</em></span>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Class
+	</div>
+	<div class="col-md-9">
+		{{ concept.concept_class }}
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Datatype
+	</div>
+	<div class="col-md-9">
+		{{ concept.datatype }}
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Synonyms
+	</div>
+	<div class="col-md-9">
+		<ul class="list-group">
+		{% for name in concept.names %}
+			<li class="list-group-item {% if name.localePreferred %}list-group-item-info{% endif %}">{{ name.name }} <span class="small"><em>[{{ name.locale }}]</em></span> 
+				{% if name.localePreferred %}&nbsp;<span id="locale-preferred-name-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
+				/ <span class="small">{{ name.name_type|default:"" }}</span>
+				{% if request.GET.debug %}<br /><pre>{{ name|pprint }}</pre>{% endif %}</li>
+		{% empty %}
+			<li class="small"><em>None</em></li>
+		{% endfor %}
+		</ul>
+	</div>
+</div>
+
+<div class="row"> {# add form #}
+    <div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">Add Concept Name:</div>
+<div class="col-md-9">
+<form class="form" id="concept_create_form" method="post" action=".">
+  {% csrf_token %}
+
+  {% bootstrap_form form %}
+
+
+  {% buttons %}
+  <button type="submit" class="btn btn-primary">
+    {% trans "Add" %}
+  </button>
+  {% endbuttons %}
+</form>
+</div> {# form column9 #}
+</div> {# add form row #}
+
+
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Description
+	</div>
+	<div class="col-md-9">
+		<ul class="list-group">
+		{% for desc in concept.descriptions %}
+			<li class="list-group-item {% if desc.localePreferred %}list-group-item-info{% endif %}">{{ desc.description }} <span class="small"><em>[{{ desc.locale }}]</em></span> 
+				{% if desc.localePreferred %}&nbsp;<span id="locale-preferred-desc-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
+				/ <span class="small">{{ desc.description_type|default:"" }}</span>
+				{% if request.GET.debug %}<br /><pre>{{ desc|pprint }}</pre>{% endif %}</li>
+		{% empty %}
+			<li class="small"><em>None</em></li>
+		{% endfor %}
+		</ul>
+	</div> {# 9 #}
+</div>
+
+</div> {# col11 #}
+</div> {# outer row#}
+<!--
+<h4 style="padding-top:20px;"><small>All Concept Fields:</small></h4>
+<div class="row" style="border-bottom:1px solid #e5e5e5;margin-bottom:20px;"></div>
+
+{% for key, value in concept.items %}
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">{{ key }}</div>
+	<div class="col-md-9">{{ value }}</div>
+</div>
+{% endfor %}
+-->
+
+
+<!--
+<h4 style="padding-top:20px;"><small>Static Examples:</small></h4>
+<div class="row" style="border-bottom:1px solid #e5e5e5;margin-bottom:20px;"></div>
+
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Description
+	</div>
+	<div class="col-md-9">
+		Distal intestinal obstruction syndrome<br />
+		Meconium ileus in cystic fibrosis+ (P75*)<br />
+		Excl.:<br />
+		meconium obstruction in cases where cystic fibrosis is known not to be present (P76.0)
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Relationships
+	</div>
+	<div class="col-md-9">
+		Parent - <a href="#" class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;WHO / ICD-10-WHO / E84 &ndash; Cystic fibrosis</a>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+		Collections
+	</div>
+	<div class="col-md-9">
+		<a href="#" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;MCL / MCH Core Dataset</a><br />
+		<a href="#" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Rwanda MOH / Rwanda MCH</a><br />
+		<a href="#" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;paynejd / Community-MCH</a>
+	</div>
+</div>
+-->
+{% endblock content-no-container %}
+
+{% block extrajavascript %}
+<script>
+$('#element-info').tooltip();
+$('#preferred-name-info').tooltip();
+$('#locale-preferred-name-tooltip1').tooltip();
+</script>
+{% endblock extrajavascript %}

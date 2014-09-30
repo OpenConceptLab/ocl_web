@@ -18,9 +18,8 @@ urlpatterns = patterns('',
     ######### Search
     url(r'^search/$', HomeSearchView.as_view(), name="search"),
 
-    url(r'^orgs/', include('apps.orgs.urls')),
-    url(r'^concepts/', include('apps.concepts.urls')),
-    url(r'^sources/', include('apps.sources.urls')),
+    url(r'^orgs/', include('config.orgs_urls')),
+    url(r'^users/', include('config.users_urls')),
 
     ######### Users
     ## User management

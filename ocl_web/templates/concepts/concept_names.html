@@ -31,22 +31,19 @@
         <div class="col-md-4">
         {% bootstrap_field form.name %}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
         {% bootstrap_field form.name_type %}
-      </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
+        </div>
+
+        <div class="col-md-2">
         {% bootstrap_field form.locale %}
-      </div>
-        <div class="col-md-4">
+       </div>
+        <div class="col-md-2">
           {% bootstrap_field form.preferred_locale %}
       </div>
     </div> {# row #}
         {% endfor %}
     </div>
-</form>
-
 
 
   {% buttons layout="horizontal" %}

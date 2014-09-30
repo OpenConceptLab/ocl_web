@@ -7,6 +7,7 @@ from django import forms
 from django.core.urlresolvers import reverse
 
 from libs.ocl import OCLapi
+from apps.core import LOCALE_LIST
 
 
 class SourceCreateForm(forms.Form):
@@ -24,7 +25,7 @@ class SourceCreateForm(forms.Form):
     source_type = forms.CharField(max_length=30, label=_('Source Type'), required=False)
     public_access = forms.ChoiceField(label=_('Public Access'), required=False, initial='View',
       choices=( ('View', 'View (default)'), ('Public', 'Public'), ('None', 'None')))
-    default_locale = forms.CharField(max_length=30, label=_('Locale'),  required=True)
+    default_locale = forms.ChoiceField(choices=LOCALE_LIST, label=_('Locale'),  required=True)
     supported_locales = forms.CharField(max_length=30, label=_('Supported Locales'),  required=True)
 
     description = forms.CharField(max_length=30, label=_('Description'), required=False)
@@ -41,4 +42,11 @@ class SourceCreateForm(forms.Form):
             raise forms.ValidationError(_('This Concept ID is already used.'))
         return concept_id
 
+class SourceEditForm(SourceCreateForm):
 
+    def __init__(self, *args, **kwargs):
+        """ Dirty trick to delete one field for edit form. django 1.6 lets you do this
+            officially.
+        """
+        super(SourceEditForm, self).__init__(*args, **kwargs)
+        self.fields.pop('short_name')

@@ -1,15 +1,20 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
+{% load ocl_tags %}
 
 {% block title %}{% trans "Add Source" %}{% endblock %}
 {% block content %}
 
 	<h3>
-		<a href="{% url 'org-detail' org=org.id %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ org.id }}</a>
-	</h3>
 
-<h1><span class="glyphicon glyphicon-tag" style="color:#e5e5e5;"></span>&nbsp;&nbsp;Add Source</h1>
+{% if org %}
+    {% org_label org %}
+{% else %}
+    {% user_label ocl_user %}
+{% endif %}
+/ <span class="glyphicon glyphicon-list" style="color:#e5e5e5;"></span>&nbsp;&nbsp;Add Source
+	</h3>
 
 
 
@@ -17,13 +22,18 @@
     <div class="row">
         <div class="col-lg-12">
 
-
-
 <form class="form-horizontal" id="concept_create_form" method="post" action=".">
   {% csrf_token %}
 
   <div class="form-group required"><label class="col-md-2 control-label">Source</label>
-    <div class="col-md-4">{{ user.username }}</div></div>
+    <div class="col-md-4">
+      {% if org %}
+      {% trans "Create a source for this organization" %} : {{ org.id }}
+      {% else %}
+      {% trans "Create a source for this user" %} : {{ ocl_user.username }}
+      {% endif %}
+
+</div></div>
 
   {% bootstrap_form form layout="horizontal" %}
 

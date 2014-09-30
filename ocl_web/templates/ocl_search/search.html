@@ -158,7 +158,12 @@
 					<a href="{% url 'source-detail' org=result.owner source=result.id %}#concepts" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts }}</a>
 				</div>
 
-				<h4><a href="{% url 'source-detail' org=result.owner source=result.short_code %}" style="text-decoration: none;">
+				<h4>
+					{% if result.owner_type == 'Organization' %}
+					    <a href="{% url 'source-detail' org=result.owner source=result.short_code %}" style="text-decoration: none;">
+                    {% else %}
+					    <a href="{% url 'source-detail' user=result.owner source=result.short_code %}" style="text-decoration: none;">
+                    {% endif %}
 					<span class="resource-label small source">
 						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-th-list"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / </span><span class="resource-label-id-code">{{ result.short_code }}</span>
 						</span><span class="resource-label-name">{{ result.name }}</span>

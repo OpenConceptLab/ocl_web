@@ -20,7 +20,7 @@ def user_created_handler(sender, request, user, **kwargs):
             'hashed_password': user.password,
             'name': '%s %s' % (user.first_name, user.last_name),  # not great
             }
-    result = ocl.create_user(**data)
+    result = ocl.create_user(data)
     print result.status_code
     if result.status_code == 201:
         # result.json() has data

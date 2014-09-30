@@ -143,3 +143,8 @@ Concept Issues
 ================
 - can be created and owned by source+usr or source+org
 - depending on 'owner type'
+
+URL Issues
+============
+- is there a delete cocnept ownred by user, not just org sourced?
+- 

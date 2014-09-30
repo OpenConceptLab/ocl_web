@@ -1,23 +1,24 @@
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
-from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
+from django import forms
 
-from .forms import (ConceptCreateForm, ConceptNameFormSet)
-
-
+from .forms import (ConceptCreateForm, ConceptEditForm)
+from .forms import (ConceptNameForm, ConceptNameFormSet)
 from libs.ocl import OCLapi
+from apps.core.views import UserOrOrgMixin
 
 
-class ConceptDetailView(TemplateView):
+class ConceptDetailView(UserOrOrgMixin, TemplateView):
     template_name = "concepts/concept.html"
 
     def get_context_data(self, *args, **kwargs):
 
         context = super(ConceptDetailView, self).get_context_data(*args, **kwargs)
+        self.get_args()
 
         fake_concept = dict(
             id="A15.1",
@@ -61,66 +62,71 @@ class ConceptDetailView(TemplateView):
             ]
         )
 
-
-
-
-        context['concept'] = fake_concept
-
-
-        org_id = self.kwargs.get('org')
         source_id = self.kwargs.get('source')
         concept_id = self.kwargs.get('concept')
 
         api = OCLapi(self.request, debug=True)
-
-        concept = api.get('orgs', org_id, 'sources', source_id, 'concepts', concept_id).json()
+        if self.from_org:
+            concept = api.get('orgs', self.org_id, 'sources', source_id, 'concepts', concept_id).json()
+        else:
+            concept = api.get('users', self.user_id, 'sources', source_id, 'concepts', concept_id).json()
         context['concept'] = concept
         return context
 
 
-class ConceptCreateView(FormView):
+class ConceptCreateView(UserOrOrgMixin, FormView):
 
     form_class = ConceptCreateForm
     template_name = "concepts/concept_create.html"
 
     def get_success_url(self):
-        return reverse("source-detail",
-                    kwargs={"org": self.kwargs.get('org'),
-                            'source': self.kwargs.get('source')})
+        if self.from_org:
+            return reverse("source-detail",
+                           kwargs={"org": self.org_id,
+                                   'source': self.kwargs.get('source')})
+        else:
+            return reverse("source-detail",
+                           kwargs={"user": self.user_id,
+                                   'source': self.kwargs.get('source')})
 
     def get_context_data(self, *args, **kwargs):
         """ Supply related data for the add form
         """
         context = super(ConceptCreateView, self).get_context_data(*args, **kwargs)
 
+        self.get_args()
         source_id = self.kwargs.get('source')
-        org_id = self.kwargs.get('org')
 
         api = OCLapi(self.request, debug=True)
+        if self.from_org:
+            source = api.get('orgs', self.org_id, 'sources', source_id).json()
+        else:
+            source = api.get('users', self.user_id, 'sources', source_id).json()
 
-        source = api.get('orgs', org_id, 'sources', source_id).json()
         context['source'] = source
         return context
 
     def get_initial(self):
         """ Load some useful data, not really for form display but internal use """
+        self.get_args()
         source_id = self.kwargs.get('source')
-        org_id = self.kwargs.get('org')
 
         api = OCLapi(self.request, debug=True)
+        if self.from_org:
+            source = api.get('orgs', self.org_id, 'sources', source_id).json()
+        else:
+            source = api.get('users', self.user_id, 'sources', source_id).json()
 
-        source = api.get('orgs', org_id, 'sources', source_id).json()
         data = {
             'source': source,
             'request': self.request,
-            }
+        }
         return data
-
 
     def form_valid(self, form, *args, **kwargs):
 
+        self.get_args()
         source_id = self.kwargs.get('source')
-        org_id = self.kwargs.get('org')
 
         print form.cleaned_data
 
@@ -136,65 +142,206 @@ class ConceptCreateView(FormView):
         names = [name]
 
         api = OCLapi(self.request, debug=True)
-        result = api.create_concept(org_id, source_id, data, names=names)
-        print result.status_code
-        print result.json()
-        messages.add_message(self.request, messages.INFO, _('Concept Added'))
-        return HttpResponseRedirect(self.get_success_url())
+        if self.from_org:
+            result = api.create_concept('orgs', self.org_id, source_id, data, names=names)
+        else:
+            result = api.create_concept('users', self.user_id, source_id, data, names=names)
+        if result.status_code != 201:
+            print result.status_code
+            emsg = result.json().get('detail', 'Error')
+            messages.add_message(self.request, messages.ERROR, emsg)
+            return HttpResponseRedirect(self.request.path)
+
+        else:
+            print result.status_code
+            print result.json()
+            messages.add_message(self.request, messages.INFO, _('Concept Added'))
+            return HttpResponseRedirect(self.get_success_url())
 
 
-class ConceptNamesUpdateView(FormView):
-    """
-    Update or add names to a concept.
-    """
-    form_class = ConceptNameFormSet
-    template_name = "concepts/concept_names.html"
+class ConceptEditView(UserOrOrgMixin, FormView):
+
+    template_name = "concepts/concept_edit.html"
+
+    def get_form_class(self):
+        """ A sneaky way to hook into the generic form processing view, to
+            grep arguments from the URL, retrieve some application data and store them
+            in the view.
+        """
+        self.get_args()
+        self.source_id = self.kwargs.get('source')
+        self.concept_id = self.kwargs.get('concept')
+
+        api = OCLapi(self.request, debug=True)
+
+        if self.from_org:
+            self.source = api.get('orgs', self.org_id, 'sources', self.source_id).json()
+            self.concept = api.get('orgs', self.org_id, 'sources', self.source_id, 'concepts', self.concept_id).json()
+        else:
+            self.source = api.get('users', self.user_id, 'sources', self.source_id).json()
+            self.concept = api.get('users', self.user_id, 'sources', self.source_id, 'concepts', self.concept_id).json()
+        return ConceptEditForm
 
     def get_success_url(self):
-        return reverse("source-detail",
-                    kwargs={"org": self.kwargs.get('org'),
-                            'source': self.kwargs.get('source')})
+        if self.from_org:
+            return reverse("source-detail",
+                           kwargs={"org": self.org_id,
+                                   'source': self.kwargs.get('source')})
+        else:
+            return reverse("source-detail",
+                           kwargs={"user": self.user_id,
+                                   'source': self.kwargs.get('source')})
 
     def get_context_data(self, *args, **kwargs):
         """ Supply related data for the add form
         """
-        context = super(ConceptNamesUpdateView, self).get_context_data(*args, **kwargs)
+        context = super(ConceptEditView, self).get_context_data(*args, **kwargs)
 
-        source_id = self.kwargs.get('source')
-        org_id = self.kwargs.get('org')
+        self.get_args()
 
-        api = OCLapi(self.request, debug=True)
-
-        source = api.get('orgs', org_id, 'sources', source_id).json()
-        context['source'] = source
-
-        context['formset'] = context['form']
+        context['source'] = self.source
+        context['concept'] = self.concept
         return context
 
-    def get_initialx(self):
+    def get_initial(self):
         """ Load some useful data, not really for form display but internal use """
-        print self.kwargs
-        source_id = self.kwargs.get('source')
-        org_id = self.kwargs.get('org')
-
-        api = OCLapi(self.request, debug=True)
-
-        source = api.get('orgs', org_id, 'sources', source_id).json()
+        self.get_args()
         data = {
-            'source': source,
+            'source': self.source,
+            'concept': self.concept,
             'request': self.request,
-            }
+        }
+        data.update(self.concept)
         return data
-
 
     def form_valid(self, form, *args, **kwargs):
 
+        self.get_args()
+
+        data = form.cleaned_data
+
+        api = OCLapi(self.request, debug=True)
+        if self.from_org:
+            result = api.update_concept('orgs', self.org_id, self.source_id, self.concept_id, data)
+        else:
+            result = api.update_concept('users', self.user_id, self.source_id, self.concept_id, data)
+        if result.status_code != 201:
+            print result.status_code
+            emsg = result.json().get('detail', 'Error')
+            messages.add_message(self.request, messages.ERROR, emsg)
+            return HttpResponseRedirect(self.request.path)
+
+        else:
+            print result.status_code
+            print result.json()
+            messages.add_message(self.request, messages.INFO, _('Concept Added'))
+            return HttpResponseRedirect(self.get_success_url())
+
+
+class ConceptNamesUpdateView(UserOrOrgMixin, FormView):
+    """
+    Update or add names to a concept.
+    """
+    template_name = "concepts/concept_names.html"
+
+    def get_args(self):
+        self.source_id = self.kwargs.get('source')
+        self.org_id = self.kwargs.get('org')
+        self.concept_id = self.kwargs.get('concept')
+
+        api = OCLapi(self.request, debug=True)
+
+        self.source = api.get('orgs', self.org_id, 'sources', self.source_id).json()
+        self.concept = api.get('orgs', self.org_id, 'sources', self.source_id, 'concepts', self.concept_id).json()
+
+    def get_form_class(self):
+        """ A sneaky way to hook into the generic form processing view, to
+            grep arguments from the URL, retrieve some application data and store them
+            in the view.
+        """
+        self.get_args()
+        return ConceptNameFormSet
+
+    def get_success_url(self):
+        return reverse("source-detail",
+                       kwargs={"org": self.kwargs.get('org'),
+                               'source': self.kwargs.get('source')})
+
+    def get_context_data(self, *args, **kwargs):
+        """ Supply related data for the add form
+        """
+        print 'get context data'
+        context = super(ConceptNamesUpdateView, self).get_context_data(*args, **kwargs)
+
+        context['source'] = self.source
+        context['concept'] = self.concept
+        context['formset'] = context['form']
+        return context
+
+    def get_initial(self):
+        """ Load some useful data, not really for form display but internal use """
+
+        data = []
+        for n in self.concept['names']:
+            print n
+            data.append(n)
+        return data
+
+    def form_valid(self, form, *args, **kwargs):
+
+        for f in form:
+            print f.cleaned_data
+            if len(f.cleaned_data) == 0:
+                continue
 
         messages.add_message(self.request, messages.INFO, _('Concept Added'))
         return HttpResponseRedirect(self.get_success_url())
 
-        org_id = form.cleaned_data.pop('short_name')
-        name = form.cleaned_data.pop('full_name')
 
+class ConceptNameAddView(UserOrOrgMixin, FormView):
+    """
+    Add a single name to a Concept, this is also a detail view.
+    """
+    template_name = "concepts/concept_detail.html"
 
+    def get_form_class(self):
+        """ A sneaky way to hook into the generic form processing view, to
+            grep arguments from the URL, retrieve some application data and store them
+            in the view.
+        """
+        self.get_args()
+        self.source_id = self.kwargs.get('source')
+        self.concept_id = self.kwargs.get('concept')
 
+        api = OCLapi(self.request, debug=True)
+
+        if self.from_org:
+            self.source = api.get('orgs', self.org_id, 'sources', self.source_id).json()
+            self.concept = api.get('orgs', self.org_id, 'sources', self.source_id, 'concepts', self.concept_id).json()
+        else:
+            self.source = api.get('users', self.user_id, 'sources', self.source_id).json()
+            self.concept = api.get('users', self.user_id, 'sources', self.source_id, 'concepts', self.concept_id).json()
+        return ConceptNameForm
+
+    def get_success_url(self):
+        return reverse("source-detail",
+                       kwargs={"org": self.kwargs.get('org'),
+                               'source': self.kwargs.get('source')})
+
+    def get_context_data(self, *args, **kwargs):
+        """ Supply related data for the add form
+        """
+        context = super(ConceptNameAddView, self).get_context_data(*args, **kwargs)
+
+        context['source'] = self.source
+        context['concept'] = self.concept
+        return context
+
+    def form_valid(self, form, *args, **kwargs):
+
+        api = OCLapi(self.request, debug=True)
+        result = api.post('orgs', self.org_id, 'sources', self.source_id,
+                          'concepts', self.concept_id, 'names', **form.cleaned_data)
+
+        messages.add_message(self.request, messages.INFO, _('Concept Name added'))
+        return HttpResponseRedirect(self.request.path)

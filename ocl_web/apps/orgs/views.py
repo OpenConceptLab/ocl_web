@@ -1,15 +1,14 @@
-from django.conf import settings
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse
+from django.contrib import messages
+from django.utils.translation import ugettext as _
 
-import requests
-from .forms import OrganizationCreateForm
-from libs import ocl
-
+from .forms import (OrganizationCreateForm, OrganizationEditForm)
 
 from libs.ocl import OCLapi
+
 
 class OrganizationDetailView(TemplateView):
 
@@ -29,38 +28,36 @@ class OrganizationDetailView(TemplateView):
 
         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
 
-        # TODO:  This request patten is duplicated across views.  Figure out how to
-        # make DRY:  utils.ocl_requests.get()
+        org_id = self.kwargs.get('org')
 
-        host = settings.API_HOST
-        auth_token = settings.API_TOKEN
-        org_path = "/v1/orgs/%s" % kwargs['org']
-        org_url = host + org_path
-        requestHeaders = {'Authorization': auth_token}
+        api = OCLapi(self.request, debug=True)
 
-        # Get org details from API
-        org = requests.get(org_url, headers=requestHeaders).json()
+        org = api.get('orgs', org_id).json()
 
         # Get sources owned by the org
-        sources_url = org['sources_url'] + '?verbose=true'
-        sources = requests.get(sources_url, headers=requestHeaders).json()
+        sources = api.get('orgs', org_id, 'sources').json()  # ?verbose=True
 
         # Get collections owned by the org
-        collections_path = "/v1/orgs/%s/collections/" % kwargs['org']  # The org object should have this in the future.
-        collections_url = host + collections_path + '?verbose=true'
-        collections = requests.get(collections_url, headers=requestHeaders).json()
+        # The org object should have the URL in the future, like members_url.
+        collections = api.get('orgs', org_id, 'collections', verbose=True).json()  # ?verbose=True
 
-        # Get members of the org
-        members_url = org['members_url']
-        members = requests.get(members_url, headers=requestHeaders).json()
-
+        # TODO: access issue, error if user is not super user??
+        members = []
+        r = api.get('orgs', org_id, 'members')
+        if r.status_code == 200:
+            members = r.json()
+        elif r.status_code != 404:
+#            raise Exception(r.json())
+            pass
         # Set the context
+
         context['org'] = org
         context['sources'] = sources
         context['collections'] = collections
         context['members'] = members
 
         return context
+
 
 class OrganizationCreateView(FormView):
 
@@ -70,13 +67,11 @@ class OrganizationCreateView(FormView):
     def form_valid(self, form, *args, **kwargs):
 
         org_id = form.cleaned_data.pop('short_name')
-        name = form.cleaned_data.pop('full_name')
 
         api = OCLapi(self.request, debug=True)
 
         data = {
             'id': org_id,
-            'name': name,
         }
         data.update(form.cleaned_data)
         print form.cleaned_data
@@ -86,8 +81,47 @@ class OrganizationCreateView(FormView):
         # TODO:  Catch exceptions that will be raised by
         # Ocl lib.
         if result.ok:
-            return redirect(reverse('org-detail', kwargs={'org':org_id}))
+            messages.add_message(self.request, messages.INFO, _('Organization Added'))
+            return redirect(reverse('org-detail', kwargs={'org': org_id}))
 
         # TODO:  Add error messages from API to form.
         else:
             return super(OrganizationCreateView, self).form_invalid(self, *args, **kwargs)
+
+
+class OrganizationEditView(FormView):
+
+    template_name = 'orgs/org_edit.html'
+
+    def get_form_class(self):
+        """ Trick to do some initial lookup """
+        self.org_id = self.kwargs.get('org')
+        api = OCLapi(self.request, debug=True)
+        self.org = api.get('orgs', self.org_id).json()
+        return OrganizationEditForm
+
+    def get_context_data(self, *args, **kwargs):
+
+        context = super(OrganizationEditView, self).get_context_data(*args, **kwargs)
+        context['org'] = self.org
+        return context
+
+    def get_initial(self):
+        return self.org
+
+    def form_valid(self, form, *args, **kwargs):
+
+        api = OCLapi(self.request, debug=True)
+
+        data = {}
+        data.update(form.cleaned_data)
+        result = api.update_org(self.org_id, data)
+        # TODO:  Catch exceptions that will be raised by
+        # Ocl lib.
+        if result.ok:
+            messages.add_message(self.request, messages.INFO, _('Organization updated.'))
+            return redirect(reverse('org-detail', kwargs={'org': self.org_id}))
+
+        # TODO:  Add error messages from API to form.
+        else:
+            return super(OrganizationEditView, self).form_invalid(self, *args, **kwargs)

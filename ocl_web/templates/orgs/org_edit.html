@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
+{% load ocl_tags %}
 
-{% block title %}Add Organization{% endblock %}
+{% block title %}Update Organization{% endblock %}
 {% block content %}
 
-<h1><span class="glyphicon glyphicon-home" style="color:#e5e5e5;"></span>&nbsp;&nbsp;New Organization</h1>
+<h3>{% org_label org %} / &nbsp;&nbsp;Update Organization
+    {# TODO: Only show if admin or owner #}
+    <a href="{% url 'org-edit' org.id %}" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+</h3>
 &nbsp;
 
 <form role="form" method="post" action=".">

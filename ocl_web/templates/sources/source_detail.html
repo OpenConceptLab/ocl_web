@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% load ocl_tags %}
+
+{% block title %}{{ source.id }}{% endblock title %}
+
 {% block content-no-container %}
 
 <header class="source-header">
@@ -12,9 +15,13 @@
 				</div>
 				<div style="display:inline-block;padding-left:20px">
 					<h3>
-						<a href="{% url 'org-detail' org=source.owner %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ source.owner }}</a>
-						/
-						<span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ source.id }}</span>
+						{% source_owner_label source %} / {% source_label source %}
+						{# TODO: Only show if admin or owner #}
+						{% if source.owner_type == 'Organization' %}
+						<a href="{% url 'source-edit' org=source.owner source=source.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
+						{% else %}
+						<a href="{% url 'source-edit' user=source.owner source=source.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
+						{% endif %}
 					</h3>
 
 					<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ source.updated_on|smart_datetime }})</span>
@@ -129,7 +136,11 @@
 					We found {{ concepts|length }} concepts in this source.
 
 					<div class="pull-right">
-						<a class="btn btn-default" href="{% url 'concept-create' source.owner source.id %}">Add Concept</a>
+						{% if source.owner_type == 'Organization' %}
+						<a class="btn btn-default" href="{% url 'concept-create-for-org' source.owner source.id %}">Add Concept</a>
+						{% else %}
+						<a class="btn btn-default" href="{% url 'concept-create-for-user' source.owner source.id %}">Add Concept</a>
+						{% endif %}
 					</div>
 				</div>
 			</div>
@@ -151,7 +162,13 @@
 							<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}#collections" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;?</a>
 						</div>
 
-						<h4><a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
+						<h4>
+							{% if result.owner_type == 'Organization' %}
+							<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
+							{% else %}
+        						<a href="{% url 'concept-detail' user=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
+							{% endif %}
+
 							<span class="resource-label small concept">
 								<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span><span class="resource-label-id-code">{{ result.id }}</span></span><span class="resource-label-name">{{ result.displayName }}</span>
 							</span>

@@ -30,6 +30,12 @@ class OCLapi(object):
         Also contain helper and utility functions.
     """
 
+    def debug_result(self, results):
+        print '%s RESULT: %s' % (results.request.method, results.status_code)
+        if len(results.content) > 0:
+            print 'JSON:', json.dumps(results.json(), sort_keys=True,
+                                      indent=4, separators=(',', ': '))
+
     def __init__(self, request=None, debug=False, admin=False):
         """
         :param admin: optional, if set to True, access API as admin user. Needed for create_user.
@@ -55,7 +61,11 @@ class OCLapi(object):
 
             :param type_name: is a string specifying the type of the object according
                                 to the API.
-        """                                
+            :param *args: The rest of the positional arguments will be appended to the post URL
+            :param *kwargs: all the keyword arguments will become post data.
+
+            :returns: response object from requests.
+        """
         url = '%s/v1/%s/' % (self.host, type_name)
         if len(args) > 0:
             url = url + '/'.join(args) + '/'
@@ -64,6 +74,8 @@ class OCLapi(object):
 
         results = requests.post(url, data=json.dumps(kwargs),
                                 headers=self.headers)
+        if self.debug:
+            self.debug_result(results)
         return results
 
     def delete(self, type_name, object_id, **kwargs):
@@ -73,7 +85,7 @@ class OCLapi(object):
                                 to the API.
             :param object_id: is a string identifying the object for deletion.
 
-        """                                
+        """
         url = '%s/v1/%s/%s/' % (self.host, type_name, object_id)
 
         if self.debug:
@@ -81,39 +93,58 @@ class OCLapi(object):
             return None
 
         results = requests.delete(url, data=json.dumps(kwargs),
-                                headers=self.headers)
+                                  headers=self.headers)
         return results
 
-    def put(self, type_name, **kwargs):
+    def put(self, type_name, *args, **kwargs):
         """ Issue delete request to API.
 
             :param type_name: is a string specifying the type of the object according
                                 to the API.
-        """                                
+        """
         url = '%s/v1/%s/' % (self.host, type_name)
+        if len(args) > 0:
+            url = url + '/'.join(args) + '/'
 
         if self.debug:
             print 'PUT %s %s %s' % (url, json.dumps(kwargs), self.headers)
-            return None
 
         results = requests.put(url, data=json.dumps(kwargs),
-                                headers=self.headers)
+                               headers=self.headers)
+        if self.debug:
+            self.debug_result(results)
         return results
 
-    def get(self, type_name, *args, **kwargs):
+    def get(self, *args, **kwargs):
         """ Issue get request to API.
 
-            :param type_name: is a string specifying the type of the object according
-                                to the API.
-        """                                
-        url = '%s/v1/%s/' % (self.host, type_name)
+            :param *args: All positional arguments are appended to the request URL.
+        """
+        url = '%s/v1/' % (self.host)
         if len(args) > 0:
             url = url + '/'.join(args) + '/'
         if self.debug:
             print 'GET %s %s %s' % (url, json.dumps(kwargs), self.headers)
 
         results = requests.get(url, data=json.dumps(kwargs),
-                                headers=self.headers)
+                               headers=self.headers)
+        if self.debug:
+            self.debug_result(results)
+        return results
+
+    def get_by_url(self, url, **kwargs):
+        """ Issue get request to API.
+
+            :param url: is a string specifying the request url. Useful
+                for urls contained in OCL response data like members_url.
+        """
+        url = '%s/v1/%s' % (self.host, url)
+
+        if self.debug:
+            print 'GET %s %s %s' % (url, json.dumps(kwargs), self.headers)
+
+        results = requests.get(url, data=json.dumps(kwargs),
+                               headers=self.headers)
         return results
 
     def save_auth_token(self, request, json_data):
@@ -124,14 +155,14 @@ class OCLapi(object):
         """
         request.session[SESSION_TOKEN_KEY] = json_data['token']
 
-    def create_user(self, **kwargs):
+    def create_user(self, data):
         """ Create a user in the system. This call is a bit special because
             users need to be created using admin credentials.
-            :param **kwargs: is a dictionary of all the data fields.
+            :param data: is a dictionary of all the data fields.
 
-            :returns: ??
+            :returns: requests.reponse object
         """
-        result = self.post('users', **kwargs)
+        result = self.post('users', **data)
         return result
 
     def delete_user(self, username):
@@ -152,7 +183,7 @@ class OCLapi(object):
             :returns: ??
         """
         result = self.put('users/%s/reactivate/' % username)
-        return result        
+        return result
 
     def get_user_auth(self, username, password):
         """ Get the user AUTH token for the specified user.
@@ -160,8 +191,7 @@ class OCLapi(object):
 
             :returns: ??
         """
-        result = self.post('users/login', username=username,
-            password=password)
+        result = self.post('users/login', username=username, password=password)
         return result
 
     def sync_password(self, user):
@@ -171,11 +201,11 @@ class OCLapi(object):
         result = self.post('users/%s/' % user.username, hashed_password=user.password)
         return result
 
-
-    def create_concept(self, org_id, source_id, base_data, names=[], descriptions=[], extras=[]):
+    def create_concept(self, source_owner_type, source_owner_id, source_id, base_data,
+                       names=[], descriptions=[], extras=[]):
         """ Create a concept.
             NOTE: currently add by org+source, but there are other options... TODO
-            
+
             :param org_id: is the ID of the owner org
             :param source_id: is the ID of the owner source
             :param base_data: is a dictionary of all the data fields
@@ -206,33 +236,153 @@ class OCLapi(object):
         if len(list_data) > 0:
             data['extras'] = list_data
 
-        result = self.post('orgs', org_id, 'sources', source_id, 'concepts', **data)
+        result = self.post(source_owner_type, source_owner_id, 'sources', source_id, 'concepts', **data)
+        return result
+
+    def update_concept(self, source_owner_type, source_owner_id, source_id, concept_id, base_data,
+                       names=[], descriptions=[], extras=[]):
+        """ Update a concept.
+            NOTE: currently add by org+source, but there are other options... TODO
+
+            :param org_id: is the ID of the owner org
+            :param source_id: is the ID of the owner source
+            :param base_data: is a dictionary of all the data fields
+            :param names: is a list of dictionary of name fields, optional.
+            :param descriptions: is a list of dictionary of name fields, optional.
+            :param extras: is a list of dictionary of name fields, optional.
+
+            :returns: POST result from requests package.
+        """
+        data = {}
+        data.update(base_data)
+
+        list_data = []
+        for n in names:
+            list_data.append(n)
+        if len(list_data) > 0:
+            data['names'] = list_data
+
+        list_data = []
+        for d in descriptions:
+            list_data.append(d)
+        if len(list_data) > 0:
+            data['descriptions'] = list_data
+
+        list_data = []
+        for e in extras:
+            list_data.append(e)
+        if len(list_data) > 0:
+            data['extras'] = list_data
+
+        # TODO: Why doesn't POST work?
+        result = self.put(source_owner_type, source_owner_id, 'sources', source_id, 'concepts', concept_id, **data)
         return result
 
     def create_org(self, base_data, extras=[]):
         """
+            Create organization
+
+            :param base_data: is a dictionary of fields.
+
+            :returns: response object.
         """
         data = {}
         data.update(base_data)
         result = self.post('orgs', **data)
         return result
 
+    def update_org(self, org_id, base_data, extras=[]):
+        """
+            Update organization
+
+            :param org_id: is the ID for the organization being updated.
+            :param base_data: is a dictionary of fields.
+
+            :returns: response object.
+        """
+        data = {}
+        data.update(base_data)
+        result = self.post('orgs', org_id, **data)
+        return result
+
     def create_source_by_org(self, org_id, base_data, extras=[]):
         """
+            :returns: response object.
         """
         data = {}
         data.update(base_data)
         result = self.post('orgs', org_id, 'sources', **data)
         return result
 
+    def create_source_by_user(self, user_id, base_data, extras=[]):
+        """
+            :returns: response object.
+        """
+        data = {}
+        data.update(base_data)
+        result = self.post('users', user_id, 'sources', **data)
+        return result
+
     def create_source_by_me(self, base_data, extras=[]):
         """
+            :returns: response object.
         """
         data = {}
         data.update(base_data)
         result = self.post('users', 'sources', **data)
         return result
 
+    def update_source_by_org(self, org_id, source_id, base_data, extras=[]):
+        """
+            update source owned by org.
+
+            :param org_id: is the org owner of this wource.
+            :param base_data: is a dictionary of fields.
+
+            :returns: response object.
+        """
+        data = {}
+        data.update(base_data)
+        # TODO: Why doesn't POST work?
+        result = self.put('orgs', org_id, 'sources', source_id, **data)
+        return result
+
+    def update_source_by_user(self, username, source_id, base_data, extras=[]):
+        """
+            Update source owned by user.
+
+            :param username: is the user owner of this wource.
+            :param base_data: is a dictionary of fields.
+
+            :returns: response object.
+        """
+        data = {}
+        data.update(base_data)
+        # TODO: Why doesn't POST work?
+        result = self.put('users', username, 'sources', source_id, **data)
+        return result
+
+### Below not used ###
+
+
+class Source(object):
+    """ NOTE USED """
+    def __init__(self):
+        pass
+
+    def from_json(self, json):
+        """
+        Copy everything over
+        """
+        for key, value in json.iteritems():
+            self.__setattr__(key, value)
+
+    def absolute_url(self):
+        """
+        Get my access url, which is not simple because of my owner...
+        """
+        if self.owner_type == 'Organization':
+            return 'orgs/%s/sources/%s/' % (self.owner_id, self.short_code)
 
 
 api_key = os.environ.get('OCL_API_TOKEN', None)
@@ -267,6 +417,7 @@ def object_hooker(dct):
 
 
 class APIRequestor(object):
+    """ NOT Used """
 
     def __init__(self, api_key=api_key):
         self.api_key = api_key
