@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load ocl_tags %}
+
+{% block title %}{% trans "Update Concept" %}{% endblock %}
+{% block content %}
+
+
+<h3>
+    {% source_owner_label source %} / {% source_label source %} / {% concept_label concept %} / {% trans 'Update Concept' %}
+    {# TODO: Only show if admin or owner #}
+    <a href="#" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+
+</h3>
+
+&nbsp;
+<div class="container">
+
+<div class="row">
+  <div class="col-md-6">
+
+<form class="form" id="concept_create_form" method="post" action=".">
+  {% csrf_token %}
+
+  {% bootstrap_form form %}
+
+
+  {% buttons %}
+  <button type="submit" class="btn btn-primary">
+    {% trans "Update" %}
+  </button>
+  {% endbuttons %}
+
+    </form>
+
+  </div>
+</div>
+
+
+{% endblock %}

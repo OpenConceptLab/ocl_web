@@ -10,7 +10,7 @@ dj-database-url==0.2.2
 # Forms
 django-braces==1.3.1
 django-crispy-forms==1.4.0
-django-floppyforms==1.1.1
+django-bootstrap3==4.11.0
 
 # Models
 South==0.8.4
@@ -24,7 +24,7 @@ Pillow==2.3.0
 django-allauth==0.15.0
 
 # For the persistance stores
-psycopg2==2.5.2
+# psycopg2==2.5.2
 
 # Unicode slugification
 unicode-slugify==0.1.1
@@ -35,4 +35,5 @@ django-avatar==2.0
 
 # Your custom requirements go here
 simplejson==3.4.0
+python-dateutil==2.2
 

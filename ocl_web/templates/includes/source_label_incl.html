@@ -1,0 +1,7 @@
+{% if source.owner_type == 'Organization' %}
+<a href="{% url 'source-detail' org=source.owner source=source.id %}" class="label label-success">
+{% else %}
+<a href="{% url 'source-detail' user=source.owner source=source.id %}" class="label label-success">
+{% endif %}
+<span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ source.id }}</a>
+

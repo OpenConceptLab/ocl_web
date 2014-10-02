@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
-# Import the reverse lookup function
-from django.core.urlresolvers import reverse
+import requests
 
-# view imports
+from django.utils.translation import ugettext as _
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+from django.views.generic import FormView
+from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import DetailView
 from django.views.generic import RedirectView
 from django.views.generic import UpdateView
 from django.views.generic import ListView
+from django.contrib import messages
 
 from django.conf import settings
-import requests
+
 
 # Only authenticated users can access views using this.
 from braces.views import LoginRequiredMixin
@@ -19,7 +23,7 @@ from .forms import UserForm
 
 # Import the customized User model
 from .models import User
-
+from libs.ocl import OCLapi
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -34,20 +38,12 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 
         # Setup API calls
         username = (kwargs["object"].username)
-        host = settings.API_HOST
-        auth_token = settings.API_TOKEN
+        api = OCLapi(self.request, debug=True)
 
-        ocl_user_url = "%s/v1/users/%s/" % (host, username)
-        ocl_user_orgs_url = ocl_user_url + "orgs/"
-        ocl_user_sources_url = ocl_user_url + "sources/"
-        ocl_user_collections_url = ocl_user_url + "collections/"
-        requestHeaders = {'Authorization': auth_token}
-
-        # API calls
-        ocl_user = requests.get(ocl_user_url, headers=requestHeaders).json()
-        ocl_user_orgs = requests.get(ocl_user_orgs_url, headers=requestHeaders).json()
-        ocl_user_sources = requests.get(ocl_user_sources_url, headers=requestHeaders).json()
-        ocl_user_collections = requests.get(ocl_user_collections_url, headers=requestHeaders).json()
+        ocl_user = api.get('users', username).json()
+        ocl_user_orgs = api.get('users', username, 'orgs').json()
+        ocl_user_sources = api.get('users', username, 'sources').json()
+        ocl_user_collections = api.get('users', username, 'collections').json()
 
         # Set the context
         context['ocl_user'] = ocl_user
@@ -66,9 +62,12 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
             kwargs={"username": self.request.user.username})
 
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
-
+class UserUpdateView(LoginRequiredMixin, FormView):
+    """
+        Update a user profile, need to update both web side and API side.
+    """
     form_class = UserForm
+    template_name = 'users/user_form.html'
 
     # we already imported User in the view code above, remember?
     model = User
@@ -76,11 +75,36 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     # send the user back to their own page after a successful update
     def get_success_url(self):
         return reverse("users:detail",
-                    kwargs={"username": self.request.user.username})
+                    kwargs={"username": self.kwargs.get('username')})
 
-    def get_object(self):
-        # Only get the User record for the user making the request
-        return User.objects.get(username=self.request.user.username)
+    def get_initial(self):
+        user = User.objects.get(username=self.kwargs.get('username'))
+        api = OCLapi(self.request)
+        result = api.get('users', user.username)
+        api_user = result.json()
+        data = {
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            }
+        data.update(api_user)
+        return data
+
+    def form_valid(self, form):
+        """
+            User entry is good, update both web database and backend.
+        """
+        print form.cleaned_data
+        # only pass updatable fields to backend
+        field_names = ('first_name', 'last_name', 'company', 'location')
+        data = dict([(k, v) for k, v in form.cleaned_data.iteritems() if k in field_names])
+        api = OCLapi(self.request)
+        result = api.post('user', **data)
+        print result.status_code
+        if len(result.text) > 0: print result.json()
+
+        messages.add_message(self.request, messages.INFO, _('User updated'))
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class UserListView(LoginRequiredMixin, ListView):

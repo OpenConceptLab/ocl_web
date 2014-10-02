@@ -2,7 +2,7 @@
 
 {% load url from future %}
 {% load i18n %}
-{% load crispy_forms_tags %}
+{% load bootstrap3 %}
 
 {% block title %}{% trans "Signup" %}{% endblock title %}
 
@@ -11,15 +11,25 @@
 
 <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
 
-<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+<div class="row">
+<div class="col-md-8x">
+<form class="signup form-horizontal" id="signup_form" method="post" action="{% url 'account_signup' %}">
   {% csrf_token %}
-  {{ form|crispy }}
+  {% bootstrap_form form layout="horizontal" %}
+
   {% if redirect_field_value %}
   <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
   {% endif %}
-  <button class="btn" type="submit">{% trans "Sign Up" %} &raquo;</button>
+
+  {% buttons layout="horizontal" %}
+  <button type="submit" class="btn btn-primary">
+    {% trans "Sign Up" %} &raquo;
+  </button>
+  {% endbuttons %}
 </form>
 
+
+</div></div>
 
 {% endblock content %}
 

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load ocl_tags %}
 {% block content %}
 
 <!-- Start content row -->
@@ -123,7 +123,12 @@
 					<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}#collections" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;?</a>
 				</div-->
 
-				<h4><a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
+				<h4>
+					{% if result.owner_type == 'Organization' %}
+					    <a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
+					 {% else %}
+					    <a href="{% url 'concept-detail' user=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
+			    	{% endif %}
 					<span class="resource-label small concept">
 						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span><span class="resource-label-id-code">{{ result.id }}</span></span><span class="resource-label-name">{{ result.display_name }}</span>
 					</span>
@@ -139,7 +144,7 @@
 						&nbsp;&nbsp;
 						<br /-->
 					{% endcomment %}
-					<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|date:"d-M-Y" }}</span>
+					<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -158,7 +163,12 @@
 					<a href="{% url 'source-detail' org=result.owner source=result.id %}#concepts" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts }}</a>
 				</div>
 
-				<h4><a href="{% url 'source-detail' org=result.owner source=result.short_code %}" style="text-decoration: none;">
+				<h4>
+					{% if result.owner_type == 'Organization' %}
+					    <a href="{% url 'source-detail' org=result.owner source=result.short_code %}" style="text-decoration: none;">
+                    {% else %}
+					    <a href="{% url 'source-detail' user=result.owner source=result.short_code %}" style="text-decoration: none;">
+                    {% endif %}
 					<span class="resource-label small source">
 						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-th-list"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / </span><span class="resource-label-id-code">{{ result.short_code }}</span>
 						</span><span class="resource-label-name">{{ result.name }}</span>
@@ -167,7 +177,7 @@
 
 				<p>
 					{% if result.description %}{{ result.description }}<br />{% endif %}
-					{% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|date:"d-M-Y" }}</span>{% endif %}
+					{% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -195,7 +205,7 @@
 
 				<p>
 					{% if result.description %}{{ result.description }}<br />{% endif %}
-					{% if result.updated_on %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|date:"d-M-Y" }}</span>{% endif %}
+					{% if result.updated_on %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
@@ -230,7 +240,7 @@
 					<span class="text-muted small">
 						{% if result.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ result.location }}
 						&nbsp;&nbsp;&nbsp;{% endif %}
-						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ result.created_on|date:"d-M-Y" }}
+						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ result.created_on|smart_date }}
 					</span>
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
@@ -254,7 +264,7 @@
 					<a href="{% url 'user' %}#collections" title="Public collections owned by user"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections }}</a>
 				</div>
 
-				<h4><a href="{% url 'user' %}" style="text-decoration: none;">
+				<h4><a href="{% url 'users:detail' result.username %}" style="text-decoration: none;">
 					<span class="resource-label small user">
 						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-user"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ result.username }}</span>
 						</span><span class="resource-label-name">{{ result.name }}</span>
@@ -265,7 +275,7 @@
 					<span class="text-muted small">
 						{% if result.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ result.location }}
 						&nbsp;&nbsp;&nbsp;{% endif %}
-						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined on {{ result.created_on|date:"M d, Y" }}
+						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined on {{ result.created_on|smart_date}}
 					</span>
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}

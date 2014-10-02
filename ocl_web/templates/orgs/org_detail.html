@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% load ocl_tags %}
+
+{% block title %}{{ org.id }}{% endblock title %}
 
 {% block content-no-container %}
 
@@ -9,10 +12,11 @@
 
 				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-home"></span></div>
 				<div style="display:inline-block;padding-left:20px">
-					<h4>
-						<span class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ org.id }}</span>
-						<a href="#" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
-					</h4>
+					<h3>
+						{% org_label org %}
+						{# TODO: Only show if admin or owner #}
+						<a href="{% url 'org-edit' org.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
+					</h3>
 					<p>
 						<h4>{{ org.name }}</h4>
 						<span class="text-muted small">
@@ -20,7 +24,7 @@
 							<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ org.location }}
 							&nbsp;&nbsp;&nbsp;
 						{% endif %}
-						<span class="glyphicon glyphicon-calendar"></span> Created on ({{ org.created_on }})
+						<span class="glyphicon glyphicon-calendar"></span> Created on ({{ org.created_on|smart_date }})
 						</span>
 					</p>
 				</div>
@@ -101,7 +105,7 @@
 				</div>
 				<div class="col-md-11 search-result-col-content">
 					<div class="pull-right small text-muted" style="padding-top:12px;">
-						<a href="{% url 'source-detail' org=result.owner source=result.id %}#concepts" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts }}</a>
+						<a href="{% url 'source-detail' org=result.owner source=result.short_code %}#concepts" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts }}</a>
 					</div>
 					<h4><a href="{% url 'source-detail' org=result.owner source=result.short_code %}" style="text-decoration: none;">
 						<span class="resource-label small source">
@@ -183,6 +187,9 @@
 				</div>
 			</div> <!-- /panel -->
 
+			<div class="panel panel-default">
+				<a href="{% url "source-create-for-org" org.id %}" class="btn">Add Source</a>
+			</div>
 <!-- Org members -->
 
 			<div class="panel panel-default">

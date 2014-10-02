@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load ocl_tags %}
+
+{% block title %}{% trans "Add Concept" %}{% endblock %}
+{% block content %}
+
+	<h3>
+    {% source_owner_label source %} / {% source_label source %} / Add Concept
+	</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+
+
+
+<form class="form" id="concept_create_form" method="post" action=".">
+  {% csrf_token %}
+
+  {% bootstrap_form form %}
+
+
+  {% buttons %}
+  <button type="submit" class="btn btn-primary">
+    {% trans "Add" %}
+  </button>
+  {% endbuttons %}
+
+    </form>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

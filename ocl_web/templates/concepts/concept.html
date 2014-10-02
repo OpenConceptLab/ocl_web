@@ -19,21 +19,30 @@
 			<span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ concept.id }}</span>
 		</h4>
 		<p>
-			{{ concept.displayName }} {% if concept.displayLocale %}<span class="small"><em>[{{ concept.displayLocale }}]</em></span>{% endif %}&nbsp;&nbsp;<span id="element-info" data-toggle="tooltip" data-placement="right" title="Preferred name in selected language"><span class="glyphicon glyphicon-info-sign"></span></span><br />
-			<em>Class:</em> {{ concept.conceptClass }},
+			{{ concept.display_name }} {% if concept.display_locale %}<span class="small"><em>[{{ concept.display_locale }}]</em></span>{% endif %}&nbsp;&nbsp;<span id="element-info" data-toggle="tooltip" data-placement="right" title="Preferred name in selected language"><span class="glyphicon glyphicon-info-sign"></span></span><br />
+			<em>Class:</em> {{ concept.concept_class }},
 			<em>Datatype:</em> {{ concept.datatype }}
 			<!--span class="text-muted">Last Updated 2010</span-->
 		</p>
 		<!--p><a href="#">More &blacktriangledown;</a></p-->
 	</div>
 </div>
+
+<div class="row">
+
+					<div class="pull-right">
+						<a class="btn btn-default" href="{% url 'concept-names-update' concept.owner concept.source concept.id %}">Edit Names</a>
+					</div>
+
+</div>
+
 <div class="row">
 	<div class="col-md-3" style="text-align:right;">
 		<span style="font-weight:bold;color:#999;">Preferred Name</span>
 		<span id="preferred-name-info" data-toggle="tooltip" data-placement="right" title="Primary name in user's preferred language."><span class="glyphicon glyphicon-info-sign"></span></span>
 	</div>
 	<div class="col-md-9">
-		{{ concept.displayName }} <span class="small"><em>[{{ concept.displayLocale }}]</em></span>
+		{{ concept.display_name }} <span class="small"><em>[{{ concept.display_locale }}]</em></span>
 	</div>
 </div>
 <div class="row">
@@ -41,7 +50,7 @@
 		Class
 	</div>
 	<div class="col-md-9">
-		{{ concept.conceptClass }}
+		{{ concept.concept_class }}
 	</div>
 </div>
 <div class="row">
@@ -61,6 +70,7 @@
 		{% for name in concept.names %}
 			<li class="list-group-item {% if name.localePreferred %}list-group-item-info{% endif %}">{{ name.name }} <span class="small"><em>[{{ name.locale }}]</em></span> 
 				{% if name.localePreferred %}&nbsp;<span id="locale-preferred-name-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
+				/ <span class="small">{{ name.name_type|default:"" }}</span>
 				{% if request.GET.debug %}<br /><pre>{{ name|pprint }}</pre>{% endif %}</li>
 		{% empty %}
 			<li class="small"><em>None</em></li>
@@ -75,8 +85,9 @@
 	<div class="col-md-9">
 		<ul class="list-group">
 		{% for desc in concept.descriptions %}
-			<li class="list-group-item {% if desc.localePreferred %}list-group-item-info{% endif %}">{{ desc.name }} <span class="small"><em>[{{ desc.locale }}]</em></span> 
+			<li class="list-group-item {% if desc.localePreferred %}list-group-item-info{% endif %}">{{ desc.description }} <span class="small"><em>[{{ desc.locale }}]</em></span> 
 				{% if desc.localePreferred %}&nbsp;<span id="locale-preferred-desc-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
+				/ <span class="small">{{ desc.description_type|default:"" }}</span>
 				{% if request.GET.debug %}<br /><pre>{{ desc|pprint }}</pre>{% endif %}</li>
 		{% empty %}
 			<li class="small"><em>None</em></li>
@@ -84,7 +95,6 @@
 		</ul>
 	</div>
 </div>
-
 
 <!--
 <h4 style="padding-top:20px;"><small>All Concept Fields:</small></h4>
