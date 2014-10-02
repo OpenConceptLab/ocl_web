@@ -13,6 +13,7 @@ from apps.orgs.views import (OrganizationDetailView, OrganizationCreateView, Org
 from apps.sources.views import (SourceDetailView, SourceCreateView, SourceEditView)
 from apps.concepts.views import (ConceptDetailView, ConceptCreateView, ConceptEditView)
 from apps.concepts.views import (ConceptNamesUpdateView, ConceptNameAddView)
+from apps.concepts.views import ConceptDescAddView
 
 urlpatterns = patterns('',
 
@@ -27,10 +28,16 @@ urlpatterns = patterns('',
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/create/$', ConceptCreateView.as_view(), name='concept-create-for-org'),
 
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/$', ConceptNameAddView.as_view(), name='concept-detail'),
-    url(r'^update/names/(?P<org>[a-zA-Z0-9\-\.]+)/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<concept>[a-zA-Z0-9\-\.]+)/$', ConceptNamesUpdateView.as_view(), name='concept-names-update'),
-    url(r'^detail/(?P<org>[a-zA-Z0-9\-\.]+)/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<concept>[a-zA-Z0-9\-\.]+)/name/add/$', ConceptNameAddView.as_view(), name='concept-name-add'),
-
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/edit/$', ConceptEditView.as_view(), name='concept-edit'),
+
+    url(r'^update/names/(?P<org>[a-zA-Z0-9\-\.]+)/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<concept>[a-zA-Z0-9\-\.]+)/$', ConceptNamesUpdateView.as_view(), name='concept-names-update'),
+
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/add/$', ConceptNameAddView.as_view(), name='concept-name-add'),
+
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/add/$', ConceptDescAddView.as_view(), name='concept-desc-add'),
+
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/$', ConceptDescAddView.as_view(), name='concept-desc-list'),
+
 
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collection/(?P<collection>[a-zA-Z0-9\-\.]+)/$', ConceptNameAddView.as_view(), name='collection-detail'),
 )

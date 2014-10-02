@@ -1,5 +1,5 @@
 {% load staticfiles i18n %}<!DOCTYPE html>
-<html lang="en" ng-app>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>{% block title %}Open Concept Lab{% endblock title %}</title>
@@ -27,7 +27,8 @@
     {% endblock %}
 
     {% block angular %}
-{#      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.min.js"></script>#}
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.min.js"></script>
+      <script src="/static/js/project.js"></script>
     {% endblock %}
 
   </head>

@@ -123,7 +123,12 @@
 					<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}#collections" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;?</a>
 				</div-->
 
-				<h4><a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
+				<h4>
+					{% if result.owner_type == 'Organization' %}
+					    <a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
+					 {% else %}
+					    <a href="{% url 'concept-detail' user=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
+			    	{% endif %}
 					<span class="resource-label small concept">
 						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span><span class="resource-label-id-code">{{ result.id }}</span></span><span class="resource-label-name">{{ result.display_name }}</span>
 					</span>

@@ -119,27 +119,79 @@
 </div> {# form column9 #}
 </div> {# add form row #}
 
+{% url 'concept-desc-add' org=concept.owner source=source.id concept=concept.id as form_url %}
+<div  ng-app="ConceptApp"  ng-controller="ConceptDescriptionController" ng-init="formUrl='{{form_url}}'">
 
-<div class="row">
+
+
+<div class="row" >
 	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
 		Description
 	</div>
 	<div class="col-md-9">
 		<ul class="list-group">
-		{% for desc in concept.descriptions %}
-			<li class="list-group-item {% if desc.localePreferred %}list-group-item-info{% endif %}">{{ desc.description }} <span class="small"><em>[{{ desc.locale }}]</em></span> 
+			{% verbatim %}
+			<li ng-repeat="desc in description_list" class="list-group-item {% if desc.localePreferred %}list-group-item-info{% endif %}">{{ desc.description }} <span class="small"><em>[{{ desc.locale }}]</em></span> 
+				<span class="glyphicon glyphicon-trash pull-right" ng-click="deleteDescription(desc)"></span>
+			{% endverbatim %}
 				{% if desc.localePreferred %}&nbsp;<span id="locale-preferred-desc-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
 				/ <span class="small">{{ desc.description_type|default:"" }}</span>
 				{% if request.GET.debug %}<br /><pre>{{ desc|pprint }}</pre>{% endif %}</li>
-		{% empty %}
-			<li class="small"><em>None</em></li>
-		{% endfor %}
+
 		</ul>
 	</div> {# 9 #}
+</div> {# outer row#}
+
+
+<div class="row">
+<div class="col-md-3">
+	&nbsp;
+</div>
+<div class="col-md-6">
+    <div>
+      {% verbatim %}{{ message }}{% endverbatim %}
+    </div>
+<form ng-submit="addDescription(desc)">
+<div class="form-group required">
+	<label class="control-label" for="id_description">Description</label>
+	<input class="form-control" id="id_desription" maxlength="30" name="description" 
+	    placeholder="Name" required="required" title="" type="text"
+	    ng-model="desc.description" />
+</div>
+<div class="form-group">
+	<label class="control-label" for="id_description_type">Description Type</label>
+	<input class="form-control" id="id_desription_type" maxlength="30" name="description_type" 
+	    placeholder="Description type" required="required" title="" type="text"
+	    ng-model="desc.descriptionType" />
 </div>
 
-</div> {# col11 #}
-</div> {# outer row#}
+<div class="form-group required">
+	<label class="control-label" for="id_locale">Locale</label>
+	<input class="form-control" id="id_locale" maxlength="30" name="locale" 
+	    placeholder="Locale" required="required" title="" type="text"
+	    ng-model="desc.locale" />
+</div>
+
+<div class="form-group required">
+	<label class="control-label" for="id_preferred_locale">Preferred Locale</label>
+	<input class="form-control" id="id_locale" maxlength="30" name="preferred_locale" 
+	    placeholder="Preferred local" required="required" title="" type="text"
+	    ng-model="desc.preferredLocale" />
+</div>
+
+<div class="form-group">
+  <button type="submit" class="btn btn-primary">
+    {% trans 'Add Description' %}
+  </button>
+ </div>
+</div> {# col6 for form #}
+</form>
+
+
+</div> {# row #}
+
+<div> {# app #}
+
 <!--
 <h4 style="padding-top:20px;"><small>All Concept Fields:</small></h4>
 <div class="row" style="border-bottom:1px solid #e5e5e5;margin-bottom:20px;"></div>

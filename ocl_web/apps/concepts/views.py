@@ -1,10 +1,12 @@
 from django.views.generic import TemplateView
+from django.views.generic.edit import View
 from django.views.generic.edit import FormView
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django import forms
+from braces.views import (CsrfExemptMixin, JsonRequestResponseMixin)
 
 from .forms import (ConceptCreateForm, ConceptEditForm)
 from .forms import (ConceptNameForm, ConceptNameFormSet)
@@ -345,3 +347,52 @@ class ConceptNameAddView(UserOrOrgMixin, FormView):
 
         messages.add_message(self.request, messages.INFO, _('Concept Name added'))
         return HttpResponseRedirect(self.request.path)
+
+
+class ConceptDescAddView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin, View):
+    """
+        Add a concept description via json call via angular.
+    """
+    def get_all_args(self):
+        self.get_args()
+        self.source_id = self.kwargs.get('source')
+        self.concept_id = self.kwargs.get('concept')
+
+    def get(self, request, *args, **kwargs):
+        """
+            Return a list of descriptions as json.
+        """
+        self.get_all_args()
+        api = OCLapi(self.request, debug=True)
+        result = api.get('orgs', self.org_id, 'sources', self.source_id,
+                         'concepts', self.concept_id, 'descriptions')
+        if not result.ok:
+            print result
+            return self.render_bad_request_response(result)
+
+        return self.render_json_response(result.json())
+
+    def post(self, request, *args, **kwargs):
+
+        self.get_all_args()
+
+        data = {}
+        try:
+            print self.request_json
+            data['description'] = self.request_json['description']
+            data['description_type'] = self.request_json['description_type']
+            data['locale'] = self.request_json['locale']
+            data['preferred_locale'] = self.request_json['preferred_locale']
+        except KeyError:
+            resp = {u"message": _('Invalid input')}
+            return self.render_bad_request_response(resp)
+
+        api = OCLapi(self.request, debug=True)
+        result = api.post('orgs', self.org_id, 'sources', self.source_id,
+                          'concepts', self.concept_id, 'descriptions', **data)
+        if not result.ok:
+            print result
+            return self.render_bad_request_response(result)
+
+        return self.render_json_response(
+            {'message': _('Description added')})
