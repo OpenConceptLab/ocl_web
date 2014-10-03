@@ -32,7 +32,7 @@ class OCLapi(object):
 
     def debug_result(self, results):
         print '%s RESULT: %s' % (results.request.method, results.status_code)
-        if len(results.content) > 0:
+        if len(results.content) > 0 and results.status_code != requests.codes.server_error:
             print 'JSON:', json.dumps(results.json(), sort_keys=True,
                                       indent=4, separators=(',', ': '))
 
@@ -41,19 +41,21 @@ class OCLapi(object):
         :param admin: optional, if set to True, access API as admin user. Needed for create_user.
         :param request: gives the API access to the current active session, to get Authorization etc.
         """
+        self.status_code = None
         self.debug = debug
         self.host = settings.API_HOST  # backend location
         self.headers = {'Content-Type': 'application/json'}
 
         # The admin api key should only be used for admin functions (duh)
         self.admin_api_key = os.environ.get('OCL_API_TOKEN', None)
+        self.anon_api_key = os.environ.get('OCL_ANON_API_TOKEN', None)
 
         if admin:
             self.headers['Authorization'] = 'Token %s' % self.admin_api_key
         else:
             if request:
                 # Todo: the KEY constant needs to be somewhere else
-                key = request.session.get(SESSION_TOKEN_KEY)
+                key = request.session.get(SESSION_TOKEN_KEY, self.anon_api_key)
                 self.headers['Authorization'] = 'Token %s' % key
 
     def post(self, type_name, *args, **kwargs):
@@ -74,6 +76,7 @@ class OCLapi(object):
 
         results = requests.post(url, data=json.dumps(kwargs),
                                 headers=self.headers)
+        self.status_code = results.status_code
         if self.debug:
             self.debug_result(results)
         return results
@@ -94,6 +97,7 @@ class OCLapi(object):
 
         results = requests.delete(url, data=json.dumps(kwargs),
                                   headers=self.headers)
+        self.status_code = results.status_code
         return results
 
     def put(self, type_name, *args, **kwargs):
@@ -111,6 +115,7 @@ class OCLapi(object):
 
         results = requests.put(url, data=json.dumps(kwargs),
                                headers=self.headers)
+        self.status_code = results.status_code
         if self.debug:
             self.debug_result(results)
         return results
@@ -119,6 +124,9 @@ class OCLapi(object):
         """ Issue get request to API.
 
             :param *args: All positional arguments are appended to the request URL.
+            :param **kwargs: These are not used at the moment, since this is a get request TODO
+            :returns: requests.response object.
+
         """
         url = '%s/v1/' % (self.host)
         if len(args) > 0:
@@ -128,9 +136,27 @@ class OCLapi(object):
 
         results = requests.get(url, data=json.dumps(kwargs),
                                headers=self.headers)
+        self.status_code = results.status_code
         if self.debug:
             self.debug_result(results)
         return results
+
+    def get_json(self, *args):
+        """ Smarter GET request when you really want a json object back.
+
+            Note: This is experimental -- not sure if this is the right abstraction.
+
+            :param *args: All positional arguments are appended to the request URL.
+            :returns: json string or None if error.
+            :exception: Will raise exception if response status code is not 200.
+        """
+        results = self.get(*args)
+        if results.status_code != requests.codes.ok:
+            results.raise_for_status()
+        if len(results.content) > 0:
+            return results.json()
+        else:
+            return None
 
     def get_by_url(self, url, **kwargs):
         """ Issue get request to API.
