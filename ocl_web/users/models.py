@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib.auth.models import AbstractUser
-from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from allauth.account.signals import (user_signed_up, user_logged_in, email_confirmed)
 from .signals import (user_created_handler, user_logged_in_handler,
                         email_confirmed_handler)
+
 
 # Subclass AbstractUser
 class User(AbstractUser):

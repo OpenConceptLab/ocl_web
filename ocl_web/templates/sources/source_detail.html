@@ -170,16 +170,12 @@
 							{% endif %}
 
 							<span class="resource-label small concept">
-								<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span><span class="resource-label-id-code">{{ result.id }}</span></span><span class="resource-label-name">{{ result.displayName }}</span>
+								<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span><span class="resource-label-id-code">{{ result.id }}</span></span><span class="resource-label-name">{{ result.display_name }}</span>
 							</span>
 						</a></h4>
 
 						<p>
 							<em>Class:</em> {{ result.conceptClass }}, <em>Datatype:</em> {{ result.datatype }}<br />
-							<em>Collections:</em>
-								<a href="#" class="label label-default"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Fake / Bogus Value Set</a>
-								&nbsp;&nbsp;
-								<br />
 							{% if result.updatedOn %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
 						</p>
 						{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}

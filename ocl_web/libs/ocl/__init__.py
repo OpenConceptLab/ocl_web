@@ -191,7 +191,7 @@ class OCLapi(object):
 
             :returns: ??
         """
-        result = self.post('users/login', username=username, password=password)
+        result = self.post('users', 'login', username=username, password=password)
         return result
 
     def sync_password(self, user):

@@ -13,7 +13,7 @@ def user_created_handler(sender, request, user, **kwargs):
     a corresponding user at the backend.
     """
     print 'user created handler %s' % user.username
-    ocl = OCLapi()
+    ocl = OCLapi(admin=True, debug=True)
     data = {
             'username': user.username,
             'email': user.email,
@@ -41,7 +41,7 @@ def email_confirmed_handler(sender, request, email_address, **kwargs):
     app for subsequent access, but we do not have easy access to the
     django user object.
     """
-    pass
+    print 'Email Confirmed signal for ', request.user.username
 
 
 def user_logged_in_handler(sender, request, user, **kwargs):
@@ -53,10 +53,9 @@ def user_logged_in_handler(sender, request, user, **kwargs):
     TODO: Cannot get to, or hashed_password is not saved, so this
     fails with an invalid password.
     """
-    print user.username
+    print 'User logged in Signal for:', user.username
     ocl = OCLapi(admin=True, debug=True)
     result = ocl.get_user_auth(user.username, user.password)
-    print result.status_code
     if result.status_code == 200:
         print 'LOGIN auth code:', result.json()
         ocl.save_auth_token(request, result.json())

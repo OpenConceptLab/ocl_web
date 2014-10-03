@@ -53,6 +53,9 @@ class SignupForm(forms.ModelForm):
     def signup(self, request, user):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
-        user.save() 
+        user.save()
 
-
+    def save(self, user):
+        print 'In SignupForm save:', user.username
+        print user.first_name, user.email
+        return user
