@@ -107,6 +107,7 @@ class OCLapi(object):
                                 to the API.
         """
         url = '%s/v1/%s/' % (self.host, type_name)
+        print args
         if len(args) > 0:
             url = url + '/'.join(args) + '/'
 

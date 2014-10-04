@@ -351,12 +351,16 @@ class ConceptNameAddView(UserOrOrgMixin, FormView):
 
 class ConceptDescAddView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin, View):
     """
-        Add a concept description via json call via angular.
+        Interface to AngularJS concept description operations, supporting list, add, update and delete.
     """
     def get_all_args(self):
         self.get_args()
         self.source_id = self.kwargs.get('source')
         self.concept_id = self.kwargs.get('concept')
+        self.desc_id = self.kwargs.get('description')
+
+    def is_edit(self):
+        return self.desc_id is not None
 
     def get(self, request, *args, **kwargs):
         """
@@ -375,24 +379,31 @@ class ConceptDescAddView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMix
     def post(self, request, *args, **kwargs):
 
         self.get_all_args()
-
         data = {}
         try:
-            print self.request_json
+            print 'request json:', self.request_json
             data['description'] = self.request_json['description']
             data['description_type'] = self.request_json['description_type']
             data['locale'] = self.request_json['locale']
-            data['preferred_locale'] = self.request_json['preferred_locale']
+            data['locale_preferred'] = self.request_json['locale_preferred']
+            print 'data:', data
         except KeyError:
             resp = {u"message": _('Invalid input')}
             return self.render_bad_request_response(resp)
 
         api = OCLapi(self.request, debug=True)
-        result = api.post('orgs', self.org_id, 'sources', self.source_id,
-                          'concepts', self.concept_id, 'descriptions', **data)
+        if self.is_edit():
+            result = api.put('orgs', self.org_id, 'sources', self.source_id,
+                              'concepts', self.concept_id, 'descriptions', self.desc_id, **data)
+        else:
+            result = api.post('orgs', self.org_id, 'sources', self.source_id,
+                              'concepts', self.concept_id, 'descriptions', **data)
+
         if not result.ok:
             print result
             return self.render_bad_request_response(result)
 
         return self.render_json_response(
             {'message': _('Description added')})
+
+
