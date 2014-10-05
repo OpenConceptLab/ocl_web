@@ -119,8 +119,7 @@
 </div> {# form column9 #}
 </div> {# add form row #}
 
-{% url 'concept-desc-add' org=concept.owner source=source.id concept=concept.id as form_url %}
-<div  ng-app="ConceptApp"  ng-controller="ConceptDescriptionController" ng-init="formUrl='{{form_url}}'">
+<div  ng-app="ConceptApp"  ng-controller="ConceptDescriptionController" >
 
 
 

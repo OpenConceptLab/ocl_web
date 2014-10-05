@@ -81,19 +81,15 @@ class OCLapi(object):
             self.debug_result(results)
         return results
 
-    def delete(self, type_name, object_id, **kwargs):
+    def delete(self, *args, **kwargs):
         """ Issue delete request to API.
 
-            :param type_name: is a string specifying the type of the object according
-                                to the API.
-            :param object_id: is a string identifying the object for deletion.
-
         """
-        url = '%s/v1/%s/%s/' % (self.host, type_name, object_id)
-
+        url = '%s/v1/' % (self.host)
+        if len(args) > 0:
+            url = url + '/'.join(args) + '/'
         if self.debug:
             print 'DELETE %s %s %s' % (url, json.dumps(kwargs), self.headers)
-            return None
 
         results = requests.delete(url, data=json.dumps(kwargs),
                                   headers=self.headers)

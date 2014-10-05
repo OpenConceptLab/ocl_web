@@ -406,4 +406,20 @@ class ConceptDescAddView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMix
         return self.render_json_response(
             {'message': _('Description added')})
 
+    def delete(self, request, *args, **kwargs):
+        """
+        Delete the specified description.
+        """
+        self.get_all_args()
+        api = OCLapi(self.request, debug=True)
+        if self.is_edit():  # i.e. has description UUID
+            result = api.delete('orgs', self.org_id, 'sources', self.source_id,
+                              'concepts', self.concept_id, 'descriptions', self.desc_id)
+        if not result.ok:
+            print result
+            return self.render_bad_request_response(result)
+
+        return self.render_json_response(
+            {'message': _('Description deleted')})
+
 
