@@ -349,18 +349,22 @@ class ConceptNameAddView(UserOrOrgMixin, FormView):
         return HttpResponseRedirect(self.request.path)
 
 
-class ConceptDescAddView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin, View):
+class ConceptItemView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin, View):
     """
         Interface to AngularJS concept description operations, supporting list, add, update and delete.
     """
+    # override this, set to 'descriptions', 'names', etc
+    item_name = None
+    kwarg_name = None
+
     def get_all_args(self):
         self.get_args()
         self.source_id = self.kwargs.get('source')
         self.concept_id = self.kwargs.get('concept')
-        self.desc_id = self.kwargs.get('description')
+        self.item_id = self.kwargs.get(self.kwarg_name)
 
     def is_edit(self):
-        return self.desc_id is not None
+        return self.item_id is not None
 
     def get(self, request, *args, **kwargs):
         """
@@ -369,7 +373,7 @@ class ConceptDescAddView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMix
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
         result = api.get('orgs', self.org_id, 'sources', self.source_id,
-                         'concepts', self.concept_id, 'descriptions')
+                         'concepts', self.concept_id, self.item_name)
         if not result.ok:
             print result
             return self.render_bad_request_response(result)
@@ -382,11 +386,11 @@ class ConceptDescAddView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMix
         data = {}
         try:
             print 'request json:', self.request_json
-            data['description'] = self.request_json['description']
-            data['description_type'] = self.request_json['description_type']
-            data['locale'] = self.request_json['locale']
-            data['locale_preferred'] = self.request_json['locale_preferred']
-            print 'data:', data
+            for n in self.field_names:
+                # Skipping over fields that are not given -- exception is never thrown now...??
+                v = self.request_json.get(n, None)
+                if v is not None:
+                    data[n] = v
         except KeyError:
             resp = {u"message": _('Invalid input')}
             return self.render_bad_request_response(resp)
@@ -394,10 +398,11 @@ class ConceptDescAddView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMix
         api = OCLapi(self.request, debug=True)
         if self.is_edit():
             result = api.put('orgs', self.org_id, 'sources', self.source_id,
-                              'concepts', self.concept_id, 'descriptions', self.desc_id, **data)
+                             'concepts', self.concept_id, self.item_name,
+                             self.item_id, **data)
         else:
             result = api.post('orgs', self.org_id, 'sources', self.source_id,
-                              'concepts', self.concept_id, 'descriptions', **data)
+                              'concepts', self.concept_id, self.item_name, **data)
 
         if not result.ok:
             print result
@@ -408,13 +413,14 @@ class ConceptDescAddView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMix
 
     def delete(self, request, *args, **kwargs):
         """
-        Delete the specified description.
+        Delete the specified item.
         """
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
-        if self.is_edit():  # i.e. has description UUID
+        if self.is_edit():  # i.e. has item UUID
             result = api.delete('orgs', self.org_id, 'sources', self.source_id,
-                              'concepts', self.concept_id, 'descriptions', self.desc_id)
+                                'concepts', self.concept_id,
+                                self.item_name, self.item_id)
         if not result.ok:
             print result
             return self.render_bad_request_response(result)
@@ -423,3 +429,12 @@ class ConceptDescAddView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMix
             {'message': _('Description deleted')})
 
 
+class ConceptDescView(ConceptItemView):
+    item_name = 'descriptions'
+    kwarg_name = 'description'
+    field_names = ['description', 'description_type', 'locale', 'locale_preferred']
+
+class ConceptNameView(ConceptItemView):
+    item_name = 'names'
+    kwarg_name = 'name'
+    field_names = ['name', 'name_type', 'locale', 'locale_preferred']

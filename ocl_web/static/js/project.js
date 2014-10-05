@@ -2,132 +2,130 @@
 var app = angular.module('ConceptApp', []);
 
 // Make a controller that accesses the backend using a_url_part as the item type
-function makeController(a_url_part) {
+function makeController(a_url_part, a_field_names) {
 
     return function conceptItemController($scope, $http, $location) {
 
         var url_part = a_url_part;  // from makeController
+        var field_names = a_field_names;
 
         console.log('my url part:', url_part)
         $scope.message = '';
-        $scope.isCreatingDescription = false;
-        $scope.isEditingDescription = false;
-        $scope.editedDescription = null;
+        $scope.isCreatingItem = false;
+        $scope.isEditingItem = false;
+        $scope.editedItem = null;
+        $scope.item = null;
 
-        function startCreatingDescription() {
-            $scope.isCreatingDescription = true;
-            $scope.isEditingDescription = false;
+        function resetCreateForm() {
+            $scope.newItem = {};
         }
 
-        function cancelCreatingDescription() {
-            $scope.isCreatingDescription = false;
+        function startCreatingItem() {
+            $scope.isCreatingItem = true;
+            $scope.isEditingItem = false;
+            resetCreateForm();
         }
 
-        function startEditingDescription() {
-            $scope.isCreatingDescription = false;
-            $scope.isEditingDescription = true;
+        function cancelCreatingItem() {
+            $scope.isCreatingItem = false;
         }
 
-        function cancelEditingDescription() {
-            $scope.isEditingDescription = false;
+        function startEditingItem() {
+            $scope.isCreatingItem = false;
+            $scope.isEditingItem = true;
         }
 
-        function shouldShowCreatingDescription() {
-            return !$scope.isEditingDescription;
+        function cancelEditingItem() {
+            $scope.isEditingItem = false;
         }
 
-        function shouldShowEditingDescription() {
-            return $scope.isEditingDescription && !$scope.isCreatingDescription;
+        function shouldShowCreatingItem() {
+            return !$scope.isEditingItem;
         }
 
-        function setEditedDescription(desc) {
+        function shouldShowEditingItem() {
+            return $scope.isEditingItem && !$scope.isCreatingItem;
+        }
+
+        function setEditedItem(item) {
             // Set the current edited object, copy otherwise Angular will update the real thing
-            $scope.editedDescription = angular.copy(desc);
+            $scope.editedItem = angular.copy(item);
         }
 
-        $scope.startCreatingDescription = startCreatingDescription;
-        $scope.cancelCreatingDescription = cancelCreatingDescription;
-        $scope.startEditingDescription = startEditingDescription;
-        $scope.cancelEditingDescription = cancelEditingDescription;
-        $scope.shouldShowCreatingDescription = shouldShowCreatingDescription;
-        $scope.shouldShowEditingDescription = shouldShowEditingDescription;
-        $scope.setEditedDescription = setEditedDescription;
+        $scope.startCreatingItem = startCreatingItem;
+        $scope.cancelCreatingItem = cancelCreatingItem;
+        $scope.startEditingItem = startEditingItem;
+        $scope.cancelEditingItem = cancelEditingItem;
+        $scope.shouldShowCreatingItem = shouldShowCreatingItem;
+        $scope.shouldShowEditingItem = shouldShowEditingItem;
+        $scope.setEditedItem = setEditedItem;
 
-        function loadDescription() {
+        function loadItems() {
 
             var url = $location.absUrl() + url_part + '/';
             $http.get(url)
                 .success(function (data) {
-                $scope.description_list = data;
-                console.log($scope.description_list);
+                $scope.item_list = data;
+                console.log($scope.item_list);
                 });
-        } // loadDescription
+        } // loadItems
 
-      function addDescription(desc) {
+      function addItem(item) {
 
-        var data = {
-          description: desc.description,
-          description_type: desc.description_type,
-          locale: desc.locale,
-          locale_preferred: desc.locale_preferred
-        };
+        var data = {};
+        for (var i=0; i < field_names.length; i++) {
+            fn = field_names[i];
+            data[fn] = item[fn];
+        }
 
         var config = null;
-        console.log(data);
 
-        var url = $location.absUrl() + 'descriptions/';
+        var url = $location.absUrl() + url_part + '/';
         $http.post(url, data, null)
           .success(function (data, status, headers, config) {
-            console.log(data);
             $scope.message = data['message'];
-            loadDescription();
+            loadItems();
           })
           .error(function (data, status, headers, config) {
             $scope.message = data['message'];
           });
 
-      } // addDescription()
+          resetCreateForm();
+          cancelCreatingItem();
+      } // addItem()
 
 
 
-      $scope.addDescription = addDescription;
+      $scope.addItem = addItem;
 
-      function updateDescription(desc) {
+      function updateItem(item) {
 
-        var data = {
-          description: desc.description,
-          description_type: desc.description_type,
-          locale: desc.locale,
-          locale_preferred: desc.locale_preferred
-        };
+        var data = {};
+        for (var i=0; i < field_names.length; i++) {
+            fn = field_names[i];
+            data[fn] = item[fn];
+        }
+
         var config = null;
 
-    //    var url = $location.absUrl() + 'descriptions/' + desc.uuid + '/';
-        var url = $location.absUrl() + url_part + '/' + desc.uuid + '/';
+        var url = $location.absUrl() + url_part + '/' + item.uuid + '/';
         $http.post(url, data, null)
           .success(function (data, status, headers, config) {
             console.log(data);
             $scope.message = data['message'];
-            loadDescription();
+            loadItems();
           })
           .error(function (data, status, headers, config) {
             $scope.message = data['message'];
           });
 
-        $scope.editedDescription = null;
-        cancelEditingDescription();
-      } // updateDescription
+        $scope.editedItem = null;
+        cancelEditingItem();
+      } // updateItem
 
-      $scope.updateDescription = updateDescription;
+      $scope.updateItem = updateItem;
 
-      function deleteDescription(desc) {
-
-        var data = {
-          description: desc.description,
-          description_type: desc.descriptionType,
-          locale: desc.locale,
-          preferred_locale: desc.preferredLocale
-        };
+      function deleteItem(item) {
 
         var config = null;
 
@@ -135,22 +133,21 @@ function makeController(a_url_part) {
           return;
         }
 
-        var url = $location.absUrl() + 'descriptions/' + desc.uuid + '/';
-        $http.delete(url, data, null)
+        var url = $location.absUrl() + url_part + '/' + item.uuid + '/';
+        $http.delete(url)
           .success(function (data, status, headers, config) {
             console.log(data);
             $scope.message = data['message'];
-            loadDescription();
+            loadItems();
           })
           .error(function (data, status, headers, config) {
             $scope.message = data['message'];
           });
-      } // deleteDescription()
+      } // deleteItem()
 
-      $scope.deleteDescription = deleteDescription;
+      $scope.deleteItem = deleteItem;
 
-      loadDescription();
-      console.log('my url part:', url_part);
+      loadItems();
 
     } // conceptItemController
 
@@ -158,4 +155,5 @@ function makeController(a_url_part) {
 
 
 // app.controller('ConceptDescriptionController', conceptItemController);
-app.controller('ConceptDescriptionController', makeController('descriptions'));
+app.controller('ConceptDescriptionController', makeController('descriptions', ['description', 'description_type', 'locale', 'locale_preferred']));
+app.controller('ConceptNameController', makeController('names', ['name', 'name_type', 'locale', 'locale_preferred']));
