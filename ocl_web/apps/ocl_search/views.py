@@ -244,6 +244,8 @@ class HomeSearchView(TemplateView):
                 if resource_type == search_type:
                     continue
                 counter_search_url = host + search_type_paths[resource_type]
+                if search_params:
+                    counter_search_url = counter_search_url + '?' + urllib.urlencode(search_params)
                 try:
                     count_response = requests.head(url=counter_search_url, headers=search_request_headers)
                     resource_count[resource_type] = int(count_response.headers['num_found'])
