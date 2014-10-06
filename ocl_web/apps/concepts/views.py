@@ -1,3 +1,5 @@
+import requests
+
 from django.views.generic import TemplateView
 from django.views.generic.edit import View
 from django.views.generic.edit import FormView
@@ -186,13 +188,15 @@ class ConceptEditView(UserOrOrgMixin, FormView):
 
     def get_success_url(self):
         if self.from_org:
-            return reverse("source-detail",
+            return reverse("concept-detail",
                            kwargs={"org": self.org_id,
-                                   'source': self.kwargs.get('source')})
+                                   'source': self.kwargs.get('source'),
+                                   'concept': self.concept_id})
         else:
-            return reverse("source-detail",
+            return reverse("concept-detail",
                            kwargs={"user": self.user_id,
-                                   'source': self.kwargs.get('source')})
+                                   'source': self.kwargs.get('source'),
+                                   'concept': self.concept_id})
 
     def get_context_data(self, *args, **kwargs):
         """ Supply related data for the add form
@@ -227,16 +231,13 @@ class ConceptEditView(UserOrOrgMixin, FormView):
             result = api.update_concept('orgs', self.org_id, self.source_id, self.concept_id, data)
         else:
             result = api.update_concept('users', self.user_id, self.source_id, self.concept_id, data)
-        if result.status_code != 201:
-            print result.status_code
+        if result.status_code != requests.codes.ok:
             emsg = result.json().get('detail', 'Error')
             messages.add_message(self.request, messages.ERROR, emsg)
             return HttpResponseRedirect(self.request.path)
 
         else:
-            print result.status_code
-            print result.json()
-            messages.add_message(self.request, messages.INFO, _('Concept Added'))
+            messages.add_message(self.request, messages.INFO, _('Concept updated'))
             return HttpResponseRedirect(self.get_success_url())
 
 
@@ -358,10 +359,21 @@ class ConceptItemView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin,
     kwarg_name = None
 
     def get_all_args(self):
+        """
+        Get all the input entities' identity, figure out whether this is a user owned
+        sourced concept or an org owned sourced concept, and set self.own_type, self.own_id
+        for easy interface to OCL API.
+        """
         self.get_args()
         self.source_id = self.kwargs.get('source')
         self.concept_id = self.kwargs.get('concept')
         self.item_id = self.kwargs.get(self.kwarg_name)
+        if self.from_org:
+            self.own_type = 'orgs'
+            self.own_id = self.org_id
+        else:
+            self.own_type = 'users'
+            self.own_id = self.user_id
 
     def is_edit(self):
         return self.item_id is not None
@@ -372,7 +384,8 @@ class ConceptItemView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin,
         """
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
-        result = api.get('orgs', self.org_id, 'sources', self.source_id,
+
+        result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
                          'concepts', self.concept_id, self.item_name)
         if not result.ok:
             print result
@@ -397,11 +410,11 @@ class ConceptItemView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin,
 
         api = OCLapi(self.request, debug=True)
         if self.is_edit():
-            result = api.put('orgs', self.org_id, 'sources', self.source_id,
+            result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
                              'concepts', self.concept_id, self.item_name,
                              self.item_id, **data)
         else:
-            result = api.post('orgs', self.org_id, 'sources', self.source_id,
+            result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
                               'concepts', self.concept_id, self.item_name, **data)
 
         if not result.ok:
@@ -418,7 +431,7 @@ class ConceptItemView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin,
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
         if self.is_edit():  # i.e. has item UUID
-            result = api.delete('orgs', self.org_id, 'sources', self.source_id,
+            result = api.delete(self.own_type, self.own_id, 'sources', self.source_id,
                                 'concepts', self.concept_id,
                                 self.item_name, self.item_id)
         if not result.ok:
@@ -433,6 +446,7 @@ class ConceptDescView(ConceptItemView):
     item_name = 'descriptions'
     kwarg_name = 'description'
     field_names = ['description', 'description_type', 'locale', 'locale_preferred']
+
 
 class ConceptNameView(ConceptItemView):
     item_name = 'names'
