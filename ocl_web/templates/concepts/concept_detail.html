@@ -50,35 +50,28 @@
 </header>
 
 
-<div  ng-app="ConceptApp">
+<div class="container" ng-app="ConceptApp">
 
+{# tabs #}
+<tabset>
+<tab heading="Concept Details">
+{# ----- Start of concept detail tab ----- #}
+&nbsp;
 <div class="row"> {# display #}
 
 <div class="row">
-	<div class="col-md-3" style="text-align:right;">
+	<div class="col-md-2" style="text-align:right;">
 		<span style="font-weight:bold;color:#999;">Preferred Name</span>
 		<span id="preferred-name-info" data-toggle="tooltip" data-placement="right" title="Primary name in user's preferred language."><span class="glyphicon glyphicon-info-sign"></span></span>
 	</div>
+
 	<div class="col-md-9">
 		{{ concept.display_name }} <span class="small"><em>[{{ concept.display_locale }}]</em></span>
 	</div>
 </div>
-<div class="row">
-	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
-		Class
-	</div>
-	<div class="col-md-9">
-		{{ concept.concept_class }}
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
-		Datatype
-	</div>
-	<div class="col-md-9">
-		{{ concept.datatype }}
-	</div>
-</div>
+	{% field_label 'Class' concept.concept_class %}
+	{% field_label 'DataType' concept.datatype %}
+
 
 </div> {# display row #}
 
@@ -87,7 +80,7 @@
 <div ng-controller="ConceptNameController" >
 
 <div class="row">
-	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+	<div class="col-md-2" style="text-align:right;font-weight:bold;color:#999;">
 		Synonyms
 	</div>
 
@@ -110,7 +103,7 @@
 </div> {# list row #}
 
 <div class="row"> {# add name form row #}
-    <div class="col-md-3">
+    <div class="col-md-2">
     	&nbsp;
     </div>
 
@@ -221,7 +214,7 @@
 
 
 <div class="row" >
-	<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+	<div class="col-md-2" style="text-align:right;font-weight:bold;color:#999;">
 		Description
 	</div>
 	<div class="col-md-8">
@@ -245,7 +238,7 @@
 
 
 <div class="row">
-<div class="col-md-3">
+<div class="col-md-2">
 	&nbsp;
 </div>
 <div class="col-md-6">
@@ -352,6 +345,44 @@
 </div> {# row #}
 
 </div> {# description controller #}
+
+</tab> {# ------- end of detail tab ----- #}
+
+
+
+<tab heading="Collections">
+	 {# ------- start of collection tab ----- #}
+Collection
+</tab> {# ------- end of collection tab ----- #}
+
+
+
+<tab heading="History" ng-controller="ConceptVersionController">
+{# ------- start of versions tab ----- #}
+<div class="row">
+
+	<div class="col-md-10">
+	&nbsp;
+    <ul>
+    	<li ng-repeat="version in item_list" class="list-group-item">
+			{% verbatim %}
+				<span>{{ version.update_comment }}<br />
+					by {{ version.version_created_by}}, on {{ version.version_created_on }}
+                </span>
+                <div class="pull-right">
+				{{ version.version }}
+				<span class="glyphicon glyphicon-cog pull-right" ></span>
+			</div>
+			{% endverbatim %}				
+        </li>
+	</lu>
+    </div> {# list col8 #}
+</div> {# list row #}
+
+
+</tab>{# ------- end of versions tab ----- #}
+</tabset>
+
 </div> {# app #}
 
 

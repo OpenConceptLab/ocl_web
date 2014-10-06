@@ -1,0 +1,13 @@
+{# include tag to display field label and data for detail display #}
+<div class="row">
+    <div class="col-md-2" style="text-align:right;font-weight:bold;color:#999;">
+        {{ field_label }}
+    </div>
+    <div class="col-md-9">
+        {% if is_url %}
+        <a href="{{ field_value }}" target="_blank">{{ field_value }}</a>
+        {% else %}
+        {{ field_value }}
+        {% endif %}
+    </div>
+</div>

@@ -1,5 +1,5 @@
 /* Project specific Javascript goes here. */
-var app = angular.module('ConceptApp', []);
+var app = angular.module('ConceptApp', ['ui.bootstrap']);
 
 // Make a controller that accesses the backend using a_url_part as the item type
 function makeController(a_url_part, a_field_names) {
@@ -157,3 +157,21 @@ function makeController(a_url_part, a_field_names) {
 // app.controller('ConceptDescriptionController', conceptItemController);
 app.controller('ConceptDescriptionController', makeController('descriptions', ['description', 'description_type', 'locale', 'locale_preferred']));
 app.controller('ConceptNameController', makeController('names', ['name', 'name_type', 'locale', 'locale_preferred']));
+
+app.controller('ConceptVersionController', function($scope, $http, $location) {
+
+        function loadItems() {
+
+            var url = $location.absUrl() + 'versions/';
+            $http.get(url)
+                .success(function (data) {
+                $scope.item_list = data;
+                console.log('versions:');
+                console.log($scope.item_list);
+                });
+        } // loadItems
+
+        loadItems();
+}// ConceptVersionController
+)
+

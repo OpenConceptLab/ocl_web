@@ -12,7 +12,7 @@ from apps.core import LOCALE_LIST
 
 class SourceCreateForm(forms.Form):
     """
-        Concept edit form
+        source create form
     """
     required_css_class = 'required'
 
@@ -42,6 +42,7 @@ class SourceCreateForm(forms.Form):
             raise forms.ValidationError(_('This Concept ID is already used.'))
         return concept_id
 
+
 class SourceEditForm(SourceCreateForm):
 
     def __init__(self, *args, **kwargs):
@@ -50,3 +51,14 @@ class SourceEditForm(SourceCreateForm):
         """
         super(SourceEditForm, self).__init__(*args, **kwargs)
         self.fields.pop('short_name')
+
+
+class SourceVersionAddForm(forms.Form):
+    """
+        Add a source version form
+    """
+    required_css_class = 'required'
+
+    id = forms.CharField(max_length=30, label=_('ID'), required=True)
+    description = forms.CharField(max_length=30, label=_('Description'), required=False)
+

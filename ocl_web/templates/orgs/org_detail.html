@@ -115,7 +115,7 @@
 					</a></h4>
 					<p>
 						{% if result.description %}{{ result.description }}<br />{% endif %}
-						{% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|date:"d-M-Y" }}</span>{% endif %}
+						{% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
 					</p>
 					{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 				</div>

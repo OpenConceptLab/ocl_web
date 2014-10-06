@@ -55,7 +55,7 @@ def source_owner_label(source):
     return {
         'from_org': from_org,
         'source': source,
-        }
+    }
 
 
 @register.inclusion_tag('includes/source_label_incl.html')
@@ -70,3 +70,11 @@ def source_label(source):
 def concept_label(concept):
     return {'concept': concept}
 
+
+@register.inclusion_tag('includes/field_display_incl.html')
+def field_label(label, value, url=False):
+    return {
+        'field_label': label,
+        'field_value': value,
+        'is_url': url,
+    }

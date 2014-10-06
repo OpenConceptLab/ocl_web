@@ -35,11 +35,11 @@ class OrganizationDetailView(TemplateView):
         org = api.get('orgs', org_id).json()
 
         # Get sources owned by the org
-        sources = api.get('orgs', org_id, 'sources').json()  # ?verbose=True
+        sources = api.get('orgs', org_id, 'sources', '?verbose=True').json()
 
         # Get collections owned by the org
         # The org object should have the URL in the future, like members_url.
-        collections = api.get('orgs', org_id, 'collections', verbose=True).json()  # ?verbose=True
+        collections = api.get('orgs', org_id, 'collections', '?verbose=True').json()
 
         # TODO: access issue, error if user is not super user??
         members = []

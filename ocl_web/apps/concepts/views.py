@@ -7,11 +7,9 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
-from django import forms
 from braces.views import (CsrfExemptMixin, JsonRequestResponseMixin)
 
 from .forms import (ConceptCreateForm, ConceptEditForm)
-from .forms import (ConceptNameForm, ConceptNameFormSet)
 from libs.ocl import OCLapi
 from apps.core.views import UserOrOrgMixin
 
@@ -179,66 +177,6 @@ class ConceptEditView(UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.get_success_url())
 
 
-class ConceptNamesUpdateView(UserOrOrgMixin, FormView):
-    """
-    Update or add names to a concept.
-    """
-    template_name = "concepts/concept_names.html"
-
-    def get_args(self):
-        self.source_id = self.kwargs.get('source')
-        self.org_id = self.kwargs.get('org')
-        self.concept_id = self.kwargs.get('concept')
-
-        api = OCLapi(self.request, debug=True)
-
-        self.source = api.get('orgs', self.org_id, 'sources', self.source_id).json()
-        self.concept = api.get('orgs', self.org_id, 'sources', self.source_id, 'concepts', self.concept_id).json()
-
-    def get_form_class(self):
-        """ A sneaky way to hook into the generic form processing view, to
-            grep arguments from the URL, retrieve some application data and store them
-            in the view.
-        """
-        self.get_args()
-        return ConceptNameFormSet
-
-    def get_success_url(self):
-        return reverse("source-detail",
-                       kwargs={"org": self.kwargs.get('org'),
-                               'source': self.kwargs.get('source')})
-
-    def get_context_data(self, *args, **kwargs):
-        """ Supply related data for the add form
-        """
-        print 'get context data'
-        context = super(ConceptNamesUpdateView, self).get_context_data(*args, **kwargs)
-
-        context['source'] = self.source
-        context['concept'] = self.concept
-        context['formset'] = context['form']
-        return context
-
-    def get_initial(self):
-        """ Load some useful data, not really for form display but internal use """
-
-        data = []
-        for n in self.concept['names']:
-            print n
-            data.append(n)
-        return data
-
-    def form_valid(self, form, *args, **kwargs):
-
-        for f in form:
-            print f.cleaned_data
-            if len(f.cleaned_data) == 0:
-                continue
-
-        messages.add_message(self.request, messages.INFO, _('Concept Added'))
-        return HttpResponseRedirect(self.get_success_url())
-
-
 class ConceptDetailView(UserOrOrgMixin, TemplateView):
     """
     Display concept detail.
@@ -272,6 +210,34 @@ class ConceptDetailView(UserOrOrgMixin, TemplateView):
         return context
 
 
+class ConceptVersionListView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin, View):
+    """
+    Return json concept versions.
+    """
+
+    def get_all_args(self):
+        """ Get all input parameters for view.
+        """
+        self.get_args()
+#        self.source_id = self.kwargs.get('source')
+#        self.concept_id = self.kwargs.get('concept')
+
+    def get(self, request, *args, **kwargs):
+        """
+            Return a list of versions as json.
+        """
+        self.get_all_args()
+        api = OCLapi(self.request, debug=True)
+
+        result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
+                         'concepts', self.concept_id, 'versions')
+        if not result.ok:
+            print result
+            return self.render_bad_request_response(result)
+
+        return self.render_json_response(result.json())
+
+
 class ConceptItemView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin, View):
     """
         Interface to AngularJS concept description operations, supporting list, add, update and delete.
@@ -287,15 +253,15 @@ class ConceptItemView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin,
         for easy interface to OCL API.
         """
         self.get_args()
-        self.source_id = self.kwargs.get('source')
-        self.concept_id = self.kwargs.get('concept')
+#        self.source_id = self.kwargs.get('source')
+#        self.concept_id = self.kwargs.get('concept')
         self.item_id = self.kwargs.get(self.kwarg_name)
-        if self.from_org:
-            self.own_type = 'orgs'
-            self.own_id = self.org_id
-        else:
-            self.own_type = 'users'
-            self.own_id = self.user_id
+#        if self.from_org:
+#            self.own_type = 'orgs'
+#            self.own_id = self.org_id
+#        else:
+#            self.own_type = 'users'
+#            self.own_id = self.user_id
 
     def is_edit(self):
         return self.item_id is not None

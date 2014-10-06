@@ -385,6 +385,36 @@ class OCLapi(object):
         result = self.put('users', username, 'sources', source_id, **data)
         return result
 
+    def create_source_version_by_org(self, org_id, source_id, base_data):
+        """
+            create a new source version owned by org.
+
+            :param org_id: is the org owner of this wource.
+            :param base_data: is a dictionary of fields.
+
+            :returns: response object.
+        """
+        data = {}
+        data.update(base_data)
+        result = self.post('orgs', org_id, 'sources', source_id,
+                           'versions', **data)
+        return result
+
+    def create_source_version_by_user(self, username, source_id, base_data):
+        """
+            create a new source version owned by user.
+
+            :param username: is the user owner of this wource.
+            :param base_data: is a dictionary of fields.
+
+            :returns: response object.
+        """
+        data = {}
+        data.update(base_data)
+        result = self.post('users', username, 'sources', source_id,
+                           'versions', **data)
+        return result
+
 ### Below not used ###
 
 
