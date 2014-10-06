@@ -227,11 +227,11 @@
     <ul>
     	<li ng-repeat="version in item_list" class="list-group-item">
 			{% verbatim %}
-				<span>{{ version.description }}<br />
-					by {{ version.version_created_by}}, on {{ version.version_created_on }}
+				<span>{{ version.id }}<br />{{ version.description }}
+					created on {{ version.created_on }}
                 </span>
+                <span ng-if="version.released">Released</span>
                 <div class="pull-right">
-				{{ version.id }}
 				<span class="glyphicon glyphicon-cog pull-right"></span>
 			</div>
 			{% endverbatim %}				

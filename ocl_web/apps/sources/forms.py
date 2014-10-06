@@ -61,4 +61,5 @@ class SourceVersionAddForm(forms.Form):
 
     id = forms.CharField(max_length=30, label=_('ID'), required=True)
     description = forms.CharField(max_length=30, label=_('Description'), required=False)
+    released = forms.BooleanField(required=False, label=_('Released'))
 
