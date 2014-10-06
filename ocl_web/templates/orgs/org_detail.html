@@ -198,7 +198,7 @@
 				</div>
 				<div class="panel-body">
 					{% for member in members %}
-						<h4><a href="{% url 'user' %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ member.username }}</a></h4>
+						<h4>{% user_label member %}</h4>
 						{% if request.GET.debug %}<pre>{{ member|pprint }}</pre>{% endif %}
 					{% endfor %}
 				</div>

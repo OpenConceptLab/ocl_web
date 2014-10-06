@@ -7,7 +7,7 @@ from django.conf.urls import patterns, url
 from users.views import (UserListView, UserRedirectView, UserDetailView, UserUpdateView)
 from apps.sources.views import (SourceDetailView, SourceCreateView, SourceEditView)
 from apps.concepts.views import (ConceptDetailView, ConceptCreateView, ConceptEditView)
-from apps.concepts.views import (ConceptDescView, ConceptNameView, ConceptNameAddView)
+from apps.concepts.views import (ConceptDescView, ConceptNameView)
 
 urlpatterns = patterns('',
     # URL pattern for the UserListView
@@ -21,7 +21,7 @@ urlpatterns = patterns('',
 
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/create/$', ConceptCreateView.as_view(), name='concept-create-for-user'),
 
-    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/$', ConceptNameAddView.as_view(), name='concept-detail'),
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/$', ConceptDetailView.as_view(), name='concept-detail'),
 
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/edit/$', ConceptEditView.as_view(), name='concept-edit'),
 
