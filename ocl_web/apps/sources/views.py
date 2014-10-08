@@ -1,4 +1,5 @@
 import requests
+import logging
 
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
@@ -11,6 +12,8 @@ from braces.views import (CsrfExemptMixin, JsonRequestResponseMixin)
 from libs.ocl import OCLapi
 from .forms import (SourceCreateForm, SourceEditForm, SourceVersionAddForm)
 from apps.core.views import UserOrOrgMixin
+
+logger = logging.getLogger('oclweb')
 
 
 class SourceDetailView(UserOrOrgMixin, TemplateView):
@@ -31,39 +34,6 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         context['concepts'] = concept_list
         return context
 
-
-class SourceVersionListView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin, View):
-    """
-    Return json source versions.
-    """
-
-    def get_all_args(self):
-        """ Get all input parameters for view.
-        """
-        self.get_args()
-        self.source_id = self.kwargs.get('source')
-
-        if self.from_org:
-            self.own_type = 'orgs'
-            self.own_id = self.org_id
-        else:
-            self.own_type = 'users'
-            self.own_id = self.user_id
-
-    def get(self, request, *args, **kwargs):
-        """
-            Return a list of versions as json.
-        """
-        self.get_all_args()
-        api = OCLapi(self.request, debug=True)
-
-        result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
-                         'versions', '?verbose=True')
-        if not result.ok:
-            print result
-            return self.render_bad_request_response(result)
-
-        return self.render_json_response(result.json())
 
 
 class SourceCreateView(UserOrOrgMixin, FormView):
@@ -125,8 +95,10 @@ class SourceCreateView(UserOrOrgMixin, FormView):
             result = api.create_source_by_org(self.org_id, data)
         else:
             result = api.create_source_by_user(self.user_id, data)
-        print result.status_code
-        if len(result.text) > 0: print result.json()
+        if not result.status_code == requests.codes.created:
+            emsg = result.json().get('detail', 'Error')
+            messages.add_message(self.request, messages.ERROR, emsg)
+            return HttpResponseRedirect(self.request.path)
 
         messages.add_message(self.request, messages.INFO, _('Source created'))
 
@@ -222,85 +194,94 @@ class SourceEditView(UserOrOrgMixin, FormView):
                                                         'source': self.source_id}))
 
 
-class SourceVersionAddView(UserOrOrgMixin, FormView):
+class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
     """
-        Add a new source version.
+    Handle source version list, add, update and delete via a JSON interface.
+
+    TODO: use ConceptItemView if ConceptItemView is modified to use a list of args
+        to specify the sub-path before item. concepts/CC/, but also the versions
+        API does not use a keyword "versions", instead just append the version ID to the source
+        ID.
     """
-    template_name = "sources/source_version_add.html"
-
-    def get_form_class(self):
-        """ Trick to load initial data """
-        self.get_args()
-        api = OCLapi(self.request, debug=True)
-
-        self.source = api.get(self.own_type, self.own_id, 'sources', self.source_id).json()
-        return SourceVersionAddForm
-
-    def get_initial(self):
-        """ Load some useful data, not really for form display but internal use """
-
-        data = {
-            'org_id': self.org_id,
-            'user_id': self.user_id,
-            'from_org': self.from_org,
-            'from_user': self.from_user,
-            'request': self.request,
-        }
-        data.update(self.source)
-        data['supported_locales'] = ','.join(self.source['supported_locales'])
-        return data
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(SourceVersionAddView, self).get_context_data(*args, **kwargs)
-
-        self.get_args()
-
-        api = OCLapi(self.request, debug=True)
-        org = ocl_user = None
-
-        if self.from_org:
-            org = api.get('orgs', self.org_id).json()
-        else:
-            ocl_user = api.get('users', self.user_id).json()
-        # Set the context
-        context['org'] = org
-        context['ocl_user'] = ocl_user
-        context['from_user'] = self.from_user
-        context['from_org'] = self.from_org
-        context['source'] = self.source
-
-        return context
-
-    def form_valid(self, form):
+    # override this, set to 'descriptions', 'names', etc
+    item_name = 'versions'
+    kwarg_name = 'version'
+    field_names = ['id', 'description', 'released']
+    
+    def get_all_args(self):
         """
-            Source input is good, update API backend.
+        Get all the input entities' identity, figure out whether this is a user owned
+        sourced concept or an org owned sourced concept, and set self.own_type, self.own_id
+        for easy interface to OCL API.
         """
-        print form.cleaned_data
-
         self.get_args()
+        self.item_id = self.kwargs.get(self.kwarg_name)
 
-        data = form.cleaned_data
+    def is_edit(self):
+        return self.item_id is not None
+
+    def get(self, request, *args, **kwargs):
+        """
+            Return a list of versions as json.
+        """
+        self.get_all_args()
+        api = OCLapi(self.request, debug=True)
+
+        result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
+                         'versions', '?verbose=True')
+        if not result.ok:
+            logger.warning('GET error %s : %s' % api.url)
+            return self.render_bad_request_response(result)
+
+        return self.render_json_response(result.json())
+
+    def post(self, request, *args, **kwargs):
+        """
+            Create or edit a source version.
+        """
+        self.get_all_args()
+        data = {}
+        try:
+            print 'request json:', self.request_json
+            for n in self.field_names:
+                # Skipping over fields that are not given -- exception is never thrown now...??
+                v = self.request_json.get(n, None)
+                if v is not None:
+                    data[n] = v
+        except KeyError:
+            resp = {u"message": _('Invalid input')}
+            return self.render_bad_request_response(resp)
 
         api = OCLapi(self.request, debug=True)
-        if self.from_org:
-            result = api.create_source_version_by_org(self.org_id, self.source_id, data)
+        if self.is_edit():
+            # NOTE: updating a version URL does not have the keyword "versions",
+            # rather, it is /owner/:owner/sources/:source/:version
+            result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
+                             self.item_id, **data)
         else:
-            result = api.create_source_version_by_user(self.user_id, self.source_id, data)
-        print result
-        if len(result.text) > 0: print result.json()
+            result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
+                              'versions', **data)
 
-        if result.status_code != requests.codes.created:
-            emsg = result.json().get('detail', 'Error')
-            messages.add_message(self.request, messages.ERROR, emsg)
-            return HttpResponseRedirect(self.request.path)
+        if not result.ok:
+            logger.warning('source version POST error %s' % result.status_code)
+            return self.render_bad_request_response(result)
 
-        messages.add_message(self.request, messages.INFO, _('Version Added'))
-        if self.from_org:
-            return HttpResponseRedirect(reverse("source-detail",
-                                                kwargs={"org": self.org_id,
-                                                        'source': self.source_id}))
-        else:
-            return HttpResponseRedirect(reverse("source-detail",
-                                                kwargs={"user": self.user_id,
-                                                        'source': self.source_id}))
+        return self.render_json_response(
+            {'message': _('Version added')})
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Delete the specified source version.
+        """
+        self.get_all_args()
+        api = OCLapi(self.request, debug=True)
+        if self.is_edit():  # i.e. has item UUID
+            result = api.delete(self.own_type, self.own_id, 'sources', self.source_id,
+                                'versions', self.item_id)
+        if not result.ok:
+            logger.warning('source version DELETE error %s' % result.status_code)
+            return self.render_bad_request_response(result)
+
+        return self.render_json_response(
+            {'message': _('Version deleted')})
 

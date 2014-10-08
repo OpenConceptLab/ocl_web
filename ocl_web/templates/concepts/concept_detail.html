@@ -118,7 +118,7 @@
     </button>
 
     <form ng-submit="addItem(newItem)" ng-show="isCreatingItem">
-
+    {% csrf_token %}
     <div class="form-group required">
     	<label class="control-label" for="id_name">Name</label>
     	<input class="form-control" id="id_name" maxlength="30" name="name" 
@@ -160,6 +160,7 @@
 
      {% verbatim %}<h4>Editing Name</h4> {% endverbatim %}
     <form ng-submit="updateItem(editedItem)" ng-show="isEditingItem">
+    {% csrf_token %}
     <div class="form-group required">
     	<label class="control-label" for="id_name">Name</label>
     	<input class="form-control" id="id_name" maxlength="30" name="name" 
@@ -257,6 +258,7 @@
     </div>
 
     <form ng-submit="addItem(newItem)" ng-show="isCreatingItem">
+    {% csrf_token %}
     <div class="form-group required">
     	<label class="control-label" for="id_description">Description</label>
     	<input class="form-control" id="id_desription" maxlength="30" name="description" 
@@ -300,6 +302,7 @@
 
      {% verbatim %}<h4>Editing Description</h4> {% endverbatim %}
     <form ng-submit="updateItem(editedItem)" ng-show="isEditingItem">
+    {% csrf_token %}
     <div class="form-group required">
     	<label class="control-label" for="id_description">Description</label>
     	<input class="form-control" id="id_description" maxlength="30" name="description" 
@@ -343,7 +346,7 @@
 
 
 </div> {# row #}
-
+{% include 'concepts/concept_detail_extra.html' %}
 </div> {# description controller #}
 
 </tab> {# ------- end of detail tab ----- #}

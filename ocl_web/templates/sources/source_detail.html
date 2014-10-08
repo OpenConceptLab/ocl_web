@@ -212,16 +212,12 @@
 </div>	
 </tab> {# ----- end source details tab #}
 
-<tab heading="Versions"  ng-controller="ConceptVersionController"> {# ----- start source versions tab #}
+{% include 'sources/source_detail_version.html' %}
+
+<tab heading="Versions(old)"  ng-controller="ConceptVersionController"> {# ----- start source versions tab #}
 <div class="row">
 
 	<div class="col-md-10">
-
-		{% if source.owner_type == 'Organization' %}
-    		<a href="{% url 'source-version-add' org=source.owner source=source.id %}" >Add Version</a>
-		{% else %}
-    		<a href="{% url 'source-version-add' user=source.owner source=source.id %}" >Add Version</a>
-		{% endif %}
 
 	&nbsp;
     <ul>

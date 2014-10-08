@@ -1,5 +1,6 @@
 # Python
 import os
+import logging
 
 # Django
 from django.conf import settings
@@ -28,13 +29,27 @@ class OCLapi(object):
     """ Interface to the OCL API backend.
         Handles all the authentication and formating.
         Also contain helper and utility functions.
+
+        :logging: This class outputs debug level information to the "oclapi" logger.
     """
+    logger = logging.getLogger('oclapi')
+
+    import logging_tree
+    logging_tree.printout()
 
     def debug_result(self, results):
-        print '%s RESULT: %s' % (results.request.method, results.status_code)
-        if len(results.content) > 0 and results.status_code != requests.codes.server_error:
-            print 'JSON:', json.dumps(results.json(), sort_keys=True,
-                                      indent=4, separators=(',', ': '))
+        self.logger.debug('%s RESULT: %s' % (results.request.method, results.status_code))
+        if results.status_code == requests.codes.server_error:
+            self.logger.error(results.content)
+
+        elif len(results.content) > 0:
+            try:
+                self.logger.debug('%s JSON: %s' % (results.request.method, json.dumps(results.json(), sort_keys=True,
+                                  indent=4, separators=(',', ': '))))
+            except json.JSONDecodeError:
+                self.logger.error('JSON: Error decoding it:', results.content[:40])
+        else:
+                self.logger.debug('%s no content.' % results.request.method)
 
     def __init__(self, request=None, debug=False, admin=False):
         """
@@ -49,6 +64,7 @@ class OCLapi(object):
         # The admin api key should only be used for admin functions (duh)
         self.admin_api_key = os.environ.get('OCL_API_TOKEN', None)
         self.anon_api_key = os.environ.get('OCL_ANON_API_TOKEN', None)
+        self.url = None
 
         if admin:
             self.headers['Authorization'] = 'Token %s' % self.admin_api_key
@@ -72,7 +88,7 @@ class OCLapi(object):
         if len(args) > 0:
             url = url + '/'.join(args) + '/'
         if self.debug:
-            print 'POST %s %s %s' % (url, json.dumps(kwargs), self.headers)
+            self.logger.debug('POST %s %s %s' % (url, json.dumps(kwargs), self.headers))
 
         results = requests.post(url, data=json.dumps(kwargs),
                                 headers=self.headers)
@@ -89,7 +105,7 @@ class OCLapi(object):
         if len(args) > 0:
             url = url + '/'.join(args) + '/'
         if self.debug:
-            print 'DELETE %s %s %s' % (url, json.dumps(kwargs), self.headers)
+            self.logger.debug('DELETE %s %s %s' % (url, json.dumps(kwargs), self.headers))
 
         results = requests.delete(url, data=json.dumps(kwargs),
                                   headers=self.headers)
@@ -103,12 +119,11 @@ class OCLapi(object):
                                 to the API.
         """
         url = '%s/v1/%s/' % (self.host, type_name)
-        print args
         if len(args) > 0:
             url = url + '/'.join(args) + '/'
 
         if self.debug:
-            print 'PUT %s %s %s' % (url, json.dumps(kwargs), self.headers)
+            self.logger.debug('PUT %s %s %s' % (url, json.dumps(kwargs), self.headers))
 
         results = requests.put(url, data=json.dumps(kwargs),
                                headers=self.headers)
@@ -125,13 +140,13 @@ class OCLapi(object):
             :returns: requests.response object.
 
         """
-        url = '%s/v1/' % (self.host)
+        self.url = '%s/v1/' % (self.host)
         if len(args) > 0:
-            url = url + '/'.join(args) + '/'
+            self.url = self.url + '/'.join(args) + '/'
         if self.debug:
-            print 'GET %s %s %s' % (url, json.dumps(kwargs), self.headers)
+            self.logger.debug('GET %s %s %s' % (self.url, json.dumps(kwargs), self.headers))
 
-        results = requests.get(url, data=json.dumps(kwargs),
+        results = requests.get(self.url, data=json.dumps(kwargs),
                                headers=self.headers)
         self.status_code = results.status_code
         if self.debug:
@@ -164,7 +179,7 @@ class OCLapi(object):
         url = '%s/v1/%s' % (self.host, url)
 
         if self.debug:
-            print 'GET %s %s %s' % (url, json.dumps(kwargs), self.headers)
+            self.logger.debug('GET %s %s %s' % (url, json.dumps(kwargs), self.headers))
 
         results = requests.get(url, data=json.dumps(kwargs),
                                headers=self.headers)

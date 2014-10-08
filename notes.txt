@@ -319,3 +319,23 @@ Tabs:
 Icons:
 - Atom Feed Link
 
+
+Error Handler
+================
+
+- Not just handle response in the form of {"details": 'error-text'}, but
+- POST RESULT: 400
+JSON: {
+    "public_access": [
+        "Select a valid choice. Public is not one of the available choices."
+    ]
+}
+
+Error:
+orgs/TESTORG1/sources/S1/concepts/S1CA1/extras/
+gets empty 200 response, not empty list?
+
+CSRF
+- extras (done)
+- concepts: desc, names
+- sourc versions

@@ -1,0 +1,112 @@
+{# Concept "extras" section, list, add and edit #}
+{% load i18n %}
+{% load ocl_tags %}
+
+<div ng-controller="ConceptExtraController" >
+
+<div class="row"><hr /></div>
+
+
+<div class="row" >
+    <div class="col-md-2" style="text-align:right;font-weight:bold;color:#999;">
+        Extras
+    </div>
+    <div class="col-md-8">
+        <ul class="list-group">
+            {% verbatim %}
+            <li ng-repeat="extra in item_list" class="list-group-item">
+
+                    <button type="button" class="btn btn-link" ng-click="setEditedItem(desc);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+                    {{ extra.extra_name }} : {{ extra.extra_value }}</span>
+                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(extra)"></span>
+            {% endverbatim %}
+            </li>
+        </ul>
+    </div>
+</div> {# outer row #}
+
+
+<div class="row">
+
+
+
+<div class="col-md-2">
+    &nbsp;
+</div>
+<div class="col-md-6">
+
+{% verbatim %}
+<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+{% endverbatim %}
+
+<!-- CREATING -->
+<div ng-if="shouldShowCreatingItem()">
+
+    <button type="button" class="btn btn-link" ng-click="startCreatingItem()">
+        <span class="glyphicon glyphicon-plus"></span>
+        {% trans 'Add Extra' %}
+    </button>
+
+    <form ng-submit="addItem(newItem)" ng-show="isCreatingItem">
+        {% csrf_token %}
+    <div class="form-group required">
+        <label class="control-label" for="id_extra_name">Extra Name</label>
+        <input class="form-control" id="id_extra_name" maxlength="30" name="extra_name" 
+            placeholder="Name" required="required" title="" type="text"
+            ng-model="newItem.extra_name" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="id_extra_value">Extra Value</label>
+        <input class="form-control" id="id_extra_value" maxlength="30" name="extra_value" 
+            placeholder="Extra Value" required="required" title="" type="text"
+            ng-model="newItem.extra_value" />
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">
+        {% trans 'Add Extra' %}
+      </button>
+      <button type="button" class="btn btn-default pull-right" ng-click="cancelCreatingItem()">{% trans 'Cancel' %}</button>
+     </div>
+    </form>
+</div> {# if creating show #}
+
+
+<!-- EDITING -->
+<div ng-if="shouldShowEditingItem()">
+
+     {% verbatim %}<h4>Editing Description</h4> {% endverbatim %}
+    <form ng-submit="updateItem(editedItem)" ng-show="isEditingItem">
+        {% csrf_token %}
+
+    <div class="form-group required">
+        <label class="control-label" for="id_extra_name">Extra Name</label>
+        <input class="form-control" id="id_extra_name" maxlength="30" name="extra_name" 
+            placeholder="Name" required="required" title="" type="text"
+            ng-model="editedItem.extra_name" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="id_extra_value">Extra Value</label>
+        <input class="form-control" id="id_extra_value" maxlength="30" name="extra_value" 
+            placeholder="Extra Value" required="required" title="" type="text"
+            ng-model="editedItem.extra_value" />
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">
+        {% trans 'Update Extra' %}
+      </button>
+      <button type="button" class="btn btn-default pull-right" ng-click="cancelEditingItem()">{% trans 'Cancel' %}</button>
+     </div>
+    </form>
+</div> {# editing #}
+
+
+</div> {# col6 for form for extra #}
+
+
+
+</div> {# row #}
+
+</div> {# extra controller #}  

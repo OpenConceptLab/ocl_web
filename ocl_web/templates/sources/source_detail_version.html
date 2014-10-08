@@ -1,0 +1,130 @@
+{% load i18n %}
+{% load ocl_tags %}
+
+<tab heading="Versions"  ng-controller="SourceVersionController"> {# ----- start source versions tab #}
+
+{% verbatim %}
+<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+{% endverbatim %}
+
+<div class="row">
+
+    <div class="col-md-10">
+
+    &nbsp;
+    <ul>
+        <li ng-repeat="version in item_list" class="list-group-item">
+            {% verbatim %}
+                    <button type="button" class="btn btn-link" ng-click="setEditedItem(version);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+                <span>{{ version.id }}<br />{{ version.description }}
+                    created on {{ version.created_on }}
+                </span>
+                <span ng-if="version.released">Released</span>
+                <div class="pull-right">
+                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(version)"></span>
+            </div>
+            {% endverbatim %}               
+        </li>
+    </lu>
+    </div> {# list col8 #}
+</div> {# list row #}
+
+
+
+<div class="row">
+<div class="col-md-2">
+    &nbsp;
+</div>
+<div class="col-md-6">
+
+<!-- CREATING -->
+<div ng-if="shouldShowCreatingItem()">
+
+    <button type="button" class="btn btn-link" ng-click="startCreatingItem()">
+        <span class="glyphicon glyphicon-plus"></span>
+        {% trans 'Add Version' %}
+    </button>
+
+
+    <div>
+      {% verbatim %}{{ message }}{% endverbatim %}
+    </div>
+
+    <form ng-submit="addItem(newItem)" ng-show="isCreatingItem">
+    {% csrf_token %}
+    <div class="form-group">
+        <label class="control-label" for="id_id">ID</label>
+        <input class="form-control" id="id_id" maxlength="30" name="description_type" 
+            placeholder="ID" required="required" title="" type="text"
+            ng-model="newItem.id" />
+    </div>
+
+    <div class="form-group required">
+        <label class="control-label" for="id_description">Description</label>
+        <input class="form-control" id="id_description" maxlength="30" name="description" 
+            placeholder="Description" required="required" title="" type="text"
+            ng-model="newItem.description" />
+    </div>
+
+    <div class="form-group required">
+          <div class="checkbox">
+        <label>
+          <input type="checkbox" name="released" ng-model="newItem.released">{% trans 'Released' %}
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">
+        {% trans 'Add Version' %}
+      </button>
+      <button type="button" class="btn btn-default pull-right" ng-click="cancelCreatingItem()">{% trans 'Cancel' %}</button>
+     </div>
+    </form>
+</div> {# if creating show #}
+
+
+<!-- EDITING -->
+<div ng-if="shouldShowEditingItem()">
+
+     {% verbatim %}<h4>Editing Version</h4> {% endverbatim %}
+    <form ng-submit="updateItem(editedItem)" ng-show="isEditingItem">
+    {% csrf_token %}
+    <div class="form-group">
+        <label class="control-label" for="id_id">ID</label>
+        <input class="form-control" id="id_id" maxlength="30" name="id" 
+            placeholder="ID" required="required" title="" type="hidden"
+            value="editedItem.id"
+            ng-model="editedItem.uuid" />
+    </div>
+
+    <div class="form-group required">
+        <label class="control-label" for="id_description">Description</label>
+        <input class="form-control" id="id_description" maxlength="30" name="description" 
+            placeholder="Description" required="required" title="" type="text"
+            ng-model="editedItem.description" />
+    </div>
+
+    <div class="form-group required">
+          <div class="checkbox">
+        <label>
+          <input type="checkbox" name="released" ng-model="editedItem.released">{% trans 'Released' %}
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">
+        {% trans 'Update Version' %}
+      </button>
+      <button type="button" class="btn btn-default pull-right" ng-click="cancelEditingItem()">{% trans 'Cancel' %}</button>
+     </div>
+    </form>
+</div> {# editing #}
+
+
+</div> {# col6 for form for description #}
+</div> {# row #}
+
+</tab> {# ----- end source versions tab #} 

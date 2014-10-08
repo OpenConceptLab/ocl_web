@@ -238,13 +238,14 @@ class ConceptVersionListView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOr
         return self.render_json_response(result.json())
 
 
-class ConceptItemView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin, View):
+class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
     """
         Interface to AngularJS concept description operations, supporting list, add, update and delete.
     """
     # override this, set to 'descriptions', 'names', etc
     item_name = None
     kwarg_name = None
+    field_names = []
 
     def get_all_args(self):
         """
@@ -253,15 +254,7 @@ class ConceptItemView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin,
         for easy interface to OCL API.
         """
         self.get_args()
-#        self.source_id = self.kwargs.get('source')
-#        self.concept_id = self.kwargs.get('concept')
         self.item_id = self.kwargs.get(self.kwarg_name)
-#        if self.from_org:
-#            self.own_type = 'orgs'
-#            self.own_id = self.org_id
-#        else:
-#            self.own_type = 'users'
-#            self.own_id = self.user_id
 
     def is_edit(self):
         return self.item_id is not None
@@ -340,3 +333,95 @@ class ConceptNameView(ConceptItemView):
     item_name = 'names'
     kwarg_name = 'name'
     field_names = ['name', 'name_type', 'locale', 'locale_preferred']
+
+
+class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
+    """
+        Concept extras handling is different from descriptions and names. So the view
+        is similar to the ConceptItemView but not the same.
+
+        The extras field name IS the attribute name, etc.
+    """
+    # override this, set to 'descriptions', 'names', etc
+    item_name = 'extras'
+    kwarg_name = 'extra'
+
+    def get_all_args(self):
+        """
+        Get all the input entities' identity, figure out whether this is a user owned
+        sourced concept or an org owned sourced concept, and set self.own_type, self.own_id
+        for easy interface to OCL API.
+        """
+        self.get_args()
+        self.item_id = self.kwargs.get(self.kwarg_name)
+
+    def is_edit(self):
+        return self.item_id is not None
+
+    def get(self, request, *args, **kwargs):
+        """
+            Return a list of descriptions as json.
+        """
+        self.get_all_args()
+        api = OCLapi(self.request, debug=True)
+
+        result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
+                         'concepts', self.concept_id, self.item_name)
+        if not result.ok:
+            print result
+            return self.render_bad_request_response(result)
+
+        print result
+        print result.json()
+        return self.render_json_response(result.json())
+
+    def post(self, request, *args, **kwargs):
+
+        self.get_all_args()
+        data = {}
+        fn = fv = None
+        try:
+            print 'request json:', self.request_json
+            fn = self.request_json.get('extra_name')
+            fv = self.request_json.get('extra_value')
+            data[fn] = fv
+        except KeyError:
+            resp = {u"message": _('Invalid input')}
+            return self.render_bad_request_response(resp)
+
+        return self.render_json_response(
+            {'message': _('extra added')})
+
+        api = OCLapi(self.request, debug=True)
+        if self.is_edit():
+            result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
+                             'concepts', self.concept_id, 'extras', fn,
+                             **data)
+        else:
+            result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
+                              'concepts', self.concept_id, 'extras', fn, **data)
+
+        if not result.ok:
+            print result
+            return self.render_bad_request_response(result)
+
+        return self.render_json_response(
+            {'message': _('extra added')})
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Delete the specified item.
+        """
+        self.get_all_args()
+        api = OCLapi(self.request, debug=True)
+        if self.is_edit():  # i.e. has item UUID
+            result = api.delete(self.own_type, self.own_id, 'sources', self.source_id,
+                                'concepts', self.concept_id,
+                                self.item_name, self.item_id)
+        if not result.ok:
+            print result
+            return self.render_bad_request_response(result)
+
+        return self.render_json_response(
+            {'message': _('Description deleted')})
+

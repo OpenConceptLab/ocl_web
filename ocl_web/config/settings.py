@@ -258,18 +258,56 @@ class Common(Configuration):
                 '()': 'django.utils.log.RequireDebugFalse'
             }
         },
+
+
+        'formatters': {
+            'normal': {
+                'format': "[%(asctime)s] %(levelname)-8s: %(message)s",
+                'datefmt': "%Y/%m/%d %H:%M:%S"
+            },
+        },
+
         'handlers': {
             'mail_admins': {
                 'level': 'ERROR',
                 'filters': ['require_debug_false'],
                 'class': 'django.utils.log.AdminEmailHandler'
-            }
+            },
+        'null': {
+            'class': 'django.utils.log.NullHandler',
+            },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'normal',
+            },
+        'debug_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/debug.log'),
+            'formatter': 'normal',
+            },
+        'logfile': {
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'when': 'midnight',
+            'filename': os.path.join(BASE_DIR, 'logs/app.log'),
+            'formatter': 'normal',
+            },
         },
+
         'loggers': {
             'django.request': {
                 'handlers': ['mail_admins'],
                 'level': 'ERROR',
                 'propagate': True,
+            },
+            'oclapi': {
+                'handlers': ['debug_file'],
+                'level': 'DEBUG',
+            },
+            'oclweb': {
+                'handlers': ['console', 'logfile'],
+                'level': 'DEBUG',
             },
         }
     }

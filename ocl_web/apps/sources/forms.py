@@ -4,7 +4,6 @@
 """
 from django.utils.translation import ugettext as _
 from django import forms
-from django.core.urlresolvers import reverse
 
 from libs.ocl import OCLapi
 from apps.core import LOCALE_LIST
@@ -24,12 +23,11 @@ class SourceCreateForm(forms.Form):
       help_text=_('Website (e.g. http://apps.who.int/classifications/icd10)'))
     source_type = forms.CharField(max_length=30, label=_('Source Type'), required=False)
     public_access = forms.ChoiceField(label=_('Public Access'), required=False, initial='View',
-      choices=( ('View', 'View (default)'), ('Public', 'Public'), ('None', 'None')))
-    default_locale = forms.ChoiceField(choices=LOCALE_LIST, label=_('Locale'),  required=True)
-    supported_locales = forms.CharField(max_length=30, label=_('Supported Locales'),  required=True)
+      choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
+    default_locale = forms.ChoiceField(choices=LOCALE_LIST, label=_('Locale'), required=True)
+    supported_locales = forms.CharField(max_length=30, label=_('Supported Locales'), required=True)
 
-    description = forms.CharField(max_length=30, label=_('Description'), required=False)
-
+    description = forms.CharField(max_length=80, label=_('Description'), required=False)
 
     def clean_concept_id(self):
         """ concept ID must be unique """
@@ -60,6 +58,5 @@ class SourceVersionAddForm(forms.Form):
     required_css_class = 'required'
 
     id = forms.CharField(max_length=30, label=_('ID'), required=True)
-    description = forms.CharField(max_length=30, label=_('Description'), required=False)
+    description = forms.CharField(max_length=80, label=_('Description'), required=False)
     released = forms.BooleanField(required=False, label=_('Released'))
-

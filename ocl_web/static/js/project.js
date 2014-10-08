@@ -1,13 +1,21 @@
 /* Project specific Javascript goes here. */
 var app = angular.module('ConceptApp', ['ui.bootstrap']);
 
+
+app.config(function($httpProvider) {
+    $httpProvider.defaults.headers.post['X-CSRFToken'] = $('input[name=csrfmiddlewaretoken]').val();
+    console.log($httpProvider.defaults.headers.post['X-CSRFToken']);
+});
+
+
 // Make a controller that accesses the backend using a_url_part as the item type
-function makeController(a_url_part, a_field_names) {
+function makeController(a_url_part, a_field_names, a_item_key) {
 
     return function conceptItemController($scope, $http, $location) {
 
         var url_part = a_url_part;  // from makeController
         var field_names = a_field_names;
+        var item_key = a_item_key || 'uuid';
 
         console.log('my url part:', url_part)
         $scope.message = '';
@@ -15,6 +23,7 @@ function makeController(a_url_part, a_field_names) {
         $scope.isEditingItem = false;
         $scope.editedItem = null;
         $scope.item = null;
+        $scope.alerts = [];
 
         function resetCreateForm() {
             $scope.newItem = {};
@@ -70,33 +79,31 @@ function makeController(a_url_part, a_field_names) {
                 });
         } // loadItems
 
-      function addItem(item) {
+        function addItem(item) {
 
-        var data = {};
-        for (var i=0; i < field_names.length; i++) {
-            fn = field_names[i];
-            data[fn] = item[fn];
-        }
+            var data = {};
+            for (var i=0; i < field_names.length; i++) {
+                fn = field_names[i];
+                data[fn] = item[fn];
+            }
 
-        var config = null;
+            var config = null;
 
-        var url = $location.absUrl() + url_part + '/';
-        $http.post(url, data, null)
-          .success(function (data, status, headers, config) {
-            $scope.message = data['message'];
-            loadItems();
-          })
-          .error(function (data, status, headers, config) {
-            $scope.message = data['message'];
-          });
+            var url = $location.absUrl() + url_part + '/';
+            $http.post(url, data, null)
+                .success(function (data, status, headers, config) {
+                    $scope.message = data['message'];
+                    loadItems();
+                })
+                .error(function (data, status, headers, config) {
+                    $scope.message = data['message'];
+                });
 
-          resetCreateForm();
-          cancelCreatingItem();
-      } // addItem()
+            resetCreateForm();
+            cancelCreatingItem();
+        } // addItem()
 
-
-
-      $scope.addItem = addItem;
+        $scope.addItem = addItem;
 
       function updateItem(item) {
 
@@ -105,18 +112,20 @@ function makeController(a_url_part, a_field_names) {
             fn = field_names[i];
             data[fn] = item[fn];
         }
-
+        console.log(item);
         var config = null;
 
-        var url = $location.absUrl() + url_part + '/' + item.uuid + '/';
+        var url = $location.absUrl() + url_part + '/' + item[item_key] + '/';
         $http.post(url, data, null)
           .success(function (data, status, headers, config) {
             console.log(data);
             $scope.message = data['message'];
+            $scope.alerts.push({type: 'success', msg: data.message});
             loadItems();
           })
           .error(function (data, status, headers, config) {
-            $scope.message = data['message'];
+            console.log('ERROR:' + data.message);
+            $scope.alerts.push({type: 'danger', msg: data.message});
           });
 
         $scope.editedItem = null;
@@ -147,6 +156,10 @@ function makeController(a_url_part, a_field_names) {
 
       $scope.deleteItem = deleteItem;
 
+        $scope.closeAlert = function(index) {
+            $scope.alerts.splice(index, 1);
+        };
+
       loadItems();
 
     } // conceptItemController
@@ -157,6 +170,9 @@ function makeController(a_url_part, a_field_names) {
 // app.controller('ConceptDescriptionController', conceptItemController);
 app.controller('ConceptDescriptionController', makeController('descriptions', ['description', 'description_type', 'locale', 'locale_preferred']));
 app.controller('ConceptNameController', makeController('names', ['name', 'name_type', 'locale', 'locale_preferred']));
+app.controller('ConceptExtraController', makeController('extras', ['extra_name', 'extra_value']));
+
+app.controller('SourceVersionController', makeController('versions', ['id', 'description', 'released'], 'id'));
 
 app.controller('ConceptVersionController', function($scope, $http, $location) {
 
