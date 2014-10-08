@@ -1,0 +1,141 @@
+{# Concept "names" section, list, add and edit #}
+{% load i18n %}
+{% load ocl_tags %}
+
+<div ng-controller="ConceptNameController" >
+
+<div class="row">
+    <div class="col-md-2" style="text-align:right;font-weight:bold;color:#999;">
+        Synonyms
+    </div>
+
+    <div class="col-md-8">
+
+        <ul class="list-group">
+            {% verbatim %}
+            <li ng-repeat="name in item_list" class="list-group-item">
+                <button type="button" class="btn btn-link" ng-click="setEditedItem(name);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+
+                {{ name.name }} : {{ name.name_type}}<span class="small"><em>[{{ name.locale }}]</em></span>
+                <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
+
+                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(name)"></span>
+            {% endverbatim %}               
+                {% if request.GET.debug %}<br /><pre>{{ name|pprint }}</pre>{% endif %}</li>
+        </ul>
+    </div> {# list col8 #}
+</div> {# list row #}
+
+<div class="row"> {# add name form row #}
+    <div class="col-md-2">
+        &nbsp;
+    </div>
+
+    <div class="col-md-6">
+
+
+{% verbatim %}
+<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+{% endverbatim %}
+
+
+    {# add form for names #}
+    <div ng-if="shouldShowCreatingItem()">
+
+    <button type="button" class="btn btn-link" ng-click="startCreatingItem()">
+        <span class="glyphicon glyphicon-plus"></span>
+        {% trans 'Add Name' %}
+    </button>
+
+    <form ng-submit="addItem(newItem)" ng-show="isCreatingItem">
+    {% csrf_token %}
+    <div class="form-group required">
+        <label class="control-label" for="id_name">Name</label>
+        <input class="form-control" id="id_name" maxlength="30" name="name" 
+            placeholder="Name" required="required" title="" type="text"
+            ng-model="newItem.name" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="id_name_type">Name Type</label>
+        <input class="form-control" id="id_name_type" maxlength="30" name="name_type" 
+            placeholder="Name Type" required="required" title="" type="text"
+            ng-model="newItem.name_type" />
+    </div>
+
+    <div class="form-group required">
+        <label class="control-label" for="id_locale">Locale</label>
+        <input class="form-control" id="id_locale" maxlength="30" name="locale" 
+            placeholder="Locale" required="required" title="" type="text"
+            ng-model="newItem.locale" />
+    </div>
+
+    <div class="form-group required">
+          <div class="checkbox">
+        <label>
+          <input type="checkbox" name="locale_preferred" ng-model="newItem.locale_preferred">{% trans 'Locale Preferred' %}
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">
+        {% trans 'Add Name' %}
+      </button>
+      <button type="button" class="btn btn-default pull-right" ng-click="cancelCreatingItem()">{% trans 'Cancel' %}</button>
+     </div>
+    </form>
+    </div> {# if creating show #}
+
+<div ng-if="shouldShowEditingItem()">
+
+     {% verbatim %}<h4>Editing Name</h4> {% endverbatim %}
+    <form ng-submit="updateItem(editedItem)" ng-show="isEditingItem">
+    {% csrf_token %}
+    <div class="form-group required">
+        <label class="control-label" for="id_name">Name</label>
+        <input class="form-control" id="id_name" maxlength="30" name="name" 
+            placeholder="Name" required="required" title="" type="text"
+            ng-model="editedItem.name" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="id_name_type">Name Type</label>
+        <input class="form-control" id="id_name_type" maxlength="30" name="name_type" 
+            placeholder="Name type" required="required" title="" type="text"
+            ng-model="editedItem.name_type" />
+    </div>
+
+    <div class="form-group required">
+        <label class="control-label" for="id_locale">Locale</label>
+        <input class="form-control" id="id_locale" maxlength="30" name="locale" 
+            placeholder="Locale" required="required" title="" type="text"
+            ng-model="editedItem.locale" />
+    </div>
+
+    <div class="form-group required">
+          <div class="checkbox">
+        <label>
+          <input type="checkbox" name="locale_preferred" ng-model="editedItem.locale_preferred">{% trans 'Locale Preferred' %}
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">
+        {% trans 'Update Name' %}
+      </button>
+      <button type="button" class="btn btn-default pull-right" ng-click="cancelEditingItem()">{% trans 'Cancel' %}</button>
+     </div>
+    </form>
+</div> {# editing name #}
+
+
+
+
+
+
+    </div> {# form col6 #}
+
+</div> {# add form row for name #}
+</div> {# names controller #}
+

@@ -210,33 +210,12 @@
 {% field_label 'Updated by' source.created_by %}
 {% field_label 'Updated on' source.created_on %}
 </div>	
+
+{% include 'concepts/concept_detail_extra.html' %}
+
 </tab> {# ----- end source details tab #}
 
 {% include 'sources/source_detail_version.html' %}
-
-<tab heading="Versions(old)"  ng-controller="ConceptVersionController"> {# ----- start source versions tab #}
-<div class="row">
-
-	<div class="col-md-10">
-
-	&nbsp;
-    <ul>
-    	<li ng-repeat="version in item_list" class="list-group-item">
-			{% verbatim %}
-				<span>{{ version.id }}<br />{{ version.description }}
-					created on {{ version.created_on }}
-                </span>
-                <span ng-if="version.released">Released</span>
-                <div class="pull-right">
-				<span class="glyphicon glyphicon-cog pull-right"></span>
-			</div>
-			{% endverbatim %}				
-        </li>
-	</lu>
-    </div> {# list col8 #}
-</div> {# list row #}
-
-</tab> {# ----- end source versions tab #}
 
 
 <tab heading="About"> {# ----- start source About tab #}

@@ -10,7 +10,7 @@ from django.contrib import messages
 from braces.views import (CsrfExemptMixin, JsonRequestResponseMixin)
 
 from libs.ocl import OCLapi
-from .forms import (SourceCreateForm, SourceEditForm, SourceVersionAddForm)
+from .forms import (SourceCreateForm, SourceEditForm)
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
@@ -33,7 +33,6 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         context['source'] = source
         context['concepts'] = concept_list
         return context
-
 
 
 class SourceCreateView(UserOrOrgMixin, FormView):
@@ -258,16 +257,17 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             # rather, it is /owner/:owner/sources/:source/:version
             result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
                              self.item_id, **data)
+            msg = _('Version updated')
         else:
             result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
                               'versions', **data)
+            msg = _('Version added')
 
         if not result.ok:
             logger.warning('source version POST error %s' % result.status_code)
             return self.render_bad_request_response(result)
 
-        return self.render_json_response(
-            {'message': _('Version added')})
+        return self.render_json_response({'message': msg})
 
     def delete(self, request, *args, **kwargs):
         """
@@ -276,12 +276,11 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
         if self.is_edit():  # i.e. has item UUID
-            result = api.delete(self.own_type, self.own_id, 'sources', self.source_id,
-                                'versions', self.item_id)
+            result = api.delete(self.own_type, self.own_id, 'sources',
+                                self.source_id, self.item_id)
         if not result.ok:
             logger.warning('source version DELETE error %s' % result.status_code)
-            return self.render_bad_request_response(result)
+            return self.render_bad_request_response(result.content)
 
-        return self.render_json_response(
-            {'message': _('Version deleted')})
+        return self.render_json_response({'message': _('Version deleted')})
 

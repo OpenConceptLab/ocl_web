@@ -1,14 +1,19 @@
 /* Project specific Javascript goes here. */
 var app = angular.module('ConceptApp', ['ui.bootstrap']);
 
-
+/* Add CSRF token for the web site. Note that we are setting the common defaults
+   instead of post, because we need it for delete as well?
+*/
 app.config(function($httpProvider) {
-    $httpProvider.defaults.headers.post['X-CSRFToken'] = $('input[name=csrfmiddlewaretoken]').val();
-    console.log($httpProvider.defaults.headers.post['X-CSRFToken']);
+    $httpProvider.defaults.headers.common['X-CSRFToken'] = $('input[name=csrfmiddlewaretoken]').val();
 });
 
 
-// Make a controller that accesses the backend using a_url_part as the item type
+/* Make a controller that accesses the backend using a_url_part as the item type
+
+   :param a_item_key: specifies the field name in the item object used to uniquely
+   identify the object to the backend.
+*/
 function makeController(a_url_part, a_field_names, a_item_key) {
 
     return function conceptItemController($scope, $http, $location) {
@@ -18,7 +23,6 @@ function makeController(a_url_part, a_field_names, a_item_key) {
         var item_key = a_item_key || 'uuid';
 
         console.log('my url part:', url_part)
-        $scope.message = '';
         $scope.isCreatingItem = false;
         $scope.isEditingItem = false;
         $scope.editedItem = null;
@@ -75,7 +79,6 @@ function makeController(a_url_part, a_field_names, a_item_key) {
             $http.get(url)
                 .success(function (data) {
                 $scope.item_list = data;
-                console.log($scope.item_list);
                 });
         } // loadItems
 
@@ -92,11 +95,12 @@ function makeController(a_url_part, a_field_names, a_item_key) {
             var url = $location.absUrl() + url_part + '/';
             $http.post(url, data, null)
                 .success(function (data, status, headers, config) {
-                    $scope.message = data['message'];
+                    $scope.alerts.push({type: 'success', msg: data.message});
                     loadItems();
                 })
                 .error(function (data, status, headers, config) {
-                    $scope.message = data['message'];
+                    console.log('ERROR:' + data);
+                    $scope.alerts.push({type: 'danger', msg: data.message});
                 });
 
             resetCreateForm();
@@ -112,14 +116,13 @@ function makeController(a_url_part, a_field_names, a_item_key) {
             fn = field_names[i];
             data[fn] = item[fn];
         }
-        console.log(item);
+        console.log('UPDATE:' + item);
         var config = null;
 
         var url = $location.absUrl() + url_part + '/' + item[item_key] + '/';
         $http.post(url, data, null)
           .success(function (data, status, headers, config) {
             console.log(data);
-            $scope.message = data['message'];
             $scope.alerts.push({type: 'success', msg: data.message});
             loadItems();
           })
@@ -141,16 +144,18 @@ function makeController(a_url_part, a_field_names, a_item_key) {
         if (!confirm("Are you sure?")) {
           return;
         }
-
-        var url = $location.absUrl() + url_part + '/' + item.uuid + '/';
+        console.log('DEL:' + item );
+        var url = $location.absUrl() + url_part + '/' + item[item_key] + '/';
         $http.delete(url)
           .success(function (data, status, headers, config) {
             console.log(data);
-            $scope.message = data['message'];
+            $scope.alerts.push({type: 'success', msg: data.message});
             loadItems();
           })
           .error(function (data, status, headers, config) {
-            $scope.message = data['message'];
+            console.log('DEL error' + data);
+            $scope.alerts.push({type: 'danger', msg: data.message});
+
           });
       } // deleteItem()
 
@@ -170,8 +175,9 @@ function makeController(a_url_part, a_field_names, a_item_key) {
 // app.controller('ConceptDescriptionController', conceptItemController);
 app.controller('ConceptDescriptionController', makeController('descriptions', ['description', 'description_type', 'locale', 'locale_preferred']));
 app.controller('ConceptNameController', makeController('names', ['name', 'name_type', 'locale', 'locale_preferred']));
-app.controller('ConceptExtraController', makeController('extras', ['extra_name', 'extra_value']));
+app.controller('ConceptExtraController', makeController('extras', ['extra_name', 'extra_value'], 'extra_name'));
 
+// version's unique id is "id", not "uuid"
 app.controller('SourceVersionController', makeController('versions', ['id', 'description', 'released'], 'id'));
 
 app.controller('ConceptVersionController', function($scope, $http, $location) {

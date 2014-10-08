@@ -34,9 +34,6 @@ class OCLapi(object):
     """
     logger = logging.getLogger('oclapi')
 
-    import logging_tree
-    logging_tree.printout()
-
     def debug_result(self, results):
         self.logger.debug('%s RESULT: %s' % (results.request.method, results.status_code))
         if results.status_code == requests.codes.server_error:

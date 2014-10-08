@@ -14,12 +14,12 @@
     <div class="col-md-8">
         <ul class="list-group">
             {% verbatim %}
-            <li ng-repeat="extra in item_list" class="list-group-item">
+            <li ng-repeat="item in item_list" class="list-group-item">
 
-                    <button type="button" class="btn btn-link" ng-click="setEditedItem(desc);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
+                    <button type="button" class="btn btn-link" ng-click="setEditedItem(item);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
                     </button>
-                    {{ extra.extra_name }} : {{ extra.extra_value }}</span>
-                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(extra)"></span>
+                    {{ item.extra_name}} : {{ item.extra_value }}</span>
+                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(item)"></span>
             {% endverbatim %}
             </li>
         </ul>

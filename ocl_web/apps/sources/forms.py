@@ -53,6 +53,7 @@ class SourceEditForm(SourceCreateForm):
 
 class SourceVersionAddForm(forms.Form):
     """
+        TODO: Removed. Not used. Now json/angular.
         Add a source version form
     """
     required_css_class = 'required'

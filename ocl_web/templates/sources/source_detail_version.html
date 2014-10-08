@@ -1,11 +1,8 @@
+{# Source version tab CRUD screen #}
 {% load i18n %}
 {% load ocl_tags %}
 
 <tab heading="Versions"  ng-controller="SourceVersionController"> {# ----- start source versions tab #}
-
-{% verbatim %}
-<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-{% endverbatim %}
 
 <div class="row">
 
@@ -27,16 +24,23 @@
             {% endverbatim %}               
         </li>
     </lu>
-    </div> {# list col8 #}
+    </div> {# list col10 #}
 </div> {# list row #}
 
 
 
 <div class="row">
-<div class="col-md-2">
-    &nbsp;
+<div class="col-md-10">
+{% verbatim %}
+<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+{% endverbatim %}
 </div>
+</div>
+
+
+<div class="row">
 <div class="col-md-6">
+
 
 <!-- CREATING -->
 <div ng-if="shouldShowCreatingItem()">
@@ -88,16 +92,14 @@
 <!-- EDITING -->
 <div ng-if="shouldShowEditingItem()">
 
-     {% verbatim %}<h4>Editing Version</h4> {% endverbatim %}
+     {% verbatim %}<h4>Editing Version  {{ editedItem.id }}</h4> {% endverbatim %}
     <form ng-submit="updateItem(editedItem)" ng-show="isEditingItem">
     {% csrf_token %}
-    <div class="form-group">
-        <label class="control-label" for="id_id">ID</label>
         <input class="form-control" id="id_id" maxlength="30" name="id" 
             placeholder="ID" required="required" title="" type="hidden"
             value="editedItem.id"
             ng-model="editedItem.uuid" />
-    </div>
+
 
     <div class="form-group required">
         <label class="control-label" for="id_description">Description</label>

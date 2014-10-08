@@ -1,4 +1,5 @@
 import requests
+import logging
 
 from django.views.generic import TemplateView
 from django.views.generic.edit import View
@@ -12,6 +13,8 @@ from braces.views import (CsrfExemptMixin, JsonRequestResponseMixin)
 from .forms import (ConceptCreateForm, ConceptEditForm)
 from libs.ocl import OCLapi
 from apps.core.views import UserOrOrgMixin
+
+logger = logging.getLogger('oclweb')
 
 
 class ConceptCreateView(UserOrOrgMixin, FormView):
@@ -294,16 +297,17 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
                              'concepts', self.concept_id, self.item_name,
                              self.item_id, **data)
+            msg = _('updated')
         else:
             result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
                               'concepts', self.concept_id, self.item_name, **data)
+            msg = _('added')
 
         if not result.ok:
-            print result
-            return self.render_bad_request_response(result)
+            logger.warning('Update failed %s' % result.content)
+            return self.render_bad_request_response(result.content)
 
-        return self.render_json_response(
-            {'message': _('Description added')})
+        return self.render_json_response({'message': msg})
 
     def delete(self, request, *args, **kwargs):
         """
@@ -316,11 +320,11 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
                                 'concepts', self.concept_id,
                                 self.item_name, self.item_id)
         if not result.ok:
-            print result
-            return self.render_bad_request_response(result)
+            logger.warning('DEL failed %s' % result.content)
+            return self.render_bad_request_response(result.content)
 
         return self.render_json_response(
-            {'message': _('Description deleted')})
+            {'message': _('deleted')})
 
 
 class ConceptDescView(ConceptItemView):
@@ -340,11 +344,16 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         Concept extras handling is different from descriptions and names. So the view
         is similar to the ConceptItemView but not the same.
 
-        The extras field name IS the attribute name, etc.
+        The extras field name IS the attribute name, the data is stored as a dictionary.
+        So in this view, we translate the API style of data to be like descriptions and names.
+        e.g.:
+
+        API version:   {'price': 100}
+        front end version: {extra_name: 'price', extra_value: 100}
     """
-    # override this, set to 'descriptions', 'names', etc
-    item_name = 'extras'
-    kwarg_name = 'extra'
+
+    item_name = 'extras'  # used in calling API URL
+    kwarg_name = 'extra'  # used in extracting unique ID from front end.
 
     def get_all_args(self):
         """
@@ -368,16 +377,25 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
                          'concepts', self.concept_id, self.item_name)
         if not result.ok:
-            print result
-            return self.render_bad_request_response(result)
+            logger.warning('Extra GET failed %s' % result.content)
+            return self.render_bad_request_response(result.content)
 
-        print result
-        print result.json()
-        return self.render_json_response(result.json())
+        # convert OCLAPI dictionary style data to a list of dictionary objects
+        # so that we can use the same front end JS to work with extras.
+        ls = []
+        for k, v in result.json().iteritems():
+            print k, v
+            o = {'extra_name': k, 'extra_value': v}
+            ls.append(o)
+
+        return self.render_json_response(ls)
 
     def post(self, request, *args, **kwargs):
 
         self.get_all_args()
+
+        # Convert back to OCLAPI format for extras, the dictionnary
+        # key is the attribute name.
         data = {}
         fn = fv = None
         try:
@@ -386,42 +404,42 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             fv = self.request_json.get('extra_value')
             data[fn] = fv
         except KeyError:
-            resp = {u"message": _('Invalid input')}
+            resp = {'message': _('Invalid input')}
             return self.render_bad_request_response(resp)
-
-        return self.render_json_response(
-            {'message': _('extra added')})
 
         api = OCLapi(self.request, debug=True)
         if self.is_edit():
             result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
                              'concepts', self.concept_id, 'extras', fn,
                              **data)
+            msg = _('Extra updated')
         else:
             result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
-                              'concepts', self.concept_id, 'extras', fn, **data)
+                             'concepts', self.concept_id, 'extras', fn, **data)
+            msg = _('Extra added')
 
         if not result.ok:
-            print result
-            return self.render_bad_request_response(result)
-
-        return self.render_json_response(
-            {'message': _('extra added')})
+            logger.warning('Extra GET failed %s' % result.content)
+            return self.render_bad_request_response(result.content)
+        else:
+            return self.render_json_response({'message': msg})
 
     def delete(self, request, *args, **kwargs):
         """
         Delete the specified item.
         """
         self.get_all_args()
+
         api = OCLapi(self.request, debug=True)
-        if self.is_edit():  # i.e. has item UUID
-            result = api.delete(self.own_type, self.own_id, 'sources', self.source_id,
-                                'concepts', self.concept_id,
-                                self.item_name, self.item_id)
+        self.item_id = None
+        if not self.is_edit():  # i.e. has item UUID
+            return self.render_bad_request_response({'message': 'key missing'})
+
+        result = api.delete(self.own_type, self.own_id, 'sources', self.source_id,
+                            'concepts', self.concept_id,
+                            self.item_name, self.item_id)
         if not result.ok:
-            print result
-            return self.render_bad_request_response(result)
+            logger.warning('Extra GET failed %s' % result.content)
+            return self.render_bad_request_response(result.content)
 
-        return self.render_json_response(
-            {'message': _('Description deleted')})
-
+        return self.render_json_response({'message': _('extra deleted')})
