@@ -195,5 +195,29 @@ app.controller('ConceptVersionController', function($scope, $http, $location) {
 
         loadItems();
 }// ConceptVersionController
+);
+
+app.controller('SourceSearchController', function($scope, $http, $location) {
+
+        function doSearch(search) {
+            console.log(search.text);
+        }; // doSearch
+
+        $scope.doSearch = doSearch
+
+        function loadItems() {
+
+            var url = $location.absUrl() + 'versions/';
+            $http.get(url)
+                .success(function (data) {
+                $scope.item_list = data;
+                console.log('versions:');
+                console.log($scope.item_list);
+                });
+        } // loadItems
+
+        loadItems();
+
+}// SourceSearchController
 )
 

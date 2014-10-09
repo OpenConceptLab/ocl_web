@@ -59,7 +59,7 @@
 <tab heading="Concepts">
 {# ----- Start of source concepts tab ----- #}
 
-	<div class="row">
+	<div class="row" ng-controller="SourceSearchController">
 
 <!-- Filters -->
 
@@ -118,14 +118,17 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="row">
 				<div class="col-md-12" style="padding-top:20px;padding-bottom:20px;">
+				{% verbatim %}
 			      <div class="input-group">
-			        <input type="text" class="form-control" placeholder="Search Source">
+			        <input type="text" class="form-control" placeholder="Search Source" ng-model="search.text">
 			         <span class="input-group-btn">
-			        <button class="btn btn-default" type="button">Search</button>
+			        <button class="btn btn-default" type="button" ng-click="doSearch(search)">Search</button>
 			      </span>
 			      </div>
+				{% endverbatim %}
 				</div>
 			</div>
 			<div class="row">

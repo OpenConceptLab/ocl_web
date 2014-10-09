@@ -129,6 +129,28 @@ class OCLapi(object):
             self.debug_result(results)
         return results
 
+
+    def head(self, *args, **kwargs):
+        """ Issue HEAD request to API.
+
+            :param *args: All positional arguments are appended to the request URL.
+            :param **kwargs: These are not used at the moment, since this is a get request TODO
+            :returns: requests.response object.
+
+        """
+        self.url = '%s/v1/' % (self.host)
+        if len(args) > 0:
+            self.url = self.url + '/'.join(args) + '/'
+        if self.debug:
+            self.logger.debug('HEAD %s %s %s' % (self.url, json.dumps(kwargs), self.headers))
+
+        results = requests.head(self.url, data=json.dumps(kwargs),
+                               headers=self.headers)
+        self.status_code = results.status_code
+        if self.debug:
+            self.debug_result(results)
+        return results
+
     def get(self, *args, **kwargs):
         """ Issue get request to API.
 

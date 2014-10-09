@@ -10,7 +10,8 @@ from django.conf import settings
 import requests
 import urllib
 import math
-import dateutil.parser
+
+from libs.ocl import OCLapi
 
 
 class HomeSearchView(TemplateView):
@@ -35,6 +36,13 @@ class HomeSearchView(TemplateView):
             'collections': '/v1/collections/',
             'orgs': '/v1/orgs/',
             'users': '/v1/users/'
+        }
+        search_type_paths = {
+            'concepts': 'concepts/',
+            'sources': 'sources/',
+            'collections': 'collections/',
+            'orgs': 'orgs/',
+            'users': 'users/'
         }
 
         # Resolves search type to the English singular word form
@@ -134,7 +142,7 @@ class HomeSearchView(TemplateView):
         search_filter['users'] = {}
         search_filter['orgs'] = {}
 
-        # Setup the resource count dictionary        
+        # Setup the resource count dictionary
         resource_count = {}
         for resource_type in search_type_names:
             resource_count[resource_type] = 0
@@ -178,13 +186,18 @@ class HomeSearchView(TemplateView):
 
         # Setup primary search API URL
         search_url = host + search_type_paths[search_type]
+        search_url = search_type_paths[search_type]
         if search_params:
             search_url = search_url + '?' + urllib.urlencode(search_params)
 
+        print 'search_url:', search_url
+        print 'search_params', search_params
         # Perform the primary search via the API
         # TODO: Improve the handling of search errors
         try:
-            search_response = requests.get(url=search_url, headers=search_request_headers)
+            api = OCLapi(self.request, debug=True)
+            search_response = api.get(search_url)
+#            search_response = requests.get(url=search_url, headers=search_request_headers)
             search_results = search_response.json()
             search_response_headers = search_response.headers
         except:
@@ -223,8 +236,8 @@ class HomeSearchView(TemplateView):
             # Build paginator bar
             if num_pages > 1:
                 show_paginator_bar = True
-                paginator_bar = self.buildPaginatorBar(base_url=page_url, 
-                    default_url_params=self.request.GET, num_pages=num_pages, 
+                paginator_bar = self.buildPaginatorBar(base_url=page_url,
+                    default_url_params=self.request.GET, num_pages=num_pages,
                     current_page=current_page)
 
         pagination = {
@@ -243,11 +256,14 @@ class HomeSearchView(TemplateView):
             for resource_type in search_type_names:
                 if resource_type == search_type:
                     continue
-                counter_search_url = host + search_type_paths[resource_type]
+#                counter_search_url = host + search_type_paths[resource_type]
+                counter_search_url = search_type_paths[resource_type]
                 if search_params:
                     counter_search_url = counter_search_url + '?' + urllib.urlencode(search_params)
                 try:
-                    count_response = requests.head(url=counter_search_url, headers=search_request_headers)
+#                    count_response = requests.head(url=counter_search_url, headers=search_request_headers)
+                    count_response = api.head(counter_search_url)
+
                     resource_count[resource_type] = int(count_response.headers['num_found'])
                 except:
                     resource_count[resource_type] = 0
@@ -264,31 +280,31 @@ class HomeSearchView(TemplateView):
         context['pagination'] = pagination
         return context
 
-    def buildPaginatorBar(self, base_url='', default_url_params={}, 
-        num_pages=1, current_page=1):
+    def buildPaginatorBar(self, base_url='', default_url_params={},
+                          num_pages=1, current_page=1):
         paginator_bar = []
         for i in range(1, 3):
             if i <= num_pages:
-                paginator_bar.append(self.buildPaginatorPage(base_url=base_url, 
-                    default_url_params=default_url_params, display=i, page_number=i, 
+                paginator_bar.append(self.buildPaginatorPage(base_url=base_url,
+                    default_url_params=default_url_params, display=i, page_number=i,
                     current_page=current_page))
         if (current_page - 4) > 3:
             paginator_bar.append(self.buildPaginatorPage(display='...', disabled=True))
         for i in range(current_page - 4, current_page + 5):
             if i <= num_pages and i > 2:
-                paginator_bar.append(self.buildPaginatorPage(base_url=base_url, 
-                    default_url_params=default_url_params, display=i, page_number=i, 
+                paginator_bar.append(self.buildPaginatorPage(base_url=base_url,
+                    default_url_params=default_url_params, display=i, page_number=i,
                     current_page=current_page))
         if num_pages - 2 > current_page + 4 + 1:
             paginator_bar.append(self.buildPaginatorPage(display='...', disabled=True))
-        for i in range (num_pages - 1, num_pages + 1):
+        for i in range(num_pages - 1, num_pages + 1):
             if i > current_page + 4:
-                paginator_bar.append(self.buildPaginatorPage(base_url=base_url, 
-                    default_url_params=default_url_params, display=i, page_number=i, 
+                paginator_bar.append(self.buildPaginatorPage(base_url=base_url,
+                    default_url_params=default_url_params, display=i, page_number=i,
                     current_page=current_page))
         return paginator_bar
 
-    def buildPaginatorPage(self, base_url='', default_url_params=None, display='', 
+    def buildPaginatorPage(self, base_url='', default_url_params=None, display='',
         page_number=None, current_page=None, disabled=False):
         paginator_page = {
             'display': display
