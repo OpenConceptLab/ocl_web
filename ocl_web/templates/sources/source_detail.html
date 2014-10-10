@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load bootstrap3 %}
 {% load ocl_tags %}
 
@@ -59,36 +60,25 @@
 <tab heading="Concepts">
 {# ----- Start of source concepts tab ----- #}
 
-	<div class="row" ng-controller="SourceSearchController">
+	<div class="row" ng-controllerx="SourceSearchController">
+		<form action="." method="get">
 
 <!-- Filters -->
 
-		<div class="col-md-3">
-			<div class="filter-group">
-				<div class="filter-group-header">Concept Class</div>
-				<div class="filter-group-body">
-					<div class="checkbox"><label><input type="checkbox"> Anatomy</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Diagnosis</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Drug</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Finding</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Symptom</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Test</label></div>
-					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
-				</div>
-			</div>
+	    <div class="col-md-3">
 
+	    	{% for f in concept_filters %}
 			<div class="filter-group">
-				<div class="filter-group-header">Datatype</div>
+				<div class="filter-group-header">{{ f.name }}</div>
 				<div class="filter-group-body">
-					<div class="checkbox"><label><input type="checkbox"> Boolean</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Coded</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Date</label></div>
-					<div class="checkbox"><label><input type="checkbox"> N/A</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Numeric</label></div>
-					<div class="checkbox"><label><input type="checkbox"> Text</label></div>
-					<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+					{% for c in f.options %}
+					<div class="checkbox"><label><input type="checkbox" name="{{ f.filter_id }}"
+						value="{{ c }}">{{ c }}</label></div>
+        			{% endfor %}
 				</div>
 			</div>
+			{% endfor %}
+
 		</div>
 
 <!-- Search selecters -->
@@ -96,6 +86,9 @@
 		<div class="col-md-9">
 			<div class="row" style="padding-top:20px;">
 				<div class="col-md-12">
+
+
+
 					<div class="btn-group pull-right">
 					  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 					    <span class="text-muted">Sort:</span> <strong>Best Match</strong> <span class="caret"></span>
@@ -106,6 +99,8 @@
 					    <li><a href="#">Something else here</a></li>
 					  </ul>
 					</div>
+
+
 					<div class="btn-group">
 					  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 					    <span class="text-muted">Version:</span> <strong>Latest</strong> <span class="caret"></span>
@@ -121,26 +116,33 @@
 
 			<div class="row">
 				<div class="col-md-12" style="padding-top:20px;padding-bottom:20px;">
-				{% verbatim %}
-			      <div class="input-group">
-			        <input type="text" class="form-control" placeholder="Search Source" ng-model="search.text">
-			         <span class="input-group-btn">
-			        <button class="btn btn-default" type="button" ng-click="doSearch(search)">Search</button>
-			      </span>
-			      </div>
-				{% endverbatim %}
+
+                    {% simple_pager page 'concept' url=pagination_url %}
+
+
+			        <div class="input-group">
+			            <input type="text" name="q" class="form-control" placeholder="Search Source">
+			            <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit" >Search</button>
+                        </span>
+                    </div>
 				</div>
 			</div>
+	</form>
+
 			<div class="row">
 				<div class="col-md-12">
-					We found {{ concepts|length }} concepts in this source.
 
 					<div class="pull-right">
+						<button class="btn btn-link" 
+
 						{% if source.owner_type == 'Organization' %}
-						<a class="btn btn-default" href="{% url 'concept-create-for-org' source.owner source.id %}">Add Concept</a>
+						href="{% url 'concept-create-for-org' source.owner source.id %}"
 						{% else %}
-						<a class="btn btn-default" href="{% url 'concept-create-for-user' source.owner source.id %}">Add Concept</a>
+						href="{% url 'concept-create-for-user' source.owner source.id %}"
 						{% endif %}
+						><span class="glyphicon glyphicon-plus"></span>
+						{% trans 'Add Concept' %}</button>
 					</div>
 				</div>
 			</div>
@@ -175,28 +177,23 @@
 						</a></h4>
 
 						<p>
-							<em>Class:</em> {{ result.conceptClass }}, <em>Datatype:</em> {{ result.datatype }}<br />
+							<em>Class:</em> {{ result.concept_class }}, <em>Datatype:</em> {{ result.datatype }}<br />
 							{% if result.updatedOn %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated {{ result.updatedOn }}</span>{% endif %}
 						</p>
 						{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 					</div>
 				</div> <!-- /row -->
+			{% empty %}
+			{% trans 'No concepts found' %}
 			{% endfor %}
 
 	<!-- Pagination -->
 
+	        {% if concepts %}
 			<div class="row" style="text-align:center;">
-				<ul class="pagination">
-				  <li><a href="#">&laquo;</a></li>
-				  <li><a href="#">1</a></li>
-				  <li><a href="#">2</a></li>
-				  <li><a href="#">3</a></li>
-				  <li><a href="#">4</a></li>
-				  <li><a href="#">5</a></li>
-				  <li><a href="#">&raquo;</a></li>
-				</ul>
+				{% bootstrap_pagination page url=pagination_url %}
 			</div>
-
+			{% endif %}
 		</div>
 	</div> <!-- /row -->
 

@@ -22,6 +22,9 @@ from source import Source
 from star import Star
 from user import User
 
+# for others to use
+from .search import OCLSearch
+
 SESSION_TOKEN_KEY = 'API_USER_TOKEN'
 
 
@@ -129,7 +132,6 @@ class OCLapi(object):
             self.debug_result(results)
         return results
 
-
     def head(self, *args, **kwargs):
         """ Issue HEAD request to API.
 
@@ -144,8 +146,12 @@ class OCLapi(object):
         if self.debug:
             self.logger.debug('HEAD %s %s %s' % (self.url, json.dumps(kwargs), self.headers))
 
-        results = requests.head(self.url, data=json.dumps(kwargs),
-                               headers=self.headers)
+        # look for optional keyword argument params for constructing URL param
+        # i.e. ?f1=v1&f2=v2
+        params = kwargs.get('params')
+
+        results = requests.head(self.url, params=params,
+                                headers=self.headers)
         self.status_code = results.status_code
         if self.debug:
             self.debug_result(results)
@@ -161,11 +167,19 @@ class OCLapi(object):
         """
         self.url = '%s/v1/' % (self.host)
         if len(args) > 0:
-            self.url = self.url + '/'.join(args) + '/'
-        if self.debug:
-            self.logger.debug('GET %s %s %s' % (self.url, json.dumps(kwargs), self.headers))
+            self.url = self.url + '/'.join(args)
 
-        results = requests.get(self.url, data=json.dumps(kwargs),
+        if self.url[-1] != '/':
+            self.url += '/'
+
+        # look for optional keyword argument params for constructing URL param
+        # i.e. ?f1=v1&f2=v2
+        params = kwargs.get('params')
+
+        if self.debug:
+            self.logger.debug('GET %s %s %s' % (self.url, params, self.headers))
+
+        results = requests.get(self.url, params=params,
                                headers=self.headers)
         self.status_code = results.status_code
         if self.debug:

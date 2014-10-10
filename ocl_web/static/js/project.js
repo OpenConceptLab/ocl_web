@@ -200,7 +200,11 @@ app.controller('ConceptVersionController', function($scope, $http, $location) {
 app.controller('SourceSearchController', function($scope, $http, $location) {
 
         function doSearch(search) {
+            var url = $location.absUrl()
+            url += '?q=' + search.text
             console.log(search.text);
+            console.log(url);
+            location = url
         }; // doSearch
 
         $scope.doSearch = doSearch
@@ -216,7 +220,7 @@ app.controller('SourceSearchController', function($scope, $http, $location) {
                 });
         } // loadItems
 
-        loadItems();
+//        loadItems();
 
 }// SourceSearchController
 )

@@ -3,7 +3,7 @@
 
 # Search by type (when sidebar is clicked)
 #https://github.com/search?q=malaria&ref=cmdform&type=Code
-
+import logging
 
 from django.views.generic import TemplateView
 from django.conf import settings
@@ -12,6 +12,9 @@ import urllib
 import math
 
 from libs.ocl import OCLapi
+
+
+logger = logging.getLogger('oclweb')
 
 
 class HomeSearchView(TemplateView):
@@ -187,16 +190,17 @@ class HomeSearchView(TemplateView):
         # Setup primary search API URL
         search_url = host + search_type_paths[search_type]
         search_url = search_type_paths[search_type]
-        if search_params:
-            search_url = search_url + '?' + urllib.urlencode(search_params)
+#        if search_params:
+#            search_url = search_url + '?' + urllib.urlencode(search_params)
 
-        print 'search_url:', search_url
-        print 'search_params', search_params
         # Perform the primary search via the API
         # TODO: Improve the handling of search errors
         try:
+            print 'search_url:', search_url
+            print 'search_params', search_params
+            print 'API GET'
             api = OCLapi(self.request, debug=True)
-            search_response = api.get(search_url)
+            search_response = api.get(search_url, params=search_params)
 #            search_response = requests.get(url=search_url, headers=search_request_headers)
             search_results = search_response.json()
             search_response_headers = search_response.headers
@@ -204,6 +208,7 @@ class HomeSearchView(TemplateView):
             search_response = None
             search_results = []
             search_response_headers = None
+            logger.exception('calling search API')
 
         # Setup pagination
         paginator_bar = []
@@ -258,11 +263,13 @@ class HomeSearchView(TemplateView):
                     continue
 #                counter_search_url = host + search_type_paths[resource_type]
                 counter_search_url = search_type_paths[resource_type]
-                if search_params:
-                    counter_search_url = counter_search_url + '?' + urllib.urlencode(search_params)
+
+#                if search_params:
+#                    counter_search_url = counter_search_url + '?' + urllib.urlencode(search_params)
+
                 try:
 #                    count_response = requests.head(url=counter_search_url, headers=search_request_headers)
-                    count_response = api.head(counter_search_url)
+                    count_response = api.head(counter_search_url, params=search_params)
 
                     resource_count[resource_type] = int(count_response.headers['num_found'])
                 except:

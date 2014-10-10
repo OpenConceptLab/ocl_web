@@ -4,6 +4,7 @@
     TODO: The label tags could take an optional arg to not include the href, but not
     sure if we want that anyway.
 """
+import re
 import dateutil.parser
 
 from django import template
@@ -73,8 +74,44 @@ def concept_label(concept):
 
 @register.inclusion_tag('includes/field_display_incl.html')
 def field_label(label, value, url=False):
+    """
+        Display a simple read only field value to user, like:
+
+        field label text:    field value
+
+        See the include template for details.
+    """
     return {
         'field_label': label,
         'field_value': value,
         'is_url': url,
+    }
+
+
+@register.inclusion_tag('includes/simple_pager_incl.html')
+def simple_pager(page, name, url=None):
+    """
+        Display a simple pager with N-M of P {name}[<] [>]
+
+        :param page: is a django paginator Page object.
+        :param name: is for display the item's name.
+        :url: is the GET url used to invoke the other page, usually
+            includes query parameters.
+    """
+
+    if url:
+        # Remove existing page GET parameters
+        # Should use force_text, see django-bootstrap3...
+        url = re.sub(r'\?page\=[^\&]+', '?', url)
+        url = re.sub(r'\&page\=[^\&]+', '', url)
+        # Append proper separator
+        if '?' in url:
+            url += '&'
+        else:
+            url += '?'
+
+    return {
+        'page': page,
+        'name': name,
+        'url': url,
     }
