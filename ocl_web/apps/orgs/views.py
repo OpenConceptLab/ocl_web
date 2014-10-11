@@ -4,13 +4,17 @@ from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.core.paginator import Paginator
 
 from .forms import (OrganizationCreateForm, OrganizationEditForm)
 
-from libs.ocl import OCLapi
+from libs.ocl import OCLapi, OCLSearch
 
 
 class OrganizationDetailView(TemplateView):
+    """
+        Organization details and source search view.
+    """
 
     template_name = "orgs/org_detail.html"
 
@@ -29,17 +33,40 @@ class OrganizationDetailView(TemplateView):
         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
 
         org_id = self.kwargs.get('org')
+        res_type = self.request.GET.get('resource_type')
+        print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
+        print res_type
+        if res_type == 'source':
+            source_searcher = OCLSearch(OCLapi.SOURCE_TYPE).parse(self.request.GET)
+            collection_searcher = OCLSearch(OCLapi.COLLECTION_TYPE).parse(None)
+        elif res_type == 'collection':
+            source_searcher = OCLSearch(OCLapi.SOURCE_TYPE).parse(None)
+            collection_searcher = OCLSearch(OCLapi.COLLECTION_TYPE).parse(self.request.GET)
+        else:
+            source_searcher = OCLSearch(OCLapi.SOURCE_TYPE).parse(None)
+            collection_searcher = OCLSearch(OCLapi.COLLECTION_TYPE).parse(None)
 
         api = OCLapi(self.request, debug=True)
 
         org = api.get('orgs', org_id).json()
 
-        # Get sources owned by the org
-        sources = api.get('orgs', org_id, 'sources', '?verbose=True').json()
+        results = api.get('orgs', org_id, 'sources', params=source_searcher.search_params)
+        sources = results.json()
+        num_found = int(results.headers['num_found'])
+        pg = Paginator(range(num_found), source_searcher.num_per_page)
+        context['source_page'] = pg.page(source_searcher.current_page)
+        context['source_pagination_url'] = self.request.get_full_path()
+        context['sources'] = sources
+        context['source_filters'] = source_searcher.get_filters()
 
-        # Get collections owned by the org
-        # The org object should have the URL in the future, like members_url.
-        collections = api.get('orgs', org_id, 'collections', '?verbose=True').json()
+        results = api.get('orgs', org_id, 'collections', params=collection_searcher.search_params)
+        collections = results.json()
+        num_found = int(results.headers['num_found'])
+        pg = Paginator(range(num_found), collection_searcher.num_per_page)
+        context['collection_page'] = pg.page(collection_searcher.current_page)
+        context['collection_pagination_url'] = self.request.get_full_path()
+        context['collections'] = collections
+        context['collection_filters'] = collection_searcher.get_filters()
 
         # TODO: access issue, error if user is not super user??
         members = []
@@ -52,10 +79,7 @@ class OrganizationDetailView(TemplateView):
         # Set the context
 
         context['org'] = org
-        context['sources'] = sources
-        context['collections'] = collections
         context['members'] = members
-
         return context
 
 

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load ocl_tags %}
+{% load bootstrap3 %}
 
 {% block title %}{{ org.id }}{% endblock title %}
 
@@ -9,7 +10,6 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-8">
-
 				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-home"></span></div>
 				<div style="display:inline-block;padding-left:20px">
 					<h3>
@@ -45,10 +45,38 @@
 
 <!-- Start content section of org -->
 
-<div class="container">
-	<div class="row">
+<div class="container" ng-app="ConceptApp">
 
-<!-- Listing of sources and collections -->
+
+<tabset>
+<tab heading="Sources">
+
+
+	<div class="row">
+<!-- Filters -->
+
+        <form action="." method="get">
+        	<input type="hidden" name="resource_type" value="source" />
+		<div class="col-md-3">
+
+	      	{% for f in source_filters %}
+			<div class="filter-group">
+				<div class="filter-group-header">{{ f.name }}</div>
+				<div class="filter-group-body">
+					{% for c in f.options %}
+					<div class="checkbox"><label><input type="checkbox" name="{{ f.filter_id }}"
+						value="{{ c }}">{{ c }}</label></div>
+	       			{% endfor %}
+				</div>
+			</div>
+			{% endfor %}
+
+		</div>
+
+
+
+
+<!-- Listing of sources -->
 
 		<div class="col-md-8">
 
@@ -68,7 +96,6 @@
 					  </ul>
 					</div>
 
-					<form class="form-inline">
 						<div class="form-group">
 							<div class="btn-group">
 							  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -83,21 +110,26 @@
 							</div>
 						</div>
 
+                        {% simple_pager source_page 'Source' url=source_pagination_url %}
+
 						<div class="form-group">
 							<div class="input-group input-group-sm">
-								<input name="f" id="resourceFilter" type="text" class="form-control" placeholder="Filter Sources and Collections" />
+								<input name="q" id="resourceFilter" type="text" class="form-control" placeholder="Filter Sources and Collections" />
 								<span class="input-group-btn">
-									<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+									<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
 								</span>
 							</div>
 						</div>
 					</form>
+	        <span class="pull-right">
+				<a href="{% url "source-create-for-org" org.id %}" class="btn"><span class="glyphicon glyphicon-plus"></span>Add Source</a>
+			</span>
 
 				</div>
 			</div> <!-- /row -->
+        </form>
 
 <!-- Display sources that belong to this org -->
-
 		{% for result in sources %}
 			<div class="row row-search-result">
 				<div class="col-md-1 search-result-col-icon">
@@ -121,6 +153,97 @@
 				</div>
 			</div>
 		{% endfor %}
+
+<!-- Pagination -->
+
+	        {% if sources %}
+			<div class="row" style="text-align:center;">
+				{% bootstrap_pagination source_page url=source_pagination_url %}
+			</div>
+			{% endif %}
+
+<!-- End Org source listing -->
+
+		</div> <!-- /col-md-8 -->
+    </div> {# row #}
+</tab>
+
+
+<tab heading="Collections">
+
+
+	<div class="row">
+<!-- Filters -->
+
+        <form action="." method="get">
+        	<input type="hidden" name="resource_type" value="collection" />
+
+		<div class="col-md-3">
+
+	      	{% for f in collection_filters %}
+			<div class="filter-group">
+				<div class="filter-group-header">{{ f.name }}</div>
+				<div class="filter-group-body">
+					{% for c in f.options %}
+					<div class="checkbox"><label><input type="checkbox" name="{{ f.filter_id }}"
+						value="{{ c }}">{{ c }}</label></div>
+	       			{% endfor %}
+				</div>
+			</div>
+			{% endfor %}
+
+		</div>
+
+<!-- Listing of collections -->
+
+		<div class="col-md-8">
+
+<!-- Sort / filter -->
+
+			<div class="row" style="margin-bottom:20px;">
+				<div class="col-md-12">
+
+					<div class="btn-group pull-right">
+					  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+						<span class="text-muted">Sort:</span> <strong>Best Match</strong> <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu" role="menu">
+						<li><a href="#">Best Match</a></li>
+						<li><a href="#">Another sort</a></li>
+						<li><a href="#">Something else here</a></li>
+					  </ul>
+					</div>
+
+						<div class="form-group">
+							<div class="btn-group">
+							  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+								<span class="text-muted">Filter:</span> <strong>None</strong> <span class="caret"></span>
+							  </button>
+							  <ul class="dropdown-menu" role="menu">
+								<li><a href="#">Public</a></li>
+								<li><a href="#">Private</a></li>
+								<li><a href="#">Sources</a></li>
+								<li><a href="#">Collections</a></li>
+							  </ul>
+							</div>
+						</div>
+
+
+                        {% simple_pager collection_page 'Collections' url=collection_pagination_url %}
+
+						<div class="form-group">
+							<div class="input-group input-group-sm">
+								<input name="q" id="resourceFilter" type="text" class="form-control" placeholder="Filter Sources and Collections" />
+								<span class="input-group-btn">
+									<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+								</span>
+							</div>
+						</div>
+					</form>
+
+				</div>
+			</div> <!-- /row -->
+        </form>
 
 <!-- Display collections that belong to this org -->
 
@@ -151,33 +274,46 @@
 
 <!-- Pagination -->
 
+	        {% if collections %}
 			<div class="row" style="text-align:center;">
-				<ul class="pagination">
-				  <li><a href="#">&laquo;</a></li>
-				  <li><a href="#">1</a></li>
-				  <li><a href="#">2</a></li>
-				  <li><a href="#">3</a></li>
-				  <li><a href="#">4</a></li>
-				  <li><a href="#">5</a></li>
-				  <li><a href="#">&raquo;</a></li>
-				</ul>
+				{% bootstrap_pagination collection_page url=collection_pagination_url %}
 			</div>
+			{% endif %}
 
 <!-- End Org resource listing -->
 
 		</div> <!-- /col-md-8 -->
+    </div> {# row #}
+</tab> {# collections #}
 
+<tab heading="Details">
+
+&nbsp;
+	<div class="row">
 <!-- Org details pane -->
 
-		<div class="col-md-4" style="margin-top:-120px;">
-
+		<div class="col-md-8">
 <!-- Org attributes -->
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h3 class="panel-title">Organization Details <span class="pull-right">&blacktriangleright;</span></h3>
+					<h3 class="panel-title">Organization Details</h3>
 				</div>
+
+                <div class="panel-body">
+                	{% field_label 'Full Name' org.company %}
+                	{% field_label 'Website' org.website url=True %}
+                	{% field_label 'Location' org.location %}
+                	{% field_label 'Public Access' org.public_access %}
+                	{% field_label 'Created By' source.created_by %}
+                	{% field_label 'Created on' source.created_on|smart_date %}
+                	{% field_label 'Updated by' source.created_by %}
+                	{% field_label 'Updated on' source.created_on %}
+                </div>
+
+
 				<div class="panel-body hidden">
+
 					<dl style="margin-bottom:0;">
 					{% for key, value in org.items %}
 						<dt class="small">{{ key }}:</dt>
@@ -186,12 +322,10 @@
 					</dl>
 				</div>
 			</div> <!-- /panel -->
+    	</div>
 
-			<div class="panel panel-default">
-				<a href="{% url "source-create-for-org" org.id %}" class="btn">Add Source</a>
-			</div>
-<!-- Org members -->
-
+        <!-- Org members -->
+        <div class="col-md-4">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">Members</h3>
@@ -207,6 +341,9 @@
 		</div> <!-- /col-md-4 -->
 
 	</div> <!-- /row -->
+</tab>
+
+</tabset>
 
 </div> <!-- /container -->
 

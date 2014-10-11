@@ -101,10 +101,10 @@ Collections go here.
 	<div class="col-md-10">
 	&nbsp;
     <ul>
-    	<li ng-repeat="version in item_list" class="list-group-item">
+    	<li ng-repeat="version in item_list|orderBy:'-version_created_on'" class="list-group-item">
 			{% verbatim %}
 				<span>{{ version.update_comment }}<br />
-					by {{ version.version_created_by}}, on {{ version.version_created_on }}
+					by {{ version.version_created_by}}, on {{ version.version_created_on|date:'yyyy-MM-dd HH:mm:ss' }}
                 </span>
                 <div class="pull-right">
 				{{ version.version }}

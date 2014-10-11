@@ -3,6 +3,9 @@
 
     Work in progress...
 """
+import logging
+
+logger = logging.getLogger('oclapi')
 
 
 class Filter(object):
@@ -43,12 +46,12 @@ class FilterList(object):
     def __iter__(self):
         return self.filter_list.__iter__()
 
-concept_filters = None
-
 
 def setup_filters():
-    concept_filters = FilterList('concepts')
-    f = concept_filters.add_filter('concept_class', 'Concept Classes')
+
+    # concept filters
+    filters = FilterList('concepts')
+    f = filters.add_filter('concept_class', 'Concept Classes')
     f.options = [
                 'Anatomy',
                 'Diagnosis',
@@ -66,7 +69,7 @@ def setup_filters():
                 'Program'
     ]
 
-    f = concept_filters.add_filter('datatype', 'Datatypes')
+    f = filters.add_filter('datatype', 'Datatypes')
     f.options = [
                 'Boolean',
                 'Coded',
@@ -81,7 +84,44 @@ def setup_filters():
                 'Text',
                 'Time'
     ]
-    return concept_filters
+
+    f = filters.add_filter('locale', 'Locale')
+    f.options = ['en', 'sw', 'fr', 'sp', 'ru', 'zh-cn', 'zh-tw']
+    concept_filters = filters
+
+    # source filter
+    filters = FilterList('sources')
+    f = filters.add_filter('source_type', 'Source Types')
+    f.options = [
+                'Dictionary',
+                'Interface Terminology',
+                'Indicator Registry',
+                'Reference',
+    ]
+
+    f = filters.add_filter('language', 'Locale')
+    f.options = ['en', 'sw', 'fr', 'sp', 'ru', 'zh-cn', 'zh-tw']
+    source_filters = filters
+
+    # collection filters
+    filters = FilterList('collections')
+    f = filters.add_filter('collection_type', 'Collection Types')
+    f.options = [
+                'Dictionary',
+                'Interface Terminology',
+                'Indicator Registry',
+                'Reference',
+    ]
+
+    f = filters.add_filter('language', 'Locale')
+    f.options = ['en', 'sw', 'fr', 'sp', 'ru', 'zh-cn', 'zh-tw']
+
+    collection_filters = filters
+
+    user_filters = None
+    org_filters = None
+
+    return [user_filters, org_filters, source_filters, concept_filters, collection_filters]
 
 
 class OCLSearch(object):
@@ -105,22 +145,34 @@ class OCLSearch(object):
         'users': 'user'
     }
 
-    concept_filters = None
+    filters = None
 
-    def __init__(self):
+    def __init__(self, resource_type):
+        """
+        :param resource_type: is a resource type from OCLapi.resource_types
+        """
         # outputs
         self.search_type = None
         self.num_per_page = None
         self.current_page = None
         self.search_params = None
+        self.resource_type = resource_type
 
         # one time initialization
-        if self.concept_filters is None:
-            self.concept_filters = setup_filters()
+        if self.filters is None:
+            self.filters = setup_filters()
+
+    def get_filters(self):
+        return self.filters[self.resource_type]
 
     def parse(self, request_get):
-        # make a copy so that we can delete things from it
-        params = request_get.copy()
+
+        print 'parsing:', request_get
+        if request_get is None:
+            params = {}
+        else:
+            # make a copy so that we can delete things from it
+            params = request_get.copy()
 
         # search what object type?
         if 'type' in params and params['type'] in self.search_type_names:
@@ -132,9 +184,11 @@ class OCLSearch(object):
         # paging
         if 'page' in params:
             try:
+                print 'getting page'
                 self.current_page = int(params['page'])
+                print 'getting page', self.current_page
                 del params['page']
-            except:
+            except ValueError:
                 # some problem with the page=N input
                 self.current_page = 1
         else:
@@ -143,7 +197,7 @@ class OCLSearch(object):
         if 'limit' in params:
             try:
                 self.num_per_page = int(params['limit'])
-            except:
+            except ValueError:
                 self.num_per_page = self.DEFAULT_NUM_PER_PAGE
         else:
             self.num_per_page = self.DEFAULT_NUM_PER_PAGE
@@ -169,12 +223,10 @@ class OCLSearch(object):
 
         for key in params.keys():
             print 'trying key:%s' % key
-            f = self.concept_filters.match_filter(key)
+            f = self.get_filters().match_filter(key)
             if f:
                 search_params[key] = params.pop(key)
 
-        print 'resulting earch params:', search_params
+        print 'Searcher %s params: %s' % (self.resource_type, search_params)
         self.search_params = search_params
         return self
-
-

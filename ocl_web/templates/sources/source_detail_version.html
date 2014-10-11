@@ -10,12 +10,12 @@
 
     &nbsp;
     <ul>
-        <li ng-repeat="version in item_list" class="list-group-item">
+        <li ng-repeat="version in item_list|orderBy:'-created_on'" class="list-group-item">
             {% verbatim %}
                     <button type="button" class="btn btn-link" ng-click="setEditedItem(version);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
                     </button>
                 <span>{{ version.id }}<br />{{ version.description }}
-                    created on {{ version.created_on }}
+                    created on {{ version.created_on|date:'yyyy-MM-dd HH:mm:ss' }}
                 </span>
                 <span ng-if="version.released">Released</span>
                 <div class="pull-right">

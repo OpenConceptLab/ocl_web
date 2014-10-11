@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+{% load bootstrap3 %}
 {% load ocl_tags %}
+
 {% block content %}
 
 <!-- Start content row -->
@@ -25,20 +27,18 @@
 {% if results %}
 		<div role="form">
 
-	<!--pre style="font-size:7pt;">{{ search_filter|pprint }}</pre-->
-	{% if search_filter %}
-		{% for filter_key, filter_data in search_filter.items %}
+
+         	{% for f in search_filters %}
 			<div class="filter-group">
-				<div class="filter-group-header">{{ filter_data.name }}</div>
+				<div class="filter-group-header">{{ f.name }}</div>
 				<div class="filter-group-body">
-				{% for f in filter_data.options %}
-					<div class="checkbox"><label><input type="checkbox"><span style="font-size:9pt;">{{ f }}</span></label></div>
-				{% endfor %}
-				<div class="checkbox"><a href="#"><small>More &blacktriangledown;</small></a></div>
+					{% for c in f.options %}
+					<div class="checkbox"><label><input type="checkbox" name="{{ f.filter_id }}"
+						value="{{ c }}">{{ c }}</label></div>
+        			{% endfor %}
 				</div>
 			</div>
-		{% endfor %}
-	{% endif %}
+			{% endfor %}
 
 		</div> <!-- end div:role=form -->
 {% endif %}
@@ -71,6 +71,8 @@
 		<div class="row" style="margin-bottom:10px;">
 			<div class="col-md-12">
 {% if results %}
+
+
 				<div class="btn-group pull-right">
 				  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 				    <span class="text-muted">Sort:</span> <strong>Best Match</strong> <span class="caret"></span>
@@ -81,13 +83,9 @@
 				    <li><a href="#">Something else here</a></li>
 				  </ul>
 				</div>
-				<div class="btn-group pull-right" style="margin-right:15px;">
-					<a href="{% if pagination.search_url_prev_page %}{{ pagination.search_url_prev_page }}{% else %}#{% endif %}" class="btn btn-default btn-sm {% if pagination.search_url_prev_page %}{% else %}disabled{% endif %}"><strong>&lt;</strong></a>
-					<a href="{% if pagination.search_url_next_page %}{{ pagination.search_url_next_page }}{% else %}#{% endif %}" class="btn btn-default btn-sm {% if pagination.search_url_next_page %}{% else %}disabled{% endif %}"><strong>&gt;</strong></a>
-				</div>
-				<div class="pull-right" style="margin-right:15px;padding-top:6px;">
-					<strong>{{ pagination.results_start_index }}&ndash;{{ pagination.results_stop_index }}</strong> of <strong>{{ search_response_headers.num_found }}</strong> {{ search_type_name }}{{ search_response_headers.num_found|pluralize }}
-				</div>
+
+                    {% simple_pager page search_type_name url=pagination_url %}
+
 				<div class="btn-group">
 				  &nbsp;&nbsp;
 				  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -103,7 +101,7 @@
 {% endif %}
 			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
-
+</form>
 <!-- Search Results -->
 
 {% for result in results %}
@@ -288,18 +286,11 @@
 {% endfor %}
 
 <!-- Pagination -->
-
-{% if pagination.show_paginator_bar %}
-	<div class="row row-pagination">
-		<ul class="pagination">
-		    <li {% if pagination.current_page == 1 %}class="disabled"{% endif %}><a href="{{ pagination.search_url_prev_page }}">&laquo;</a></li>
-			{% for p in pagination.paginator_bar %}
-				<li {% if p.disabled %}class="disabled"{% elif p.current_page %}class="active"{% endif %}><a href="{{ p.url }}">{{ p.display }}</a></li>	
-			{% endfor %}
-		    <li {% if pagination.current_page == pagination.total_pages %}class="disabled"{% endif %}><a href="{{ pagination.search_url_next_page }}">&raquo;</a></li>
-		</ul>
-	</div>
-{% endif %}
+	        {% if results %}
+			<div class="row" style="text-align:center;">
+				{% bootstrap_pagination page url=pagination_url %}
+			</div>
+			{% endif %}
 
 <!-- End search results section -->
 

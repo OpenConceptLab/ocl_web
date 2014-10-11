@@ -35,9 +35,21 @@ class OCLapi(object):
 
         :logging: This class outputs debug level information to the "oclapi" logger.
     """
+    # resource types
+    USER_TYPE = 0
+    ORG_TYPE = 1
+    SOURCE_TYPE = 2
+    CONCEPT_TYPE = 3
+    COLLECTION_TYPE = 4
+    MAPPING_TYPE = 5
+
     logger = logging.getLogger('oclapi')
 
     def debug_result(self, results):
+        """
+            Some serious debug output.
+        """
+        self.logger.debug('API %s' % (results.request.path_url))
         self.logger.debug('%s RESULT: %s' % (results.request.method, results.status_code))
         if results.status_code == requests.codes.server_error:
             self.logger.error(results.content)
@@ -181,6 +193,7 @@ class OCLapi(object):
 
         results = requests.get(self.url, params=params,
                                headers=self.headers)
+
         self.status_code = results.status_code
         if self.debug:
             self.debug_result(results)

@@ -26,35 +26,26 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
 
         self.get_args()
-        if self.request.method == 'POST':
-            input_params = self.request.POST
-        else:
-            input_params = self.request.GET
 
-        print 'INPUT PARAMS %s: %s' % (self.request.method, input_params)
-        searcher = OCLSearch().parse(input_params)
+        print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
+        searcher = OCLSearch(OCLapi.CONCEPT_TYPE).parse(self.request.GET)
 
         api = OCLapi(self.request, debug=True)
 
         source = api.get(self.own_type, self.own_id, 'sources', self.source_id).json()
 
-        if len(searcher.search_params) > 0:
-            results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts',
-                              params=searcher.search_params)
-        else:
-            results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts')
+        results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts',
+                          params=searcher.search_params)
 
         concept_list = results.json()
         context['source'] = source
         context['concepts'] = concept_list
 
-        context['concept_filters'] = searcher.concept_filters
-
+        context['search_filters'] = searcher.get_filters()
         num_found = int(results.headers['num_found'])
         pg = Paginator(range(num_found), searcher.num_per_page)
         context['page'] = pg.page(searcher.current_page)
         context['pagination_url'] = self.request.get_full_path()
-        print context
         return context
 
 
