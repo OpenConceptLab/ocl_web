@@ -1,8 +1,8 @@
-{# Concept "extras" section, list, add and edit #}
+{# "extras" section for different resources, list, add and edit #}
 {% load i18n %}
 {% load ocl_tags %}
 
-<div ng-controller="ConceptExtraController" >
+<div ng-controller="ResourceExtraController" >
 
 <div class="row"><hr /></div>
 
@@ -48,13 +48,16 @@
         {% trans 'Add Extra' %}
     </button>
 
-    <form ng-submit="addItem(newItem)" ng-show="isCreatingItem">
+    <form name="extra_add_form" ng-submit="extra_add_form.$valid && addItem(newItem)" ng-show="isCreatingItem">
         {% csrf_token %}
-    <div class="form-group required">
+    <div class="form-group required" ng-class="{ 'has-error': extra_add_form.extra_name.$invalid && !extra_add_form.extra_name.$pristine }">
         <label class="control-label" for="id_extra_name">Extra Name</label>
         <input class="form-control" id="id_extra_name" maxlength="30" name="extra_name" 
             placeholder="Name" required="required" title="" type="text"
-            ng-model="newItem.extra_name" />
+            ng-model="newItem.extra_name" ng-pattern="/^[a-zA-Z0-9-]+$/" />
+    {% verbatim %}
+    <p class="help-block" ng-show="extra_add_form.extra_name.$error.pattern"> Name must be words... {{ extra_add_form.$valid }}</p>
+    {% endverbatim %}
     </div>
     <div class="form-group">
         <label class="control-label" for="id_extra_value">Extra Value</label>
@@ -64,7 +67,7 @@
     </div>
 
     <div class="form-group">
-      <button type="submit" class="btn btn-primary">
+      <button type="submit" class="btn btn-primary" ng-disabled="extra_add_form.$invalid">
         {% trans 'Add Extra' %}
       </button>
       <button type="button" class="btn btn-default pull-right" ng-click="cancelCreatingItem()">{% trans 'Cancel' %}</button>
@@ -76,7 +79,7 @@
 <!-- EDITING -->
 <div ng-if="shouldShowEditingItem()">
 
-     {% verbatim %}<h4>Editing Description</h4> {% endverbatim %}
+     {% verbatim %}<h4>Editing Extra</h4> {% endverbatim %}
     <form ng-submit="updateItem(editedItem)" ng-show="isEditingItem">
         {% csrf_token %}
 

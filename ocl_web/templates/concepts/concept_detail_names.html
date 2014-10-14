@@ -59,16 +59,27 @@
     <div class="form-group">
         <label class="control-label" for="id_name_type">Name Type</label>
         <input class="form-control" id="id_name_type" maxlength="30" name="name_type" 
-            placeholder="Name Type" required="required" title="" type="text"
+            placeholder="Name Type" type="text"
             ng-model="newItem.name_type" />
     </div>
 
+
     <div class="form-group required">
         <label class="control-label" for="id_locale">Locale</label>
-        <input class="form-control" id="id_locale" maxlength="30" name="locale" 
-            placeholder="Locale" required="required" title="" type="text"
-            ng-model="newItem.locale" />
+        {% verbatim %}
+        <ui-select ng-model="newItem.locale"
+            theme="bootstrap"
+            ng-disabled="disabled"
+            reset-search-input="false"
+            style="width: 300px;" required>
+        <ui-select-match placeholder="Select Locale...">{{$select.selected.name}}</ui-select-match>
+        <ui-select-choices repeat="locale in locale_choices|filter: $select.search">
+            <div ng-bind-html="locale.name | highlight: $select.search"></div>
+        </ui-select-choices>
+        </ui-select>
+        {% endverbatim %}
     </div>
+
 
     <div class="form-group required">
           <div class="checkbox">
@@ -101,21 +112,30 @@
     <div class="form-group">
         <label class="control-label" for="id_name_type">Name Type</label>
         <input class="form-control" id="id_name_type" maxlength="30" name="name_type" 
-            placeholder="Name type" required="required" title="" type="text"
+            placeholder="Name type" title="" type="text"
             ng-model="editedItem.name_type" />
     </div>
 
     <div class="form-group required">
         <label class="control-label" for="id_locale">Locale</label>
-        <input class="form-control" id="id_locale" maxlength="30" name="locale" 
-            placeholder="Locale" required="required" title="" type="text"
-            ng-model="editedItem.locale" />
+        {% verbatim %}
+        <ui-select ng-model="editedItem.locale"
+            theme="bootstrap"
+            ng-disabled="disabled"
+            reset-search-input="false"
+            style="width: 300px;" required>
+        <ui-select-match placeholder="Select Locale...">{{$select.selected.name}}</ui-select-match>
+        <ui-select-choices repeat="locale in locale_choices|filter: $select.search">
+            <div ng-bind-html="locale.name | highlight: $select.search"></div>
+        </ui-select-choices>
+        </ui-select>
+        {% endverbatim %}
     </div>
 
     <div class="form-group required">
-          <div class="checkbox">
+        <div class="checkbox">
         <label>
-          <input type="checkbox" name="locale_preferred" ng-model="editedItem.locale_preferred">{% trans 'Locale Preferred' %}
+        <input type="checkbox" name="locale_preferred" ng-model="editedItem.locale_preferred">{% trans 'Locale Preferred' %}
         </label>
       </div>
     </div>

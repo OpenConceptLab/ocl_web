@@ -293,3 +293,8 @@ form div.input-group {
 .ocl-nav-menu li a {
   font-size: 10pt;
 }
+
+.form-group.required .control-label:after { 
+   content:"*";
+   color:red;
+}

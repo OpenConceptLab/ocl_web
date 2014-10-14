@@ -27,9 +27,13 @@
     {% endblock %}
 
     {% block angular %}
-      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.min.js"></script>
+    {# was 1.2.9 #}
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-sanitize.min.js"></script>
       <script src="/static/js/project.js"></script>
       <script src="/static/js/ui-bootstrap-tpls-0.11.2.min.js"></script>
+      <script src="/static/js/select.min.js"></script> 
+    <link href="{% static 'css/select.min.css' %}" rel="stylesheet">
     {% endblock %}
 
   </head>

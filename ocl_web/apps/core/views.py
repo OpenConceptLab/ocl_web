@@ -94,6 +94,8 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         url_args.append('extras')
         if len(args) > 0:
             url_args += args
+        print args
+        print url_args
         return url_args
 
     def is_edit(self):
@@ -159,13 +161,12 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         self.get_all_args()
 
         api = OCLapi(self.request, debug=True)
-        self.extra_id = None
+
         if not self.is_edit():  # i.e. has item UUID
             return self.render_bad_request_response({'message': 'key missing'})
 
-        result = api.delete(self.own_type, self.own_id, 'sources', self.source_id,
-                            'concepts', self.concept_id,
-                            'extras', self.extra_id)
+        result = api.delete(*self.build_url(self.extra_id))
+
         if not result.ok:
             logger.warning('Extra GET failed %s' % result.content)
             return self.render_bad_request_response(result.content)

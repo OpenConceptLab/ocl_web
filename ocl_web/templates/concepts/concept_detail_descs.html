@@ -72,9 +72,18 @@
 
     <div class="form-group required">
         <label class="control-label" for="id_locale">Locale</label>
-        <input class="form-control" id="id_locale" maxlength="30" name="locale" 
-            placeholder="Locale" required="required" title="" type="text"
-            ng-model="newItem.locale" />
+        {% verbatim %}
+        <ui-select ng-model="newItem.locale"
+            theme="bootstrap"
+            ng-disabled="disabled"
+            reset-search-input="false"
+            style="width: 300px;" required>
+        <ui-select-match placeholder="Select Locale...">{{$select.selected.name}}</ui-select-match>
+        <ui-select-choices repeat="locale in locale_choices|filter: $select.search">
+            <div ng-bind-html="locale.name | highlight: $select.search"></div>
+        </ui-select-choices>
+        </ui-select>
+        {% endverbatim %}
     </div>
 
     <div class="form-group required">
@@ -110,15 +119,24 @@
     <div class="form-group">
         <label class="control-label" for="id_description_type">Description Type</label>
         <input class="form-control" id="id_description_type" maxlength="30" name="description_type" 
-            placeholder="Description type" required="required" title="" type="text"
+            placeholder="Description type" title="" type="text"
             ng-model="editedItem.description_type" />
     </div>
 
     <div class="form-group required">
         <label class="control-label" for="id_locale">Locale</label>
-        <input class="form-control" id="id_locale" maxlength="30" name="locale" 
-            placeholder="Locale" required="required" title="" type="text"
-            ng-model="editedItem.locale" />
+        {% verbatim %}
+        <ui-select ng-model="editedItem.locale"
+            theme="bootstrap"
+            ng-disabled="disabled"
+            reset-search-input="false"
+            style="width: 300px;" required>
+        <ui-select-match placeholder="Select Locale...">{{$select.selected.name}}</ui-select-match>
+        <ui-select-choices repeat="locale in locale_choices|filter: $select.search">
+            <div ng-bind-html="locale.name | highlight: $select.search"></div>
+        </ui-select-choices>
+        </ui-select>
+        {% endverbatim %}
     </div>
 
     <div class="form-group required">
