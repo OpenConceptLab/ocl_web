@@ -21,6 +21,8 @@ urlpatterns = patterns('',
     url(r'^orgs/', include('config.orgs_urls')),
     url(r'^users/', include('config.users_urls')),
 
+    url(r'^core/', include('apps.core.urls')),
+
     ######### Users
     ## User management
     url(r'^users/', include("users.urls", namespace="users")),

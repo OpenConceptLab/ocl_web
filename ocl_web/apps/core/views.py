@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 from braces.views import JsonRequestResponseMixin
 
 from libs.ocl import OCLapi
-
+from . import LOCALE_LIST_JSON
 
 logger = logging.getLogger('oclweb')
 
@@ -172,3 +172,17 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             return self.render_bad_request_response(result.content)
 
         return self.render_json_response({'message': _('extra deleted')})
+
+
+class GetLocalesView(JsonRequestResponseMixin, View):
+    """
+        Utility to get a list of valid locales for front end.
+        TODO: Get this from the database
+        
+        :returns: json list of code,name dictionaries.
+    """
+    def get(self, request, *args, **kwargs):
+        """
+            Return a list of descriptions as json.
+        """
+        return self.render_json_response(LOCALE_LIST_JSON)

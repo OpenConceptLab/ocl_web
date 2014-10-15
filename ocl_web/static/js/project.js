@@ -1,5 +1,5 @@
 /* Project specific Javascript goes here. */
-var app = angular.module('ConceptApp', ['ui.bootstrap', 'ngSanitize', 'ui.select']);
+var app = angular.module('ConceptApp', ['ui.bootstrap']);
 
 /* Add CSRF token for the web site. Note that we are setting the common defaults
    instead of post, because we need it for delete as well?
@@ -8,44 +8,19 @@ app.config(function($httpProvider) {
     $httpProvider.defaults.headers.common['X-CSRFToken'] = $('input[name=csrfmiddlewaretoken]').val();
 });
 
-app.config(function(uiSelectConfig) {
-  uiSelectConfig.theme = 'bootstrap';
-});
 
-var locale_choices = [
-    { code:'ar', name:'Arabic'},
-    { code:'eu', name:'Basque'},
-    { code:'ca', name:'Catalan'},
-    { code:'zh-cn', name:'Chinese Simplified'},
-    { code:'zh-hk', name:'Chinese Traditional'},
-    { code:'en', name:'English'},
-    { code:'fr', name:'French'},
-    { code:'it', name:'Italian'},
-    { code:'ko', name:'Korean'},        
-    { code:'sw', name:'Swahili'},
-    { code:'es', name:'Spanish'},
-    ];
-
-function locale_get_code(n) {
+function locale_by_name(locale_choices, n) {
     for (var i=0; i<locale_choices.length; i++) {
         if (locale_choices[i].name == n) {
-            return locale_choices[i].code;
+            return locale_choices[i];
         }
     }
 };
 
-function locale_get_name(c) {
+function locale_by_code(locale_choices, c) {
     for (var i=0; i<locale_choices.length; i++) {
         if (locale_choices[i].code == c) {
-            return locale_choices[i].name;
-        }
-    }
-};
-
-function locale_by_code(c) {
-    for (var i=0; i<locale_choices.length; i++) {
-        if (locale_choices[i].code == c) {
-            return locale_choices[i]
+            return locale_choices[i];
         }
     }
 };
@@ -63,7 +38,6 @@ function makeController(a_url_part, a_field_names, a_item_key) {
         var field_names = a_field_names;
         var item_key = a_item_key || 'uuid';
 
-        console.log('my url part:', url_part)
         $scope.isCreatingItem = false;
         $scope.isEditingItem = false;
         $scope.editedItem = null;
@@ -108,7 +82,7 @@ function makeController(a_url_part, a_field_names, a_item_key) {
             // special case for locale, translate codes from API to display object for UI
             for (var i=0; i<field_names.length; i++) {
                 if ('locale' == field_names[i]) {
-                    $scope.editedItem.locale = locale_by_code(item.locale);
+                    $scope.editedItem.locale = locale_by_code($scope.locale_choices, item.locale).name;
                 };
             };
         };
@@ -130,6 +104,15 @@ function makeController(a_url_part, a_field_names, a_item_key) {
                 });
         } // loadItems
 
+        function loadLocales() {
+
+            var url = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/core/locales/';
+            $http.get(url)
+                .success(function (data) {
+                $scope.locale_choices = data;
+                });
+        } // loadLocales
+
         function addItem(item) {
 
             // get form fields for API by name, specified
@@ -139,7 +122,7 @@ function makeController(a_url_part, a_field_names, a_item_key) {
                 fn = field_names[i];
                 // special case for locale, translate text to code for API
                 if ('locale' == fn) {
-                    data[fn] = item[fn].code;
+                    data[fn] = locale_by_name($scope.locale_choices, item[fn]).code;
                 }
                 else {
                     data[fn] = item[fn];
@@ -172,7 +155,7 @@ function makeController(a_url_part, a_field_names, a_item_key) {
                 fn = field_names[i];
                 // special case for locale, translate text to code for API
                 if ('locale' == fn) {
-                    data[fn] = item[fn].code;
+                    data[fn] = locale_by_name($scope.locale_choices, item[fn]).code;
                 }
                 else {
                     data[fn] = item[fn];
@@ -228,8 +211,7 @@ function makeController(a_url_part, a_field_names, a_item_key) {
         };
 
       loadItems();
-      // setup locale dropdown
-      $scope.locale_choices = locale_choices;
+      loadLocales();
 
     } // conceptItemController
 
@@ -253,8 +235,6 @@ app.controller('ConceptVersionController', function($scope, $http, $location) {
             $http.get(url)
                 .success(function (data) {
                 $scope.item_list = data;
-                console.log('versions:');
-                console.log($scope.item_list);
                 });
         } // loadItems
 

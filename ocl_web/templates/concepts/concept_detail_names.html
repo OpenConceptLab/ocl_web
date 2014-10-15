@@ -48,7 +48,7 @@
         {% trans 'Add Name' %}
     </button>
 
-    <form ng-submit="addItem(newItem)" ng-show="isCreatingItem">
+    <form name="name_add_form" ng-submit="addItem(newItem)" ng-show="isCreatingItem">
     {% csrf_token %}
     <div class="form-group required">
         <label class="control-label" for="id_name">Name</label>
@@ -64,19 +64,12 @@
     </div>
 
 
-    <div class="form-group required">
+    <div class="form-group required" ng-class="{ 'has-error': name_add_form.locale.$invalid && !name_add_form.locale.$pristine }">
         <label class="control-label" for="id_locale">Locale</label>
         {% verbatim %}
-        <ui-select ng-model="newItem.locale"
-            theme="bootstrap"
-            ng-disabled="disabled"
-            reset-search-input="false"
-            style="width: 300px;" required>
-        <ui-select-match placeholder="Select Locale...">{{$select.selected.name}}</ui-select-match>
-        <ui-select-choices repeat="locale in locale_choices|filter: $select.search">
-            <div ng-bind-html="locale.name | highlight: $select.search"></div>
-        </ui-select-choices>
-        </ui-select>
+        <input class="form-control" type="text" name="locale" ng-model="newItem.locale"  typeahead-editable="false"
+            typeahead="locale.name for locale in locale_choices | filter:$viewValue | limitTo:8" >
+        <p class="help-block" ng-show="name_add_form.locale.$invalid">Select a locale</p>
         {% endverbatim %}
     </div>
 
@@ -101,7 +94,7 @@
 <div ng-if="shouldShowEditingItem()">
 
      {% verbatim %}<h4>Editing Name</h4> {% endverbatim %}
-    <form ng-submit="updateItem(editedItem)" ng-show="isEditingItem">
+    <form name="name_edit_form" ng-submit="updateItem(editedItem)" ng-show="isEditingItem">
     {% csrf_token %}
     <div class="form-group required">
         <label class="control-label" for="id_name">Name</label>
@@ -116,20 +109,14 @@
             ng-model="editedItem.name_type" />
     </div>
 
-    <div class="form-group required">
+    <div class="form-group required" ng-class="{ 'has-error': name_edit_form.locale.$invalid && !name_edit_form.locale.$pristine }">
         <label class="control-label" for="id_locale">Locale</label>
         {% verbatim %}
-        <ui-select ng-model="editedItem.locale"
-            theme="bootstrap"
-            ng-disabled="disabled"
-            reset-search-input="false"
-            style="width: 300px;" required>
-        <ui-select-match placeholder="Select Locale...">{{$select.selected.name}}</ui-select-match>
-        <ui-select-choices repeat="locale in locale_choices|filter: $select.search">
-            <div ng-bind-html="locale.name | highlight: $select.search"></div>
-        </ui-select-choices>
-        </ui-select>
+        <input class="form-control" type="text" name="locale" ng-model="editedItem.locale" typeahead-editable="false"
+            typeahead="locale.name for locale in locale_choices | filter:$viewValue | limitTo:8" >
+        <p class="help-block" ng-show="name_edit_form.locale.$invalid">Select a locale</p>
         {% endverbatim %}
+
     </div>
 
     <div class="form-group required">
