@@ -6,33 +6,73 @@
 {% block title %}{% trans "Add Concept" %}{% endblock %}
 {% block content %}
 
-	<h3>
+<h3>
     {% source_owner_label source %} / {% source_label source %} / Add Concept
-	</h3>
+</h3>
 
-<div class="container">
+<div class="container" ng-app="ConceptApp" ng-controller="ConceptController">
     <div class="row">
         <div class="col-md-6">
 
+            {% include 'includes/ng_alerts_incl.html' %}
+
+            <form class="form" name="concept_form" ng-submit="addItem(item)" autcomplete="off">
+                {% csrf_token %} {# {% bootstrap_form form %} #}
+                <div class="form-group required">
+                    <label class="control-label" for="id_concept_id">Concept ID</label>
+                    <input class="form-control" id="id_concept_id" maxlength="30" name="concept_id" placeholder="Concept ID"
+                    required="required" title="" type="text" ng-model="item.concept_id">
+                </div>
+
+                <div class="form-group required" ng-class="{ 'has-error': concept_form.concept_class.$invalid &amp;&amp; !concept_form.concept_class.$pristine }">
+                    <label class="control-label" for="id_locale">Concept Class</label>
+                    {% verbatim %}
+                    <input class="form-control" type="text" name="concept_class" ng-model="item.concept_class"
+                    typeahead-editable="true" typeahead="ct for ct in concept_classes | filter:$viewValue | limitTo:8">
+                    <p class="help-block" ng-show="concept_form.concept_class.$invalid">
+                        Select a Concept class
+                    </p>{% endverbatim %}
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="id_datatype">Datatype</label>
+                    {% verbatim %}
+                    <input class="form-control" type="text" name="datatype" ng-model="item.datatype"
+                    typeahead-editable="true" typeahead="t for t in datatypes | filter:$viewValue | limitTo:8">
+                    <p class="help-block" ng-show="concept_form.datatype.$invalid">
+                        Select a Datatype
+                    </p>{% endverbatim %}
+                </div>
+                <div class="form-group required">
+                    <label class="control-label" for="id_name">Name</label>
+                    <input class="form-control" id="id_name" maxlength="30" name="name" placeholder="Name"
+                    required="required" title="" type="text" ng-model="item.name">
+                </div>
 
 
-<form class="form" id="concept_create_form" method="post" action=".">
-  {% csrf_token %}
+                <div class="form-group required" ng-class="{ 'has-error': concept_form.locale.$invalid && !concept_form.locale.$pristine }">
+                    <label class="control-label" for="id_locale">Locale</label>
+                    {% verbatim %}
+                    <input class="form-control" type="text" name="locale" ng-model="item.locale" typeahead-editable="false"
+                    typeahead="locale.name for locale in locale_choices | filter:$viewValue | limitTo:8">
+                    <p class="help-block" ng-show="concept_form.locale.$invalid">Select a locale</p>
+                    {% endverbatim %}
 
-  {% bootstrap_form form %}
+                </div>
 
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label for="id_preferred_locale">
+                            <input class="" id="id_preferred_locale" name="preferred_locale" type="checkbox"
+                            ng_model="item.preferred_locale">Preferred Locale</label>
+                    </div>
+                </div>
 
-  {% buttons %}
-  <button type="submit" class="btn btn-primary">
-    {% trans "Add" %}
-  </button>
-  {% endbuttons %}
-
-    </form>
+                {% buttons %}
+                <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
+                {% endbuttons %}
+            </form>
 
         </div>
     </div>
 </div>
-
-
 {% endblock %}

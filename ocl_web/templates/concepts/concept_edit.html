@@ -6,7 +6,6 @@
 {% block title %}{% trans "Update Concept" %}{% endblock %}
 {% block content %}
 
-
 <h3>
     {% source_owner_label source %} / {% source_label source %} / {% concept_label concept %} / {% trans 'Update Concept' %}
     {# TODO: Only show if admin or owner #}
@@ -15,27 +14,48 @@
 </h3>
 
 &nbsp;
-<div class="container">
+<div class="container" ng-app="ConceptApp" ng-controller="ConceptController">
 
-<div class="row">
-  <div class="col-md-6">
+    <div class="row">
+        <div class="col-md-6">
 
-<form class="form" id="concept_create_form" method="post" action=".">
-  {% csrf_token %}
+            {% include 'includes/ng_alerts_incl.html' %}
 
-  {% bootstrap_form form %}
+            <form class="form" name="concept_form" ng-submit="updateItem(item)" autcomplete="off">
+                {% csrf_token %}
+                <div class="form-group required" ng-class="{ 'has-error': concept_form.concept_class.$invalid &amp;&amp; !concept_form.concept_class.$pristine }">
+                    <label class="control-label" for="id_locale">Concept Class</label>
+                    {% verbatim %}
+                    <input class="form-control" type="text" name="concept_class" ng-model="item.concept_class"
+                    typeahead-editable="true" typeahead="ct for ct in concept_classes | filter:$viewValue | limitTo:8">
+                    <p class="help-block" ng-show="concept_form.concept_class.$invalid">
+                        Select a Concept class
+                    </p>{% endverbatim %}
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="id_datatype">Datatype</label>
+                    {% verbatim %}
+                    <input class="form-control" type="text" name="datatype" ng-model="item.datatype"
+                    typeahead-editable="true" typeahead="t for t in datatypes | filter:$viewValue | limitTo:8">
+                    <p class="help-block" ng-show="concept_form.datatype.$invalid">
+                        Select a Datatype
+                    </p>{% endverbatim %}
+                </div>
 
 
-  {% buttons %}
-  <button type="submit" class="btn btn-primary">
-    {% trans "Update" %}
-  </button>
-  {% endbuttons %}
+                <div class="form-group">
+                    <label class="control-label" for="id_update_comment">Update Comment</label>
+                    <input class="form-control" id="id_update_comment" maxlength="90"
+                    name="update_comment" placeholder="Update Comment" title="" type="text"
+                    ng-model="item.update_comment" />
+                </div>
 
-    </form>
+                {% buttons %}
+                <button type="submit" class="btn btn-primary">{% trans "Update" %}</button>
+                {% endbuttons %}
 
-  </div>
-</div>
+            </form>
 
-
+        </div>
+    </div>
 {% endblock %}

@@ -10,8 +10,8 @@ from django.conf.urls import (patterns, url)
 from apps.orgs.views import (OrganizationDetailView, OrganizationCreateView, OrganizationEditView)
 from apps.sources.views import (SourceDetailView, SourceCreateView, SourceEditView)
 from apps.sources.views import (SourceVersionView)
-from apps.concepts.views import (ConceptDetailView, ConceptCreateView, ConceptEditView)
-from apps.concepts.views import (ConceptDescView, ConceptNameView, ConceptVersionListView, ConceptExtraView)
+from apps.concepts.views import (ConceptDetailView, ConceptCreateView, ConceptEditView, ConceptCreateJsonView)
+from apps.concepts.views import (ConceptDescView, ConceptNameView, ConceptVersionListView)
 from apps.core.views import ExtraJsonView
 
 urlpatterns = patterns('',
@@ -33,10 +33,10 @@ urlpatterns = patterns('',
 
 
     # concept views
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/create/$', ConceptCreateView.as_view(), name='concept-create-for-org'),
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/create/$', ConceptCreateJsonView.as_view(), name='concept-create-for-org'),
 
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/$', ConceptDetailView.as_view(), name='concept-detail'),
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/edit/$', ConceptEditView.as_view(), name='concept-edit'),
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/edit/$', ConceptCreateJsonView.as_view(), name='concept-edit'),
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/versions/$', ConceptVersionListView.as_view(), name='concept-version-list'),
 
     # concept name views

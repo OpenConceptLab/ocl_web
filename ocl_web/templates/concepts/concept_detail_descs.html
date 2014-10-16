@@ -38,9 +38,7 @@
 <div class="col-md-6">
 
 
-{% verbatim %}
-<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-{% endverbatim %}
+{% include 'includes/ng_alerts_incl.html' %}
 
 <!-- CREATING -->
 <div ng-if="shouldShowCreatingItem()">

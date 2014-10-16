@@ -59,7 +59,7 @@ class OCLapi(object):
                 self.logger.debug('%s JSON: %s' % (results.request.method, json.dumps(results.json(), sort_keys=True,
                                   indent=4, separators=(',', ': '))))
             except json.JSONDecodeError:
-                self.logger.error('JSON: Error decoding it:', results.content[:40])
+                self.logger.error('JSON: Error decoding it: %s' % results.content[:40])
         else:
                 self.logger.debug('%s no content.' % results.request.method)
 

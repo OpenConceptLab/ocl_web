@@ -1,3 +1,5 @@
+import requests
+
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -7,7 +9,6 @@ from django.utils.translation import ugettext as _
 from django.core.paginator import Paginator
 
 from .forms import (OrganizationCreateForm, OrganizationEditForm)
-
 from libs.ocl import OCLapi, OCLSearch
 
 
@@ -43,27 +44,40 @@ class OrganizationDetailView(TemplateView):
             source_searcher = OCLSearch(OCLapi.SOURCE_TYPE).parse(None)
             collection_searcher = OCLSearch(OCLapi.COLLECTION_TYPE).parse(self.request.GET)
         else:
-            source_searcher = OCLSearch(OCLapi.SOURCE_TYPE).parse(None)
-            collection_searcher = OCLSearch(OCLapi.COLLECTION_TYPE).parse(None)
+            # need to pass down paging parameters
+            source_searcher = OCLSearch(OCLapi.SOURCE_TYPE).parse(self.request.GET)
+            collection_searcher = OCLSearch(OCLapi.COLLECTION_TYPE).parse(self.request.GET)
 
         api = OCLapi(self.request, debug=True)
 
         org = api.get('orgs', org_id).json()
 
         results = api.get('orgs', org_id, 'sources', params=source_searcher.search_params)
-        sources = results.json()
-        num_found = int(results.headers['num_found'])
-        pg = Paginator(range(num_found), source_searcher.num_per_page)
-        context['source_page'] = pg.page(source_searcher.current_page)
+        if results.status_code == requests.codes.not_found:
+            num_found = 0
+            sources = []
+            context['source_page'] = None
+        else:
+            num_found = int(results.headers['num_found'])
+            sources = results.json()
+            pg = Paginator(range(num_found), source_searcher.num_per_page)
+            context['source_page'] = pg.page(source_searcher.current_page)
+
         context['source_pagination_url'] = self.request.get_full_path()
         context['sources'] = sources
         context['source_filters'] = source_searcher.get_filters()
 
         results = api.get('orgs', org_id, 'collections', params=collection_searcher.search_params)
-        collections = results.json()
-        num_found = int(results.headers['num_found'])
-        pg = Paginator(range(num_found), collection_searcher.num_per_page)
-        context['collection_page'] = pg.page(collection_searcher.current_page)
+        if results.status_code == requests.codes.not_found:
+            collections = []
+            num_found = 0
+            context['collection_page'] = None
+        else:
+            collections = results.json()
+            num_found = int(results.headers['num_found'])
+            pg = Paginator(range(num_found), collection_searcher.num_per_page)
+            context['collection_page'] = pg.page(collection_searcher.current_page)
+
         context['collection_pagination_url'] = self.request.get_full_path()
         context['collections'] = collections
         context['collection_filters'] = collection_searcher.get_filters()

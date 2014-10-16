@@ -6,7 +6,6 @@ from django.utils.translation import ugettext as _
 from braces.views import JsonRequestResponseMixin
 
 from libs.ocl import OCLapi
-from . import LOCALE_LIST_JSON
 
 logger = logging.getLogger('oclweb')
 
@@ -51,6 +50,25 @@ class UserOrOrgMixin(object):
 
         self.source_id = self.kwargs.get('source')
         self.concept_id = self.kwargs.get('concept')
+
+    def args_string(self):
+        """
+        Debug method to return all args parsed as a printable string.
+        """
+        s = ''
+        if self.org_id:
+            s += 'org: %s  ' % self.org_id
+        if self.user_id:
+            s += 'user: %s  ' % self.user_id
+        if self.own_type:
+            s += 'own_type: %s  ' % self.own_type
+        if self.own_id:
+            s += 'own_id: %s  ' % self.own_id
+        if self.source_id:
+            s += 'source: %s  ' % self.source_id
+        if self.concept_id:
+            s += 'concept: %s  ' % self.concept_id
+        return s
 
 
 class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
@@ -174,15 +192,89 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         return self.render_json_response({'message': _('extra deleted')})
 
 
-class GetLocalesView(JsonRequestResponseMixin, View):
+def _get_concept_class_list():
     """
-        Utility to get a list of valid locales for front end.
+    This is a temporary function. Should get this data from the database.
+    """
+    return [
+        'Anatomy',
+        'Diagnosis',
+        'Drug',
+        'Finding',
+        'Symptom',
+        'Test',
+        'Procedure',
+        'Indicator',
+        'Frequency',
+        'Misc',
+        'ConvSet',
+        'Organism',
+        'Question',
+        'Program'
+    ]
+
+
+def _get_datatype_list():
+    return [
+        'Boolean',
+        'Coded',
+        'Complex',
+        'Date',
+        'Datetime',
+        'Document',
+        'None',
+        'Numeric',
+        'Rule',
+        'Structured Numeric',
+        'Text',
+        'Time'
+    ]
+
+
+def _get_source_type_list():
+    return [
+        'Dictionary',
+        'Interface Terminology',
+        'Indicator Registry',
+        'Reference',
+    ]
+
+
+def _get_locale_list():
+    return [
+        {'code': 'ar', 'name': 'Arabic'},
+        {'code': 'eu', 'name': 'Basque'},
+        {'code': 'ca', 'name': 'Catalan'},
+        {'code': 'zh-cn', 'name': 'Chinese Simplified'},
+        {'code': 'zh-hk', 'name': 'Chinese Traditional'},
+        {'code': 'en', 'name': 'English'},
+        {'code': 'fr', 'name': 'French'},
+        {'code': 'it', 'name': 'Italian'},
+        {'code': 'ko', 'name': 'Korean'},
+        {'code': 'sw', 'name': 'Swahili'},
+        {'code': 'es', 'name': 'Spanish'},
+    ]
+
+
+class GetOptionListView(JsonRequestResponseMixin, View):
+    """
+        Utility to get a list of valid options for attributes for
+        different resource types for the front end.
+
         TODO: Get this from the database
-        
-        :returns: json list of code,name dictionaries.
+
+        :returns: json list of either strings, or dictionaries in
+            case of locales.
     """
     def get(self, request, *args, **kwargs):
         """
             Return a list of descriptions as json.
         """
-        return self.render_json_response(LOCALE_LIST_JSON)
+        option_type = self.kwargs['type']
+        if option_type == 'concept_classes':
+            return self.render_json_response(_get_concept_class_list())
+        if option_type == 'datatypes':
+            return self.render_json_response(_get_datatype_list())
+        if option_type == 'locales':
+            return self.render_json_response(_get_locale_list())
+

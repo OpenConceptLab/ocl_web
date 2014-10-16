@@ -1,8 +1,8 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
-from .views import GetLocalesView
+from .views import GetOptionListView
 
 urlpatterns = patterns('',
-    url(r'^locales/$', GetLocalesView.as_view(), name='locale-list'),
+    url(r'^options/(?P<type>[a-z\-_]+)/$', GetOptionListView.as_view(), name='option-list'),
 )

@@ -6,7 +6,18 @@ var app = angular.module('ConceptApp', ['ui.bootstrap']);
 */
 app.config(function($httpProvider) {
     $httpProvider.defaults.headers.common['X-CSRFToken'] = $('input[name=csrfmiddlewaretoken]').val();
+    $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 });
+
+function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
+function make_url(location, path) {
+    var url = location.protocol() + '://' + location.host() + ':' + location.port() + path;
+    return path;
+}
+
 
 
 function locale_by_name(locale_choices, n) {
@@ -24,6 +35,7 @@ function locale_by_code(locale_choices, c) {
         }
     }
 };
+
 
 /* Make a controller that accesses the backend using a_url_part as the item type
 
@@ -106,7 +118,7 @@ function makeController(a_url_part, a_field_names, a_item_key) {
 
         function loadLocales() {
 
-            var url = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/core/locales/';
+            var url = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/core/options/locales/';
             $http.get(url)
                 .success(function (data) {
                 $scope.locale_choices = data;
@@ -268,5 +280,123 @@ app.controller('SourceSearchController', function($scope, $http, $location) {
 //        loadItems();
 
 }// SourceSearchController
-)
+);
 
+
+app.controller('ConceptController', function($scope, $http, $location) {
+
+        $scope.alerts = [];
+        $scope.item = null;
+
+        function addItem(item) {
+                // Create new concept
+
+                var data = angular.copy(item);
+
+                // translate text to code for locale
+                data['locale'] = locale_by_name($scope.locale_choices, item['locale']).code;
+                console.log(data);
+
+                var config = null;
+
+                var url = $location.absUrl();
+                console.log('posting:' + url);
+                $http.post(url, data, null)
+                    .success(function(data, status, headers, config) {
+                        $scope.alerts.push({
+                            type: 'success',
+                            msg: data.message
+                        });
+                        //                $scope.item = null;
+                        var u = $location.absUrl().replace(/create\//, '');
+                        console.log('replace:' + u);
+                        //                window.location = u;
+                    })
+                    .error(function(data, status, headers, config) {
+                        console.log('ERROR:' + data);
+                        $scope.alerts.push({
+                            type: 'danger',
+                            msg: data.message
+                        });
+                    });
+
+
+            } // addItem()
+
+        $scope.addItem = addItem;
+
+        function startEdit() {
+                var url = $location.absUrl();
+                $http.get(url)
+                    .success(function(data, status, headers, config) {
+                        console.log(data);
+                        $scope.item = data;
+                        })
+                    .error(function(data, status, headers, config) {
+                        console.log('ERROR:' + data.message);
+                        $scope.alerts.push({
+                            type: 'danger',
+                            msg: data.message
+                        });
+                    });
+        };
+
+
+        function updateItem(item) {
+
+                var data = angular.copy(item);
+                console.log('update item' + item);
+                var config = null;
+
+                var url = $location.absUrl();
+                $http.post(url, data, null)
+                    .success(function(data, status, headers, config) {
+                        console.log(data);
+                        $scope.alerts.push({
+                            type: 'success',
+                            msg: data.message
+                        });
+                        loadItems();
+                    })
+                    .error(function(data, status, headers, config) {
+                        console.log('ERROR:' + data.message);
+                        $scope.alerts.push({
+                            type: 'danger',
+                            msg: data.message
+                        });
+                    });
+
+                $scope.editedItem = null;
+            } // updateItem
+
+        $scope.updateItem = updateItem;
+
+        function loadItems() {
+
+                var url = make_url($location, '/core/options/concept_classes/');
+                $http.get(url)
+                    .success(function(data) {
+                        $scope.concept_classes = data;
+                    });
+
+                url = make_url($location, '/core/options/locales/');
+                $http.get(url)
+                    .success(function(data) {
+                        $scope.locale_choices = data;
+                    });
+
+                url = make_url($location, '/core/options/datatypes/');
+                $http.get(url)
+                    .success(function(data) {
+                        $scope.datatypes = data;
+                    });
+
+            } // loadItems
+
+        loadItems();
+        if (endsWith($location.absUrl(), 'edit/')) {
+            startEdit();
+        };
+
+    } // ConceptController
+);

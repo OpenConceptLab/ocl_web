@@ -31,9 +31,7 @@
 
 <div class="row">
 <div class="col-md-10">
-{% verbatim %}
-<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-{% endverbatim %}
+{% include 'includes/ng_alerts_incl.html' %}
 </div>
 </div>
 

@@ -5,7 +5,8 @@
 """
 import logging
 
-logger = logging.getLogger('oclapi')
+
+logger = logging.getLogger('oclweb')
 
 
 class Filter(object):
@@ -49,41 +50,17 @@ class FilterList(object):
 
 def setup_filters():
 
+    from apps.core.views import _get_concept_class_list
+    from apps.core.views import _get_datatype_list
+    from apps.core.views import _get_source_type_list
+
     # concept filters
     filters = FilterList('concepts')
     f = filters.add_filter('concept_class', 'Concept Classes')
-    f.options = [
-                'Anatomy',
-                'Diagnosis',
-                'Drug',
-                'Finding',
-                'Symptom',
-                'Test',
-                'Procedure',
-                'Indicator',
-                'Frequency',
-                'Misc',
-                'ConvSet',
-                'Organism',
-                'Question',
-                'Program'
-    ]
+    f.options = _get_concept_class_list()
 
     f = filters.add_filter('datatype', 'Datatypes')
-    f.options = [
-                'Boolean',
-                'Coded',
-                'Complex',
-                'Date',
-                'Datetime',
-                'Document',
-                'None',
-                'Numeric',
-                'Rule',
-                'Structured Numeric',
-                'Text',
-                'Time'
-    ]
+    f.options = _get_datatype_list()
 
     f = filters.add_filter('locale', 'Locale')
     f.options = ['en', 'sw', 'fr', 'sp', 'ru', 'zh-cn', 'zh-tw']
@@ -92,12 +69,7 @@ def setup_filters():
     # source filter
     filters = FilterList('sources')
     f = filters.add_filter('source_type', 'Source Types')
-    f.options = [
-                'Dictionary',
-                'Interface Terminology',
-                'Indicator Registry',
-                'Reference',
-    ]
+    f.options = _get_source_type_list
 
     f = filters.add_filter('language', 'Locale')
     f.options = ['en', 'sw', 'fr', 'sp', 'ru', 'zh-cn', 'zh-tw']
@@ -175,12 +147,12 @@ class OCLSearch(object):
             params = request_get.copy()
 
         # search what object type?
-        if 'type' in params and params['type'] in self.search_type_names:
-            self.search_type = params['type']
-            del params['type']
-        else:
-            self.search_type = self.DEFAULT_SEARCH_TYPE
-
+        if 'type' in params:
+            if params['type'] in self.search_type_names:
+                self.search_type = params['type']
+                del params['type']
+            else:
+                self.search_type = self.DEFAULT_SEARCH_TYPE
         # paging
         if 'page' in params:
             try:

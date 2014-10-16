@@ -8,6 +8,8 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
+from django.template.response import TemplateResponse
+
 from braces.views import (CsrfExemptMixin, JsonRequestResponseMixin)
 
 from .forms import (ConceptCreateForm, ConceptEditForm)
@@ -17,8 +19,118 @@ from apps.core.views import UserOrOrgMixin
 logger = logging.getLogger('oclweb')
 
 
-class ConceptCreateView(UserOrOrgMixin, FormView):
+class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin, TemplateView):
+    """
+    A mix HTTP and ajax view for creating and editing concepts.
+    on Get returns full HTML display page.
+    create is handled via ajax post via angular.
+    """
+    def get(self, request, *args, **kwargs):
 
+        self.get_args()
+        data = {}
+        print self.request.is_ajax()
+        api = OCLapi(self.request, debug=True)
+        source = api.get(self.own_type, self.own_id, 'sources', self.source_id).json()
+        data['source'] = source
+
+        if self.concept_id is not None:
+            # edit
+            concept = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', self.concept_id).json()
+            data['concept'] = concept
+
+            if request.is_ajax():
+                return self.render_json_response(concept)
+
+        if self.concept_id is None:
+            return TemplateResponse(request, 'concepts/concept_create.html', data)
+        else:
+            return TemplateResponse(request, 'concepts/concept_edit.html', data)
+
+    def get_success_url(self):
+        if self.from_org:
+            return reverse("source-detail",
+                           kwargs={"org": self.org_id,
+                                   'source': self.kwargs.get('source')})
+        else:
+            return reverse("source-detail",
+                           kwargs={"user": self.user_id,
+                                   'source': self.kwargs.get('source')})
+
+    def clean_concept_id(self, request, concept_id):
+        """ concept ID must be unique """
+
+        api = OCLapi(request, debug=True)
+        result = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', concept_id)
+        if result.status_code == 200:
+            return _('This Concept ID is already used.')
+        else:
+            return None
+
+    def add(self):
+        print self.request_json
+        data = {}
+        data['id'] = self.request_json.get('concept_id')
+        msg = self.clean_concept_id(self.request, data['id'])
+        if msg is not None:
+            return self.render_bad_request_response({'message': msg})
+
+        data['concept_class'] = self.request_json.get('concept_class')
+        data['datatype'] = self.request_json.get('datatype')
+
+        name = {}
+        name['name'] = self.request_json.get('name')
+        name['locale'] = self.request_json.get('locale')
+        name['preferred'] = self.request_json.get('preferred_locale')
+        names = [name]
+
+        # TEMP for faster testing
+        # return self.render_json_response({'message': _('Concept created')})
+
+        api = OCLapi(self.request, debug=True)
+        result = api.create_concept(self.own_type, self.own_id, self.source_id, data, names=names)
+        if result.status_code != 201:
+            logger.warning('Concept create POST failed %s' % result.content)
+            return self.render_bad_request_response({'message': result.content})
+        else:
+            return self.render_json_response({'message': _('Concept created')})
+
+    def edit(self):
+
+        data = {}
+        data['concept_class'] = self.request_json.get('concept_class')
+        data['datatype'] = self.request_json.get('datatype')
+        data['update_comment'] = self.request_json.get('update_comment')
+
+        # TEMP for faster testing
+        # return self.render_json_response({'message': _('Concept updated')})
+
+        api = OCLapi(self.request, debug=True)
+        result = api.update_concept(self.own_type, self.own_id, self.source_id, self.concept_id, data)
+        if result.status_code != requests.codes.ok:
+            emsg = result.json().get('detail', 'Error')
+            logger.warning('Concept update POST failed %s' % emsg)
+            return self.render_bad_request_response({'message': emsg})
+        else:
+            return self.render_json_response({'message': _('Concept updated')})
+
+    def post(self, *args, **kwargs):
+        """
+            Handle actual creation or edit.
+        """
+        self.get_args()
+        print self.args_string()
+
+        if self.concept_id is not None:
+            return self.edit()
+        else:
+            return self.add()
+
+
+class ConceptCreateView(UserOrOrgMixin, FormView):
+    """
+        This is not used anymore. See the Json version.
+    """
     form_class = ConceptCreateForm
     template_name = "concepts/concept_create.html"
 
@@ -37,10 +149,14 @@ class ConceptCreateView(UserOrOrgMixin, FormView):
         """
         context = super(ConceptCreateView, self).get_context_data(*args, **kwargs)
 
+        print 'get context...'
+
         self.get_args()
         source_id = self.kwargs.get('source')
 
         api = OCLapi(self.request, debug=True)
+        print 'org id etc', self.org_id, self.from_org, source_id
+
         if self.from_org:
             source = api.get('orgs', self.org_id, 'sources', source_id).json()
         else:
@@ -103,7 +219,9 @@ class ConceptCreateView(UserOrOrgMixin, FormView):
 
 
 class ConceptEditView(UserOrOrgMixin, FormView):
-
+    """
+        This is not used anymore. See the Json version.
+    """
     template_name = "concepts/concept_edit.html"
 
     def get_form_class(self):
