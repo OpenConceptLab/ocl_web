@@ -6,6 +6,26 @@ Client interface for Open Concept Lab terminology services API.
 
 LICENSE: BSD
 
+# Developer Setup
+
+The OCL web server requires a few environment variables to operate. The easiest
+way to do this during development is to put the `export` calls in your `virtualenv`
+__postactivate__ script, found in the `bin` directory under the specific
+ocl_web virtualenv directory.
+
+```
+export OCL_API_HOST='<your_api_server_ip>''
+export OCL_API_TOKEN='<token for accessing API as admin>''
+export OCL_ANON_API_TOKEN='<token for anon access>'
+
+# for deployment
+export OCL_WEB_HOST='<web_host_ip>'
+export FAB_USER='deploy'
+export FAB_PASSWORD=''
+
+export DATABASE_URL=sqlite:////$HOME/webapps/ocl_web/src/ocl.db
+```
+
 Settings
 ------------
 
