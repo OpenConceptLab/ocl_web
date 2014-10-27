@@ -48,7 +48,6 @@ class Common(Configuration):
         'south',  #  Database migration helpers:
         'crispy_forms',  #  Form layouts
         'avatar',  #  For user avatars
-        'floppyforms',  #  Form layouts and more widgets
         'bootstrap3',
     )
 
@@ -315,8 +314,10 @@ class Common(Configuration):
 
 
     ########## Your common stuff: Below this line define 3rd party libary settings
-    API_HOST = 'http://65.99.230.144'
-    API_TOKEN = 'Token ' + '%s' % os.environ.get('OCL_API_TOKEN')
+    # API_HOST = 'http://65.99.230.144'
+    # API_TOKEN = 'Token ' + '%s' % os.environ.get('OCL_API_TOKEN')
+    API_HOST = values.Value(environ_name='OCL_API_HOST', environ_prefix=None)
+    API_TOKEN = 'Token ' + '%s' % values.Value(environ_name='OCL_API_TOKEN', environ_prefix=None)
 
 
 class Local(Common):
@@ -381,45 +382,45 @@ class Production(Common):
 
     ########## STORAGE CONFIGURATION
     # See: http://django-storages.readthedocs.org/en/latest/index.html
-    INSTALLED_APPS += (
-        'storages',
-    )
+#    INSTALLED_APPS += (
+#        'storages',
+#    )
 
     # See: http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html#settings
-    STATICFILES_STORAGE = DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+#    STATICFILES_STORAGE = DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
     # See: http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html#settings
-    AWS_ACCESS_KEY_ID = values.SecretValue()
-    AWS_SECRET_ACCESS_KEY = values.SecretValue()
-    AWS_STORAGE_BUCKET_NAME = values.SecretValue()
-    AWS_AUTO_CREATE_BUCKET = True
-    AWS_QUERYSTRING_AUTH = False
+#    AWS_ACCESS_KEY_ID = values.SecretValue()
+#    AWS_SECRET_ACCESS_KEY = values.SecretValue()
+#    AWS_STORAGE_BUCKET_NAME = values.SecretValue()
+#    AWS_AUTO_CREATE_BUCKET = True
+#    AWS_QUERYSTRING_AUTH = False
 
     # see: https://github.com/antonagestam/collectfast
-    AWS_PRELOAD_METADATA = True
-    INSTALLED_APPS += ("collectfast", )
+#    AWS_PRELOAD_METADATA = True
+#    INSTALLED_APPS += ("collectfast", )
 
     # AWS cache settings, don't change unless you know what you're doing:
-    AWS_EXPIREY = 60 * 60 * 24 * 7
-    AWS_HEADERS = {
-        'Cache-Control': 'max-age=%d, s-maxage=%d, must-revalidate' % (AWS_EXPIREY,
-            AWS_EXPIREY)
-    }
+#    AWS_EXPIREY = 60 * 60 * 24 * 7
+#    AWS_HEADERS = {
+#        'Cache-Control': 'max-age=%d, s-maxage=%d, must-revalidate' % (AWS_EXPIREY,
+#            AWS_EXPIREY)
+#    }
 
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-    STATIC_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
+#    STATIC_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
     ########## END STORAGE CONFIGURATION
 
     ########## EMAIL
     DEFAULT_FROM_EMAIL = values.Value(
             'ocl_web <ocl_web-noreply@openconceptlab.org>')
-    EMAIL_HOST = values.Value('smtp.sendgrid.com')
-    EMAIL_HOST_PASSWORD = values.SecretValue(environ_prefix="", environ_name="SENDGRID_PASSWORD")
-    EMAIL_HOST_USER = values.SecretValue(environ_prefix="", environ_name="SENDGRID_USERNAME")
-    EMAIL_PORT = values.IntegerValue(587, environ_prefix="", environ_name="EMAIL_PORT")
-    EMAIL_SUBJECT_PREFIX = values.Value('[ocl_web] ', environ_name="EMAIL_SUBJECT_PREFIX")
-    EMAIL_USE_TLS = True
-    SERVER_EMAIL = EMAIL_HOST_USER
+#    EMAIL_HOST = values.Value('smtp.sendgrid.com')
+#    EMAIL_HOST_PASSWORD = values.SecretValue(environ_prefix="", environ_name="SENDGRID_PASSWORD")
+#    EMAIL_HOST_USER = values.SecretValue(environ_prefix="", environ_name="SENDGRID_USERNAME")
+#    EMAIL_PORT = values.IntegerValue(587, environ_prefix="", environ_name="EMAIL_PORT")
+#    EMAIL_SUBJECT_PREFIX = values.Value('[ocl_web] ', environ_name="EMAIL_SUBJECT_PREFIX")
+#    EMAIL_USE_TLS = True
+#    SERVER_EMAIL = EMAIL_HOST_USER
     ########## END EMAIL
 
     ########## TEMPLATE CONFIGURATION
@@ -436,7 +437,69 @@ class Production(Common):
     ########## CACHING
     # Only do this here because thanks to django-pylibmc-sasl and pylibmc
     # memcacheify is painful to install on windows.
-    CACHES = values.CacheURLValue(default="memcached://127.0.0.1:11211")
+#    CACHES = values.CacheURLValue(default="memcached://127.0.0.1:11211")
     ########## END CACHING
 
     ########## Your production stuff: Below this line define 3rd party libary settings
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'filters': {
+            'require_debug_false': {
+                '()': 'django.utils.log.RequireDebugFalse'
+            }
+        },
+
+
+        'formatters': {
+            'normal': {
+                'format': "[%(asctime)s] %(levelname)-8s: %(message)s",
+                'datefmt': "%Y/%m/%d %H:%M:%S"
+            },
+        },
+
+        'handlers': {
+            'mail_admins': {
+                'level': 'ERROR',
+                'filters': ['require_debug_false'],
+                'class': 'django.utils.log.AdminEmailHandler'
+            },
+        'null': {
+            'class': 'django.utils.log.NullHandler',
+            },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'normal',
+            },
+        'debug_file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': '/var/log/ocl/web_debug.log',
+            'formatter': 'normal',
+            },
+        'logfile': {
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'when': 'midnight',
+            'filename': '/var/log/ocl/web_app.log',
+            'formatter': 'normal',
+            },
+        },
+
+        'loggers': {
+            'django.request': {
+                'handlers': ['mail_admins'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+            'oclapi': {
+                'handlers': ['debug_file'],
+                'level': 'DEBUG',
+            },
+            'oclweb': {
+                'handlers': ['console', 'logfile'],
+                'level': 'DEBUG',
+            },
+        }
+    }
+    ########## END LOGGING CONFIGURATION
