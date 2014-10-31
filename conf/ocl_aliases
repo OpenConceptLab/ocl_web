@@ -1,0 +1,6 @@
+alias activate_web='source /opt/virtualenvs/ocl_web/bin/activate'
+alias cd_web='cd /opt/deploy/ocl_web'
+alias activate_api='source /opt/virtualenvs/ocl/bin/activate'
+alias cd_api='cd /opt/deploy/django'
+alias em='emacs'
+alias l='ls -alF'
