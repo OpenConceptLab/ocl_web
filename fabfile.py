@@ -12,12 +12,15 @@
     3. setup_environment
     4. build_web_app
     5. setup_supervisor
+    6. setup_nginx
 
     These are for each new release:
     4. release_web_app
 """
 from __future__ import with_statement
 import os
+import random
+import string
 from os.path import join, abspath, dirname
 
 from fabric.api import local, run, cd, task, put
@@ -27,13 +30,12 @@ from fabric.operations import sudo
 from fabric.state import env
 from fabric.utils import fastprint
 from fabric.contrib import files
+from fabric.colors import blue, green
 
 
-BACKUP_DIR = '/var/backups/ocl_web'
+BACKUP_DIR = '/var/backups/ocl'
 CHECKOUT_DIR = '/var/tmp'
 
-# Application root for immutable files
-DEPLOY_DIR = '/opt/deploy/ocl_web'
 
 #env.user = os.environ['FAB_USER']
 #env.password = os.environ['FAB_PASSWORD']
@@ -48,6 +50,11 @@ def dev():
     """
     env.hosts = ['dev.openconceptlab.org', ]
     env.user = 'deploy'
+    env.web_domain = 'dev.openconceptlab.com'
+    env.api_domain = 'api.dev.openconceptlab.com'
+    env.OCL_API_TOKEN = os.environ.get('OCL_API_TOKEN')
+    env.OCL_ANON_API_TOKEN = os.environ.get('OCL_ANON_API_TOKEN')
+    env.random_string = _random_string(32)
 
 
 @task
@@ -78,15 +85,6 @@ def test_local():
     local("./manage.py test mappings")
 
 
-def test_remote2():
-    if not files.exists(DEPLOY_DIR):
-        print 'deploy directory %s does not exist, creating it...' % DEPLOY_DIR
-        run('mkdir -pv %s' % DEPLOY_DIR)
-        with cd(DEPLOY_DIR):
-            print 'Initial cloning of source...'
-            run('git clone https://github.com/OpenConceptLab/ocl_web.git .')
-
-
 def _read_key_file(key_file):
     """ Read user's public key """
     key_file = os.path.expanduser(key_file)
@@ -104,6 +102,13 @@ def _conf_path(file_name):
     p = dirname(abspath(__file__))
     p = join(p, 'conf', file_name)
     return p
+
+
+def _random_string(n):
+    """ Generate a random string for settings.
+    """
+    return ''.join(random.sample(string.ascii_uppercase +
+                                 string.ascii_lowercase + string.digits, n))
 
 
 @task
@@ -174,8 +179,18 @@ def common_install():
 @task
 def setup_supervisor():
     """ Setup supervisor daemon for controlling python processes """
-    put(_conf_path('ocl_supervisor.conf'), '/etc/supervisor/conf.d', use_sudo=True)
+    files.upload_template(_conf_path('ocl_supervisor.conf'),
+                          '/etc/supervisor/conf.d', env, use_sudo=True)
     put(_conf_path('supervisord.conf'), '/etc/supervisor', use_sudo=True)
+
+
+@task
+def setup_nginx():
+    """ Setup nginx """
+    sudo('unlink /etc/nginx/sites-enabled/default')
+    files.upload_template(_conf_path('ocl_nginx.conf'),
+                          '/etc/nginx/sites-available/ocl', env, use_sudo=True)
+    sudo('ln -s /etc/nginx/sites-available/ocl /etc/nginx/sites-enabled/ocl')
 
 
 @task
@@ -188,11 +203,37 @@ def setup_environment():
             sudo('chown deploy:deploy %s' % d)
     if not files.exists('/var/log/ocl'):
         sudo('mkdir /var/log/ocl')
+        sudo('chown deploy:deploy /var/log/ocl')
+
+    if not files.exists(BACKUP_DIR):
+        sudo('mkdir -p %s' % BACKUP_DIR)
+        sudo('chown deploy:deploy %s' % BACKUP_DIR)
 
     put(_conf_path('ocl_aliases'), '~/.bash_aliases')
 
 
-def build_app(app_name, repo_name=None):
+@task
+def setup_postgres():
+    """ Setup postgres database.
+        Give deploy user createdb access to database so that she can
+        create test db as well. Also make control easier.
+    """
+
+    sudo('createuser --createdb deploy', user='postgres')
+    sudo("psql --command=\"ALTER USER deploy with PASSWORD 'deploy';\" ", user='postgres')
+    run('createdb -O deploy ocl_web')
+
+
+@task
+def setup_mongo():
+    """ Setup mongo database """
+#    sudo('sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10')
+#    put(_conf_path('mongo.apt'), '/etc/apt/sources.list.d/mongodb.list', use_sudo=True)
+    sudo('apt-get update')
+    sudo('apt-get install -y mongodb-org')
+
+
+def build_app(app_name, repo_name=None, no_git=False):
     """ Build a django App """
 
     with cd('/opt/virtualenvs'):
@@ -201,6 +242,9 @@ def build_app(app_name, repo_name=None):
     with cd('/opt/deploy/'):
         fastprint('creating project root for %s' % app_name)
         run('mkdir %s' % app_name)
+
+    if no_git:
+        return  # just for API because it does not use git directly
     with cd('/opt/deploy/%s' % app_name):
         if repo_name is None:
             repo_name = app_name + '.git'
@@ -210,6 +254,78 @@ def build_app(app_name, repo_name=None):
 @task
 def build_web_app():
     build_app('ocl_web')
+
+    with cd('/opt/deploy/ocl_web'):
+
+        with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
+            with prefix('export DJANGO_CONFIGURATION="Production"'):
+                with prefix('export DJANGO_SECRET_KEY="blah"'):
+                    print(blue('creating database...'))
+                    run('ocl_web/manage.py syncdb --noinput --migrate')
+
+
+@task
+def build_api_app():
+    build_app('ocl_api', repo_name='oclapi', no_git=True)
+    with cd('/opt/deploy/'):
+        print(blue('creating project root for %s' % 'solr'))
+        run('mkdir %s' % 'solr')
+    return
+    with cd('/opt/deploy/ocl_api'):
+
+        with prefix('source /opt/virtualenvs/ocl_api/bin/activate'):
+            with prefix('export DJANGO_CONFIGURATION="Production"'):
+                with prefix('export DJANGO_SECRET_KEY="blah"'):
+                    print(blue('creating database...'))
+                    run('xxxx/manage.py syncdb --noinput --migrate')
+
+
+@task
+def api_backup():
+    if not files.exists(BACKUP_DIR):
+        sudo('mkdir -p %s' % BACKUP_DIR)
+        sudo('chown deploy:deploy %s' % BACKUP_DIR)
+
+    with cd('/opt/deploy/ocl_api'):
+        run("tar -czvf ocl_api_`date +%Y%m%d`.tgz ocl_api solr/collection1/conf")
+        run("mv ocl_api_*.tgz %s" % BACKUP_DIR)
+#        run("rm -rf django solr/collection1/conf")
+
+
+def api_checkout():
+    with cd('/var/tmp'):
+        run("rm -rf oclapi")
+        run("git clone https://github.com/OpenConceptLab/oclapi.git")
+
+
+@task
+def api_provision():
+    with cd('/var/tmp'):
+        print(blue('pulling new code...'))
+        run("rm -rf oclapi")
+        run("git clone https://github.com/OpenConceptLab/oclapi.git")
+
+        print(blue('deleting old code...'))
+        run('rm -rf /opt/deploy/ocl_api/ocl')
+        run('rm -rf /opt/deploy/solor/collection1')
+
+        print(blue('copying new code...'))
+        run("cp -r oclapi/django-nonrel/ocl /opt/deploy/ocl_api")
+        run("cp -r oclapi/solr/collection1/conf /opt/deploy/solr/collection1")
+        return
+        sudo("chown -R solr:wheel /opt/deploy/solr")
+    with cd("/opt/deploy/ocl_api/ocl"):
+        run("cp settings.py.deploy settings.py")
+        with prefix("source /opt/virtualenvs/ocl_api/bin/activate"):
+            run("pip install -r requirements.txt")
+            run("./manage.py test users")
+            run("./manage.py test orgs")
+            run("./manage.py test sources")
+            run("./manage.py test collection")
+            run("./manage.py test concepts")
+            run("./manage.py build_solr_schema > /opt/deploy/solr/collection1/conf/schema.xml")
+            sudo('/etc/init.d/jetty restart')
+            run("./manage.py rebuild_index")
 
 
 def release(app_name):
@@ -226,12 +342,17 @@ def release_web_app():
     release('ocl_web')
 
 
+@task
 def restart():
     """ Restart OCL WEB server """
     run('supervisorctl restart ocl_web')
 
 
+@task
+def status():
+    run('supervisorctl status')
+
+
 def deploy():
-#    backup()
     release()
     restart()
