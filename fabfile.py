@@ -27,6 +27,7 @@ from __future__ import with_statement
 import os
 import random
 import string
+import re
 from os.path import join, abspath, dirname
 
 from fabric.api import local, run, cd, task, put
@@ -308,19 +309,19 @@ def get_api_tokens():
         with prefix("source /opt/virtualenvs/ocl_api/bin/activate"):
             print(yellow('Getting AUTH Tokens'))
             data = run('./manage.py create_tokens')
-            # get back two lines, space separated:
-            #    admin NNN
-            #    anonymous NNNN
+            # get back two lines in export form:
+            #    export OCL_API_TOKEN='NNN'
+            #    export OCL_ANON_API_TOKEN='NNNN'
             lines = data.split('\n')
-            k, v = lines[0].split()
-            if k != 'admin':
+            r = re.search("export OCL_API_TOKEN='(\w+)'", lines[0])
+            if r is None:
                 return (None, None)
-            api_token = v
+            api_token = r.group(1)
+            r = re.search("export OCL_ANON_API_TOKEN='(\w+)'", lines[1])
+            if r is None:
+                return (None, None)
+            anon_token = r.group(1)
 
-            k, v = lines[1].split()
-            if k != 'anonymous':
-                return (None, None)
-            anon_token = v
             print 'API Token: %s,  Anon Token: %s' % (api_token, anon_token)
             return (api_token, anon_token)
 
@@ -355,7 +356,7 @@ def build_web_app():
         with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
             with prefix('export DJANGO_CONFIGURATION="Production"'):
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
-                    print(yellow('creating database...'))
+                    print(yellow('creating WEB database...'))
                     run('ocl_web/manage.py syncdb --noinput --migrate')
 
 
@@ -393,18 +394,14 @@ def checkout_api_app(do_pip=False):
             run("./manage.py build_solr_schema > /opt/deploy/solr/collection1/conf/schema.xml")
 
 
-@task
-def build_api_app():
-    build_app('ocl_api', repo_name='oclapi', no_git=True)
-    checkout_api_app(do_pip=True)
-
-    # setup DB
+def create_api_database():
+    """ Helper to create the API mongo database """
     with cd('/opt/deploy/ocl_api/ocl'):
         with prefix('source /opt/virtualenvs/ocl_api/bin/activate'):
             with prefix('export DJANGO_CONFIGURATION="Production"'):
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
 
-                    print(yellow('creating database...'))
+                    print(yellow('creating API database...'))
                     run('./manage.py syncdb --noinput')
 
     # now start the server so that we can create base users
@@ -424,6 +421,13 @@ def build_api_app():
     setup_supervisor()
     run('supervisorctl reread')
     run('supervisorctl update')
+
+
+@task
+def build_api_app():
+    build_app('ocl_api', repo_name='oclapi', no_git=True)
+    checkout_api_app(do_pip=True)
+    create_api_database()
 
 
 @task
@@ -468,6 +472,37 @@ def release_web_app(do_pip=False):
 
 
 @task
+def clear_databases():
+    """ Clear out all databases. This is very destructive, only useful for testing! """
+
+    require('hosts', provided_by=['dev', 'staging', 'production'])
+    ans = prompt('This will completely wipe out the database. Are you sure (YES/no)?')
+    if ans != 'YES':
+        print(yellow('Glad you were just kidding.'))
+        return
+
+    ans = prompt(yellow('%s' % env.hosts[0]) + ' database will be wiped. Are you sure (YES/no)?')
+    if ans != 'YES':
+        print("Didn't think so.")
+        return
+
+    run('supervisorctl stop all')
+    print(yellow('Recreate WEB database'))
+    run('dropdb  ocl_web')
+    run('createdb -O deploy ocl_web')
+    # setup DB
+    with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
+        with prefix('export DJANGO_CONFIGURATION="Production"'):
+            with prefix('export DJANGO_SECRET_KEY="blah"'):
+                print(yellow('creating WEB database...'))
+                run('/opt/deploy/ocl_web/ocl_web/manage.py syncdb --noinput --migrate')
+
+    print(yellow('Recreate API database'))
+    run('echo -e "use ocl \n db.dropDatabase();" | mongo')
+    create_api_database()
+
+
+@task
 def full_restart():
     """ Restart everything """
     sudo('/etc/init.d/apache2 stop')
@@ -484,14 +519,20 @@ def build_new_server():
     ans = prompt('This will completely wipe out the server. Are you sure (YES/no)?')
     if ans != 'YES':
         print(yellow('Glad you were just kidding.'))
+        return
+
     ans = prompt(yellow('%s' % env.hosts[0]) + ' will be wiped and rebuilt. Are you sure (YES/no)?')
     if ans != 'YES':
         print("Didn't think so.")
-#    install_root_key()
-#    add_deploy_user()
-#    common_install()
-#    setup_environment()
-#    setup_solr()
+        return
+
+    env.keepalive = 30
+
+    install_root_key()
+    add_deploy_user()
+    common_install()
+    setup_environment()
+    setup_solr()
     setup_mongo()
     setup_postgres()
     setup_supervisor()
