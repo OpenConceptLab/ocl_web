@@ -25,6 +25,7 @@
 """
 from __future__ import with_statement
 import os
+from time import sleep
 import random
 import string
 import re
@@ -77,6 +78,11 @@ def staging():
     """
     env.hosts = ['staging.openconceptlab.org', ]
     env.user = 'deploy'
+    env.web_domain = 'staging.openconceptlab.com'
+    env.api_domain = 'api.staging.openconceptlab.com'
+    env.OCL_API_TOKEN = os.environ.get('OCL_API_TOKEN')
+    env.OCL_ANON_API_TOKEN = os.environ.get('OCL_ANON_API_TOKEN')
+    env.random_string = _random_string(32)
 
 
 @task
@@ -450,10 +456,8 @@ def release_api_app(do_pip=False):
 
     with cd("/opt/deploy/ocl_api/ocl"):
         run("cp settings.py.deploy settings.py")
-        with prefix("source /opt/virtualenvs/ocl_api/bin/activate"):
 
-            sudo('/etc/init.d/jetty restart')
-            run("./manage.py rebuild_index")
+    rebuild_index()
 
 
 def release(app_name, do_pip):
@@ -461,14 +465,16 @@ def release(app_name, do_pip):
     with cd('/opt/deploy/%s' % app_name):
         fastprint('releasing latest source files')
         run('git pull')
-        with prefix('source /opt/virtualenvs/%s/bin/activate' % app_name):
-            run("pip install -r requirements.txt")
+        if do_pip:
+            with prefix('source /opt/virtualenvs/%s/bin/activate' % app_name):
+                run("pip install -r requirements.txt")
 
 
 @task
 def release_web_app(do_pip=False):
     """ Release latest version of WEB application """
     release('ocl_web', do_pip)
+    run('supervisorctl restart ocl_web')
 
 
 @task
@@ -500,6 +506,16 @@ def clear_databases():
     print(yellow('Recreate API database'))
     run('echo -e "use ocl \n db.dropDatabase();" | mongo')
     create_api_database()
+
+
+@task
+def rebuild_index():
+    """ Rebuild search index """
+    with prefix("source /opt/virtualenvs/ocl_api/bin/activate"):
+
+        sudo('/etc/init.d/jetty restart')
+        sleep(5)
+        run("/opt/deploy/ocl_api/ocl/manage.py rebuild_index")
 
 
 @task

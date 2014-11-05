@@ -42,7 +42,12 @@ class Command(BaseCommand):
                     action='store',
                     dest='username',
                     default=None,
-                    help='username for an existing user'),
+                    help='username for an existing user, e.g. demo1'),
+        make_option('--org_id',
+                    action='store',
+                    dest='org_id',
+                    default=None,
+                    help='Organization ID, e.g. HLTH01'),
         make_option('--create',
                     action='store_true',
                     dest='create_mode',
@@ -56,6 +61,11 @@ class Command(BaseCommand):
         self.username = None
         self.password = None
         self.web_host = os.environ['OCL_WEB_HOST']
+        self.ORG_ID = None
+        self.locale_list = [d['code'] for d in _get_locale_list()]
+        self.source_type_list = _get_source_type_list()
+        self.concept_class_list = _get_concept_class_list()
+        self.datatype_list = _get_datatype_list()
 
     def load_user(self, username):
         """
@@ -109,53 +119,70 @@ class Command(BaseCommand):
         self.ocl.save_auth_token(self.request, result.json())
         self.ocl = OCLapi(self.request, debug=True)
 
+    def make_source_name(self, n):
+        """
+            Create source name.
+
+            :param n: is a number.
+            :returns: a source name based on the ORG_ID and n.
+        """
+        return '%sS%d' % (self.ORG_ID, n)
+
+    def make_concept_id(self, s, c):
+        """
+            Create concept_id
+
+            :param s: is a number, for source
+            :param c: is a number, for concept
+            :returns: a source name based on the ORG_ID,s and c.
+        """
+        return '%s-S%d-C%d' % (self.ORG_ID, s, c)
+
     def create_orgs(self):
         """ Create one test org for our user """
-        self.ORG_ID = 'Health01'
         data = {
             'id': self.ORG_ID,
-            'name': 'Health Org 01',
-            'website': 'http://www.health01.org',
+            'name': 'Health Org %s' % self.ORG_ID,
+            'website': 'http://www.health%s.org' % self.ORG_ID,
             'location': 'Boston, MA, USA'
         }
+        print 'creating org %s' % self.ORG_ID
         result = self.ocl.create_org(data)
         print result
 
     def create_sources(self):
-        self.ORG_ID = 'Health01'
-        source_type_list = _get_source_type_list()
-        for n in range(1, 21):
-            n = 'HS01%d' % n
+
+        for n in range(1, 11):
+            n = self.make_source_name(n)
             data = {
                 'short_code': n,
                 'name': n,
                 'id': n,
-                'source_type': random.choice(source_type_list)
+                'source_type': random.choice(self.source_type_list)
             }
+            print 'creating source %s' % n
             result = self.ocl.create_source_by_org(self.ORG_ID, data)
             print result
 
     def create_concepts(self):
 
-        concept_class_list = _get_concept_class_list()
-        datatype_list = _get_datatype_list()
-        locale_list = [c for c, n in _get_locale_list()]
-
-        self.ORG_ID = 'Health01'
-        for s in range(1, 21):
-            sid = 'HS01%d' % s
+        for s in range(1, 11):
+            sid = self.make_source_name(s)
             for c in range(1, 21):
+                concept_id = self.make_concept_id(s, c)
+
                 data = {
-                    'id': 'HS01-S%d-C%d' % (s, c),
-                    'concept_class': random.choice(concept_class_list),
-                    'datatype': random.choice(datatype_list),
+                    'id': concept_id,
+                    'concept_class': random.choice(self.concept_class_list),
+                    'datatype': random.choice(self.datatype_list),
                 }
-                lc = random.choice(locale_list)
+                lc = random.choice(self.locale_list)
                 name = {
-                    'name': 'Concept HS01 Source %d C%d' % (s, c),
+                    'name': 'Concept %s Source %d C%d' % (self.ORG_ID, s, c),
                     'locale': lc,
                     'preferred': lc,
                 }
+                print 'creating concept %s' % concept_id
                 result = self.ocl.create_concept(
                     'orgs', self.ORG_ID, sid,
                     data, names=[name])
@@ -163,22 +190,18 @@ class Command(BaseCommand):
 
     def update_concepts(self):
 
-        concept_class_list = _get_concept_class_list()
-        datatype_list = _get_datatype_list()
-        locale_list = [c for c, n in _get_locale_list()]
-
-        self.ORG_ID = 'Health01'
-        for s in range(1, 21):
-            sid = 'HS01%d' % s
+        for s in range(1, 11):
+            sid = '%s%d' % (self.ORG_ID, s)
             for c in range(1, 21):
-                concept_id = 'HS01-S%d-C%d' % (s, c)
+                concept_id = '%s-S%d-C%d' % (self.ORG_ID, s, c)
                 data = {
 
-                    'concept_class': random.choice(concept_class_list),
-                    'datatype': random.choice(datatype_list),
+                    'concept_class': random.choice(self.concept_class_list),
+                    'datatype': random.choice(self.datatype_list),
                     'update_comment': 'testing update',
                 }
 
+                print 'updating concept %s' % concept_id
                 result = self.ocl.update_concept(
                     'orgs', self.ORG_ID, sid, concept_id,
                     data)
@@ -186,22 +209,19 @@ class Command(BaseCommand):
 
     def add_concept_data(self):
         """ Add names and descriptions """
-        concept_class_list = _get_concept_class_list()
-        datatype_list = _get_datatype_list()
-        locale_list = [c for c, n in _get_locale_list()]
 
-        self.ORG_ID = 'Health01'
-        for s in range(1, 21):
-            sid = 'HS01%d' % s
+        for s in range(1, 11):
+            sid = self.make_source_name(s)
             for c in range(1, 21):
-                concept_id = 'HS01-S%d-C%d' % (s, c)
+                concept_id = self.make_concept_id(s, c)
 
                 for v in ['one', 'two', 'three']:
                     data = {
                         'name': '%s variant %s' % (concept_id, v),
-                        'locale': random.choice(locale_list),
-                        }
+                        'locale': random.choice(self.locale_list),
+                    }
 
+                    print 'adding name %s' % data['name']
                     result = self.ocl.post(
                         'orgs', self.ORG_ID, 'sources', sid,
                         'concepts', concept_id, 'names', **data)
@@ -209,9 +229,10 @@ class Command(BaseCommand):
 
                     data = {
                         'description': 'description for %s variant %s' % (concept_id, v),
-                        'locale': random.choice(locale_list),
-                        }
+                        'locale': random.choice(self.locale_list),
+                    }
 
+                    print 'adding desc %s' % data['description']
                     result = self.ocl.post(
                         'orgs', self.ORG_ID, 'sources', sid,
                         'concepts', concept_id, 'descriptions', **data)
@@ -224,6 +245,10 @@ class Command(BaseCommand):
         if create_mode:
             if username is None:
                 raise CommandError('--username is required.')
+
+            self.ORG_ID = options['org_id']
+            if self.ORG_ID is None:
+                raise CommandError('--org_id is required.')
 
             self.load_user(username)
             self.login()

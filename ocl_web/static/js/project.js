@@ -295,7 +295,6 @@ app.controller('ConceptController', function($scope, $http, $location) {
 
                 // translate text to code for locale
                 data['locale'] = locale_by_name($scope.locale_choices, item['locale']).code;
-                console.log(data);
 
                 var config = null;
 
