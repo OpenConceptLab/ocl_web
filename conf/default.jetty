@@ -1,0 +1,7 @@
+JAVA_HOME=/usr/lib/jvm/jre-1.7.0-openjdk
+JAVA_OPTIONS="-Dsolr.solr.home=/opt/deploy/solr $JAVA_OPTIONS"
+JETTY_HOME=/opt/solr
+JETTY_USER=deploy
+# Centralize logs to /var/log
+# JETTY_LOGS=/opt/solr/logs
+JETTY_LOGS=/var/log/solr

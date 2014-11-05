@@ -7,15 +7,21 @@
 
     steps:
     These are one time:
+    0. install_root_key
     1. add_deploy_user
     2. common_install
     3. setup_environment
-    4. build_web_app
-    5. setup_supervisor
-    6. setup_nginx
+    4. setup_solr
+    5. setup_mongo
+    6. setup_postgres
+    4. setup_supervisor (without keys)
+    5. build_api_app (this will update supervisor)
+    6. build_web_app
+    7. setup_nginx
 
     These are for each new release:
-    4. release_web_app
+    1. release_web_app
+    2. release_api_app
 """
 from __future__ import with_statement
 import os
@@ -24,13 +30,13 @@ import string
 from os.path import join, abspath, dirname
 
 from fabric.api import local, run, cd, task, put
-from fabric.api import settings
+from fabric.api import settings, require
 from fabric.context_managers import prefix
-from fabric.operations import sudo
+from fabric.operations import sudo, prompt
 from fabric.state import env
 from fabric.utils import fastprint
 from fabric.contrib import files
-from fabric.colors import blue, green
+from fabric.colors import blue, yellow
 
 
 BACKUP_DIR = '/var/backups/ocl'
@@ -47,6 +53,11 @@ def dev():
     """
     Make this the first task when calling fab to
     perform operations on dev machine.
+    This "task" defines key variables for all the operations on that
+    particular server.
+
+    e.g.:
+        fab dev release_web_app
     """
     env.hosts = ['dev.openconceptlab.org', ]
     env.user = 'deploy'
@@ -68,14 +79,16 @@ def staging():
 
 
 @task
-def test_remote():
-    run('pwd;ls')
+def production():
+    """
+    Make this the first task when calling fab to
+    perform operations on staging machine.
+    """
+    env.hosts = ['www.openconceptlab.org', ]
+    env.user = 'deploy'
 
 
-def hello(name="World"):
-    print("Hello %s" % name)
-
-
+@task
 def test_local():
     local("./manage.py test users")
     local("./manage.py test orgs")
@@ -86,7 +99,7 @@ def test_local():
 
 
 def _read_key_file(key_file):
-    """ Read user's public key """
+    """ Helper function to read user's public key """
     key_file = os.path.expanduser(key_file)
     if not key_file.endswith('pub'):
         raise RuntimeWarning('Trying to push non-public part of key pair')
@@ -109,6 +122,19 @@ def _random_string(n):
     """
     return ''.join(random.sample(string.ascii_uppercase +
                                  string.ascii_lowercase + string.digits, n))
+
+
+@task
+def install_root_key():
+    """ Install SSH keys for root. One time task. """
+    with settings(user='root'):
+        print(yellow('setting up SSH for root'))
+        ssh_path = '/root/.ssh'
+        if not files.exists(ssh_path, verbose=True):
+            run('mkdir %s' % ssh_path)
+            run('chmod 700 %s' % ssh_path)
+        key_text = _read_key_file('~/.ssh/id_rsa.pub')
+        files.append('%s/authorized_keys' % ssh_path, key_text)
 
 
 @task
@@ -147,9 +173,8 @@ def common_install():
     Currently DB stuff and web stuff are listed together. Could split
     them if we run separate servers.
     """
-    fastprint('common_install...')
+    print(yellow('common_install...'))
     sudo('apt-get update')
-    # TODO: Add memcached
 
     # user console tools
     sudo("apt-get -y -q install emacs23-nox unzip lsof byobu")
@@ -161,10 +186,6 @@ def common_install():
 
     sudo("apt-get -y -q install supervisor")
     sudo("pip install virtualenv")
-
-    # for building dev libraries
-#    sudo("apt-get -y -q  install libjpeg62-dev") # images
-#    sudo("pip install keyring mercurial_keyring")
 
     # web
     # memcached
@@ -179,9 +200,19 @@ def common_install():
 @task
 def setup_supervisor():
     """ Setup supervisor daemon for controlling python processes """
+
+    # first time this will fail because we have a chicken and egg
+    # situation, we need the API server to get the tokens, but
+    # we need supervisor to run the API server
+    auth_token, anon_token = get_api_tokens()
+    if auth_token is not None and anon_token is not None:
+        env.OCL_API_TOKEN = auth_token
+        env.OCL_ANON_API_TOKEN = anon_token
     files.upload_template(_conf_path('ocl_supervisor.conf'),
                           '/etc/supervisor/conf.d', env, use_sudo=True)
     put(_conf_path('supervisord.conf'), '/etc/supervisor', use_sudo=True)
+    # restart to run as deploy
+    sudo('/etc/init.d/supervisor restart')
 
 
 @task
@@ -198,7 +229,7 @@ def setup_environment():
     """ create directories and files """
     for d in ['/opt/virtualenvs', '/opt/deploy']:
         if not files.exists(d):
-            fastprint('Creating directory %s...' % d)
+            print(yellow('Creating directory %s...' % d))
             sudo('mkdir %s' % d)
             sudo('chown deploy:deploy %s' % d)
     if not files.exists('/var/log/ocl'):
@@ -218,7 +249,6 @@ def setup_postgres():
         Give deploy user createdb access to database so that she can
         create test db as well. Also make control easier.
     """
-
     sudo('createuser --createdb deploy', user='postgres')
     sudo("psql --command=\"ALTER USER deploy with PASSWORD 'deploy';\" ", user='postgres')
     run('createdb -O deploy ocl_web')
@@ -227,14 +257,77 @@ def setup_postgres():
 @task
 def setup_mongo():
     """ Setup mongo database """
-#    sudo('sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10')
-#    put(_conf_path('mongo.apt'), '/etc/apt/sources.list.d/mongodb.list', use_sudo=True)
+    sudo('sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10')
+    put(_conf_path('mongo.apt'), '/etc/apt/sources.list.d/mongodb.list', use_sudo=True)
     sudo('apt-get update')
-    sudo('apt-get install -y mongodb-org')
+    sudo('apt-get install -y -q mongodb-org')
+
+
+@task
+def setup_solr():
+    """ Setup solr server """
+    sudo('apt-get -y -q install openjdk-7-jdk')
+
+    ## no need?
+    ## sudo('mkdir /usr/java')
+    ## sudo('ln -s /usr/lib/jvm/java-7-openjdk-amd64 /usr/java/default')
+
+    with cd('/opt'):
+        sudo('wget http://archive.apache.org/dist/lucene/solr/4.9.1/solr-4.9.1.tgz')
+        sudo('tar -xvf solr-4.9.1.tgz')
+        sudo('cp -R solr-4.9.1/example /opt/solr')
+        sudo('chown -R deploy:deploy /opt/solr')
+
+    with settings(user='root'):
+        put(_conf_path('default.jetty'), '/etc/default/jetty')
+        put(_conf_path('jetty'), '/etc/init.d')
+        run('chmod a+x /etc/init.d/jetty')
+
+    if not files.exists('/var/log/solr'):
+        sudo('mkdir /var/log/solr')
+        sudo('chown deploy:deploy /var/log/solr')
+
+    with cd('/opt/deploy/'):
+        print(yellow('creating project root for %s' % 'solr'))
+        run('mkdir %s' % 'solr')
+
+
+@task
+def get_api_tokens():
+    """
+        Get the API_AUTH_TOKEN and ANON_TOKEN from the API server directly
+
+        return tuple or None:
+            (api_token, anon_token)
+    """
+    api_token = anon_token = None
+    if not files.exists('/opt/deploy/ocl_api/ocl'):
+        return (None, None)
+
+    with cd('/opt/deploy/ocl_api/ocl'):
+        with prefix("source /opt/virtualenvs/ocl_api/bin/activate"):
+            print(yellow('Getting AUTH Tokens'))
+            data = run('./manage.py create_tokens')
+            # get back two lines, space separated:
+            #    admin NNN
+            #    anonymous NNNN
+            lines = data.split('\n')
+            k, v = lines[0].split()
+            if k != 'admin':
+                return (None, None)
+            api_token = v
+
+            k, v = lines[1].split()
+            if k != 'anonymous':
+                return (None, None)
+            anon_token = v
+            print 'API Token: %s,  Anon Token: %s' % (api_token, anon_token)
+            return (api_token, anon_token)
 
 
 def build_app(app_name, repo_name=None, no_git=False):
-    """ Build a django App """
+    """ Build a django App environment, virtualenv source code etc.
+    """
 
     with cd('/opt/virtualenvs'):
         fastprint('creating virtualenv for %s' % app_name)
@@ -245,6 +338,7 @@ def build_app(app_name, repo_name=None, no_git=False):
 
     if no_git:
         return  # just for API because it does not use git directly
+
     with cd('/opt/deploy/%s' % app_name):
         if repo_name is None:
             repo_name = app_name + '.git'
@@ -254,52 +348,27 @@ def build_app(app_name, repo_name=None, no_git=False):
 @task
 def build_web_app():
     build_app('ocl_web')
+    release_web_app(do_pip=True)
 
+    # setup DB
     with cd('/opt/deploy/ocl_web'):
-
         with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
             with prefix('export DJANGO_CONFIGURATION="Production"'):
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
-                    print(blue('creating database...'))
+                    print(yellow('creating database...'))
                     run('ocl_web/manage.py syncdb --noinput --migrate')
 
 
 @task
-def build_api_app():
-    build_app('ocl_api', repo_name='oclapi', no_git=True)
-    with cd('/opt/deploy/'):
-        print(blue('creating project root for %s' % 'solr'))
-        run('mkdir %s' % 'solr')
-    return
-    with cd('/opt/deploy/ocl_api'):
+def checkout_api_app(do_pip=False):
+    """ Get latest API server software.
+        This is normally done as part of release task's git clone.
 
-        with prefix('source /opt/virtualenvs/ocl_api/bin/activate'):
-            with prefix('export DJANGO_CONFIGURATION="Production"'):
-                with prefix('export DJANGO_SECRET_KEY="blah"'):
-                    print(blue('creating database...'))
-                    run('xxxx/manage.py syncdb --noinput --migrate')
-
-
-@task
-def api_backup():
-    if not files.exists(BACKUP_DIR):
-        sudo('mkdir -p %s' % BACKUP_DIR)
-        sudo('chown deploy:deploy %s' % BACKUP_DIR)
-
-    with cd('/opt/deploy/ocl_api'):
-        run("tar -czvf ocl_api_`date +%Y%m%d`.tgz ocl_api solr/collection1/conf")
-        run("mv ocl_api_*.tgz %s" % BACKUP_DIR)
-#        run("rm -rf django solr/collection1/conf")
-
-
-def api_checkout():
-    with cd('/var/tmp'):
-        run("rm -rf oclapi")
-        run("git clone https://github.com/OpenConceptLab/oclapi.git")
-
-
-@task
-def api_provision():
+        This process is different from the web server process because
+        it uses a "git cone, then copy the source files to runtime"
+        method for the release instead of directly pulling into the
+        run time.
+    """
     with cd('/var/tmp'):
         print(blue('pulling new code...'))
         run("rm -rf oclapi")
@@ -307,28 +376,83 @@ def api_provision():
 
         print(blue('deleting old code...'))
         run('rm -rf /opt/deploy/ocl_api/ocl')
-        run('rm -rf /opt/deploy/solor/collection1')
+        run('rm -rf /opt/deploy/solr/collection1')
 
         print(blue('copying new code...'))
         run("cp -r oclapi/django-nonrel/ocl /opt/deploy/ocl_api")
+        run('mkdir -p /opt/deploy/solr/collection1')
         run("cp -r oclapi/solr/collection1/conf /opt/deploy/solr/collection1")
-        return
-        sudo("chown -R solr:wheel /opt/deploy/solr")
+
     with cd("/opt/deploy/ocl_api/ocl"):
         run("cp settings.py.deploy settings.py")
         with prefix("source /opt/virtualenvs/ocl_api/bin/activate"):
-            run("pip install -r requirements.txt")
-            run("./manage.py test users")
-            run("./manage.py test orgs")
-            run("./manage.py test sources")
-            run("./manage.py test collection")
-            run("./manage.py test concepts")
+            # this is really slow because it pull down django-norel
+            if do_pip:
+                run("pip install -r requirements.txt")
+
             run("./manage.py build_solr_schema > /opt/deploy/solr/collection1/conf/schema.xml")
+
+
+@task
+def build_api_app():
+    build_app('ocl_api', repo_name='oclapi', no_git=True)
+    checkout_api_app(do_pip=True)
+
+    # setup DB
+    with cd('/opt/deploy/ocl_api/ocl'):
+        with prefix('source /opt/virtualenvs/ocl_api/bin/activate'):
+            with prefix('export DJANGO_CONFIGURATION="Production"'):
+                with prefix('export DJANGO_SECRET_KEY="blah"'):
+
+                    print(yellow('creating database...'))
+                    run('./manage.py syncdb --noinput')
+
+    # now start the server so that we can create base users
+    print(yellow('Start up partial API server...'))
+    run('supervisorctl start ocl_api')
+
+    with cd('/opt/deploy/ocl_api/ocl'):
+        with prefix('source /opt/virtualenvs/ocl_api/bin/activate'):
+            with prefix('export DJANGO_CONFIGURATION="Production"'):
+                with prefix('export DJANGO_SECRET_KEY="blah"'):
+
+                    print(yellow('creating base users...'))
+                    run('./manage.py create_tokens --create --password password')
+
+    # now grab the token for the web config
+    print(yellow('Put tokens into WEB app config...'))
+    setup_supervisor()
+    run('supervisorctl reread')
+    run('supervisorctl update')
+
+
+@task
+def api_backup():
+    """ Backup API server environment """
+    if not files.exists(BACKUP_DIR):
+        sudo('mkdir -p %s' % BACKUP_DIR)
+        sudo('chown deploy:deploy %s' % BACKUP_DIR)
+
+    with cd('/opt/deploy/ocl_api'):
+        run("tar -czvf ocl_api_`date +%Y%m%d`.tgz ocl_api solr/collection1/conf")
+        run("mv ocl_api_*.tgz %s" % BACKUP_DIR)
+
+
+@task
+def release_api_app(do_pip=False):
+    """ Release latest API server software.
+    """
+    checkout_api_app(do_pip)
+
+    with cd("/opt/deploy/ocl_api/ocl"):
+        run("cp settings.py.deploy settings.py")
+        with prefix("source /opt/virtualenvs/ocl_api/bin/activate"):
+
             sudo('/etc/init.d/jetty restart')
             run("./manage.py rebuild_index")
 
 
-def release(app_name):
+def release(app_name, do_pip):
     """ Release latest source and dependent files and packages for the named app """
     with cd('/opt/deploy/%s' % app_name):
         fastprint('releasing latest source files')
@@ -338,8 +462,43 @@ def release(app_name):
 
 
 @task
-def release_web_app():
-    release('ocl_web')
+def release_web_app(do_pip=False):
+    """ Release latest version of WEB application """
+    release('ocl_web', do_pip)
+
+
+@task
+def full_restart():
+    """ Restart everything """
+    sudo('/etc/init.d/apache2 stop')
+    sudo('/etc/init.d/nginx restart')
+    sudo('/etc/init.d/supervisor restart')
+    sudo('/etc/init.d/mongod restart')
+    sudo('/etc/init.d/jetty restart')
+
+
+@task
+def build_new_server():
+    """ Build a brand new server from scratch. """
+    require('hosts', provided_by=['dev', 'staging', 'production'])
+    ans = prompt('This will completely wipe out the server. Are you sure (YES/no)?')
+    if ans != 'YES':
+        print(yellow('Glad you were just kidding.'))
+    ans = prompt(yellow('%s' % env.hosts[0]) + ' will be wiped and rebuilt. Are you sure (YES/no)?')
+    if ans != 'YES':
+        print("Didn't think so.")
+#    install_root_key()
+#    add_deploy_user()
+#    common_install()
+#    setup_environment()
+#    setup_solr()
+    setup_mongo()
+    setup_postgres()
+    setup_supervisor()
+    build_api_app()
+    build_web_app()
+    setup_nginx()
+    full_restart()
 
 
 @task
