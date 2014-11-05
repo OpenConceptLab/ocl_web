@@ -191,9 +191,9 @@ class Command(BaseCommand):
     def update_concepts(self):
 
         for s in range(1, 11):
-            sid = '%s%d' % (self.ORG_ID, s)
+            sid = self.make_source_name(s)
             for c in range(1, 21):
-                concept_id = '%s-S%d-C%d' % (self.ORG_ID, s, c)
+                concept_id = self.make_concept_id(s, c)
                 data = {
 
                     'concept_class': random.choice(self.concept_class_list),
