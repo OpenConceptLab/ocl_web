@@ -195,26 +195,42 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
 def _get_concept_class_list():
     """
     This is a temporary function. Should get this data from the database.
+    currently from OpenMRS dataset 2014/10/19
     """
     return [
+        'Aggregate Measurement',
         'Anatomy',
+        'ConvSet',
         'Diagnosis',
         'Drug',
+        'Drug form',
         'Finding',
-        'Symptom',
-        'Test',
-        'Procedure',
-        'Indicator',
         'Frequency',
+        'Health Care Monitoring Topics',
+        'Indicator',
+        'LabSet',
+        'Medical supply',
+        'MedSet',
         'Misc',
-        'ConvSet',
+        'Misc Order',
         'Organism',
+        'Pharmacologic Drug Class',
+        'Procedure',
+        'Program',
         'Question',
-        'Program'
+        'Radiology/Imaging Procedure',
+        'Specimen',
+        'State',
+        'Symptom',
+        'Symptom/Finding',
+        'Test',
+        'Units of Measure',
+        'Workflow',
     ]
 
 
 def _get_datatype_list():
+    """     currently from OpenMRS dataset 2014/10/19 """
     return [
         'Boolean',
         'Coded',

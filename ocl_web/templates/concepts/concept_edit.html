@@ -21,24 +21,24 @@
 
             {% include 'includes/ng_alerts_incl.html' %}
 
-            <form class="form" name="concept_form" ng-submit="updateItem(item)" autcomplete="off">
+            <form class="form" name="concept_form" ng-submit="concept_form.$valid && updateItem(item)" autcomplete="off">
                 {% csrf_token %}
                 <div class="form-group required" ng-class="{ 'has-error': concept_form.concept_class.$invalid &amp;&amp; !concept_form.concept_class.$pristine }">
                     <label class="control-label" for="id_locale">Concept Class</label>
                     {% verbatim %}
                     <input class="form-control" type="text" name="concept_class" ng-model="item.concept_class"
-                    typeahead-editable="true" typeahead="ct for ct in concept_classes | filter:$viewValue | limitTo:8">
+                    typeahead-editable="false" typeahead="ct for ct in concept_classes | filter:$viewValue | limitTo:20">
                     <p class="help-block" ng-show="concept_form.concept_class.$invalid">
-                        Select a Concept class
+                        Select a valid Concept class
                     </p>{% endverbatim %}
                 </div>
-                <div class="form-group">
+                <div class="form-group" ng-class="{ 'has-error': concept_form.datatype.$invalid &amp;&amp; !concept_form.datatype.$pristine }">
                     <label class="control-label" for="id_datatype">Datatype</label>
                     {% verbatim %}
                     <input class="form-control" type="text" name="datatype" ng-model="item.datatype"
-                    typeahead-editable="true" typeahead="t for t in datatypes | filter:$viewValue | limitTo:8">
+                    typeahead-editable="false" typeahead="t for t in datatypes | filter:$viewValue | limitTo:20">
                     <p class="help-block" ng-show="concept_form.datatype.$invalid">
-                        Select a Datatype
+                        Select a valid Datatype
                     </p>{% endverbatim %}
                 </div>
 

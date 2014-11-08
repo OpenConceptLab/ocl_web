@@ -7,7 +7,7 @@ from django import forms
 from django.forms.formsets import formset_factory
 
 from libs.ocl import OCLapi
-from apps.core import LOCALE_LIST
+from apps.core.views import _get_locale_list
 
 
 class ConceptCreateForm(forms.Form):
@@ -20,7 +20,8 @@ class ConceptCreateForm(forms.Form):
     concept_class = forms.CharField(max_length=30, label=_('Concept Class'), required=True)
     datatype = forms.CharField(max_length=30, label=_('Datatype'), required=False)
     name = forms.CharField(max_length=30, label=_('Name'), required=True)
-    locale = forms.ChoiceField(choices=LOCALE_LIST, label=_('Locale'), required=True)
+    locale = forms.ChoiceField(
+        choices=[(d['code'], d['name']) for d in _get_locale_list()], label=_('Locale'), required=True)
     preferred_locale = forms.BooleanField(label=_('Preferred Locale'), required=False, initial=False)
 
     def clean_concept_id(self):
@@ -59,7 +60,8 @@ class ConceptNameForm(forms.Form):
     required_css_class = 'required'
 
     name = forms.CharField(max_length=30, label=_('Name'), required=True)
-    locale = forms.ChoiceField(choices=LOCALE_LIST, label=_('Locale'), required=True, initial=None)
+    locale = forms.ChoiceField(
+        choices=[(d['code'], d['name']) for d in _get_locale_list()], label=_('Locale'), required=True)
     preferred_locale = forms.BooleanField(label=_('Preferred Locale'), required=False, initial=False)
     name_type = forms.CharField(max_length=30, label=_('Name Datatype'), required=False)
 

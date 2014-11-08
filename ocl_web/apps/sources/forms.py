@@ -6,7 +6,8 @@ from django.utils.translation import ugettext as _
 from django import forms
 
 from libs.ocl import OCLapi
-from apps.core import LOCALE_LIST
+
+from apps.core.views import _get_source_type_list, _get_locale_list
 
 
 class SourceCreateForm(forms.Form):
@@ -15,16 +16,22 @@ class SourceCreateForm(forms.Form):
     """
     required_css_class = 'required'
 
-    short_name = forms.CharField(label=_('Source Short Name'), max_length=48, required=True,
-      help_text=_('Short Name (e.g. ICD-10), Your new source will live at: https://OpenConceptLab.org/[OwnerType]/[Owner]/sources/<span id="source-name">[SourceName]</span>'))
-    full_name = forms.CharField(label=_('Source Full Name'), max_length=48, required=True,
-      help_text=_('Full Name (e.g. International Classification for Diseases v10)'))
-    website = forms.URLField(label=_('Website'), required=False,
-      help_text=_('Website (e.g. http://apps.who.int/classifications/icd10)'))
-    source_type = forms.CharField(max_length=30, label=_('Source Type'), required=False)
-    public_access = forms.ChoiceField(label=_('Public Access'), required=False, initial='View',
-      choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
-    default_locale = forms.ChoiceField(choices=LOCALE_LIST, label=_('Locale'), required=True)
+    short_name = forms.CharField(
+        label=_('Source Short Name'), max_length=48, required=True,
+        help_text=_('Short Name (e.g. ICD-10), Your new source will live at: https://OpenConceptLab.org/[OwnerType]/[Owner]/sources/<span id="source-name">[SourceName]</span>'))
+    full_name = forms.CharField(
+        label=_('Source Full Name'), max_length=48, required=True,
+        help_text=_('Full Name (e.g. International Classification for Diseases v10)'))
+    website = forms.URLField(
+        label=_('Website'), required=False,
+        help_text=_('Website (e.g. http://apps.who.int/classifications/icd10)'))
+    source_type = forms.ChoiceField(
+        choices=[(v, v) for v in _get_source_type_list()], label=_('Source Type'), required=False)
+    public_access = forms.ChoiceField(
+        label=_('Public Access'), required=False, initial='View',
+        choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
+    default_locale = forms.ChoiceField(
+        choices=[(d['code'], d['name']) for d in _get_locale_list()], label=_('Locale'), required=True)
     supported_locales = forms.CharField(max_length=30, label=_('Supported Locales'), required=True)
 
     description = forms.CharField(max_length=80, label=_('Description'), required=False)
