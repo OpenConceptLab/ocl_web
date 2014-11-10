@@ -1,18 +1,11 @@
-# -*- coding: utf-8 -*-
-import requests
-
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import FormView
-from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import DetailView
 from django.views.generic import RedirectView
-from django.views.generic import UpdateView
 from django.views.generic import ListView
 from django.contrib import messages
-
-from django.conf import settings
 
 
 # Only authenticated users can access views using this.
@@ -50,7 +43,9 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         context['orgs'] = ocl_user_orgs
         context['sources'] = ocl_user_sources
         context['collections'] = ocl_user_collections
-        context['api_token'] = api.api_key
+
+        if self.request.user.username == username:
+            context['api_token'] = api.api_key
         return context
 
 
@@ -59,7 +54,7 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
     def get_redirect_url(self):
         return reverse("users:detail",
-            kwargs={"username": self.request.user.username})
+                       kwargs={"username": self.request.user.username})
 
 
 class UserUpdateView(LoginRequiredMixin, FormView):
@@ -86,7 +81,7 @@ class UserUpdateView(LoginRequiredMixin, FormView):
             'username': user.username,
             'first_name': user.first_name,
             'last_name': user.last_name,
-            }
+        }
         data.update(api_user)
         return data
 

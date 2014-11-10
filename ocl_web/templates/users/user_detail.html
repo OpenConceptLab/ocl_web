@@ -78,7 +78,9 @@
 
       <div class="row">
         <div class="col-sm-6">
+          {% if api_token %}
           API Token: {{  api_token }}
+          {% endif %}
         </div>
       </div>
 {% if request.GET.debug %}
