@@ -77,9 +77,15 @@
       </div>
 
       <div class="row">
+        <div class="col-sm-6">
+          API Token: {{  api_token }}
+        </div>
+      </div>
+{% if request.GET.debug %}
+      <div class="row">
         <pre>{{ ocl_user|pprint }}</pre>
       </div>
-
+{% endif %}
 
     </div>
   </div>

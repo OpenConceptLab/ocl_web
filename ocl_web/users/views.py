@@ -50,7 +50,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         context['orgs'] = ocl_user_orgs
         context['sources'] = ocl_user_sources
         context['collections'] = ocl_user_collections
-
+        context['api_token'] = api.api_key
         return context
 
 
@@ -75,7 +75,7 @@ class UserUpdateView(LoginRequiredMixin, FormView):
     # send the user back to their own page after a successful update
     def get_success_url(self):
         return reverse("users:detail",
-                    kwargs={"username": self.kwargs.get('username')})
+                       kwargs={"username": self.kwargs.get('username')})
 
     def get_initial(self):
         user = User.objects.get(username=self.kwargs.get('username'))
@@ -101,7 +101,8 @@ class UserUpdateView(LoginRequiredMixin, FormView):
         api = OCLapi(self.request)
         result = api.post('user', **data)
         print result.status_code
-        if len(result.text) > 0: print result.json()
+        if len(result.text) > 0:
+            print result.json()
 
         messages.add_message(self.request, messages.INFO, _('User updated'))
         return HttpResponseRedirect(self.get_success_url())

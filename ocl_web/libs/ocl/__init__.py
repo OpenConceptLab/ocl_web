@@ -77,6 +77,7 @@ class OCLapi(object):
         self.admin_api_key = os.environ.get('OCL_API_TOKEN', None)
         self.anon_api_key = os.environ.get('OCL_ANON_API_TOKEN', None)
         self.url = None
+        self.api_key = None
 
         if admin:
             self.headers['Authorization'] = 'Token %s' % self.admin_api_key
@@ -84,6 +85,7 @@ class OCLapi(object):
             if request:
                 # Todo: the KEY constant needs to be somewhere else
                 key = request.session.get(SESSION_TOKEN_KEY, self.anon_api_key)
+                self.api_key = request.session.get(SESSION_TOKEN_KEY, None)
                 self.headers['Authorization'] = 'Token %s' % key
 
     def post(self, type_name, *args, **kwargs):
