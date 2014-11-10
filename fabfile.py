@@ -68,6 +68,7 @@ def dev():
     env.OCL_API_TOKEN = os.environ.get('OCL_API_TOKEN')
     env.OCL_ANON_API_TOKEN = os.environ.get('OCL_ANON_API_TOKEN')
     env.random_string = _random_string(32)
+    env.site_spec = 'dev'
 
 
 @task
@@ -83,6 +84,7 @@ def staging():
     env.OCL_API_TOKEN = os.environ.get('OCL_API_TOKEN')
     env.OCL_ANON_API_TOKEN = os.environ.get('OCL_ANON_API_TOKEN')
     env.random_string = _random_string(32)
+    env.site_spec = 'stage'
 
 
 @task
@@ -93,6 +95,7 @@ def production():
     """
     env.hosts = ['www.openconceptlab.org', ]
     env.user = 'deploy'
+    env.site_spec = 'prod'
 
 
 @task
@@ -350,6 +353,16 @@ def build_app(app_name, repo_name=None, no_git=False):
         if repo_name is None:
             repo_name = app_name + '.git'
         run('git clone https://github.com/OpenConceptLab/%s .' % repo_name)
+
+
+@task
+def load_site_name():
+    with cd('/opt/deploy/ocl_web'):
+        with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
+            with prefix('export DJANGO_CONFIGURATION="Production"'):
+                with prefix('export DJANGO_SECRET_KEY="blah"'):
+                    print(yellow('setting site name...'))
+                    run('ocl_web/manage.py loaddata ocl_web/config/site.%s.json' % env.site_spec)
 
 
 @task

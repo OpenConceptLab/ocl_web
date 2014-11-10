@@ -1,0 +1,12 @@
+{% load account %}
+{% user_display user as user_display %}
+{% load i18n %}{% autoescape off %}{% blocktrans with current_site.name as site_name %}
+Hi {{ user_display }},
+
+Welcome to the Open Concept Lab. To finish activating the account for {{ user_display }}, please follow this link to confirm your email address:
+
+{{ activate_url }}
+
+Thanks,
+The OCL Team
+{% endblocktrans %}{% endautoescape %}
