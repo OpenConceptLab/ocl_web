@@ -492,7 +492,7 @@ class OCLapi(object):
         """
         result = self.post(source_owner_type, source_owner_id,
                            'sources', source_id, 'concepts', concept_id,
-                           **data)
+                           'mappings', **data)
         return result
 
 ### Below not used ###

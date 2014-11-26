@@ -109,7 +109,14 @@ class Command(BaseCommand):
         for dest_id in fields[2:]:
             data = {
                 'map_type': map_type,
-                'to_concept_url': '%s/v1/orgs/%s/sources/%s/concepts/%s/' % self.api_host,
+                'to_concept_url': '%s/v1/orgs/%s/sources/%s/concepts/%s/' % (self.api_host,
+                                                                             self.ORG_ID,
+                                                                             self.SOURCE_ID,
+                                                                             dest_id),
+                'to_concept_url': '/orgs/%s/sources/%s/concepts/%s/' % (
+                                                                         self.ORG_ID,
+                                                                         self.SOURCE_ID,
+                                                                         dest_id),
             }
         result = self.ocl.create_mapping(
             'orgs', self.ORG_ID, self.SOURCE_ID, source_cid,
