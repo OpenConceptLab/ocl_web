@@ -17,12 +17,12 @@
           <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
         </span>
       </div>
-      {# A tricky way for the body of the main search screen to add to the form input by skiping the closing form tag #}
+      {# A tricky way for the body of the main search screen to add to the form input by skipping the closing form tag #}
       {% if not extend_nav_form %}
     </form>
     {% endif %}
     <ul class="nav navbar-nav pull-right ocl-nav-menu">
-      <li><a href="{% url 'explore' %}">Explore</a></li>
+      <!--li><a href="{% url 'explore' %}">Explore</a></li-->
       <li><a href="{% url 'features' %}">Features</a></li>
       <li><a href="http://maternalconceptlab.tumblr.com/" target="_new">Blog</a></li>
       <li><a href="{% url 'help' %}">Learning Center</a></li>
