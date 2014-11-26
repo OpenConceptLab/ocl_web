@@ -478,6 +478,23 @@ class OCLapi(object):
                            'versions', **data)
         return result
 
+    def create_mapping(self, source_owner_type, source_owner_id, source_id,
+                       concept_id, data):
+        """ Create a concept mapping
+
+            :param source_owner_type: is a string of either 'org' or 'user'
+            :param source_owner_id: is the ID of the owner org or user
+            :param source_id: is the ID of the owner source
+            :param concept_id: is the concept ID of the source concept
+            :param data: is a dictionary of all the data fields
+
+            :returns: POST result from requests package.
+        """
+        result = self.post(source_owner_type, source_owner_id,
+                           'sources', source_id, 'concepts', concept_id,
+                           **data)
+        return result
+
 ### Below not used ###
 
 

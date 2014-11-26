@@ -22,6 +22,13 @@
     These are for each new release:
     1. release_web_app
     2. release_api_app
+
+    Security:
+
+    Note that all access is setup to user your SSH key.
+    There is only a password for root, which you have from the initial
+    server build.
+
 """
 from __future__ import with_statement
 import os
@@ -53,13 +60,13 @@ CHECKOUT_DIR = '/var/tmp'
 @task
 def dev():
     """
-    Make this the first task when calling fab to
-    perform operations on dev machine.
-    This "task" defines key variables for all the operations on that
-    particular server.
+    Put as the first task on the command line to select dev environment.
 
-    e.g.:
+    For example:
+
         fab dev release_web_app
+
+    Put in this task all the environment specific variables and settings.
     """
     env.hosts = ['dev.openconceptlab.org', ]
     env.user = 'deploy'
@@ -68,14 +75,15 @@ def dev():
     env.OCL_API_TOKEN = os.environ.get('OCL_API_TOKEN')
     env.OCL_ANON_API_TOKEN = os.environ.get('OCL_ANON_API_TOKEN')
     env.random_string = _random_string(32)
+
+    # which sites.json file to load the django site object from.
     env.site_spec = 'dev'
 
 
 @task
 def staging():
     """
-    Make this the first task when calling fab to
-    perform operations on staging machine.
+    Put as the first task on the command line to select staging environment.
     """
     env.hosts = ['staging.openconceptlab.org', ]
     env.user = 'deploy'
@@ -90,8 +98,7 @@ def staging():
 @task
 def production():
     """
-    Make this the first task when calling fab to
-    perform operations on staging machine.
+    Put as the first task on the command line to select production environment.
     """
     env.hosts = ['www.openconceptlab.org', ]
     env.user = 'deploy'
@@ -100,6 +107,7 @@ def production():
 
 @task
 def test_local():
+    """ For OCL_API, from old fabfile """
     local("./manage.py test users")
     local("./manage.py test orgs")
     local("./manage.py test sources")
@@ -136,7 +144,9 @@ def _random_string(n):
 
 @task
 def install_root_key():
-    """ Install SSH keys for root. One time task. """
+    """
+        Install your SSH key for root. One time task.
+    """
     with settings(user='root'):
         print(yellow('setting up SSH for root'))
         ssh_path = '/root/.ssh'
@@ -149,11 +159,16 @@ def install_root_key():
 
 @task
 def add_deploy_user():
-    """ Run this onces to create the deploy user account, which is used for
-        everything else.
+    """
+        Create the deploy user account, one time task.
+
+        The deploy user is used for almost all processes.
+        Your SSH key is pushed so that you can login via ssh keys.
     """
     username = 'deploy'
     with settings(user='root'):
+
+        # Create the user, no password
         fastprint('adding the %s user account...' % username)
         run('useradd -m -s /bin/bash %s' % username)
         run('adduser %s sudo' % username)
@@ -209,7 +224,12 @@ def common_install():
 
 @task
 def setup_supervisor():
-    """ Setup supervisor daemon for controlling python processes """
+    """
+        Setup supervisor daemon for running OCL processes.
+
+        One of the key function is to put the API tokens required in the
+        environment for Web server.
+     """
 
     # first time this will fail because we have a chicken and egg
     # situation, we need the API server to get the tokens, but
@@ -227,31 +247,50 @@ def setup_supervisor():
 
 @task
 def setup_nginx():
-    """ Setup nginx """
-    sudo('unlink /etc/nginx/sites-enabled/default')
+    """
+        Setup nginx.
+
+        This can be re-run to update the application configuration via
+        the ocl_nginx.conf.
+    """
+    with settings(warn_only=True):
+        sudo('unlink /etc/nginx/sites-enabled/default')
+
     files.upload_template(_conf_path('ocl_nginx.conf'),
                           '/etc/nginx/sites-available/ocl', env, use_sudo=True)
-    sudo('ln -s /etc/nginx/sites-available/ocl /etc/nginx/sites-enabled/ocl')
+
+    with settings(warn_only=True):
+        sudo('ln -s /etc/nginx/sites-available/ocl /etc/nginx/sites-enabled/ocl')
+
+    sudo('/etc/init.d/nginx restart')
 
 
 @task
 def setup_environment():
-    """ create directories and files """
+    """
+        create OCL directories and files.
+
+    """
     for d in ['/opt/virtualenvs', '/opt/deploy']:
         if not files.exists(d):
             print(yellow('Creating directory %s...' % d))
             sudo('mkdir %s' % d)
             sudo('chown deploy:deploy %s' % d)
+
+    # all logs go to /var/log/ocl subdirectories.
     if not files.exists('/var/log/ocl'):
         sudo('mkdir /var/log/ocl')
         sudo('chown deploy:deploy /var/log/ocl')
 
+    # This backup dir is used by the current API server deployment
+    # process.
     if not files.exists(BACKUP_DIR):
         sudo('mkdir -p %s' % BACKUP_DIR)
         sudo('chown deploy:deploy %s' % BACKUP_DIR)
 
+    # A few shell aliases that PK likes...
     put(_conf_path('ocl_aliases'), '~/.bash_aliases')
-
+    put(_conf_path('tmux.conf'), '~/.tmux.conf')
 
 @task
 def setup_postgres():
@@ -336,7 +375,7 @@ def get_api_tokens():
 
 
 def build_app(app_name, repo_name=None, no_git=False):
-    """ Build a django App environment, virtualenv source code etc.
+    """ Helper for building a django App environment, virtualenv source code etc.
     """
 
     with cd('/opt/virtualenvs'):
@@ -357,20 +396,26 @@ def build_app(app_name, repo_name=None, no_git=False):
 
 @task
 def load_site_name():
+    """
+        Set the global site object value in the web server, used in outbound emails.
+    """
     with cd('/opt/deploy/ocl_web'):
         with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
             with prefix('export DJANGO_CONFIGURATION="Production"'):
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
                     print(yellow('setting site name...'))
-                    run('ocl_web/manage.py loaddata ocl_web/config/site.%s.json' % env.site_spec)
+                    run('ocl_web/manage.py loaddata ocl_web/config/sites.%s.json' % env.site_spec)
 
 
 @task
 def build_web_app():
+    """
+        Build the web app, one time task.
+    """
     build_app('ocl_web')
     release_web_app(do_pip=True)
 
-    # setup DB
+    # setup DB, no super user.
     with cd('/opt/deploy/ocl_web'):
         with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
             with prefix('export DJANGO_CONFIGURATION="Production"'):
@@ -421,6 +466,7 @@ def create_api_database():
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
 
                     print(yellow('creating API database...'))
+                    # no super user
                     run('./manage.py syncdb --noinput')
 
     # now start the server so that we can create base users
@@ -432,7 +478,7 @@ def create_api_database():
             with prefix('export DJANGO_CONFIGURATION="Production"'):
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
 
-                    print(yellow('creating base users...'))
+                    print(yellow('creating internal users: admin and anon ...'))
                     run('./manage.py create_tokens --create --password password')
 
     # now grab the token for the web config
@@ -444,6 +490,9 @@ def create_api_database():
 
 @task
 def build_api_app():
+    """
+        Build the API app, one time task.
+    """
     build_app('ocl_api', repo_name='oclapi', no_git=True)
     checkout_api_app(do_pip=True)
     create_api_database()
