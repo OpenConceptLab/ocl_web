@@ -106,6 +106,21 @@ class Command(BaseCommand):
         """
         map_type = fields[0]
         source_cid = fields[1]
+
+        if map_type == 'internal':
+            map_type, code, source = fields[2].split(',')
+            print map_type, code, source
+            data = {
+                'map_type': map_type,
+                'to_source_code': source,
+                'to_concept_code': code,
+            }
+        result = self.ocl.create_mapping(
+            'orgs', self.ORG_ID, self.SOURCE_ID, source_cid,
+            data)
+        print result
+        return
+
         for dest_id in fields[2:]:
             data = {
                 'map_type': map_type,
@@ -118,10 +133,10 @@ class Command(BaseCommand):
                                                                          self.SOURCE_ID,
                                                                          dest_id),
             }
-        result = self.ocl.create_mapping(
-            'orgs', self.ORG_ID, self.SOURCE_ID, source_cid,
-            data)
-        print result
+            result = self.ocl.create_mapping(
+                'orgs', self.ORG_ID, self.SOURCE_ID, source_cid,
+                data)
+            print result
 
     def load_mappings(self):
 
@@ -155,7 +170,7 @@ class Command(BaseCommand):
         try:
             self.input = open(input_file, 'rb')
             # get total record count
-            total = sum(1 for line in self.input)
+            self.total = sum(1 for line in self.input)
             self.input.seek(0)
         except IOError:
             raise CommandError('Could not open input file %s' % input_file)
