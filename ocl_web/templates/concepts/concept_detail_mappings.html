@@ -6,14 +6,43 @@
 
 <div class="row">
     <div class="col-md-2" style="text-align:right;font-weight:bold;color:#999;">
-        
+        Q & A
     </div>
 
     <div class="col-md-8">
 
         <ul class="list-group">
             {% verbatim %}
-            <li ng-repeat="map in item_list" class="list-group-item">
+            <li ng-repeat="map in item_list|filter:{map_type:'q_and_a'}" class="list-group-item">
+                <button type="button" class="btn btn-link" ng-click="setEditedItem(map);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+
+                {{ map.map_type }} : {{ map.to_concept_name }}<br />{{ map.to_concept_url }}
+                <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
+
+                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(map)"></span>
+
+            {% endverbatim %}               
+                {% if request.GET.debug %}<br /><pre>{{ map|pprint }}</pre>{% endif %}</li>
+
+            {% verbatim %}
+            <li ng-show="(item_list|filter:{map_type:'q_and_a'}).length == 0" class="list-group-item">&nbsp;</li>
+            {% endverbatim %}
+        </ul>
+
+    </div> {# list col8 #}
+</div> {# list row #}
+
+<div class="row">
+    <div class="col-md-2" style="text-align:right;font-weight:bold;color:#999;">
+        Concept Sets
+    </div>
+
+    <div class="col-md-8">
+
+        <ul class="list-group">
+            {% verbatim %}
+            <li ng-repeat="map in item_list|filter:{map_type:'concept_set'}" class="list-group-item">
                 <button type="button" class="btn btn-link" ng-click="setEditedItem(map);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
                     </button>
 
@@ -23,6 +52,11 @@
                 <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(map)"></span>
             {% endverbatim %}               
                 {% if request.GET.debug %}<br /><pre>{{ map|pprint }}</pre>{% endif %}</li>
+
+            {% verbatim %}
+            <li ng-show="(item_list|filter:{map_type:'concept_set'}).length == 0" class="list-group-item">&nbsp;</li>
+            {% endverbatim %}
+
         </ul>
     </div> {# list col8 #}
 </div> {# list row #}
