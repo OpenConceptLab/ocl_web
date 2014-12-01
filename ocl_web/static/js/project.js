@@ -37,10 +37,14 @@ function locale_by_code(locale_choices, c) {
 };
 
 
-/* Make a controller that accesses the backend using a_url_part as the item type
+/* Make a controller that access concept attributes, supporting CRUD operations.
+   This works for most concept items like names and descriptions.
 
+    :param a_url_part: is the REST item name string, e.g. "names"
+    :param a_field_names: is a list of field names that we will copy from the frontend
+                          to the back end in create and update calls.
    :param a_item_key: specifies the field name in the item object used to uniquely
-   identify the object to the backend.
+                      identify the object to the backend.
 */
 function makeController(a_url_part, a_field_names, a_item_key) {
 
@@ -233,6 +237,7 @@ function makeController(a_url_part, a_field_names, a_item_key) {
 // app.controller('ConceptDescriptionController', conceptItemController);
 app.controller('ConceptDescriptionController', makeController('descriptions', ['description', 'description_type', 'locale', 'locale_preferred']));
 app.controller('ConceptNameController', makeController('names', ['name', 'name_type', 'locale', 'locale_preferred']));
+app.controller('ConceptMappingController', makeController('mappings', ['map_type', 'from_concept_url', 'to_concept_url']));
 
 app.controller('ResourceExtraController', makeController('extras', ['extra_name', 'extra_value'], 'extra_name'));
 

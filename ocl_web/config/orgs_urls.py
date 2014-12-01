@@ -11,7 +11,7 @@ from apps.orgs.views import (OrganizationDetailView, OrganizationCreateView, Org
 from apps.sources.views import (SourceDetailView, SourceCreateView, SourceEditView)
 from apps.sources.views import (SourceVersionView)
 from apps.concepts.views import (ConceptDetailView, ConceptCreateView, ConceptEditView, ConceptCreateJsonView)
-from apps.concepts.views import (ConceptDescView, ConceptNameView, ConceptVersionListView)
+from apps.concepts.views import (ConceptDescView, ConceptNameView, ConceptVersionListView, ConceptMappingView)
 from apps.core.views import ExtraJsonView
 
 urlpatterns = patterns('',
@@ -46,6 +46,10 @@ urlpatterns = patterns('',
     # concept desc views
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/$', ConceptDescView.as_view(), name='concept-desc-cl'),
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/(?P<description>[a-zA-Z0-9\-\.]+)/$', ConceptDescView.as_view(), name='concept-desc-ud'),
+
+    # concept mappin views
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/mappings/$', ConceptMappingView.as_view(), name='concept-mapping-cl'),
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$', ConceptMappingView.as_view(), name='concept-mapping-ud'),
 
     # concept extra views
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/extras/$', ExtraJsonView.as_view(), name='concept-extra'),

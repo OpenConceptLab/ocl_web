@@ -457,6 +457,12 @@ class ConceptNameView(ConceptItemView):
     field_names = ['name', 'name_type', 'locale', 'locale_preferred']
 
 
+class ConceptMappingView(ConceptItemView):
+    item_name = 'mappings'
+    kwarg_name = 'mapping'
+    field_names = ['map_type', 'from_concept_url', 'to_concept_url']
+
+
 class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
     """
         Concept extras handling is different from descriptions and names. So the view
