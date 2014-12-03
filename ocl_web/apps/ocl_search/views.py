@@ -55,7 +55,7 @@ class HomeSearchView(TemplateView):
             resource_type = OCLapi.ORG_TYPE
         if search_type == 'users':
             resource_type = OCLapi.USER_TYPE
-        if search_type == 'sources':
+        if search_type == 'sources':    
             resource_type = OCLapi.SOURCE_TYPE
         if search_type == 'concepts':
             resource_type = OCLapi.CONCEPT_TYPE
@@ -87,6 +87,7 @@ class HomeSearchView(TemplateView):
             for resource_type in search_type_names:
                 if resource_type == search_type:
                     continue
+                # Need to apply search criteria to this url
                 counter_search_url = search_type_paths[resource_type]
                 count_response = api.head(counter_search_url)
                 resource_count[resource_type] = int(count_response.headers['num_found'])
