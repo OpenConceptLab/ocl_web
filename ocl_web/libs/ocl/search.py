@@ -106,7 +106,7 @@ class OCLSearch(object):
 
     """
 
-    DEFAULT_NUM_PER_PAGE = 5
+    DEFAULT_NUM_PER_PAGE = 25
     DEFAULT_SEARCH_TYPE = 'concepts'
 
     search_type_names = {
