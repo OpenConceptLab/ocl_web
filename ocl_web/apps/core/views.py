@@ -388,13 +388,12 @@ class GetStatsView(View):
         api = OCLapi(self.request, debug=True)
         if key == 'concepts':
             response = api.head('concepts')
-            cnt = response.headers.get('num_returned')
+            cnt = response.headers.get('num_found')
         if key == 'users':
             response = api.head('users')
-            cnt = response.headers.get('num_returned')
+            cnt = response.headers.get('num_found')
         if key == 'orgs':
             response = api.head('orgs')
-            cnt = response.headers.get('num_returned')
+            cnt = response.headers.get('num_found')
 
         return HttpResponse(cnt)
-

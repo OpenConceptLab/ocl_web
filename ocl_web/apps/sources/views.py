@@ -3,7 +3,7 @@ import logging
 
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import (HttpResponseRedirect, Http404)
 from django.views.generic import (TemplateView, View)
 from django.views.generic.edit import FormView
 from django.contrib import messages
@@ -32,10 +32,19 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
 
         api = OCLapi(self.request, debug=True)
 
-        source = api.get(self.own_type, self.own_id, 'sources', self.source_id).json()
+        results = api.get(self.own_type, self.own_id, 'sources', self.source_id)
+        if results.status_code != 200:
+            if results.status_code == 404:
+                raise(Http404())
+            results.raise_for_status()
+        source = results.json()
 
         results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts',
                           params=searcher.search_params)
+        if results.status_code != 200:
+            if results.status_code == 404:
+                raise(Http404())
+            results.raise_for_status()
 
         concept_list = results.json()
         context['source'] = source
@@ -220,7 +229,7 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
     item_name = 'versions'
     kwarg_name = 'version'
     field_names = ['id', 'description', 'released']
-    
+
     def get_all_args(self):
         """
         Get all the input entities' identity, figure out whether this is a user owned
