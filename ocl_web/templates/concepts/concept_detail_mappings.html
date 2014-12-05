@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load ocl_tags %}
 &nbsp;
-<div ng-controller="ConceptMappingController" >
+<div ng-controller="MappingController" >
 
 <div class="row">
     <div class="col-md-2" style="text-align:right;font-weight:bold;color:#999;">
@@ -79,7 +79,7 @@
         {% trans 'Add Mapping' %}
     </button>
 
-    <form name="mapping_add_form" ng-submit="addItem(newItem)" ng-show="isCreatingItem">
+    <form name="map_add_form" ng-submit="addItem(newItem)" ng-show="isCreatingItem">
     {% csrf_token %}
     <div class="form-group required">
         <label class="control-label" for="id_name">Mapping</label>
@@ -87,17 +87,68 @@
             placeholder="Name" required="required" title="" type="text"
             ng-model="newItem.name" />
     </div>
-    <div class="form-group">
-        <label class="control-label" for="id_name_type">Mapping Type</label>
-        <input class="form-control" id="id_name_type" maxlength="30" name="name_type" 
-            placeholder="Name Type" type="text"
-            ng-model="newItem.name_type" />
+
+    <div class="form-group required" ng-class="{ 'has-error': map_add_form.map_type.$invalid && !map_add_form.locale.$pristine }">
+        <label class="control-label" for="id_locale">Map Type</label>
+        {% verbatim %}
+        <input class="form-control" type="text" name="map_type" ng-model="addItem.map_type"  typeahead-editable="false"
+            typeahead="map_type for map_type in map_types | filter:$viewValue | limitTo:8" >
+        <p class="help-block" ng-show="map_add_form.map_type.$invalid">Select a Mapping Type</p>
+        {% endverbatim %}
     </div>
+
+    <div class="form-group required">
+        <label class="control-label" for="id_name_type">Source Type</label>
+        <div class="radio">
+            <label>
+                <input id="id_internal" name="source_type" type="radio" value="internal"
+                ng_model="newItem.source_type">Internal</label>
+        </div>
+        <div class="radio">
+            <label>
+                <input id="id_external" name="source_type" type="radio" value="external"
+                ng_model="newItem.source_type">External</label>
+        </div>
+    </div>
+
+    <div ng-show="newItem.source_type == 'external'">
+    <div class="form-group required">
+        <label class="control-label" for="id_to_source_code">To Source Code</label>
+        <input class="form-control" id="id_to_source_code" maxlength="30" name="to_source_code" 
+            placeholder="To source code" title="" ng-required="newItem.source_type=='external'" type="text"
+            ng-model="newItem.to_source_code" />
+    </div>
+
+    <div class="form-group required">
+        <label class="control-label" for="id_to_concept_code">To Concept Code</label>
+        <input class="form-control" id="id_to_concept_code" maxlength="30" name="to_concept_code" 
+            placeholder="To concept code" ng-required="newItem.source_type=='external'" title="" type="text"
+            ng-model="newItem.to_concept_code" />
+    </div>
+
+    <div class="form-group">
+        <label class="control-label" for="id_to_concept_name">To Concept Name</label>
+        <input class="form-control" id="id_to_concept_name" maxlength="30" name="to_concept_name" 
+            placeholder="To concept name" title="" type="text"
+            ng-model="newItem.to_concept_name" />
+    </div>
+</div>
+
+    <div ng-show="newItem.source_type == 'internal'">
+
+    <div class="form-group required">
+        <label class="control-label" for="id_to_concept_url">To Concept URL</label>
+        <input class="form-control" id="id_to_concept_code" maxlength="128" name="to_concept_url" 
+            placeholder="To concept URL" ng-required="newItem.source_type=='internal'"  title="" type="text"
+            ng-model="newItem.to_concept_url" />
+    </div>
+
+</div>
 
 
     <div class="form-group">
       <button type="submit" class="btn btn-primary">
-        {% trans 'Add Name' %}
+        {% trans 'Add Mapping' %}
       </button>
       <button type="button" class="btn btn-default pull-right" ng-click="cancelCreatingItem()">{% trans 'Cancel' %}</button>
      </div>

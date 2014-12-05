@@ -1,6 +1,7 @@
 import requests
 import logging
 
+from django.http import HttpResponse
 from django.views.generic.edit import View
 from django.utils.translation import ugettext as _
 from braces.views import JsonRequestResponseMixin
@@ -272,6 +273,81 @@ def _get_locale_list():
     ]
 
 
+def _get_map_type_list():
+    return [
+        "Access",
+        "After",
+        "Associated finding",
+        "Associated morphology",
+        "Associated procedure",
+        "Associated with",
+        "BROADER-THAN",
+        "Causative agent",
+        "Clinical course",
+        "Component",
+        "Direct device",
+        "Direct morphology",
+        "Direct substance",
+        "Due to",
+        "Episodicity",
+        "Finding context",
+        "Finding informer",
+        "Finding method",
+        "Finding site",
+        "Has active ingredient",
+        "Has definitional manifestation",
+        "Has dose form",
+        "Has focus",
+        "Has intent",
+        "Has interpretation",
+        "Has specimen",
+        "IS A",
+        "Indirect device",
+        "Indirect morphology",
+        "Interprets",
+        "Laterality",
+        "MAY BE A",
+        "MOVED FROM",
+        "MOVED TO",
+        "Measurement method",
+        "Method",
+        "NARROWER-THAN",
+        "Occurrence",
+        "Part of",
+        "Pathological process",
+        "Priority",
+        "Procedure context",
+        "Procedure device",
+        "Procedure morphology",
+        "Procedure site",
+        "Procedure site - Direct",
+        "Procedure site - Indirect",
+        "Property",
+        "REPLACED BY",
+        "Recipient category",
+        "Revision status",
+        "Route of administration",
+        "SAME-AS",
+        "Scale type",
+        "Severity",
+        "Specimen procedure",
+        "Specimen source identity",
+        "Specimen source morphology",
+        "Specimen source topography",
+        "Specimen substance",
+        "Subject of information",
+        "Subject relationship context",
+        "Surgical approach",
+        "Temporal context",
+        "Time aspect",
+        "Using access device",
+        "Using device",
+        "Using energy",
+        "Using substance",
+        "WAS A",
+    ]
+
+
 class GetOptionListView(JsonRequestResponseMixin, View):
     """
         Utility to get a list of valid options for attributes for
@@ -291,6 +367,34 @@ class GetOptionListView(JsonRequestResponseMixin, View):
             return self.render_json_response(_get_concept_class_list())
         if option_type == 'datatypes':
             return self.render_json_response(_get_datatype_list())
+        if option_type == 'map_types':
+            return self.render_json_response(_get_map_type_list())
         if option_type == 'locales':
             return self.render_json_response(_get_locale_list())
+
+
+class GetStatsView(View):
+    """
+        Utility views to get basic statistics to monitoring services.
+
+    """
+    def get(self, request, *args, **kwargs):
+        """
+            Return a ... number !
+        """
+        key = self.kwargs['key']
+        cnt = 0
+
+        api = OCLapi(self.request, debug=True)
+        if key == 'concepts':
+            response = api.head('concepts')
+            cnt = response.headers.get('num_returned')
+        if key == 'users':
+            response = api.head('users')
+            cnt = response.headers.get('num_returned')
+        if key == 'orgs':
+            response = api.head('orgs')
+            cnt = response.headers.get('num_returned')
+
+        return HttpResponse(cnt)
 
