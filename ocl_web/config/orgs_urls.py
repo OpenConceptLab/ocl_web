@@ -10,7 +10,8 @@ from django.conf.urls import (patterns, url)
 from apps.orgs.views import (OrganizationDetailView, OrganizationCreateView, OrganizationEditView)
 from apps.sources.views import (SourceDetailView, SourceCreateView, SourceEditView)
 from apps.sources.views import (SourceVersionView)
-from apps.concepts.views import (ConceptDetailView, ConceptCreateView, ConceptEditView, ConceptCreateJsonView)
+from apps.collections.views import (CollectionDetailView, CollectionCreateView, CollectionEditView)
+from apps.concepts.views import (ConceptDetailView, ConceptEditView, ConceptCreateJsonView)
 from apps.concepts.views import (ConceptDescView, ConceptNameView, ConceptVersionListView, ConceptMappingView)
 from apps.core.views import ExtraJsonView
 
@@ -31,6 +32,11 @@ urlpatterns = patterns('',
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/extras/$', ExtraJsonView.as_view(), name='source-extra'),
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/extras/(?P<extra>[a-zA-Z0-9\-\.]+)/$', ExtraJsonView.as_view(), name='source-extra-add'),
 
+
+    # collections
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<source>[a-zA-Z0-9\-\.]+)/$', SourceDetailView.as_view(), name='collection-detail'),
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/$', CollectionCreateView.as_view(), name='collection-create-for-org'),
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<source>[a-zA-Z0-9\-\.]+)/edit/$', SourceEditView.as_view(), name='collection-edit'),
 
     # concept views
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/create/$', ConceptCreateJsonView.as_view(), name='concept-create-for-org'),
