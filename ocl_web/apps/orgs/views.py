@@ -1,6 +1,7 @@
 import requests
 
 from django.shortcuts import redirect
+from django.http import Http404
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse
@@ -50,7 +51,13 @@ class OrganizationDetailView(TemplateView):
 
         api = OCLapi(self.request, debug=True)
 
-        org = api.get('orgs', org_id).json()
+        results = api.get('orgs', org_id)
+        if results.status_code != 200:
+            if results.status_code == 404:
+                raise Http404
+            else:
+                results.raise_for_status()
+        org = results.json()
 
         results = api.get('orgs', org_id, 'sources', params=source_searcher.search_params)
         if results.status_code == requests.codes.not_found:

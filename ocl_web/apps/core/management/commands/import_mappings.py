@@ -10,9 +10,6 @@
 """
 from optparse import make_option
 import os.path
-import json
-import random
-import requests
 
 from django.core.management import BaseCommand, CommandError
 
@@ -48,11 +45,6 @@ class Command(BaseCommand):
                     dest='source_id',
                     default=None,
                     help='Source ID, e.g. OMRS'),
-        make_option('--create',
-                    action='store_true',
-                    dest='create_mode',
-                    default=False,
-                    help='Create data.'),
     )
 
     def __init__(self):
@@ -115,11 +107,11 @@ class Command(BaseCommand):
                 'to_source_code': source,
                 'to_concept_code': code,
             }
-        result = self.ocl.create_mapping(
-            'orgs', self.ORG_ID, self.SOURCE_ID, source_cid,
-            data)
-        print result
-        return
+            result = self.ocl.create_mapping(
+                'orgs', self.ORG_ID, self.SOURCE_ID, source_cid,
+                data)
+            print result
+            return
 
         for dest_id in fields[2:]:
             data = {
@@ -128,10 +120,9 @@ class Command(BaseCommand):
                                                                              self.ORG_ID,
                                                                              self.SOURCE_ID,
                                                                              dest_id),
-                'to_concept_url': '/orgs/%s/sources/%s/concepts/%s/' % (
-                                                                         self.ORG_ID,
-                                                                         self.SOURCE_ID,
-                                                                         dest_id),
+                'to_concept_url': '/orgs/%s/sources/%s/concepts/%s/' % (self.ORG_ID,
+                                                                        self.SOURCE_ID,
+                                                                        dest_id),
             }
             result = self.ocl.create_mapping(
                 'orgs', self.ORG_ID, self.SOURCE_ID, source_cid,
@@ -149,7 +140,6 @@ class Command(BaseCommand):
         if len(args) != 1:
             raise CommandError('mapping input text file is required.')
 
-        create_mode = options['create_mode']
         username = options['username']
 
         if username is None:

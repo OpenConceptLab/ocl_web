@@ -395,5 +395,8 @@ class GetStatsView(View):
         if key == 'orgs':
             response = api.head('orgs')
             cnt = response.headers.get('num_found')
+        if key == 'sources':
+            response = api.head('sources')
+            cnt = response.headers.get('num_found')
 
         return HttpResponse(cnt)

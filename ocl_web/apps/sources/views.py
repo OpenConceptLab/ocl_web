@@ -35,16 +35,18 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         results = api.get(self.own_type, self.own_id, 'sources', self.source_id)
         if results.status_code != 200:
             if results.status_code == 404:
-                raise(Http404())
-            results.raise_for_status()
+                raise Http404
+            else:
+                results.raise_for_status()
         source = results.json()
 
         results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts',
                           params=searcher.search_params)
         if results.status_code != 200:
             if results.status_code == 404:
-                raise(Http404())
-            results.raise_for_status()
+                raise Http404
+            else:
+                results.raise_for_status()
 
         concept_list = results.json()
         context['source'] = source
