@@ -3,5 +3,5 @@
 {% else %}
 <a href="{% url 'concept-detail' user=concept.owner source=concept.source concept=concept.id %}" class="label label-primary">
 {% endif %}
-<span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ concept.id }}</a>
+<span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{% if concept.retired %}<s>&nbsp;&nbsp;{% endif %}{{ concept.id }}{% if concept.retired %}&nbsp;&nbsp;</s>{% endif %}</a>
 

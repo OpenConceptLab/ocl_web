@@ -103,7 +103,7 @@ class Command(BaseCommand):
     def retire_concepts(self):
 
         for line in self.input:
-            cid = int(line)
+            cid = line.strip()
             self.retire(cid)
 
     def handle(self, *args, **options):

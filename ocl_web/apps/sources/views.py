@@ -8,7 +8,7 @@ from django.views.generic import (TemplateView, View)
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.core.paginator import Paginator
-from braces.views import (CsrfExemptMixin, JsonRequestResponseMixin)
+from braces.views import JsonRequestResponseMixin
 
 
 from libs.ocl import OCLapi, OCLSearch
@@ -204,7 +204,8 @@ class SourceEditView(UserOrOrgMixin, FormView):
         else:
             result = api.update_source_by_user(self.user_id, self.source_id, data)
         print result
-        if len(result.text) > 0: print result.json()
+        if len(result.text) > 0:
+            print result.json()
 
         messages.add_message(self.request, messages.INFO, _('Source updated'))
 
@@ -308,4 +309,3 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             return self.render_bad_request_response(result.content)
 
         return self.render_json_response({'message': _('Version deleted')})
-
