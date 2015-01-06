@@ -1,9 +1,9 @@
 {% load staticfiles i18n %}<!DOCTYPE html>
 <div class="header navbar" style="margin-bottom:0;">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'home'%}"><img src="{% static 'images/ocl-logo.png' %}" height="40" /></a>
+    <a class="navbar-brand" href="{% url 'home'%}"><img src="{% static 'images/ocl-logo.png' %}" height="40" width="62" /></a>
     <form class="navbar-form navbar-left" role="search" action="{% url 'search'%}" method="get">
-      <div class="input-group input-group-sm">
+      <div class="input-group input-group-sm pull-left">
         <input name="q" type="text" class="form-control" placeholder="Search OCL" value="{{ request.GET.q }}" />
 
         {% if request.GET.type %}
@@ -17,15 +17,17 @@
           <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
         </span>
       </div>
-      {# A tricky way for the body of the main search screen to add to the form input by skipping the closing form tag #}
-      {% if not extend_nav_form %}
+
+    {# A tricky way for the body of the main search screen to add to the form input by skipping the closing form tag #}
+    {% if not extend_nav_form %}
     </form>
     {% endif %}
+
     <ul class="nav navbar-nav pull-right ocl-nav-menu">
       <!--li><a href="{% url 'explore' %}">Explore</a></li-->
       <li><a href="{% url 'features' %}">Features</a></li>
       <li><a href="http://maternalconceptlab.tumblr.com/" target="_new">Blog</a></li>
-      <li><a href="{% url 'help' %}">Learning Center</a></li>
+      <!--li><a href="{% url 'help' %}">Learning Center</a></li-->
 
       {% if request.user.is_authenticated %}
         <li><a href="{% url 'users:detail' request.user.username  %}">{% trans user.username %}</a></li>
@@ -40,7 +42,7 @@
         </li>
         <li><a href="#"><span class="glyphicon glyphicon-cog"></span></a>
         <li><a href="{% url 'account_logout' %}">{% trans "Logout" %}</a></li>
-        {% else %}
+      {% else %}
         <li><a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a></li>
         <li><a href="{% url 'account_login' %}">{% trans "Sign In" %}</a></li>
       {% endif %}
