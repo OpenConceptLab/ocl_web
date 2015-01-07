@@ -141,6 +141,13 @@ form div.input-group {
 }
 
 
+.label .label-retired {
+  text-decoration: line-through;
+  text-decoration-color: Black;
+  color: #c66;
+  background-color: #ccc;
+}
+
 
 .resource-label {
   font-size: 13pt;
@@ -207,8 +214,6 @@ form div.input-group {
   background-color: #f0ad4e;
   color: White;
 }
-
-
 
 
 .concept-label {
