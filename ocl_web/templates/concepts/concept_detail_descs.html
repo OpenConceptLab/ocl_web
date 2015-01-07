@@ -9,23 +9,22 @@
 
 <div class="row" >
     <div class="col-md-2" style="text-align:right;font-weight:bold;color:#999;">
-        Description
+        Descriptions
     </div>
     <div class="col-md-8">
         <ul class="list-group">
             {% verbatim %}
             <li ng-repeat="desc in item_list" class="list-group-item">
-
-                    <button type="button" class="btn btn-link" ng-click="setEditedItem(desc);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
-                    </button>
-                    {{ desc.description }} : {{ desc.description_type }} <span class="small"><em>[{{ desc.locale }}]</em></span>
-                    <span ng-if="desc.locale_preferred" class="glyphicon glyphicon-flag"></span>                    
+                <button type="button" class="btn btn-link" ng-click="setEditedItem(desc);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
+                </button>
+                {{ desc.description }}
+                {% if desc.description_type %}&nbsp;&nbsp;<span class="small text-muted">{{ desc.description_type }}</span>{% endif %}{% if desc.locale %}&nbsp;&nbsp;<span class="small"><em>[{{ desc.locale }}]</em></span>{% endif %}
+                <span ng-if="desc.locale_preferred" class="glyphicon glyphicon-flag"></span>
                 <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(desc)"></span>
             {% endverbatim %}
-                {% if desc.localePreferred %}&nbsp;<span id="locale-preferred-desc-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
-                / <span class="small">{{ desc.description_type|default:"" }}</span>
+                {% if desc.locale_preferred %}&nbsp;<span id="locale-preferred-desc-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
+                / <span class="small">{{ desc.description_type|default:"&nbsp;" }}</span>
                 {% if request.GET.debug %}<br /><pre>{{ desc|pprint }}</pre>{% endif %}</li>
-
         </ul>
     </div> {# 9 #}
 </div> {# outer row#}
