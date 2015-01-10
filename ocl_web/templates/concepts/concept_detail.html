@@ -18,25 +18,22 @@
 
 					<h3>
 						{% source_owner_label source %} / {% source_label source %} / {% concept_label concept %}
-
 						{% if source.owner_type == 'Organization' %}
 						<a href="{% url 'concept-edit' org=source.owner source=source.id concept=concept.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
 						{% else %}
 						<a href="{% url 'concept-edit' user=source.owner source=source.id concept=concept.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
 						{% endif %}
-
-
 					</h3>
 
 
 					<p>
-						{{ concept.display_name }} {% if concept.display_locale %}<span class="small"><em>[{{ concept.display_locale }}]</em></span>{% endif %}&nbsp;&nbsp;<span id="element-info" data-toggle="tooltip" data-placement="right" title="Preferred name in selected language"><span class="glyphicon glyphicon-info-sign"></span></span><br />
-						<em>Class:</em> {{ concept.concept_class }},
-						<em>Datatype:</em> {{ concept.datatype }}
-
-						<span class="glyphicon glyphicon-calendar"></span> Created on {{ concept.created_on|smart_date }}, last updated {{ concept.updated_on|smart_date}}
-
-
+						{{ concept.display_name }}{% if concept.display_locale %}&nbsp;&nbsp;<span class="small text-muted"><em>[{{ concept.display_locale }}]</em></span>{% endif %}&nbsp;&nbsp;<span id="element-info" data-toggle="tooltip" data-placement="right" title="Preferred name in selected language"><span class="glyphicon glyphicon-info-sign"></span></span><br />
+						<em>Class:</em> {{ concept.concept_class }}, <em>Datatype:</em> {{ concept.datatype }}<br />
+						<span class="text-muted small">
+							<span class="glyphicon glyphicon-calendar"></span> Created on {{ concept.created_on|smart_date }}
+							&nsp;&nbsp;
+							<span class="glyphicon glyphicon-calendar"></span> Last updated {{ concept.updated_on|smart_date}}
+						</span>
 					</p>
 
 
@@ -59,6 +56,7 @@
 &nbsp;
 <div class="row"> {# display #}
 
+<!--
 <div class="row">
 	<div class="col-md-2" style="text-align:right;">
 		<span style="font-weight:bold;color:#999;">Preferred Name</span>
@@ -66,7 +64,7 @@
 	</div>
 
 	<div class="col-md-9">
-		{{ concept.display_name }} <span class="small"><em>[{{ concept.display_locale }}]</em></span>
+		{{ concept.display_name }}{% if concept.display_name %}&nbsp;&nbsp;<span class="small text-muted"><em>[{{ concept.display_locale }}]</em></span>{% endif %}
 	</div>
 </div>
 	{% field_label 'Class' concept.concept_class %}
@@ -76,7 +74,7 @@
 </div> {# display row #}
 
 <div class="row"><hr /></div>
-
+-->
 
 {% include 'concepts/concept_detail_names.html' %}
 {% include 'concepts/concept_detail_descs.html' %}

@@ -68,8 +68,8 @@
 	<div class="col-md-9">
 		<ul class="list-group">
 		{% for name in concept.names %}
-			<li class="list-group-item {% if name.localePreferred %}list-group-item-info{% endif %}">{{ name.name }} <span class="small"><em>[{{ name.locale }}]</em></span> 
-				{% if name.localePreferred %}&nbsp;<span id="locale-preferred-name-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
+			<li class="list-group-item {% if name.localePreferred %}list-group-item-info{% endif %}">{{ name.name }}&nbsp;<span class="small"><em>[{{ name.locale }}]</em></span> 
+				{% if name.locale_preferred %}&nbsp;<span id="locale-preferred-name-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
 				/ <span class="small">{{ name.name_type|default:"" }}</span>
 				{% if request.GET.debug %}<br /><pre>{{ name|pprint }}</pre>{% endif %}</li>
 		{% empty %}
@@ -87,7 +87,7 @@
 		{% for desc in concept.descriptions %}
 			<li class="list-group-item {% if desc.localePreferred %}list-group-item-info{% endif %}">{{ desc.description }} <span class="small"><em>[{{ desc.locale }}]</em></span> 
 				{% if desc.localePreferred %}&nbsp;<span id="locale-preferred-desc-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
-				/ <span class="small">{{ desc.description_type|default:"" }}</span>
+				{% if desc.description_type %} / <span class="small">{{ desc.description_type|default:"" }}</span>{% endif %}
 				{% if request.GET.debug %}<br /><pre>{{ desc|pprint }}</pre>{% endif %}</li>
 		{% empty %}
 			<li class="small"><em>None</em></li>
