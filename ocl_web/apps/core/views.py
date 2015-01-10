@@ -51,6 +51,7 @@ class UserOrOrgMixin(object):
 
         self.source_id = self.kwargs.get('source')
         self.concept_id = self.kwargs.get('concept')
+        self.collection_id = self.kwargs.get('collection')
 
     def args_string(self):
         """

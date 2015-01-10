@@ -128,7 +128,7 @@
 					    <a href="{% url 'concept-detail' user=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
 			    	{% endif %}
 					<span class="resource-label small concept">
-						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span><span class="resource-label-id-code">{{ result.id }}</span></span><span class="resource-label-name">{{ result.display_name }}</span>
+						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span><span class="resource-label-id-code">{{ result.id }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.display_name }}{% if result.retired %}</s>{% endif %}</span>
 					</span>
 				</a></h4>
 

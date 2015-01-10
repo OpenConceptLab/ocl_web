@@ -20,7 +20,7 @@ logger = logging.getLogger('oclweb')
 
 class CollectionDetailView(UserOrOrgMixin, TemplateView):
 
-    template_name = "Collections/Collection_detail.html"
+    template_name = "collections/collection_detail.html"
 
     def get_context_data(self, *args, **kwargs):
         context = super(CollectionDetailView, self).get_context_data(*args, **kwargs)
@@ -28,11 +28,11 @@ class CollectionDetailView(UserOrOrgMixin, TemplateView):
         self.get_args()
 
         print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
-        searcher = OCLSearch(OCLapi.CONCEPT_TYPE).parse(self.request.GET)
+        searcher = OCLSearch(OCLapi.COLLECTION_TYPE).parse(self.request.GET)
 
         api = OCLapi(self.request, debug=True)
 
-        results = api.get(self.own_type, self.own_id, 'concepts', self.concept_id)
+        results = api.get(self.own_type, self.own_id, 'collections', self.collection_id)
         if results.status_code != 200:
             if results.status_code == 404:
                 raise Http404
