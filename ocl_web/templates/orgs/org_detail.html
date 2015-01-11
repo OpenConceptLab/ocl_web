@@ -123,7 +123,10 @@
 						</div>
 					</form>
 	        <span class="pull-right">
+	        	{% if user.is_authenticated %}
+	        	{# TBD: probably a more complete tag to check for access #}
 				<a href="{% url "source-create-for-org" org.id %}" class="btn"><span class="glyphicon glyphicon-plus"></span>Add Source</a>
+				{% endif %}
 			</span>
 
 				</div>

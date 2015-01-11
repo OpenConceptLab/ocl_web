@@ -27,11 +27,12 @@
 
 
 					<p>
-						{{ concept.display_name }}{% if concept.display_locale %}&nbsp;&nbsp;<span class="small text-muted"><em>[{{ concept.display_locale }}]</em></span>{% endif %}&nbsp;&nbsp;<span id="element-info" data-toggle="tooltip" data-placement="right" title="Preferred name in selected language"><span class="glyphicon glyphicon-info-sign"></span></span><br />
+						<span {% if concept.retired %}class="retired"{% endif %}>{{ concept.display_name }}</span>
+						{% if concept.display_locale %}&nbsp;&nbsp;<span class="small text-muted"><em>[{{ concept.display_locale }}]</em></span>{% endif %}&nbsp;&nbsp;<span id="element-info" data-toggle="tooltip" data-placement="right" title="Preferred name in selected language"><span class="glyphicon glyphicon-info-sign"></span></span><br />
 						<em>Class:</em> {{ concept.concept_class }}, <em>Datatype:</em> {{ concept.datatype }}<br />
 						<span class="text-muted small">
 							<span class="glyphicon glyphicon-calendar"></span> Created on {{ concept.created_on|smart_date }}
-							&nsp;&nbsp;
+							&nbsp;&nbsp;
 							<span class="glyphicon glyphicon-calendar"></span> Last updated {{ concept.updated_on|smart_date}}
 						</span>
 					</p>

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load avatar_tags %}
 {% load static %}
-
+{% load ocl_tags %}
 {% block title %}User: {{ object.username }}{% endblock %}
 
 {% block content %}
@@ -12,18 +12,22 @@
       <div>{% avatar user size=200 %}</div>
       <h2>{{ ocl_user.name }}<br /><small>{{ object.username }}</small></h2>
       <hr />
-      <div><strong>Company:</strong> {{ ocl_user.company }}</div>
-      <div><strong>Location:</strong> {{ ocl_user.location }}</div>
+      <div><strong>Company:</strong> {{ ocl_user.company|default:"N/A" }}</div>
+      <div><strong>Location:</strong> {{ ocl_user.location|default:"N/A"  }}</div>
+      {% if ocl_user.website %}
       <div><strong>Website:</strong> {{ ocl_user.website }}</div>
+      {% endif %}
       <div><strong>Email:</strong> {{ ocl_user.email }}</div>
-      <div><strong>Joined:</strong> {{ ocl_user.created_on }}</div>
+      <div><strong>Joined:</strong> {{ ocl_user.created_on|smart_date }}</div>
       <hr />
       <h4>Organizations</h4>
-      <ul>
+
       {% for org in orgs %}
-        <li><a href="">{{ org.name }}</a></li>
+        {% org_label org %}<br />
+      {% empty %}
+      No organizations
       {% endfor %}
-      </ul>
+
     </div>
     <div class="col-sm-9">
       
@@ -59,6 +63,8 @@
           </div>
         </div> {# left col #}
 
+        {% comment %}
+        {# hide until we have collections #}
         <div class="col-sm-6">
           <div class="list-group">
             <div class="list-group-item"><h4>Collections</h4>
@@ -74,7 +80,9 @@
             {% endfor %}
           </div>
         </div>
+        {% endcomment %}
       </div>
+
 
       <div class="row">
         <div class="col-sm-6">

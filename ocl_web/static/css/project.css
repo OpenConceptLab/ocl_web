@@ -148,6 +148,11 @@ form div.input-group {
   background-color: #ccc;
 }
 
+.retired {
+  text-decoration: line-through;
+  text-decoration-color: Black;
+  color: #c66;
+}
 
 .resource-label {
   font-size: 13pt;
