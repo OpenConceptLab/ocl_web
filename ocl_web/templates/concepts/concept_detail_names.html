@@ -16,7 +16,8 @@
             <li ng-repeat="name in item_list" class="list-group-item">
                 <button type="button" class="btn btn-link" ng-click="setEditedItem(name);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span></button>
                 {{ name.name }} 
-                {% if name.name_type %}&nbsp;&nbsp;<span class="small text-muted">{{ name.name_type}}</span>{% endif %}{% if name.locale %}&nbsp;&nbsp;<span class="small text-muted"><em>[{{ name.locale }}]</em></span>{% endif %}
+                <span ng-show="name.name_type" class="small text-muted">&nbsp;&nbsp;{{ name.name_type}}</span>
+                <span ng-show="name.locale" class="small text-muted"><em>&nbsp;&nbsp;[{{ name.locale }}]</em></span>
                 <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
                 <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(name)"></span>
             {% endverbatim %}

@@ -18,7 +18,8 @@
                 <button type="button" class="btn btn-link" ng-click="setEditedItem(desc);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
                 </button>
                 {{ desc.description }}
-                {% if desc.description_type %}&nbsp;&nbsp;<span class="small text-muted">{{ desc.description_type }}</span>{% endif %}{% if desc.locale %}&nbsp;&nbsp;<span class="small"><em>[{{ desc.locale }}]</em></span>{% endif %}
+                <span ng-show="desc.description" class="small text-muted">&nbsp;&nbsp;{{ desc.description_type }}</span>
+                <span ng-show="desc.locale" class="small"><em>&nbsp;&nbsp;[{{ desc.locale }}]</em></span>
                 <span ng-if="desc.locale_preferred" class="glyphicon glyphicon-flag"></span>
                 <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(desc)"></span>
             {% endverbatim %}
