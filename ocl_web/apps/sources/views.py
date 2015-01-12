@@ -164,7 +164,13 @@ class SourceEditView(UserOrOrgMixin, FormView):
             'request': self.request,
         }
         data.update(self.source)
-        data['supported_locales'] = ','.join(self.source['supported_locales'])
+        # convert supported locales to string
+        ls = self.source.get('supported_locales')
+        if ls is None:
+            data['supported_locales'] = ''
+        else:
+            data['supported_locales'] = ','.join(ls)
+
         return data
 
     def get_context_data(self, *args, **kwargs):

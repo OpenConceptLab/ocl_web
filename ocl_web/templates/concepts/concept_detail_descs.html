@@ -12,6 +12,9 @@
         Descriptions
     </div>
     <div class="col-md-8">
+
+    {% if_can_change concept %}
+
         <ul class="list-group">
             {% verbatim %}
             <li ng-repeat="desc in item_list" class="list-group-item">
@@ -27,6 +30,24 @@
                 / <span class="small">{{ desc.description_type|default:"&nbsp;" }}</span>
                 {% if request.GET.debug %}<br /><pre>{{ desc|pprint }}</pre>{% endif %}</li>
         </ul>
+
+    {% else %}
+
+        <ul class="list-group">
+            {% verbatim %}
+            <li ng-repeat="desc in item_list" class="list-group-item">
+                {{ desc.description }}
+                <span ng-show="desc.description" class="small text-muted">&nbsp;&nbsp;{{ desc.description_type }}</span>
+                <span ng-show="desc.locale" class="small"><em>&nbsp;&nbsp;[{{ desc.locale }}]</em></span>
+                <span ng-if="desc.locale_preferred" class="glyphicon glyphicon-flag"></span>
+            {% endverbatim %}
+                {% if desc.locale_preferred %}&nbsp;<span id="locale-preferred-desc-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
+                / <span class="small">{{ desc.description_type|default:"&nbsp;" }}</span>
+                {% if request.GET.debug %}<br /><pre>{{ desc|pprint }}</pre>{% endif %}</li>
+        </ul>
+
+    {% endif_can_change concept %}
+
     </div> {# 9 #}
 </div> {# outer row#}
 
@@ -39,6 +60,8 @@
 
 
 {% include 'includes/ng_alerts_incl.html' %}
+
+{% if_can_change concept %}
 
 <!-- CREATING -->
 <div ng-if="shouldShowCreatingItem()">
@@ -140,6 +163,7 @@
     </form>
 </div> {# editing #}
 
+{% endif_can_change concept %}
 
 </div> {# col6 for form for description #}
 

@@ -95,27 +95,37 @@
 						<li><a href="#">Another sort</a></li>
 						<li><a href="#">Something else here</a></li>
 					  </ul>
-					</div>
+					</div> {# sort box #}
 
-						<div class="form-group">
-							<div class="btn-group">
-							  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+
+					<div class="form-group">
+
+					    {% comment %}
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 								<span class="text-muted">Filter:</span> <strong>None</strong> <span class="caret"></span>
-							  </button>
-							  <ul class="dropdown-menu" role="menu">
+							</button>
+							<ul class="dropdown-menu" role="menu">
 								<li><a href="#">Public</a></li>
 								<li><a href="#">Private</a></li>
 								<li><a href="#">Sources</a></li>
 								<li><a href="#">Collections</a></li>
-							  </ul>
-							</div>
-						</div>
+							</ul>
+						</div> {# filter #}
+					    {% endcomment %}
+					</div>
+				</div>
+			</div>
+
+			<div class="row" style="margin-bottom:20px;">
+				<div class="col-md-12">
+
 
                         {% simple_pager source_page 'Source' url=source_pagination_url %}
 
 						<div class="form-group">
 							<div class="input-group input-group-sm">
-								<input name="q" id="resourceFilter" type="text" class="form-control" placeholder="Filter Sources and Collections" />
+								<input name="q" id="resourceFilter" type="text" class="form-control" placeholder="Search sources within organization" />
 								<span class="input-group-btn">
 									<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
 								</span>
@@ -150,6 +160,8 @@
 						</span>
 					</a></h4>
 					<p>
+						<em>Source type:</em> {{ result.source_type }}<br />
+
 						{% if result.description %}{{ result.description }}<br />{% endif %}
 						{% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
 					</p>
@@ -344,6 +356,8 @@
 					{% for member in members %}
 						<h4>{% user_label member %}</h4>
 						{% if request.GET.debug %}<pre>{{ member|pprint }}</pre>{% endif %}
+					{% empty %}
+					No members.
 					{% endfor %}
 				</div>
 			</div> <!-- /panel -->

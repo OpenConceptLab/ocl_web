@@ -11,6 +11,8 @@
 
     <div class="col-md-8">
 
+    {% if_can_change concept %}
+
         <ul class="list-group">
             {% verbatim %}
             <li ng-repeat="name in item_list" class="list-group-item">
@@ -23,6 +25,22 @@
             {% endverbatim %}
                 {% if request.GET.debug %}<br /><pre>{{ name|pprint }}</pre>{% endif %}</li>
         </ul>
+
+    {% else %}
+
+        <ul class="list-group">
+            {% verbatim %}
+            <li ng-repeat="name in item_list" class="list-group-item">
+                {{ name.name }} 
+                <span ng-show="name.name_type" class="small text-muted">&nbsp;&nbsp;{{ name.name_type}}</span>
+                <span ng-show="name.locale" class="small text-muted"><em>&nbsp;&nbsp;[{{ name.locale }}]</em></span>
+                <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
+            {% endverbatim %}
+                {% if request.GET.debug %}<br /><pre>{{ name|pprint }}</pre>{% endif %}</li>
+        </ul>
+
+    {% endif_can_change concept %}
+
     </div> {# list col8 #}
 </div> {# list row #}
 
@@ -35,6 +53,8 @@
 
 
 {% include 'includes/ng_alerts_incl.html' %}
+
+    {% if_can_change concept %}
 
     {# add form for names #}
     <div ng-if="shouldShowCreatingItem()">
@@ -133,12 +153,13 @@
 </div> {# editing name #}
 
 
-
-
-
+{% endif_can_change concept %}
 
     </div> {# form col6 #}
 
 </div> {# add form row for name #}
+
+
+
 </div> {# names controller #}
 

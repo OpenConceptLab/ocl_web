@@ -9,6 +9,10 @@ import dateutil.parser
 
 from django import template
 from django.template.defaultfilters import stringfilter
+from django.template.base import (Node, NodeList, Template, Context)
+
+
+from libs.ocl import OCLapi
 
 
 register = template.Library()
@@ -115,3 +119,71 @@ def simple_pager(page, name, url=None):
         'name': name,
         'url': url,
     }
+
+
+class IfCanChangeNode(Node):
+
+    def __init__(self, nodelist_true, nodelist_false, source_var):
+        self.nodelist_true, self.nodelist_false = nodelist_true, nodelist_false
+        self.source_var = template.Variable(source_var)
+
+    def render(self, context):
+        # Init state storage
+        try:
+            source = self.source_var.resolve(context)
+        except template.VariableDoesNotExist:
+            return ''
+
+        user = context['user']
+
+        can = False
+        if source.get('owner_type') == 'Organization':
+            # member can change
+            # TODO: need a better API call to check for access
+            api = OCLapi(context['request'], debug=True)
+            results = api.get('orgs', source.get('owner'), 'members',
+                user.username)
+            if results.status_code == 204:
+                can = True
+            print 'ACCESS CheCK:', results.status_code
+
+        else:
+            # owned by a user
+            can = True
+
+        if can:
+            return self.nodelist_true.render(context)
+        else:
+            return self.nodelist_false.render(context)
+
+
+@register.tag('if_can_change')
+def do_if_can_change(parser, token):
+    """
+    The ``{% if_can_change source_or_concept %}`` tag evaluates whether the current user have
+    access to the specified source.
+
+    If so, the block bracketed are output.
+
+    ::
+
+        {% if_can_change source %}
+
+        {% endif_can_change %}
+
+
+    """
+    # {% if ... %}
+    # NOTE: the source_var can also be a concept
+    source_var = token.split_contents()[1]
+
+    nodelist_true = parser.parse(('else', 'endif_can_change'))
+
+    token = parser.next_token()
+    if token.contents == 'else':
+        nodelist_false = parser.parse(('endif_can_change',))
+        parser.delete_first_token()
+    else:
+        nodelist_false = NodeList()
+
+    return IfCanChangeNode(nodelist_true, nodelist_false, source_var)

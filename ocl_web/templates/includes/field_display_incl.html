@@ -4,10 +4,10 @@
         {{ field_label }}
     </div>
     <div class="col-md-9">
-        {% if is_url %}
+        {% if is_url and field_value %}
         <a href="{{ field_value }}" target="_blank">{{ field_value }}</a>
         {% else %}
-        {{ field_value }}
+        {{ field_value|default:"" }}
         {% endif %}
     </div>
 </div>

@@ -12,6 +12,9 @@
         Extras
     </div>
     <div class="col-md-8">
+
+    {% if_can_change source %}
+
         <ul class="list-group">
             {% verbatim %}
             <li ng-repeat="item in item_list" class="list-group-item">
@@ -21,6 +24,20 @@
             {% endverbatim %}
             </li>
         </ul>
+
+
+    {% else %}
+
+
+        <ul class="list-group">
+            {% verbatim %}
+            <li ng-repeat="item in item_list" class="list-group-item">
+                <span class="text-muted" style="font-weight:bold">{{ item.extra_name}}</span> <span class="text-muted small">:</span> <span class="extra-value">{{ item.extra_value }}</span>
+            {% endverbatim %}
+            </li>
+        </ul>
+
+    {% endif_can_change source %}
     </div>
 </div> {# outer row #}
 
@@ -35,6 +52,8 @@
 <div class="col-md-6">
 
 {% include 'includes/ng_alerts_incl.html' %}
+
+{% if_can_change source %}
 
 <!-- CREATING -->
 <div ng-if="shouldShowCreatingItem()">
@@ -101,6 +120,7 @@
     </form>
 </div> {# editing #}
 
+{% endif_can_change concept %}
 
 </div> {# col6 for form for extra #}
 

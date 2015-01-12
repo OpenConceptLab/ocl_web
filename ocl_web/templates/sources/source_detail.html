@@ -17,34 +17,24 @@
 				<div style="display:inline-block;padding-left:20px">
 					<h3>
 						{% source_owner_label source %} / {% source_label source %}
-						{# TODO: Only show if admin or owner #}
+						{% if_can_change source %}
 						{% if source.owner_type == 'Organization' %}
 						<a href="{% url 'source-edit' org=source.owner source=source.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
 						{% else %}
 						<a href="{% url 'source-edit' user=source.owner source=source.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
 						{% endif %}
+						{% endif_can_change source %}
 					</h3>
 
+					<p>
 					<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ source.updated_on|smart_datetime }})</span>
 					<span class="org-privacy">public</span>
-					<!--div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">All Source Fields <span class="pull-right">&blacktriangleright;</span></h3>
-						</div>
-						<div class="panel-body hidden">
-							{% for key, value in source.items %}
-							<div class="row">
-								<div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">{{ key }}</div>
-								<div class="col-md-9">{{ value }}</div>
-							</div>
-							{% endfor %}
-						</div>
-					</div--> <!-- /panel -->
+                	</p>
 				</div>
 		        {% if request.GET.debug %}
 		        	<h5>Source</h5><pre>{{ source|pprint }}</pre>
 		        	<h5>Concepts</h5><pre>{{ concepts|pprint }}</pre>
-		        {% endif %}</li>
+		        {% endif %}
 			</div>
 		</div> <!-- /row -->
 	
@@ -133,6 +123,7 @@
 			<div class="row">
 				<div class="col-md-12">
 
+					{% if_can_change source %}
 					<div class="pull-right">
 						<a class="btn btn-link" 
 
@@ -144,6 +135,7 @@
 						><span class="glyphicon glyphicon-plus"></span>
 						{% trans 'Add Concept' %}</a>
 					</div>
+					{% endif_can_change %}
 				</div>
 			</div>
 
@@ -172,8 +164,7 @@
 							{% endif %}
 
 							<span class="resource-label small concept">
-								<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span><span class="resource-label-id-code">{{ result.id }}</span></span>
-								<span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.display_name }}{% if result.retired %}</s>{% endif %}</span>
+								<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span><span class="resource-label-id-code">{{ result.id }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.display_name }}{% if result.retired %}</s>{% endif %}</span>
 							</span>
 						</a></h4>
 

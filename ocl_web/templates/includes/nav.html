@@ -2,7 +2,7 @@
 <div class="header navbar" style="margin-bottom:0;">
   <div class="container">
     <a class="navbar-brand" href="{% url 'home'%}"><img src="{% static 'images/ocl-logo.png' %}" height="40" width="62" /></a>
-    <form class="navbar-form navbar-left" role="search" action="{% url 'search'%}" method="get">
+    <form class="navbar-form" role="search" action="{% url 'search'%}" method="get">
       <div class="input-group input-group-sm pull-left">
         <input name="q" type="text" class="form-control" placeholder="Search OCL" value="{{ request.GET.q }}" />
 
