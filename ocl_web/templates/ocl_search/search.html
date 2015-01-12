@@ -34,7 +34,7 @@
 				<div class="filter-group-body">
 					{% for c in f.options %}
 					<div class="checkbox"><label><input type="checkbox" name="{{ f.filter_id }}"
-						value="{{ c }}">{{ c }}</label></div>
+						value="{{ c.code }}">{{ c.name }}</label></div>
         			{% endfor %}
 				</div>
 			</div>

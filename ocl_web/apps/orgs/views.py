@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.paginator import Paginator
+from braces.views import LoginRequiredMixin
 
 from .forms import (OrganizationCreateForm, OrganizationEditForm)
 from libs.ocl import OCLapi, OCLSearch
@@ -104,7 +105,7 @@ class OrganizationDetailView(TemplateView):
         return context
 
 
-class OrganizationCreateView(FormView):
+class OrganizationCreateView(LoginRequiredMixin, FormView):
 
     form_class = OrganizationCreateForm
     template_name = "orgs/org_new.html"

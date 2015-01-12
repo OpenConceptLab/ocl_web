@@ -35,16 +35,16 @@ urlpatterns = patterns('',
     ######### New/Edit Resources
     url(r'^new_source/$',
         TemplateView.as_view(template_name='pages/new_source.html'),
-        name="new_source"),
+        name="new_source"),  ## NOT USED
     url(r'^new_collection/$',
         TemplateView.as_view(template_name='pages/new_collection.html'),
-        name="new_collection"),
+        name="new_collection"),  ## NOT USED
     url(r'^new_concept/$',
         TemplateView.as_view(template_name='pages/new_concept.html'),
-        name="new_concept"),
+        name="new_concept"),  ## NOT USED
     url(r'^edit_source/$',
         TemplateView.as_view(template_name='pages/edit_source.html'),
-        name="edit_source"),
+        name="edit_source"),  ## NOT USED
 
     ######### Static Pages (some to be moved into Dynamic views later)
     url(r'^$',

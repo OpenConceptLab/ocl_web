@@ -48,46 +48,58 @@ class FilterList(object):
         return self.filter_list.__iter__()
 
 
+def turn_to_pairs(values):
+    """
+    Temporary util to turn a list of values into a list of json friendly dictionary.
+    Used to translate the concept_class_list type of lists to a code/name tuple
+    list for used in filter.
+
+    Once we clean up these lists to be all code/name pair this will go away.
+
+    """
+    return [{'code':v, 'name':v} for v in values]
+
+
 def setup_filters():
 
     from apps.core.views import _get_concept_class_list
     from apps.core.views import _get_datatype_list
     from apps.core.views import _get_source_type_list
+    from apps.core.views import _get_locale_list
 
     # concept filters
     filters = FilterList('concepts')
     f = filters.add_filter('concept_class', 'Concept Classes')
-    f.options = _get_concept_class_list()
+    f.options = turn_to_pairs(_get_concept_class_list())
 
     f = filters.add_filter('datatype', 'Datatypes')
-    f.options = _get_datatype_list()
+    f.options = turn_to_pairs(_get_datatype_list())
 
     f = filters.add_filter('locale', 'Locale')
-    f.options = ['en', 'sw', 'fr', 'sp', 'ru', 'zh-cn', 'zh-tw']
+    f.options = _get_locale_list()
     concept_filters = filters
 
     # source filter
     filters = FilterList('sources')
     f = filters.add_filter('source_type', 'Source Types')
-    f.options = _get_source_type_list
+    f.options = turn_to_pairs(_get_source_type_list())
 
     f = filters.add_filter('language', 'Locale')
-    f.options = ['en', 'sw', 'fr', 'sp', 'ru', 'zh-cn', 'zh-tw']
+    f.options = _get_locale_list()
     source_filters = filters
 
     # collection filters
     filters = FilterList('collections')
     f = filters.add_filter('collection_type', 'Collection Types')
-    f.options = [
+    f.options = turn_to_pairs([
                 'Dictionary',
                 'Interface Terminology',
                 'Indicator Registry',
                 'Reference',
-    ]
+    ])
 
     f = filters.add_filter('language', 'Locale')
-    f.options = ['en', 'sw', 'fr', 'sp', 'ru', 'zh-cn', 'zh-tw']
-
+    f.options = _get_locale_list()
     collection_filters = filters
 
     user_filters = None
