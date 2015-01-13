@@ -28,7 +28,10 @@
             {% endverbatim %}
                 {% if desc.locale_preferred %}&nbsp;<span id="locale-preferred-desc-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
                 / <span class="small">{{ desc.description_type|default:"&nbsp;" }}</span>
-                {% if request.GET.debug %}<br /><pre>{{ desc|pprint }}</pre>{% endif %}</li>
+            {% verbatim %}
+                <span ng-show="debug"><pre>{{ desc }}</pre></span>
+            {% endverbatim %}
+            </li>
         </ul>
 
     {% else %}
@@ -43,7 +46,10 @@
             {% endverbatim %}
                 {% if desc.locale_preferred %}&nbsp;<span id="locale-preferred-desc-tooltip{{ forloop.counter }}" data-toggle="tooltip" data-placement="right" title="Locale preferred concept"><span class="glyphicon glyphicon-flag"></span></span>{% endif %}
                 / <span class="small">{{ desc.description_type|default:"&nbsp;" }}</span>
-                {% if request.GET.debug %}<br /><pre>{{ desc|pprint }}</pre>{% endif %}</li>
+            {% verbatim %}
+                <span ng-show="debug"><pre>{{ desc }}</pre></span>
+            {% endverbatim %}
+                </li>
         </ul>
 
     {% endif_can_change concept %}

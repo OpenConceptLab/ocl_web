@@ -18,7 +18,22 @@ function make_url(location, path) {
     return path;
 }
 
+/* Make a url using a base URL, but take care to remove the debug flag and other arguments
+   when presence.
+*/
+function make_sub_url(location, sub_path) {
+    var parts = URI.parse(location);
+    parts['query'] = null;
+    parts['path'] += sub_path;
+    var u = URI.build(parts);
+    return u.toString();
+}
 
+function set_debug(loc, scope) {
+    var debug = new URI(loc.absUrl()).hasQuery('debug', true);
+    scope.debug = debug;
+
+}
 
 function locale_by_name(locale_choices, n) {
     for (var i=0; i<locale_choices.length; i++) {
@@ -113,7 +128,9 @@ function makeController(a_url_part, a_field_names, a_item_key) {
 
         function loadItems() {
 
-            var url = $location.absUrl() + url_part + '/';
+            var url = make_sub_url($location.absUrl(), url_part + '/');
+            set_debug($location, $scope);
+
             $http.get(url)
                 .success(function (data) {
                 $scope.item_list = data;
@@ -247,7 +264,8 @@ app.controller('SourceVersionController', makeController('versions', ['id', 'des
 app.controller('ConceptVersionController', function($scope, $http, $location) {
 
         function loadItems() {
-            var url = $location.absUrl() + 'versions/';
+            var url = make_sub_url($location.absUrl(), 'versions/');
+            set_debug($location, $scope);
             $http.get(url)
                 .success(function (data) {
                 $scope.item_list = data;
@@ -483,7 +501,7 @@ app.controller('MappingController', function($scope, $http, $location) {
                 }
                 delete data.source_type;
 
-                var url = $location.absUrl() + 'mappings/';
+                var url = make_sub_url($location.absUrl(), 'mappings/');
                 $http.post(url, data, null)
                     .success(function(data, status, headers, config) {
                         $scope.alerts.push({
@@ -544,7 +562,7 @@ app.controller('MappingController', function($scope, $http, $location) {
                         $scope.map_types = data;
                     });
 
-                url = $location.absUrl() + 'mappings/';
+                url = make_sub_url($location.absUrl(), 'mappings/');
                 $http.get(url)
                     .success(function(data) {
                         $scope.item_list = data;

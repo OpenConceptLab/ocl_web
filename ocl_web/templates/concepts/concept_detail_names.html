@@ -22,8 +22,9 @@
                 <span ng-show="name.locale" class="small text-muted"><em>&nbsp;&nbsp;[{{ name.locale }}]</em></span>
                 <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
                 <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(name)"></span>
+                <span ng-show="debug"><pre>{{ name }}</pre></span>
             {% endverbatim %}
-                {% if request.GET.debug %}<br /><pre>{{ name|pprint }}</pre>{% endif %}</li>
+
         </ul>
 
     {% else %}
@@ -35,8 +36,8 @@
                 <span ng-show="name.name_type" class="small text-muted">&nbsp;&nbsp;{{ name.name_type}}</span>
                 <span ng-show="name.locale" class="small text-muted"><em>&nbsp;&nbsp;[{{ name.locale }}]</em></span>
                 <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
+                <span ng-show="debug"><pre>{{ name }}</pre></span>
             {% endverbatim %}
-                {% if request.GET.debug %}<br /><pre>{{ name|pprint }}</pre>{% endif %}</li>
         </ul>
 
     {% endif_can_change concept %}

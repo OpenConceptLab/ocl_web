@@ -36,11 +36,9 @@
 							<span class="glyphicon glyphicon-calendar"></span> Last updated {{ concept.updated_on|smart_date}}
 						</span>
 					</p>
-
-
 				</div>
 
-{% if request.GET.debug %}<pre>{{ concept|pprint }}</pre>{% endif %}
+
 
 			</div> <!-- /col-md-8 -->
 		</div> <!-- /row -->
@@ -114,7 +112,8 @@ Collections go here.
                 <div class="pull-right">
 				{{ version.version }}
 				<span class="glyphicon glyphicon-cog pull-right" ></span>
-			</div>
+     			</div>
+                <span ng-show="debug"><br /><pre>{{ version }}</pre></span>
 			{% endverbatim %}				
         </li>
 	</lu>
@@ -123,6 +122,13 @@ Collections go here.
 
 
 </tab>{# ------- end of versions tab ----- #}
+
+{% if request.GET.debug %}
+<tab heading="Debug">
+<pre>{{ concept|pprint }}</pre>
+</tab>
+{% endif %}
+
 </tabset>
 
 </div> {# app #}

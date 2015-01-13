@@ -42,17 +42,17 @@
 
         <ul class="list-group">
             {% verbatim %}
-            <li ng-repeat="map in item_list|filter:{map_type:'q_and_a'}" class="list-group-item">
-                <button type="button" class="btn btn-link" ng-click="setEditedItem(map);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
+            <li ng-repeat="q in item_list|filter:{map_type:'q_and_a'}" class="list-group-item">
+                <button type="button" class="btn btn-link" ng-click="setEditedItem(q);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
                     </button>
 
-                {{ map.map_type }} : {{ map.to_concept_name }}<br />{{ map.to_concept_url }}
+                {{ q.map_type }} : {{ q.to_concept_name }}<br />{{ q.to_concept_url }}
                 <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
 
-                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(map)"></span>
+                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(q)"></span>
 
             {% endverbatim %}               
-                {% if request.GET.debug %}<br /><pre>{{ map|pprint }}</pre>{% endif %}</li>
+                {% if request.GET.debug %}<br /><pre>{{ q|pprint }}</pre>{% endif %}</li>
 
             {% verbatim %}
             <li ng-show="(item_list|filter:{map_type:'q_and_a'}).length == 0" class="list-group-item">&nbsp;</li>
@@ -61,7 +61,11 @@
 
     </div> {# list col8 #}
 </div> {# list row #}
+{# comment #}
+{# endcomment #}
 
+
+{# comment #}
 <div class="row">
     <div class="col-md-2">
         <span style="text-align:right;font-weight:bold;color:#999;">Concept Sets</span>
@@ -70,17 +74,18 @@
     <div class="col-md-8">
 
         <ul class="list-group">
+{# }            <li ng-repeat="cs in item_list|filter:{map_type:'concept_set'}" class="list-group-item"> #}
             {% verbatim %}
-            <li ng-repeat="map in item_list|filter:{map_type:'concept_set'}" class="list-group-item">
-                <button type="button" class="btn btn-link" ng-click="setEditedItem(map);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
+            <li ng-repeat="cs in item_list track by $index" class="list-group-item">
+                <button type="button" class="btn btn-link" ng-click="setEditedItem(cs);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
                     </button>
 
-                {{ map.map_type }} : {{ map.to_concept_name }}<br />{{ map.to_concept_url }}
+                {{ cs.map_type }} : {{ cs.to_concept_name }}<br />{{ cs.to_concept_url }}
                 <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
 
                 <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(map)"></span>
             {% endverbatim %}               
-                {% if request.GET.debug %}<br /><pre>{{ map|pprint }}</pre>{% endif %}</li>
+                {% if request.GET.debug %}<br /><pre>{{ cs|pprint }}</pre>{% endif %}</li>
 
             {% verbatim %}
             <li ng-show="(item_list|filter:{map_type:'concept_set'}).length == 0" class="list-group-item">&nbsp;</li>
@@ -89,6 +94,8 @@
         </ul>
     </div> {# list col8 #}
 </div> {# list row #}
+
+{# endcomment #}
 
 <div class="row"> {# add name form row #}
     <div class="col-md-2">

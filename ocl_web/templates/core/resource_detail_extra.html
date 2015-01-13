@@ -21,6 +21,7 @@
                 <button type="button" class="btn btn-link" ng-click="setEditedItem(item);startEditingItem();"><span class="glyphicon glyphicon-pencil"></span></button>
                 <span class="text-muted" style="font-weight:bold">{{ item.extra_name}}</span> <span class="text-muted small">:</span> <span class="extra-value">{{ item.extra_value }}</span>
                 <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(item)"></span>
+                <span ng-show="debug"><pre>{{ item }}</pre></span>
             {% endverbatim %}
             </li>
         </ul>
@@ -33,6 +34,7 @@
             {% verbatim %}
             <li ng-repeat="item in item_list" class="list-group-item">
                 <span class="text-muted" style="font-weight:bold">{{ item.extra_name}}</span> <span class="text-muted small">:</span> <span class="extra-value">{{ item.extra_value }}</span>
+                <span ng-show="debug"><pre>{{ item }}</pre></span>
             {% endverbatim %}
             </li>
         </ul>
