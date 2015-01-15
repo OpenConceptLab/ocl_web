@@ -10,10 +10,10 @@
 <header class="source-header">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-10">
-				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;">
-					<span class="glyphicon glyphicon-th-list"></span>
-				</div>
+			<div class="col-md-12">
+
+				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-th-list"></span></div>
+
 				<div style="display:inline-block;padding-left:20px">
 					<h3>
 						{% source_owner_label source %} / {% source_label source %}
@@ -31,15 +31,18 @@
 					<span class="org-privacy">public</span>
                 	</p>
 				</div>
+
 		        {% if request.GET.debug %}
 		        	<h5>Source</h5><pre>{{ source|pprint }}</pre>
 		        	<h5>Concepts</h5><pre>{{ concepts|pprint }}</pre>
 		        {% endif %}
-			</div>
+
+
+			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
-	
 	</div> <!-- /container -->
-</header>
+</header> <!-- /source-header -->
+
 
 <!-- Start concepts section -->
 
