@@ -114,8 +114,6 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         url_args.append('extras')
         if len(args) > 0:
             url_args += args
-        print args
-        print url_args
         return url_args
 
     def is_edit(self):
@@ -137,7 +135,6 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         # so that we can use the same front end JS to work with extras.
         ls = []
         for k, v in result.json().iteritems():
-            print k, v
             o = {'extra_name': k, 'extra_value': v}
             ls.append(o)
 
@@ -152,7 +149,6 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         data = {}
         fn = fv = None
         try:
-            print 'request json:', self.request_json
             fn = self.request_json.get('extra_name')
             fv = self.request_json.get('extra_value')
             data[fn] = fv

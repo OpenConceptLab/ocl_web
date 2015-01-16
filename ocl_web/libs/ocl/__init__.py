@@ -63,6 +63,22 @@ class OCLapi(object):
         else:
                 self.logger.debug('%s no content.' % results.request.method)
 
+    @classmethod
+    def resource_type_name(cls, type_id):
+        if type_id == cls.USER_TYPE:
+            return 'User Type'
+        if type_id == cls.ORG_TYPE:
+            return 'User Type'
+        if type_id == cls.SOURCE_TYPE:
+            return 'Souce Type'
+        if type_id == cls.CONCEPT_TYPE:
+            return 'Concept Type'
+        if type_id == cls.COLLECTION_TYPE:
+            return 'Collection Type'
+        if type_id == cls.MAPPING_TYPE:
+            return 'Mapping Type'
+        return 'Unknown type'
+
     def __init__(self, request=None, debug=False, admin=False):
         """
         :param admin: optional, if set to True, access API as admin user. Needed for create_user.

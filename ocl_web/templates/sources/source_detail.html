@@ -111,7 +111,7 @@
 
 
 			        <div class="input-group">
-			            <input type="text" name="q" class="form-control" placeholder="Search Source">
+			            <input type="text" name="q" class="form-control" placeholder="Search concepts within source">
 			            <span class="input-group-btn">
                             <button class="btn btn-default" type="submit" >Search</button>
                         </span>
@@ -194,6 +194,8 @@
 
 <tab heading="Source Details"> {# ----- start source details tab #}
 <div class="row">
+&nbsp;
+</div>
 {% field_label 'Full Name' source.full_name %}
 {% field_label 'Description' source.description %}
 {% field_label 'Source Type' source.source_type %}
@@ -201,8 +203,8 @@
 {% field_label 'Created By' source.created_by %}
 {% field_label 'Created on' source.created_on|smart_date %}
 {% field_label 'Updated by' source.created_by %}
-{% field_label 'Updated on' source.created_on %}
-</div>	
+{% field_label 'Updated on' source.created_on|smart_date %}
+
 
 {% include 'core/resource_detail_extra.html' %}
 

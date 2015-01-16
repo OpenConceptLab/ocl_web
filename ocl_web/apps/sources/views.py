@@ -19,6 +19,9 @@ logger = logging.getLogger('oclweb')
 
 
 class SourceDetailView(UserOrOrgMixin, TemplateView):
+    """
+    The source detail view is both a source display *and* a concept search view.
+    """
 
     template_name = "sources/source_detail.html"
 
@@ -27,7 +30,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
 
         self.get_args()
 
-        print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
+        print 'Source Detail INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
         searcher = OCLSearch(OCLapi.CONCEPT_TYPE).parse(self.request.GET)
 
         api = OCLapi(self.request, debug=True)

@@ -6,6 +6,8 @@
 import logging
 
 
+
+
 logger = logging.getLogger('oclweb')
 
 
@@ -57,7 +59,7 @@ def turn_to_pairs(values):
     Once we clean up these lists to be all code/name pair this will go away.
 
     """
-    return [{'code':v, 'name':v} for v in values]
+    return [{'code': v, 'name': v} for v in values]
 
 
 def setup_filters():
@@ -210,7 +212,9 @@ class OCLSearch(object):
             f = self.get_filters().match_filter(key)
             if f:
                 search_params[key] = params.pop(key)
+                print 'add key %s = %s' % (key, search_params[key])
 
-        print 'Searcher %s params: %s' % (self.resource_type, search_params)
+        from libs.ocl import OCLapi
+        print 'Searcher %s params: %s' % (OCLapi.resource_type_name(self.resource_type), search_params)
         self.search_params = search_params
         return self
