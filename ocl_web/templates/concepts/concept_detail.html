@@ -11,7 +11,7 @@
 <header class="org-header">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-8">
+			<div class="col-md-12">
 
 				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
 				<div style="display:inline-block;padding-left:20px">
@@ -39,8 +39,7 @@
 				</div>
 
 
-
-			</div> <!-- /col-md-8 -->
+			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
 	</div> <!-- /container -->
 </header>
@@ -56,7 +55,8 @@
 
 
 {% comment %}
-{# Jon commented this block out #}
+{# Jon commented out this block because redundant with header info #}
+
 <div class="row"> {# display #}
 <div class="row">
 	<div class="col-md-2" style="text-align:right;">
@@ -91,6 +91,9 @@
 </tab>
 
 {% comment %}
+
+{# Jon commented out this block until Collections fully implemented #}
+
 <tab heading="Collections">
 	 {# ------- start of collection tab ----- #}
 Collections go here. -- HIDE FOR NOW
@@ -101,23 +104,31 @@ Collections go here. -- HIDE FOR NOW
 <tab heading="History" ng-controller="ConceptVersionController">
 {# ------- start of versions tab ----- #}
 <div class="row">
-
 	<div class="col-md-10">
 	&nbsp;
-    <ul>
-    	<li ng-repeat="version in item_list|orderBy:'-version_created_on'" class="list-group-item">
-			{% verbatim %}
-				<span>{{ version.update_comment }}<br />
-					by {{ version.version_created_by}}, on {{ version.version_created_on|date:'yyyy-MM-dd HH:mm:ss' }}
-                </span>
-                <div class="pull-right">
-				{{ version.version }}
-				<span class="glyphicon glyphicon-cog pull-right" ></span>
-     			</div>
-                <span ng-show="debug"><br /><pre>{{ version }}</pre></span>
-			{% endverbatim %}				
-        </li>
-	</lu>
+	    <ul>
+	    	<li ng-repeat="version in item_list|orderBy:'-version_created_on'" class="list-group-item">
+
+				{% verbatim %}
+	                <div class="pull-right text-muted">
+						<a href="#{{ version.version }}">{{ version.version }}&nbsp;&nbsp;<span class="glyphicon glyphicon-search pull-right" ></span></a>
+	     			</div>
+
+					<div>{{ version.update_comment }}</div>
+
+					<p>
+						<span class="text-muted small">
+							<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Updated by {{ version.version_created_by|default:"<em>[Unknown User]</em>" }}
+							&nbsp;&nbsp;&nbsp;
+							<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Updated on {{ version.version_created_on|date:'yyyy-MM-dd HH:mm:ss' }}
+						</span>
+					</p>
+
+	                <span ng-show="debug"><br /><pre>{{ version }}</pre></span>
+				{% endverbatim %}	
+
+	        </li>
+		</ul>
     </div> {# list col8 #}
 </div> {# list row #}
 
