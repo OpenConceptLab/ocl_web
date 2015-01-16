@@ -5,20 +5,36 @@
 """
 import logging
 
-
-
-
 logger = logging.getLogger('oclweb')
 
 
 class Filter(object):
     """
-        A specific filter for searching OWL
+        A specific filter for searching OCL
+
+        options is a list of {'code': v, 'name': v, 'selected': boolean} dictionary
     """
     def __init__(self, filter_id, name):
         self.filter_id = filter_id  # unique ID for query etc
         self.name = name  # for display
         self.options = []  # a select list of choices
+
+    def select_option(self, option_code):
+        """
+        Mark option with the specified code as selected.
+        """
+        # handle the case where option_code is a list of options
+        if not isinstance(option_code, list):
+            ls = [option_code]
+        else:
+            ls = option_code
+
+        for i in self.options:
+            if i['code'] in ls:
+                i['selected'] = True
+
+    def __str__(self):
+        return "%s (%s): %s" % (self.name, self.filter_id, self.options)
 
 
 class FilterList(object):
@@ -49,6 +65,9 @@ class FilterList(object):
     def __iter__(self):
         return self.filter_list.__iter__()
 
+    def __str__(self):
+        return 'Resource %s: %s' % (self.resource_name, [str(f) for f in self.filter_list])
+
 
 def turn_to_pairs(values):
     """
@@ -59,7 +78,7 @@ def turn_to_pairs(values):
     Once we clean up these lists to be all code/name pair this will go away.
 
     """
-    return [{'code': v, 'name': v} for v in values]
+    return [{'code': v, 'name': v, 'selected': False} for v in values]
 
 
 def setup_filters():
@@ -143,13 +162,28 @@ class OCLSearch(object):
         self.current_page = None
         self.search_params = None
         self.resource_type = resource_type
+        self.q = None
 
         # one time initialization
         if self.filters is None:
             self.filters = setup_filters()
 
     def get_filters(self):
+        """
+        Get the appropriate filters applicable for this search object type.
+        The filters returned will have state information of the current search criteria,
+        i.e. checkboxes can stay checked.
+
+        :returns: a list of Filter object for constructing the HTML filter display.
+
+        """
         return self.filters[self.resource_type]
+
+    def get_query(self):
+        """
+        Returns the current query string
+        """
+        return self.q
 
     def parse(self, request_get):
 
@@ -202,7 +236,9 @@ class OCLSearch(object):
         if 'q' in params:
             q = params.pop('q')
             if len(q) == 1:
-                search_params['q'] = q[0]
+                self.q = q[0]
+                search_params['q'] = self.q
+
         # for source
         # source_type (optional) string - Filter results to a given source type, e.g. "dictionary", "reference"
         # language (optional) string - Filter results to those with a given language in their supported_locales, e.g. "en", "fr"
@@ -211,8 +247,11 @@ class OCLSearch(object):
             print 'trying key:%s' % key
             f = self.get_filters().match_filter(key)
             if f:
-                search_params[key] = params.pop(key)
-                print 'add key %s = %s' % (key, search_params[key])
+                v = params.pop(key)
+                # set this option as selected
+                f.select_option(v)
+                search_params[key] = v
+                print 'add key %s = %s' % (key, v)
 
         from libs.ocl import OCLapi
         print 'Searcher %s params: %s' % (OCLapi.resource_type_name(self.resource_type), search_params)
