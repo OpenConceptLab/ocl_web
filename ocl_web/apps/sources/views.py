@@ -56,6 +56,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         context['concepts'] = concept_list
 
         context['q'] = searcher.get_query()
+        context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.get_filters()
         num_found = int(results.headers['num_found'])
         pg = Paginator(range(num_found), searcher.num_per_page)

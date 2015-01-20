@@ -69,7 +69,7 @@ class FilterList(object):
         return 'Resource %s: %s' % (self.resource_name, [str(f) for f in self.filter_list])
 
 
-def turn_to_pairs(values):
+def turn_to_tuples(values):
     """
     Temporary util to turn a list of values into a list of json friendly dictionary.
     Used to translate the concept_class_list type of lists to a code/name tuple
@@ -78,7 +78,15 @@ def turn_to_pairs(values):
     Once we clean up these lists to be all code/name pair this will go away.
 
     """
-    return [{'code': v, 'name': v, 'selected': False} for v in values]
+    if isinstance(values[0], dict):
+        # already a list of dictionary, just add "selected"
+        for d in values:
+            d['selected'] = False
+        return values
+    else:
+        # input is a list of codes which are the same as values, split up into
+        # code, value and selected dictionary
+        return [{'code': v, 'name': v, 'selected': False} for v in values]
 
 
 def setup_filters():
@@ -91,19 +99,19 @@ def setup_filters():
     # concept filters
     filters = FilterList('concepts')
     f = filters.add_filter('concept_class', 'Concept Classes')
-    f.options = turn_to_pairs(_get_concept_class_list())
+    f.options = turn_to_tuples(_get_concept_class_list())
 
     f = filters.add_filter('datatype', 'Datatypes')
-    f.options = turn_to_pairs(_get_datatype_list())
+    f.options = turn_to_tuples(_get_datatype_list())
 
     f = filters.add_filter('locale', 'Locale')
-    f.options = _get_locale_list()
+    f.options = turn_to_tuples(_get_locale_list())
     concept_filters = filters
 
     # source filter
     filters = FilterList('sources')
     f = filters.add_filter('source_type', 'Source Types')
-    f.options = turn_to_pairs(_get_source_type_list())
+    f.options = turn_to_tuples(_get_source_type_list())
 
     f = filters.add_filter('language', 'Locale')
     f.options = _get_locale_list()
@@ -112,7 +120,7 @@ def setup_filters():
     # collection filters
     filters = FilterList('collections')
     f = filters.add_filter('collection_type', 'Collection Types')
-    f.options = turn_to_pairs([
+    f.options = turn_to_tuples([
                 'Dictionary',
                 'Interface Terminology',
                 'Indicator Registry',
@@ -161,6 +169,7 @@ class OCLSearch(object):
         self.num_per_page = None
         self.current_page = None
         self.search_params = None
+        self.search_sort = None
         self.resource_type = resource_type
         self.q = None
 
@@ -179,11 +188,17 @@ class OCLSearch(object):
         """
         return self.filters[self.resource_type]
 
+    def get_sort(self):
+        """
+        Returns the current sort option
+        """
+        return '' if self.search_sort is None else self.search_sort
+
     def get_query(self):
         """
         Returns the current query string
         """
-        return self.q
+        return '' if self.q is None else self.q
 
     def parse(self, request_get):
 
@@ -201,6 +216,7 @@ class OCLSearch(object):
                 del params['type']
             else:
                 self.search_type = self.DEFAULT_SEARCH_TYPE
+
         # paging
         if 'page' in params:
             try:
@@ -230,6 +246,21 @@ class OCLSearch(object):
         # sort
         # sortAsc/sortDesc (optional) string
         # sort results on one of the following fields: "name", "last_update" (default), "num_stars"
+        sort_key = None
+        sort_value = None
+        if 'sort' in params:
+            self.search_sort = params['sort']
+            p = self.search_sort.lower()
+            if 'asc' in p:
+                sort_key = 'sortAsc'
+            elif 'desc' in p:
+                sort_key = 'sortDesc'
+            if 'last update' in p:
+                sort_value = 'last_update'
+            if 'name' in p:
+                sort_value = 'name'
+            if sort_key and sort_value:
+                search_params[sort_key] = sort_value
 
         # query text
         # q=    for name, full_name, desc in source

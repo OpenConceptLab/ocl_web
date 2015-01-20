@@ -70,7 +70,7 @@
 				<div class="filter-group-body">
 					{% for c in f.options %}
 					<div class="checkbox"><label><input type="checkbox" name="{{ f.filter_id }}"
-						value="{{ c.code }}">{{ c.name }}</label></div>
+						value="{{ c.code }}" {% if c.selected %}checked{% endif %}>{{ c.name }}</label></div>
 	       			{% endfor %}
 				</div>
 			</div>
@@ -88,19 +88,24 @@
 <!-- Sort / filter -->
 
 			<div class="row" style="margin-bottom:20px;">
+				&nbsp;
 				<div class="col-md-12">
 
-					<div class="btn-group pull-right">
-					  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-						<span class="text-muted">Sort:</span> <strong>Best Match</strong> <span class="caret"></span>
-					  </button>
-					  <ul class="dropdown-menu" role="menu">
-						<li><a href="#">Best Match</a></li>
-						<li><a href="#">Another sort</a></li>
-						<li><a href="#">Something else here</a></li>
-					  </ul>
-					</div> {# sort box #}
 
+					<div class="btn-group pull-right">
+
+					  <select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
+					    <option {% if search_sort == "Last Update (desc)" %}selected{% endif %}>Last Update (desc)</option>
+					    <option {% if search_sort == "Last Update (asc)" %}selected{% endif %}>Last Update (asc)</option>
+					    <option {% if search_sort == "Name (asc)" %}selected{% endif %}>Name (asc)</option>
+					    <option {% if search_sort == "Name (desc)" %}selected{% endif %}>Name (desc)</option>
+					  </select>
+
+					</div>
+
+					<div class="btn-group pull-right">
+					<span>Sort by:&nbsp;</span>
+     				</div>
 
 					<div class="form-group">
 
@@ -129,7 +134,7 @@
 
 						<div class="form-group">
 							<div class="input-group input-group-sm">
-								<input name="q" id="resourceFilter" type="text" class="form-control" placeholder="Search sources within organization" />
+								<input name="q" id="resourceFilter" type="text" value="{{ source_q }}" class="form-control" placeholder="Search sources within organization" />
 								<span class="input-group-btn">
 									<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
 								</span>
@@ -224,15 +229,19 @@
 				<div class="col-md-12">
 
 					<div class="btn-group pull-right">
-					  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-						<span class="text-muted">Sort:</span> <strong>Best Match</strong> <span class="caret"></span>
-					  </button>
-					  <ul class="dropdown-menu" role="menu">
-						<li><a href="#">Best Match</a></li>
-						<li><a href="#">Another sort</a></li>
-						<li><a href="#">Something else here</a></li>
-					  </ul>
+
+					  <select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
+					    <option {% if search_sort == "Last Update (desc)" %}selected{% endif %}>Last Update (desc)</option>
+					    <option {% if search_sort == "Last Update (asc)" %}selected{% endif %}>Last Update (asc)</option>
+					    <option {% if search_sort == "Name (asc)" %}selected{% endif %}>Name (asc)</option>
+					    <option {% if search_sort == "Name (desc)" %}selected{% endif %}>Name (desc)</option>
+					  </select>
+
 					</div>
+
+					<div class="btn-group pull-right">
+					<span> Sort by: </span>
+     				</div>
 
 						<div class="form-group">
 							<div class="btn-group">

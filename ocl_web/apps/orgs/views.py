@@ -74,6 +74,8 @@ class OrganizationDetailView(TemplateView):
         context['source_pagination_url'] = self.request.get_full_path()
         context['sources'] = sources
         context['source_filters'] = source_searcher.get_filters()
+        context['search_sort'] = source_searcher.get_sort()
+        context['source_q'] = source_searcher.get_query()
 
         results = api.get('orgs', org_id, 'collections', params=collection_searcher.search_params)
         if results.status_code == requests.codes.not_found:
