@@ -367,6 +367,7 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
     item_name = None
     kwarg_name = None
     field_names = []
+    optional = None
 
     def get_all_args(self):
         """
@@ -387,8 +388,13 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
 
-        result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
-                         'concepts', self.concept_id, self.item_name)
+        if self.optional:
+            result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
+               'concepts', self.concept_id, self.item_name, params=self.optional)
+        else:
+            result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
+               'concepts', self.concept_id, self.item_name)
+
         if not result.ok:
             print result
             return self.render_bad_request_response(result)
@@ -461,6 +467,7 @@ class ConceptMappingView(ConceptItemView):
     item_name = 'mappings'
     kwarg_name = 'mapping'
     field_names = ['map_type', 'from_concept_url', 'to_concept_url']
+    optional = {'includeInverseMappings': True}
 
 
 class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):

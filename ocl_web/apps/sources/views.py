@@ -56,6 +56,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         context['concepts'] = concept_list
 
         context['q'] = searcher.get_query()
+        context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.get_filters()
         num_found = int(results.headers['num_found'])

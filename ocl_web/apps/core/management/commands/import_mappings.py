@@ -7,6 +7,15 @@
 
         manage.py import_mappings input_file_name
 
+        File Example:
+
+q_and_a 985 1173 1152 5254 1150 6046 5526 968
+q_and_a 986 987 988 989 5622
+concept_set 1010 1006 1007 1008 1298 1009
+concept_set 1019 21 678 679 729 851 1015 1016 1017 1018
+q_and_a 1030 1138 664 703 1304
+q_and_a 1031 1311 1312 1313 1314 1315 1316 1317 1304
+
 """
 from optparse import make_option
 import os.path

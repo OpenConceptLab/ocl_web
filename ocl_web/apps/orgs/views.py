@@ -74,6 +74,7 @@ class OrganizationDetailView(TemplateView):
         context['source_pagination_url'] = self.request.get_full_path()
         context['sources'] = sources
         context['source_filters'] = source_searcher.get_filters()
+        context['search_sort_options'] = source_searcher.get_sort_options()
         context['search_sort'] = source_searcher.get_sort()
         context['source_q'] = source_searcher.get_query()
 

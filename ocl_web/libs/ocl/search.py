@@ -188,6 +188,19 @@ class OCLSearch(object):
         """
         return self.filters[self.resource_type]
 
+    def get_sort_options(self):
+        """
+        :returns: a list of sort options.
+        """
+        return [
+            'Best Match',
+            'Last Update (desc)',
+            'Last Update (asc)',
+            'Name (asc)',
+            'Name (desc)',
+
+        ]
+
     def get_sort(self):
         """
         Returns the current sort option

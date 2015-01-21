@@ -191,6 +191,7 @@ class OCLapi(object):
         """ Issue get request to API.
 
             :param *args: All positional arguments are appended to the request URL.
+                Note: To pass query parameters to the GET function, use a params={k:v} keyword argument.
             :param **kwargs: These are not used at the moment, since this is a get request TODO
             :returns: requests.response object.
 
