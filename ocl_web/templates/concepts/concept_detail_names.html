@@ -8,18 +8,18 @@
     <div class="col-md-2" style="text-align:right;font-weight:bold;color:#999;">
         Names &amp; Synonyms
     </div>
-
     <div class="col-md-8">
 
     {% if_can_change concept %}
 
         <ul class="list-group">
+
             {% verbatim %}
             <li ng-repeat="name in item_list" class="list-group-item">
                 <button type="button" class="btn btn-link" ng-click="setEditedItem(name);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span></button>
-                {{ name.name }} 
-                <span ng-show="name.name_type" class="small text-muted">&nbsp;&nbsp;{{ name.name_type}}</span>
-                <span ng-show="name.locale" class="small text-muted"><em>&nbsp;&nbsp;[{{ name.locale }}]</em></span>
+                {{ name.name }}
+                <span ng-show="name.name_type" class="small text-muted">&nbsp;&nbsp;<span class="label label-default">{{ name.name_type}}</span></span>
+                <span ng-show="name.locale" class="small text-muted">&nbsp;&nbsp;<em>[{{ name.locale }}]</em></span>
                 <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
                 <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(name)"></span>
                 <span ng-show="debug"><pre>{{ name }}</pre></span>
@@ -33,7 +33,7 @@
             {% verbatim %}
             <li ng-repeat="name in item_list" class="list-group-item">
                 {{ name.name }} 
-                <span ng-show="name.name_type" class="small text-muted">&nbsp;&nbsp;{{ name.name_type}}</span>
+                <span ng-show="name.name_type" class="small text-muted">&nbsp;&nbsp;<span class="label label-default">{{ name.name_type}}</span></span>
                 <span ng-show="name.locale" class="small text-muted"><em>&nbsp;&nbsp;[{{ name.locale }}]</em></span>
                 <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
                 <span ng-show="debug"><pre>{{ name }}</pre></span>
