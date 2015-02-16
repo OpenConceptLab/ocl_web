@@ -16,6 +16,7 @@
 
 		<div class="list-group">
 			<a href="{% url 'search' %}?type=concepts{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if search_type == 'concepts' %}active{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Concepts <span class="badge">{{ resource_count.concepts }}</span></a>
+			<a href="{% url 'search' %}?type=mappings{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if search_type == 'mappings' %}active{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Mappings <span class="badge">{{ resource_count.mappings }}</span></a>
 			<a href="{% url 'search' %}?type=sources{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if search_type == 'sources' %}active{% endif %}"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Sources <span class="badge">{{ resource_count.sources }}</span></a>
 			<a href="{% url 'search' %}?type=collections{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if search_type == 'collections' %}active{% endif %}"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Collections <span class="badge">{{ resource_count.collections }}</span></a>
 			<a href="{% url 'search' %}?type=orgs{% if request.GET.debug %}&amp;debug=1{% endif %}" class="list-group-item {% if search_type == 'orgs' %}active{% endif %}"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Organizations <span class="badge">{{ resource_count.orgs }}</span></a>
@@ -81,6 +82,9 @@
 
                     {% simple_pager page search_type_name url=pagination_url %}
 
+			{% comment %}
+			<!-- Jon commented until there are actions that we can perform on resources -->
+
 				<div class="btn-group">
 				  &nbsp;&nbsp;
 				  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -91,21 +95,25 @@
 				  </ul>
 				  &nbsp;&nbsp;
 				</div>
+
+			{% endcomment %}
+
 {% else %}
 				<h4>We found 0 {{ search_type_name }}{{ 0|pluralize }}.</h4>
 {% endif %}
 			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
 </form>
-<!-- Search Results -->
 
+
+<!-- Search Results -->
 {% for result in results %}
 		<div class="row row-search-result">
 
 	{% if search_type == 'concepts' %}
-			<div class="col-md-1 search-result-col-checkbox">
+			<!--div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
-			</div>
+			</div-->
 			<div class="col-md-1 search-result-col-icon">
 				<span class="glyphicon glyphicon-tag search-result-icon"></span>
 			</div>
@@ -142,10 +150,53 @@
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 
-	{% elif search_type == 'sources' %}
-			<div class="col-md-1 search-result-col-checkbox">
+	{% elif search_type == 'mappings' %}
+			<!--div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
+			</div-->
+			<div class="col-md-1 search-result-col-icon">
+				<span class="glyphicon glyphicon-tag search-result-icon"></span>
 			</div>
+			<div class="col-md-10 search-result-col-content">
+				<h4>
+					<!-- from_concept -->
+					{% if result.from_source_owner_type == 'Organization' %}
+					    <a href="#" style="text-decoration: none;">
+					 {% else %}
+					    <a href="#" style="text-decoration: none;">
+			    	{% endif %}
+						<span class="resource-label small concept">
+							<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.from_source_owner }} / {{ result.from_source }} / </span><span class="resource-label-id-code">{{ result.from_concept_code }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.from_concept_name }}{% if result.retired %}</s>{% endif %}</span>
+						</span>
+					</a>
+
+					<!-- map_type -->
+					<span class="resource-label small map-type">
+						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-link"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span></span><span class="resource-label-name">{{ result.result.map_type }}{% if result.retired %}</s>{% endif %}</span>
+					</span>
+
+					<!-- to_concept -->
+					{% if result.to_source_owner_type == 'Organization' %}
+					    <a href="#" style="text-decoration: none;">
+					 {% else %}
+					    <a href="#" style="text-decoration: none;">
+			    	{% endif %}
+						<span class="resource-label small concept">
+							<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.to_source_owner }} / {{ result.to_source }} / </span><span class="resource-label-id-code">{{ result.to_concept_code }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.to_concept_name }}{% if result.retired %}</s>{% endif %}</span>
+						</span>
+					</a>
+				</h4>
+
+				<p>
+					<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>
+				</p>
+				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+			</div>
+
+	{% elif search_type == 'sources' %}
+			<!--div class="col-md-1 search-result-col-checkbox">
+				<input type="checkbox" />
+			</div-->
 			<div class="col-md-1 search-result-col-icon">
 				<span class="glyphicon glyphicon-th-list search-result-icon"></span>
 			</div>
@@ -176,9 +227,9 @@
 			</div>
 
 	{% elif search_type == 'collections' %}
-			<div class="col-md-1 search-result-col-checkbox">
+			<!--div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
-			</div>
+			</div-->
 			<div class="col-md-1 search-result-col-icon">
 				<span class="glyphicon glyphicon-tags search-result-icon"></span>
 			</div>
@@ -204,9 +255,9 @@
 			</div>
 
 	{% elif search_type == 'orgs' %}
-			<div class="col-md-1 search-result-col-checkbox">
+			<!--div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
-			</div>
+			</div-->
 			<div class="col-md-1 search-result-col-icon">
 				<span class="glyphicon glyphicon-home search-result-icon"></span>
 			</div>
@@ -240,9 +291,9 @@
 			</div>
 
 	{% elif search_type == 'users' %}
-			<div class="col-md-1 search-result-col-checkbox">
+			<!--div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
-			</div>
+			</div-->
 			<div class="col-md-1 search-result-col-icon">
 				<span class="glyphicon glyphicon-user search-result-icon"></span>
 			</div>

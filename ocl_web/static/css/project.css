@@ -203,6 +203,13 @@ form div.input-group {
   background-color: #428bca;
   color: White;
 }
+.resource-label.map-type .resource-label-name {
+  background-color: #aaa;
+  font-weight:bold;
+  font-size: 87%;
+  font-variant: small-caps;
+  color: White;
+}
 .resource-label.source .resource-label-name {
   background-color: #5cb85c;
   color: White;
