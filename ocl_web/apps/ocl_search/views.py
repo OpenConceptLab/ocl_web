@@ -1,14 +1,12 @@
 # Basic search
-#https://github.com/search?q=malaria&ref=cmdform
-
+# https://github.com/search?q=malaria&ref=cmdform
 # Search by type (when sidebar is clicked)
-#https://github.com/search?q=malaria&ref=cmdform&type=Code
+# https://github.com/search?q=malaria&ref=cmdform&type=Code
 import logging
 
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.core.paginator import Paginator
-import requests
 import urllib
 import math
 
@@ -55,7 +53,7 @@ class HomeSearchView(TemplateView):
             resource_type = OCLapi.ORG_TYPE
         if search_type == 'users':
             resource_type = OCLapi.USER_TYPE
-        if search_type == 'sources':    
+        if search_type == 'sources':
             resource_type = OCLapi.SOURCE_TYPE
         if search_type == 'concepts':
             resource_type = OCLapi.CONCEPT_TYPE
@@ -81,6 +79,8 @@ class HomeSearchView(TemplateView):
         context['results'] = search_results
         context['search_type'] = search_type
         context['search_type_name'] = search_type_names[search_type]
+        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort'] = searcher.get_sort()
 
         # Perform the counter searches
         if search_response:
@@ -104,7 +104,9 @@ class HomeSearchView(TemplateView):
 
 
 class OldHomeSearchView(TemplateView):
-
+    """
+    This is not used anymore.
+    """
     template_name = "ocl_search/search.html"
 
     def get_context_data(self, *args, **kwargs):

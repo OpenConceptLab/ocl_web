@@ -74,14 +74,11 @@
 
 
 				<div class="btn-group pull-right">
-				  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-				    <span class="text-muted">Sort:</span> <strong>Best Match</strong> <span class="caret"></span>
-				  </button>
-				  <ul class="dropdown-menu" role="menu">
-				    <li><a href="#">Best Match</a></li>
-				    <li><a href="#">Another sort</a></li>
-				    <li><a href="#">Something else here</a></li>
-				  </ul>
+					  <select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
+					  	{% for o in search_sort_options %}
+					    <option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
+					    {% endfor %}
+					  </select>
 				</div>
 
                     {% simple_pager page search_type_name url=pagination_url %}

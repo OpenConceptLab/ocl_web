@@ -103,6 +103,11 @@ def production():
     env.hosts = ['www.openconceptlab.org', ]
     env.user = 'deploy'
     env.site_spec = 'prod'
+    env.web_domain = 'www.openconceptlab.org'
+    env.api_domain = 'api.openconceptlab.org'
+    env.OCL_API_TOKEN = 'dummy'
+    env.OCL_ANON_API_TOKEN = 'dummy'
+    env.random_string = _random_string(32)
 
 
 @task
