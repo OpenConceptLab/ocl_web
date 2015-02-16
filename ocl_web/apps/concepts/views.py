@@ -82,13 +82,15 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin, TemplateVi
         name['name'] = self.request_json.get('name')
         name['locale'] = self.request_json.get('locale')
         name['preferred'] = self.request_json.get('preferred_locale')
+        name['name_type'] = self.request_json.get('name_type')
         names = [name]
 
         # TEMP for faster testing
         # return self.render_json_response({'message': _('Concept created')})
 
         api = OCLapi(self.request, debug=True)
-        result = api.create_concept(self.own_type, self.own_id, self.source_id, data, names=names)
+        result = api.create_concept(
+            self.own_type, self.own_id, self.source_id, data, names=names)
         if result.status_code != 201:
             logger.warning('Concept create POST failed %s' % result.content)
             return self.render_bad_request_response({'message': result.content})
@@ -196,6 +198,7 @@ class ConceptCreateView(UserOrOrgMixin, FormView):
 
         name = {}
         name['name'] = form.cleaned_data['name']
+        name['name_type'] = form.cleaned_data['name_type']
         name['locale'] = form.cleaned_data['locale']
         name['preferred'] = form.cleaned_data['preferred_locale']
         names = [name]

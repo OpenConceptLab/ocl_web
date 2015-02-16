@@ -36,7 +36,7 @@ function set_debug(loc, scope) {
 }
 
 function locale_by_name(locale_choices, n) {
-    for (var i=0; i<locale_choices.length; i++) {
+    for (var i = 0; i < locale_choices.length; i++) {
         if (locale_choices[i].name == n) {
             return locale_choices[i];
         }
@@ -44,7 +44,7 @@ function locale_by_name(locale_choices, n) {
 };
 
 function locale_by_code(locale_choices, c) {
-    for (var i=0; i<locale_choices.length; i++) {
+    for (var i = 0; i < locale_choices.length; i++) {
         if (locale_choices[i].code == c) {
             return locale_choices[i];
         }
@@ -65,7 +65,7 @@ function makeController(a_url_part, a_field_names, a_item_key) {
 
     return function conceptItemController($scope, $http, $location) {
 
-        var url_part = a_url_part;  // from makeController
+        var url_part = a_url_part; // from makeController
         var field_names = a_field_names;
         var item_key = a_item_key || 'uuid';
 
@@ -111,7 +111,7 @@ function makeController(a_url_part, a_field_names, a_item_key) {
             $scope.editedItem = angular.copy(item);
 
             // special case for locale, translate codes from API to display object for UI
-            for (var i=0; i<field_names.length; i++) {
+            for (var i = 0; i < field_names.length; i++) {
                 if ('locale' == field_names[i]) {
                     $scope.editedItem.locale = locale_by_code($scope.locale_choices, item.locale).name;
                 };
@@ -132,8 +132,8 @@ function makeController(a_url_part, a_field_names, a_item_key) {
             set_debug($location, $scope);
 
             $http.get(url)
-                .success(function (data) {
-                $scope.item_list = data;
+                .success(function(data) {
+                    $scope.item_list = data;
                 });
         } // loadItems
 
@@ -141,8 +141,8 @@ function makeController(a_url_part, a_field_names, a_item_key) {
 
             var url = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/core/options/locales/';
             $http.get(url)
-                .success(function (data) {
-                $scope.locale_choices = data;
+                .success(function(data) {
+                    $scope.locale_choices = data;
                 });
         } // loadLocales
 
@@ -151,13 +151,12 @@ function makeController(a_url_part, a_field_names, a_item_key) {
             // get form fields for API by name, specified
             // when controller is created.
             var data = {};
-            for (var i=0; i < field_names.length; i++) {
+            for (var i = 0; i < field_names.length; i++) {
                 fn = field_names[i];
                 // special case for locale, translate text to code for API
                 if ('locale' == fn) {
                     data[fn] = locale_by_name($scope.locale_choices, item[fn]).code;
-                }
-                else {
+                } else {
                     data[fn] = item[fn];
                 };
             }
@@ -166,13 +165,19 @@ function makeController(a_url_part, a_field_names, a_item_key) {
 
             var url = $location.absUrl() + url_part + '/';
             $http.post(url, data, null)
-                .success(function (data, status, headers, config) {
-                    $scope.alerts.push({type: 'success', msg: data.message});
+                .success(function(data, status, headers, config) {
+                    $scope.alerts.push({
+                        type: 'success',
+                        msg: data.message
+                    });
                     loadItems();
                 })
-                .error(function (data, status, headers, config) {
+                .error(function(data, status, headers, config) {
                     console.log('ERROR:' + data);
-                    $scope.alerts.push({type: 'danger', msg: data.message});
+                    $scope.alerts.push({
+                        type: 'danger',
+                        msg: data.message
+                    });
                 });
 
             resetCreateForm();
@@ -184,13 +189,12 @@ function makeController(a_url_part, a_field_names, a_item_key) {
         function updateItem(item) {
 
             var data = {};
-            for (var i=0; i < field_names.length; i++) {
+            for (var i = 0; i < field_names.length; i++) {
                 fn = field_names[i];
                 // special case for locale, translate text to code for API
                 if ('locale' == fn) {
                     data[fn] = locale_by_name($scope.locale_choices, item[fn]).code;
-                }
-                else {
+                } else {
                     data[fn] = item[fn];
                 };
             };
@@ -199,56 +203,68 @@ function makeController(a_url_part, a_field_names, a_item_key) {
 
             var url = $location.absUrl() + url_part + '/' + item[item_key] + '/';
             $http.post(url, data, null)
-              .success(function (data, status, headers, config) {
-                console.log(data);
-                $scope.alerts.push({type: 'success', msg: data.message});
-                loadItems();
-              })
-              .error(function (data, status, headers, config) {
-                console.log('ERROR:' + data.message);
-                $scope.alerts.push({type: 'danger', msg: data.message});
-              });
+                .success(function(data, status, headers, config) {
+                    console.log(data);
+                    $scope.alerts.push({
+                        type: 'success',
+                        msg: data.message
+                    });
+                    loadItems();
+                })
+                .error(function(data, status, headers, config) {
+                    console.log('ERROR:' + data.message);
+                    $scope.alerts.push({
+                        type: 'danger',
+                        msg: data.message
+                    });
+                });
 
             $scope.editedItem = null;
             cancelEditingItem();
         } // updateItem
 
-      $scope.updateItem = updateItem;
+        $scope.updateItem = updateItem;
 
-      function deleteItem(item) {
+        function deleteItem(item) {
 
-        var config = null;
+            var config = null;
 
-        if (!confirm("Are you sure?")) {
-          return;
-        }
-        console.log('DEL:' + item );
-        var url = $location.absUrl() + url_part + '/' + item[item_key] + '/';
-        $http.delete(url)
-          .success(function (data, status, headers, config) {
-            console.log(data);
-            $scope.alerts.push({type: 'success', msg: data.message});
-            loadItems();
-          })
-          .error(function (data, status, headers, config) {
-            console.log('DEL error' + data);
-            $scope.alerts.push({type: 'danger', msg: data.message});
+            if (!confirm("Are you sure?")) {
+                return;
+            }
+            console.log('DEL:' + item);
+            var url = $location.absUrl() + url_part + '/' + item[item_key] + '/';
+            $http.delete(url)
+                .success(function(data, status, headers, config) {
+                    console.log(data);
+                    $scope.alerts.push({
+                        type: 'success',
+                        msg: data.message
+                    });
+                    loadItems();
+                })
+                .error(function(data, status, headers, config) {
+                    console.log('DEL error' + data);
+                    $scope.alerts.push({
+                        type: 'danger',
+                        msg: data.message
+                    });
 
-          });
-      } // deleteItem()
+                });
+        } // deleteItem()
 
-      $scope.deleteItem = deleteItem;
+        $scope.deleteItem = deleteItem;
 
         $scope.closeAlert = function(index) {
             $scope.alerts.splice(index, 1);
         };
 
-      loadItems();
-      loadLocales();
+        loadItems();
+        loadLocales();
 
     } // conceptItemController
 
-    } // makeController
+} // makeController
 
 
 // app.controller('ConceptDescriptionController', conceptItemController);
@@ -263,45 +279,45 @@ app.controller('SourceVersionController', makeController('versions', ['id', 'des
 
 app.controller('ConceptVersionController', function($scope, $http, $location) {
 
-        function loadItems() {
+    function loadItems() {
             var url = make_sub_url($location.absUrl(), 'versions/');
             set_debug($location, $scope);
             $http.get(url)
-                .success(function (data) {
-                $scope.item_list = data;
+                .success(function(data) {
+                    $scope.item_list = data;
                 });
         } // loadItems
 
-        loadItems();
-}// ConceptVersionController
+    loadItems();
+    } // ConceptVersionController
 );
 
 app.controller('SourceSearchController', function($scope, $http, $location) {
 
-        function doSearch(search) {
-            var url = $location.absUrl()
-            url += '?q=' + search.text
-            console.log(search.text);
-            console.log(url);
-            location = url
-        }; // doSearch
+    function doSearch(search) {
+        var url = $location.absUrl()
+        url += '?q=' + search.text
+        console.log(search.text);
+        console.log(url);
+        location = url
+    }; // doSearch
 
-        $scope.doSearch = doSearch
+    $scope.doSearch = doSearch
 
-        function loadItems() {
+    function loadItems() {
 
             var url = $location.absUrl() + 'versions/';
             $http.get(url)
-                .success(function (data) {
-                $scope.item_list = data;
-                console.log('versions:');
-                console.log($scope.item_list);
+                .success(function(data) {
+                    $scope.item_list = data;
+                    console.log('versions:');
+                    console.log($scope.item_list);
                 });
         } // loadItems
 
-//        loadItems();
+    //        loadItems();
 
-}// SourceSearchController
+    } // SourceSearchController
 );
 
 
@@ -347,19 +363,19 @@ app.controller('ConceptController', function($scope, $http, $location) {
         $scope.addItem = addItem;
 
         function startEdit() {
-                var url = $location.absUrl();
-                $http.get(url)
-                    .success(function(data, status, headers, config) {
-                        console.log(data);
-                        $scope.item = data;
-                        })
-                    .error(function(data, status, headers, config) {
-                        console.log('ERROR:' + data.message);
-                        $scope.alerts.push({
-                            type: 'danger',
-                            msg: data.message
-                        });
+            var url = $location.absUrl();
+            $http.get(url)
+                .success(function(data, status, headers, config) {
+                    console.log(data);
+                    $scope.item = data;
+                })
+                .error(function(data, status, headers, config) {
+                    console.log('ERROR:' + data.message);
+                    $scope.alerts.push({
+                        type: 'danger',
+                        msg: data.message
                     });
+                });
         };
 
 
@@ -430,149 +446,149 @@ app.controller('ConceptController', function($scope, $http, $location) {
 */
 app.controller('MappingController', function($scope, $http, $location) {
 
-        $scope.isCreatingItem = false;
+    $scope.isCreatingItem = false;
+    $scope.isEditingItem = false;
+    $scope.editedItem = null;
+    $scope.item = null;
+    $scope.alerts = [];
+
+    function resetCreateForm() {
+        $scope.newItem = {};
+    }
+
+    function startCreatingItem() {
+        $scope.isCreatingItem = true;
         $scope.isEditingItem = false;
-        $scope.editedItem = null;
-        $scope.item = null;
-        $scope.alerts = [];
+        resetCreateForm();
+    }
 
-        function resetCreateForm() {
-            $scope.newItem = {};
-        }
+    function cancelCreatingItem() {
+        $scope.isCreatingItem = false;
+    }
 
-        function startCreatingItem() {
-            $scope.isCreatingItem = true;
-            $scope.isEditingItem = false;
-            resetCreateForm();
-        }
+    function startEditingItem() {
+        $scope.isCreatingItem = false;
+        $scope.isEditingItem = true;
+    }
 
-        function cancelCreatingItem() {
-            $scope.isCreatingItem = false;
-        }
+    function cancelEditingItem() {
+        $scope.isEditingItem = false;
+    }
 
-        function startEditingItem() {
-            $scope.isCreatingItem = false;
-            $scope.isEditingItem = true;
-        }
+    function shouldShowCreatingItem() {
+        return !$scope.isEditingItem;
+    }
 
-        function cancelEditingItem() {
-            $scope.isEditingItem = false;
-        }
+    function shouldShowEditingItem() {
+        return $scope.isEditingItem && !$scope.isCreatingItem;
+    }
 
-        function shouldShowCreatingItem() {
-            return !$scope.isEditingItem;
-        }
+    function setEditedItem(item) {
+        // Set the current edited object, copy otherwise Angular will update the real thing
+        $scope.editedItem = angular.copy(item);
 
-        function shouldShowEditingItem() {
-            return $scope.isEditingItem && !$scope.isCreatingItem;
-        }
-
-        function setEditedItem(item) {
-            // Set the current edited object, copy otherwise Angular will update the real thing
-            $scope.editedItem = angular.copy(item);
-
-            // special case for locale, translate codes from API to display object for UI
-            for (var i = 0; i < field_names.length; i++) {
-                if ('locale' == field_names[i]) {
-                    $scope.editedItem.locale = locale_by_code($scope.locale_choices, item.locale).name;
-                };
+        // special case for locale, translate codes from API to display object for UI
+        for (var i = 0; i < field_names.length; i++) {
+            if ('locale' == field_names[i]) {
+                $scope.editedItem.locale = locale_by_code($scope.locale_choices, item.locale).name;
             };
         };
+    };
 
-        $scope.startCreatingItem = startCreatingItem;
-        $scope.cancelCreatingItem = cancelCreatingItem;
-        $scope.startEditingItem = startEditingItem;
-        $scope.cancelEditingItem = cancelEditingItem;
-        $scope.shouldShowCreatingItem = shouldShowCreatingItem;
-        $scope.shouldShowEditingItem = shouldShowEditingItem;
-        $scope.setEditedItem = setEditedItem;
+    $scope.startCreatingItem = startCreatingItem;
+    $scope.cancelCreatingItem = cancelCreatingItem;
+    $scope.startEditingItem = startEditingItem;
+    $scope.cancelEditingItem = cancelEditingItem;
+    $scope.shouldShowCreatingItem = shouldShowCreatingItem;
+    $scope.shouldShowEditingItem = shouldShowEditingItem;
+    $scope.setEditedItem = setEditedItem;
 
-        function addItem(item) {
+    function addItem(item) {
 
-                var data = angular.copy(item);
-                var config = null;
-                console.log(data);
-                if (data.source_type == 'external') {
-                    delete data.to_concept_url;
-                } else {
-                    delete data.to_source_code;
-                    delete data.to_concept_code;
-                    delete data.to_concept_name;
-                }
-                delete data.source_type;
+            var data = angular.copy(item);
+            var config = null;
+            console.log(data);
+            if (data.source_type == 'external') {
+                delete data.to_concept_url;
+            } else {
+                delete data.to_source_code;
+                delete data.to_concept_code;
+                delete data.to_concept_name;
+            }
+            delete data.source_type;
 
-                var url = make_sub_url($location.absUrl(), 'mappings/');
-                $http.post(url, data, null)
-                    .success(function(data, status, headers, config) {
-                        $scope.alerts.push({
-                            type: 'success',
-                            msg: data.message
-                        });
-                        loadItems();
-                    })
-                    .error(function(data, status, headers, config) {
-                        console.log('ERROR:' + data);
-                        $scope.alerts.push({
-                            type: 'danger',
-                            msg: data.message
-                        });
+            var url = make_sub_url($location.absUrl(), 'mappings/');
+            $http.post(url, data, null)
+                .success(function(data, status, headers, config) {
+                    $scope.alerts.push({
+                        type: 'success',
+                        msg: data.message
                     });
-
-                resetCreateForm();
-                cancelCreatingItem();
-            } // addItem()
-
-        $scope.addItem = addItem;
-
-        function updateItem(item) {
-
-                var data = angular.copy(item);
-                console.log('update item' + item);
-                var config = null;
-
-                var url = $location.absUrl();
-                $http.post(url, data, null)
-                    .success(function(data, status, headers, config) {
-                        console.log(data);
-                        $scope.alerts.push({
-                            type: 'success',
-                            msg: data.message
-                        });
-                        loadItems();
-                    })
-                    .error(function(data, status, headers, config) {
-                        console.log('ERROR:' + data.message);
-                        $scope.alerts.push({
-                            type: 'danger',
-                            msg: data.message
-                        });
+                    loadItems();
+                })
+                .error(function(data, status, headers, config) {
+                    console.log('ERROR:' + data);
+                    $scope.alerts.push({
+                        type: 'danger',
+                        msg: data.message
                     });
+                });
 
-                $scope.editedItem = null;
-                cancelEditingItem();
-            } // updateItem
+            resetCreateForm();
+            cancelCreatingItem();
+        } // addItem()
 
-        $scope.updateItem = updateItem;
+    $scope.addItem = addItem;
 
-        function loadItems() {
+    function updateItem(item) {
 
-                var url = '/core/options/map_types/';
-                $http.get(url)
-                    .success(function(data) {
-                        $scope.map_types = data;
+            var data = angular.copy(item);
+            console.log('update item' + item);
+            var config = null;
+
+            var url = $location.absUrl();
+            $http.post(url, data, null)
+                .success(function(data, status, headers, config) {
+                    console.log(data);
+                    $scope.alerts.push({
+                        type: 'success',
+                        msg: data.message
                     });
-
-                url = make_sub_url($location.absUrl(), 'mappings/');
-                $http.get(url)
-                    .success(function(data) {
-                        $scope.item_list = data;
+                    loadItems();
+                })
+                .error(function(data, status, headers, config) {
+                    console.log('ERROR:' + data.message);
+                    $scope.alerts.push({
+                        type: 'danger',
+                        msg: data.message
                     });
-            } // loadItems
+                });
 
-        loadItems();
-        if (endsWith($location.absUrl(), 'edit/')) {
-            startEdit();
-        };
+            $scope.editedItem = null;
+            cancelEditingItem();
+        } // updateItem
 
-    } // MappingController
+    $scope.updateItem = updateItem;
+
+    function loadItems() {
+
+            var url = '/core/options/map_types/';
+            $http.get(url)
+                .success(function(data) {
+                    $scope.map_types = data;
+                });
+
+            url = make_sub_url($location.absUrl(), 'mappings/');
+            $http.get(url)
+                .success(function(data) {
+                    $scope.item_list = data;
+                });
+        } // loadItems
+
+    loadItems();
+    if (endsWith($location.absUrl(), 'edit/')) {
+        startEdit();
+    };
+
+} // MappingController
 );

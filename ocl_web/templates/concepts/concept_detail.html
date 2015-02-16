@@ -63,7 +63,6 @@
 {% include 'concepts/concept_detail_mappings.html' %}
 </tab> {# ------- end of mappings tab ----- #}
 
-
 {% comment %}
 {# Jon commented out this block until Collections fully implemented #}
 <tab heading="Collections">
@@ -72,8 +71,8 @@ Collections go here. -- HIDE FOR NOW
 </tab> {# ------- end of collection tab ----- #}
 {% endcomment %}
 
-
 <tab heading="History" ng-controller="ConceptVersionController">
+
 {# ------- start of versions tab ----- #}
 <div class="row">
 	<div class="col-md-10">
@@ -90,7 +89,7 @@ Collections go here. -- HIDE FOR NOW
 
 					<p>
 						<span class="text-muted small">
-							<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Updated by {{ version.version_created_by|default:'[Unknown User]' }}
+							<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Updated by {{ version.version_created_by ||'Unknown User' }}
 							&nbsp;&nbsp;&nbsp;
 							<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Updated on {{ version.version_created_on|date:'yyyy-MM-dd HH:mm:ss' }}
 						</span>
