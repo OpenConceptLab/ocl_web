@@ -24,7 +24,6 @@
 
 <!-- Filters -->
 
-{% if results %}
 		<div role="form">
 
 
@@ -34,14 +33,13 @@
 				<div class="filter-group-body">
 					{% for c in f.options %}
 					<div class="checkbox"><label><input type="checkbox" name="{{ f.filter_id }}"
-						value="{{ c.code }}">{{ c.name }}</label></div>
+						value="{{ c.code }}" {% if c.selected %}checked{% endif %}>{{ c.name }}</label></div>
         			{% endfor %}
 				</div>
 			</div>
 			{% endfor %}
 
 		</div> <!-- end div:role=form -->
-{% endif %}
 
 <!-- End left column -->
 
