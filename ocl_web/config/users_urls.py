@@ -59,13 +59,13 @@ urlpatterns = patterns('',
     ),
     # URL pattern for the UserDetailView
     url(
-        regex=r'^(?P<username>[\w\-_]+)/$',
+        regex=r'^(?P<username>[\w@\.\+\-_]+)/$',
         view=UserDetailView.as_view(),
         name='detail'
     ),
     # URL pattern for the UserUpdateView
     url(
-        regex=r'^update/(?P<username>[\w\-_]+)/$',
+        regex=r'^update/(?P<username>[\w@\.\+\-_]+)/$',
         view=UserUpdateView.as_view(),
         name='update'
     ),
