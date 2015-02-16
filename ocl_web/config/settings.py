@@ -230,6 +230,8 @@ class Common(Configuration):
     ACCOUNT_EMAIL_REQUIRED = True
     ACCOUNT_EMAIL_VERIFICATION = "mandatory"
     ACCOUNT_SIGNUP_FORM_CLASS = 'users.forms.SignupForm'
+    ACCOUNT_ADAPTER = 'users.adapter.OCLAccountAdapter'
+
     ########## END AUTHENTICATION CONFIGURATION
 
     ########## Custom user app defaults
