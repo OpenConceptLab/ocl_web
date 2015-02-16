@@ -94,7 +94,10 @@ class HomeSearchView(TemplateView):
                 # Need to apply search criteria to this url
                 counter_search_url = search_type_paths[resource_type]
                 count_response = api.head(counter_search_url)
-                resource_count[resource_type] = int(count_response.headers['num_found'])
+                if 'num_found' in count_response.headers:
+                    resource_count[resource_type] = int(count_response.headers['num_found'])
+                else:
+                    resource_count[resource_type] = 0
 
         context['resource_count'] = resource_count
 
