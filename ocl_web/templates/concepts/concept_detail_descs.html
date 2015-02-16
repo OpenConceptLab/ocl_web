@@ -19,10 +19,9 @@
 
             {% verbatim %}
             <li ng-repeat="desc in item_list" class="list-group-item">
-                <button type="button" class="btn btn-link" ng-click="setEditedItem(desc);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
-                </button>
+                <button type="button" class="btn btn-link" ng-click="setEditedItem(desc);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span></button>
                 {{ desc.description }}
-                <span ng-show="desc.description" class="small text-muted">&nbsp;&nbsp;{{ desc.description_type }}</span>
+                <span ng-show="desc.description_type" class="small text-muted">&nbsp;&nbsp;<span class="label label-default">{{ desc.description_type }}</span></span>
                 <span ng-show="desc.locale" class="small text-muted"><em>&nbsp;&nbsp;[{{ desc.locale }}]</em></span>
                 <span ng-if="desc.locale_preferred" class="glyphicon glyphicon-flag"></span>
                 <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(desc)"></span>
@@ -37,11 +36,10 @@
     {% else %}
 
         <ul class="list-group">
-
             {% verbatim %}
             <li ng-repeat="desc in item_list" class="list-group-item">
                 {{ desc.description }}
-                <span ng-show="desc.description" class="small text-muted">&nbsp;&nbsp;{{ desc.description_type }}</span>
+                <span ng-show="desc.description_type" class="small text-muted">&nbsp;&nbsp;<span class="label label-default">{{ desc.description_type }}</span></span>
                 <span ng-show="desc.locale" class="small text-muted"><em>&nbsp;&nbsp;[{{ desc.locale }}]</em></span>
                 <span ng-if="desc.locale_preferred" class="glyphicon glyphicon-flag"></span>
             {% endverbatim %}

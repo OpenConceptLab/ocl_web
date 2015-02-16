@@ -49,51 +49,23 @@
 
 {# tabs #}
 <tabset>
+
 <tab heading="Concept Details">
 {# ----- Start of concept detail tab ----- #}
 &nbsp;
-
-
-{% comment %}
-{# Jon commented out this block because redundant with header info #}
-
-<div class="row"> {# display #}
-<div class="row">
-	<div class="col-md-2" style="text-align:right;">
-		<span style="font-weight:bold;color:#999;">Preferred Name</span>
-		<span id="preferred-name-info" data-toggle="tooltip" data-placement="right" title="Primary name in user's preferred language."><span class="glyphicon glyphicon-info-sign"></span></span>
-	</div>
-
-	<div class="col-md-9">
-		{{ concept.display_name }}{% if concept.display_name %}&nbsp;&nbsp;<span class="small text-muted"><em>[{{ concept.display_locale }}]</em></span>{% endif %}
-	</div>
-</div> {# row #}
-
-	{% field_label 'Class' concept.concept_class %}
-	{% field_label 'DataType' concept.datatype %}
-	{% field_label 'Retired' concept.retired %}
-
-</div> {# display row #}
-
-<div class="row"><hr /></div>
-
-{% endcomment %}
-
 {% include 'concepts/concept_detail_names.html' %}
 {% include 'concepts/concept_detail_descs.html' %}
 {% include 'core/resource_detail_extra.html' %}
-
 </tab> {# ------- end of detail tab ----- #}
 
 
 <tab heading="Mappings">
 {% include 'concepts/concept_detail_mappings.html' %}
-</tab>
+</tab> {# ------- end of mappings tab ----- #}
+
 
 {% comment %}
-
 {# Jon commented out this block until Collections fully implemented #}
-
 <tab heading="Collections">
 	 {# ------- start of collection tab ----- #}
 Collections go here. -- HIDE FOR NOW
@@ -118,7 +90,7 @@ Collections go here. -- HIDE FOR NOW
 
 					<p>
 						<span class="text-muted small">
-							<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Updated by {{ version.version_created_by|default:"<em>[Unknown User]</em>" }}
+							<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Updated by {{ version.version_created_by|default:'[Unknown User]' }}
 							&nbsp;&nbsp;&nbsp;
 							<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Updated on {{ version.version_created_on|date:'yyyy-MM-dd HH:mm:ss' }}
 						</span>
@@ -132,8 +104,8 @@ Collections go here. -- HIDE FOR NOW
     </div> {# list col8 #}
 </div> {# list row #}
 
+</tab> {# ------- end of versions tab ----- #}
 
-</tab>{# ------- end of versions tab ----- #}
 
 {% if request.GET.debug %}
 <tab heading="Debug">
