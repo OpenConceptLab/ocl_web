@@ -23,6 +23,13 @@
     1. release_web_app
     2. release_api_app
 
+    optional for data:
+    3. rebuild_index
+
+    Useful:
+    4. restart_web
+    5. restart_api
+    
     Security:
 
     Note that all access is setup to user your SSH key.
@@ -524,7 +531,7 @@ def release_api_app(do_pip=False):
     with cd("/opt/deploy/ocl_api/ocl"):
         run("cp settings.py.deploy settings.py")
 
-    rebuild_index()
+    run('supervisorctl restart ocl_web')
 
 
 def release(app_name, do_pip):
@@ -626,10 +633,14 @@ def build_new_server():
 
 
 @task
-def restart():
+def restart_web():
     """ Restart OCL WEB server """
     run('supervisorctl restart ocl_web')
 
+@task
+def restart_api():
+    """ Restart OCL API server """
+    run('supervisorctl restart ocl_api')
 
 @task
 def status():
