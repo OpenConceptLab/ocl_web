@@ -461,7 +461,8 @@ def checkout_api_app(do_pip=False):
         run("cp -r oclapi/solr/collection1/conf /opt/deploy/solr/collection1")
 
     with cd("/opt/deploy/ocl_api/ocl"):
-        run("cp settings.py.deploy settings.py")
+        # there is no need for this, settings.py.eploy is actually wrong?
+        # run("cp settings.py.deploy settings.py")
         with prefix("source /opt/virtualenvs/ocl_api/bin/activate"):
             # this is really slow because it pull down django-norel
             if do_pip:
@@ -527,11 +528,7 @@ def release_api_app(do_pip=False):
     """ Release latest API server software.
     """
     checkout_api_app(do_pip)
-
-    with cd("/opt/deploy/ocl_api/ocl"):
-        run("cp settings.py.deploy settings.py")
-
-    run('supervisorctl restart ocl_web')
+    run('supervisorctl restart ocl_api')
 
 
 def release(app_name, do_pip):

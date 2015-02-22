@@ -9,7 +9,7 @@
 <h3>
     {% source_owner_label source %} / {% source_label source %} / {% concept_label concept %} / {% trans 'Update Concept' %}
     {# TODO: Only show if admin or owner #}
-    <a href="#" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+    <a href="{% url 'concept-retire'  org=source.owner source=source.id concept=concept.id %}" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
 
 </h3>
 

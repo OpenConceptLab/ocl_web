@@ -10,6 +10,16 @@ from libs.ocl import OCLapi
 from apps.core.views import _get_locale_list
 
 
+class ConceptRetireForm(forms.Form):
+    """
+        Concept retirement form
+    """
+    required_css_class = 'required'
+
+    comment = forms.CharField(max_length=80, label=_('Comment'),
+                              required=False)
+
+
 class ConceptCreateForm(forms.Form):
     """
         Concept create form

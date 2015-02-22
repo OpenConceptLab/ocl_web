@@ -12,14 +12,15 @@ from django.template.response import TemplateResponse
 
 from braces.views import (CsrfExemptMixin, JsonRequestResponseMixin)
 
-from .forms import (ConceptCreateForm, ConceptEditForm)
+from .forms import (ConceptCreateForm, ConceptEditForm, ConceptRetireForm)
 from libs.ocl import OCLapi
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
 
 
-class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin, TemplateView):
+class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
+                            TemplateView):
     """
     A mix HTTP and ajax view for creating and editing concepts.
     on Get returns full HTML display page.
@@ -96,6 +97,77 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin, TemplateVi
             return self.render_bad_request_response({'message': result.content})
         else:
             return self.render_json_response({'message': _('Concept created')})
+
+    def edit(self):
+
+        data = {}
+        data['concept_class'] = self.request_json.get('concept_class')
+        data['datatype'] = self.request_json.get('datatype')
+        data['update_comment'] = self.request_json.get('update_comment')
+
+        # TEMP for faster testing
+        # return self.render_json_response({'message': _('Concept updated')})
+
+        api = OCLapi(self.request, debug=True)
+        result = api.update_concept(self.own_type, self.own_id, self.source_id, self.concept_id, data)
+        if result.status_code != requests.codes.ok:
+            emsg = result.json().get('detail', 'Error')
+            logger.warning('Concept update POST failed %s' % emsg)
+            return self.render_bad_request_response({'message': emsg})
+        else:
+            return self.render_json_response({'message': _('Concept updated')})
+
+    def post(self, *args, **kwargs):
+        """
+            Handle actual creation or edit.
+        """
+        self.get_args()
+        print self.args_string()
+
+        if self.concept_id is not None:
+            return self.edit()
+        else:
+            return self.add()
+
+
+class ConceptRetireView(UserOrOrgMixin, FormView):
+    """
+    View for retiring a concept. This is like a logical delete.
+    """
+    form_class = ConceptRetireForm
+    template_name = "concepts/concept_retire.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ConceptRetireView, self).get_context_data(*args, **kwargs)
+
+        self.get_args()
+
+        api = OCLapi(self.request, debug=True)
+        source = api.get(self.own_type, self.own_id, 'sources', self.source_id).json()
+        context['source'] = source
+        concept = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', self.concept_id).json()
+        context['concept'] = concept
+        return context
+
+    def get_success_url(self):
+        if self.from_org:
+            return reverse("source-detail",
+                           kwargs={"org": self.org_id,
+                                   'source': self.kwargs.get('source')})
+        else:
+            return reverse("source-detail",
+                           kwargs={"user": self.user_id,
+                                   'source': self.kwargs.get('source')})
+
+    def clean_concept_id(self, request, concept_id):
+        """ concept ID must be unique """
+
+        api = OCLapi(request, debug=True)
+        result = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', concept_id)
+        if result.status_code == 200:
+            return _('This Concept ID is already used.')
+        else:
+            return None
 
     def edit(self):
 
