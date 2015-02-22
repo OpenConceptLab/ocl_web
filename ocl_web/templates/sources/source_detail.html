@@ -32,11 +32,6 @@
                 	</p>
 				</div>
 
-		        {% if request.GET.debug %}
-		        	<h5>Source</h5><pre>{{ source|pprint }}</pre>
-		        	<h5>Concepts</h5><pre>{{ concepts|pprint }}</pre>
-		        {% endif %}
-
 
 			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
@@ -222,6 +217,13 @@
 <tab heading="About"> {# ----- start source About tab #}
 	{% include 'sources/source_about_text.html' %}
 </tab> {# ----- end source About tab #}
+
+{% if request.GET.debug %}
+<tab heading="Debug">
+<pre>{{ source|pprint }}</pre>
+</tab>
+{% endif %}
+
 </tabset>
 </div> <!-- /container -->
 

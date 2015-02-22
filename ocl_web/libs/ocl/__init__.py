@@ -1,29 +1,16 @@
-# Python
+"""
+    This is the central interface to the OCL API.
+"""
 import os
 import logging
-
-# Django
-from django.conf import settings
-
-# Third Party
 import requests
 import simplejson as json
 
-# Ours
-from api_resource import ApiResource
-from collection import Collection
-from concept import Concept
-from concept_class import ConceptClass
-from concept_data_type import ConceptDataType
-from concept_list import ConceptList
-from map_type import MapType
-from mapping import Mapping
-from source import Source
-from star import Star
-from user import User
+from django.conf import settings
 
-# for others to use
+# for others to import via this module
 from .search import OCLSearch
+
 
 SESSION_TOKEN_KEY = 'API_USER_TOKEN'
 
@@ -33,7 +20,8 @@ class OCLapi(object):
         Handles all the authentication and formating.
         Also contain helper and utility functions.
 
-        :logging: This class outputs debug level information to the "oclapi" logger.
+        :logging: This class outputs debug level information to the "oclapi"
+                  logger.
     """
     # resource types
     USER_TYPE = 0
@@ -50,14 +38,17 @@ class OCLapi(object):
             Some serious debug output.
         """
         self.logger.debug('API %s' % (results.request.path_url))
-        self.logger.debug('%s RESULT: %s' % (results.request.method, results.status_code))
+        self.logger.debug('%s RESULT: %s' % (
+            results.request.method, results.status_code))
         if results.status_code == requests.codes.server_error:
             self.logger.error(results.content)
 
         elif len(results.content) > 0:
             try:
-                self.logger.debug('%s JSON: %s' % (results.request.method, json.dumps(results.json(), sort_keys=True,
-                                  indent=4, separators=(',', ': '))))
+                self.logger.debug('%s JSON: %s' % (results.request.method,
+                                  json.dumps(results.json(),
+                                             sort_keys=True, indent=4,
+                                             separators=(',', ': '))))
             except json.JSONDecodeError:
                 self.logger.error('JSON: Error decoding it: %s' % results.content[:40])
         else:
@@ -81,8 +72,10 @@ class OCLapi(object):
 
     def __init__(self, request=None, debug=False, admin=False):
         """
-        :param admin: optional, if set to True, access API as admin user. Needed for create_user.
-        :param request: gives the API access to the current active session, to get Authorization etc.
+        :param admin: optional, if set to True, access API as admin user.
+                      Needed for create_user.
+        :param request: gives the API access to the current active session,
+                        to get Authorization etc.
         """
         self.status_code = None
         self.debug = debug
@@ -107,18 +100,20 @@ class OCLapi(object):
     def post(self, type_name, *args, **kwargs):
         """ Issue Post request to API.
 
-            :param type_name: is a string specifying the type of the object according
-                                to the API.
-            :param *args: The rest of the positional arguments will be appended to the post URL
+            :param type_name: is a string specifying the type of the object
+                              according to the API.
+            :param *args: The rest of the positional arguments will be appended
+                          to the post URL
             :param *kwargs: all the keyword arguments will become post data.
 
             :returns: response object from requests.
         """
-        url = '%s/v1/%s/' % (self.host, type_name)
+        url = '%s/%s/' % (self.host, type_name)
         if len(args) > 0:
             url = url + '/'.join(args) + '/'
         if self.debug:
-            self.logger.debug('POST %s %s %s' % (url, json.dumps(kwargs), self.headers))
+            self.logger.debug('POST %s %s %s' % (url, json.dumps(kwargs),
+                                                 self.headers))
 
         results = requests.post(url, data=json.dumps(kwargs),
                                 headers=self.headers)
@@ -131,11 +126,12 @@ class OCLapi(object):
         """ Issue delete request to API.
 
         """
-        url = '%s/v1/' % (self.host)
+        url = '%s/' % (self.host)
         if len(args) > 0:
             url = url + '/'.join(args) + '/'
         if self.debug:
-            self.logger.debug('DELETE %s %s %s' % (url, json.dumps(kwargs), self.headers))
+            self.logger.debug('DELETE %s %s %s' % (url, json.dumps(kwargs),
+                                                   self.headers))
 
         results = requests.delete(url, data=json.dumps(kwargs),
                                   headers=self.headers)
@@ -145,15 +141,16 @@ class OCLapi(object):
     def put(self, type_name, *args, **kwargs):
         """ Issue delete request to API.
 
-            :param type_name: is a string specifying the type of the object according
-                                to the API.
+            :param type_name: is a string specifying the type of the object
+                              according to the API.
         """
-        url = '%s/v1/%s/' % (self.host, type_name)
+        url = '%s/%s/' % (self.host, type_name)
         if len(args) > 0:
             url = url + '/'.join(args) + '/'
 
         if self.debug:
-            self.logger.debug('PUT %s %s %s' % (url, json.dumps(kwargs), self.headers))
+            self.logger.debug('PUT %s %s %s' % (url, json.dumps(kwargs),
+                                                self.headers))
 
         results = requests.put(url, data=json.dumps(kwargs),
                                headers=self.headers)
@@ -170,7 +167,7 @@ class OCLapi(object):
             :returns: requests.response object.
 
         """
-        self.url = '%s/v1/' % (self.host)
+        self.url = '%s/' % (self.host)
         if len(args) > 0:
             self.url = self.url + '/'.join(args) + '/'
         if self.debug:
@@ -196,7 +193,7 @@ class OCLapi(object):
             :returns: requests.response object.
 
         """
-        self.url = '%s/v1/' % (self.host)
+        self.url = '%s/' % (self.host)
         if len(args) > 0:
             self.url = self.url + '/'.join(args)
 
@@ -241,7 +238,7 @@ class OCLapi(object):
             :param url: is a string specifying the request url. Useful
                 for urls contained in OCL response data like members_url.
         """
-        url = '%s/v1/%s' % (self.host, url)
+        url = '%s/%s' % (self.host, url)
 
         if self.debug:
             self.logger.debug('GET %s %s %s' % (url, json.dumps(kwargs), self.headers))
@@ -339,10 +336,13 @@ class OCLapi(object):
         if len(list_data) > 0:
             data['extras'] = list_data
 
-        result = self.post(source_owner_type, source_owner_id, 'sources', source_id, 'concepts', **data)
+        result = self.post(
+            source_owner_type, source_owner_id, 'sources', source_id,
+            'concepts', **data)
         return result
 
-    def update_concept(self, source_owner_type, source_owner_id, source_id, concept_id, base_data,
+    def update_concept(self, source_owner_type, source_owner_id, source_id,
+                       concept_id, base_data,
                        names=[], descriptions=[], extras=[]):
         """ Update a concept.
             NOTE: currently add by org+source, but there are other options... TODO
@@ -378,7 +378,9 @@ class OCLapi(object):
             data['extras'] = list_data
 
         # TODO: Why doesn't POST work?
-        result = self.put(source_owner_type, source_owner_id, 'sources', source_id, 'concepts', concept_id, **data)
+        result = self.put(
+            source_owner_type, source_owner_id, 'sources', source_id,
+            'concepts', concept_id, **data)
         return result
 
     def create_org(self, base_data, extras=[]):
@@ -511,94 +513,3 @@ class OCLapi(object):
                            'sources', source_id, 'concepts', concept_id,
                            'mappings', **data)
         return result
-
-### Below not used ###
-
-
-class Source(object):
-    """ NOTE USED """
-    def __init__(self):
-        pass
-
-    def from_json(self, json):
-        """
-        Copy everything over
-        """
-        for key, value in json.iteritems():
-            self.__setattr__(key, value)
-
-    def absolute_url(self):
-        """
-        Get my access url, which is not simple because of my owner...
-        """
-        if self.owner_type == 'Organization':
-            return 'orgs/%s/sources/%s/' % (self.owner_id, self.short_code)
-
-
-api_key = os.environ.get('OCL_API_TOKEN', None)
-host = settings.API_HOST
-
-
-def object_hooker(dct):
-    class_names = {
-        'OclMapType': MapType,
-        'OclConcept': Concept,
-        'OclConceptClass': ConceptClass,
-        'OclConceptList': ConceptList,
-        'OclConceptDataType': ConceptDataType,
-        'OclCollection': Collection,
-        'OclMapping': Mapping,
-        'OclSource': Source,
-        'OclStar': Star,
-        'OclUser': User
-    }
-
-    if '__type__' in dct:
-        class_name = dct['__type__']
-        try:
-            # Instantiate class based on value in the variable
-            x = class_names[class_name]()
-            x.set_values(dct)
-            return x
-        except KeyError:
-            # handle error - Class is not defined
-            pass
-    return dct
-
-
-class APIRequestor(object):
-    """ NOT Used """
-
-    def __init__(self, api_key=api_key):
-        self.api_key = api_key
-        self.headers = {'Authorization': 'Token %s' % api_key}
-        self.headers['Content-Type'] = 'application/json'
-        self.host = host
-
-    def instance_url(self, cls):
-
-        return '/v1/%ss/' % cls.__name__.lower()
-
-    def post(self, url, **kwargs):
-
-        results = requests.post(
-            self.host + url,
-            data=json.dumps(kwargs),
-            headers=self.headers)
-
-        return results
-
-
-class Org(object):
-    """ Not used anymore """
-
-    @classmethod
-    def create(cls, org_id, name, **kwargs):
-
-        requestor = APIRequestor(api_key=api_key)
-        url = requestor.instance_url(cls)
-        results = requestor.post(url, id=org_id, name=name, **kwargs)
-
-        # TODO: Raise bad requests here?  Yes, via Exceptions.
-        # TODO: Return the org in a leaner format?
-        return results
