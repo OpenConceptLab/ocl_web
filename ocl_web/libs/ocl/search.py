@@ -1,7 +1,6 @@
 """
     Search helper for interfacing web with OCL API.
 
-    Work in progress...
 """
 import logging
 
@@ -103,9 +102,13 @@ def setup_filters():
 
     f = filters.add_filter('datatype', 'Datatypes')
     f.options = turn_to_tuples(_get_datatype_list())
-
+    print f.options
     f = filters.add_filter('locale', 'Locale')
     f.options = turn_to_tuples(_get_locale_list())
+    print f.options
+    f = filters.add_filter('includeRetired', 'Include Retired')
+    f.options = turn_to_tuples([{'code': u'1', 'name': 'Retired'}])
+    print f.options
     concept_filters = filters
 
     # source filter
@@ -258,7 +261,8 @@ class OCLSearch(object):
 
         # sort
         # sortAsc/sortDesc (optional) string
-        # sort results on one of the following fields: "name", "last_update" (default), "num_stars"
+        # sort results on one of the following fields: "name", "last_update"
+        # (default), "num_stars"
         sort_key = None
         sort_value = None
         if 'sort' in params:
@@ -284,8 +288,10 @@ class OCLSearch(object):
                 search_params['q'] = self.q
 
         # for source
-        # source_type (optional) string - Filter results to a given source type, e.g. "dictionary", "reference"
-        # language (optional) string - Filter results to those with a given language in their supported_locales, e.g. "en", "fr"
+        # source_type (optional) string - Filter results to a given source type
+        # e.g. "dictionary", "reference"
+        # language (optional) string - Filter results to those with a given
+        # language in their supported_locales, e.g. "en", "fr"
 
         for key in params.keys():
             print 'trying key:%s' % key
@@ -296,7 +302,7 @@ class OCLSearch(object):
                 f.select_option(v)
                 search_params[key] = v
                 print 'add key %s = %s' % (key, v)
-
+                print f
         from libs.ocl import OCLapi
         print 'Searcher %s params: %s' % (OCLapi.resource_type_name(self.resource_type), search_params)
         self.search_params = search_params

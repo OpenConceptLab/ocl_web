@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load ocl_tags %}
+
+{% block title %}{% trans "Retire Concept" %}{% endblock %}
+{% block content %}
+
+<h3>
+    {% source_owner_label source %} / {% source_label source %} / {% concept_label concept %} / {% trans 'Retire Concept' %}
+</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>Retiring Concept:</h1>
+            <form class="form-horizontal" id="source_create_form" method="post" action=".">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Concept</label>
+                    <div class="col-md-4">
+                      {{ concept.display_name }}
+                    </div>
+                </div>
+
+                {% bootstrap_form form layout="horizontal" %} {% buttons layout="horizontal" %}
+                <button type="submit" class="btn btn-primary">
+                    {% trans "Retire" %}
+                </button>
+                {% endbuttons %}
+
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

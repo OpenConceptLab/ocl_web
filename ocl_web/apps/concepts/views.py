@@ -78,6 +78,7 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
 
         data['concept_class'] = self.request_json.get('concept_class')
         data['datatype'] = self.request_json.get('datatype')
+        data['external_id'] = self.request_json.get('external_id')
 
         name = {}
         name['name'] = self.request_json.get('name')
@@ -103,8 +104,9 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
         data = {}
         data['concept_class'] = self.request_json.get('concept_class')
         data['datatype'] = self.request_json.get('datatype')
+        data['external_id'] = self.request_json.get('external_id')
         data['update_comment'] = self.request_json.get('update_comment')
-
+        print data
         # TEMP for faster testing
         # return self.render_json_response({'message': _('Concept updated')})
 
@@ -151,54 +153,37 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
 
     def get_success_url(self):
         if self.from_org:
-            return reverse("source-detail",
+            return reverse('concept-detail',
                            kwargs={"org": self.org_id,
-                                   'source': self.kwargs.get('source')})
+                                   'source': self.source_id,
+                                   'concept': self.concept_id})
+
         else:
-            return reverse("source-detail",
+            return reverse('concept-detail',
                            kwargs={"user": self.user_id,
-                                   'source': self.kwargs.get('source')})
+                                   'source': self.source_id,
+                                   'concept': self.concept_id})
 
-    def clean_concept_id(self, request, concept_id):
-        """ concept ID must be unique """
+    def form_valid(self, form, *args, **kwargs):
 
-        api = OCLapi(request, debug=True)
-        result = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', concept_id)
-        if result.status_code == 200:
-            return _('This Concept ID is already used.')
-        else:
-            return None
-
-    def edit(self):
-
-        data = {}
-        data['concept_class'] = self.request_json.get('concept_class')
-        data['datatype'] = self.request_json.get('datatype')
-        data['update_comment'] = self.request_json.get('update_comment')
-
-        # TEMP for faster testing
-        # return self.render_json_response({'message': _('Concept updated')})
-
-        api = OCLapi(self.request, debug=True)
-        result = api.update_concept(self.own_type, self.own_id, self.source_id, self.concept_id, data)
-        if result.status_code != requests.codes.ok:
-            emsg = result.json().get('detail', 'Error')
-            logger.warning('Concept update POST failed %s' % emsg)
-            return self.render_bad_request_response({'message': emsg})
-        else:
-            return self.render_json_response({'message': _('Concept updated')})
-
-    def post(self, *args, **kwargs):
-        """
-            Handle actual creation or edit.
-        """
         self.get_args()
-        print self.args_string()
+        print form.cleaned_data
 
-        if self.concept_id is not None:
-            return self.edit()
+        data = {'update_comment': form.cleaned_data['comment']}
+        api = OCLapi(self.request, debug=True)
+        result = api.delete(
+            self.own_type, self.own_id, 'sources', self.source_id, 'concepts',
+            self.concept_id, **data)
+        print result
+        if result.status_code != 204:
+            print result.status_code
+            emsg = result.json().get('detail', 'Error')
+            messages.add_message(self.request, messages.ERROR, emsg)
+            return HttpResponseRedirect(self.request.path)
+
         else:
-            return self.add()
+            messages.add_message(self.request, messages.INFO, _('Concept retired'))
+            return HttpResponseRedirect(self.get_success_url())
 
 
 class ConceptCreateView(UserOrOrgMixin, FormView):
