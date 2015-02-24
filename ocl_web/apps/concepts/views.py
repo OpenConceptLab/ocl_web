@@ -514,19 +514,19 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
 class ConceptDescView(ConceptItemView):
     item_name = 'descriptions'
     kwarg_name = 'description'
-    field_names = ['description', 'description_type', 'locale', 'locale_preferred']
+    field_names = ['description', 'description_type', 'external_id', 'locale', 'locale_preferred']
 
 
 class ConceptNameView(ConceptItemView):
     item_name = 'names'
     kwarg_name = 'name'
-    field_names = ['name', 'name_type', 'locale', 'locale_preferred']
+    field_names = ['name', 'name_type', 'external_id', 'locale', 'locale_preferred']
 
 
 class ConceptMappingView(ConceptItemView):
     item_name = 'mappings'
     kwarg_name = 'mapping'
-    field_names = ['map_type', 'from_concept_url', 'to_concept_url']
+    field_names = ['map_type', 'external_id', 'from_concept_url', 'to_concept_url']
     optional = {'includeInverseMappings': True}
 
 

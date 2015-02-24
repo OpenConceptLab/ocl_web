@@ -91,14 +91,19 @@
     <div class="form-group">
         <label class="control-label" for="id_description_type">Description Type</label>
         <input class="form-control" id="id_desription_type" maxlength="30" name="description_type" 
-            placeholder="Description type" required="required" title="" type="text"
+            placeholder="Description type" title="" type="text"
             ng-model="newItem.description_type" />
     </div>
-
+    <div class="form-group">
+        <label class="control-label" for="id_external_id">External ID</label>
+        <input class="form-control" id="id_external_id" maxlength="48" name="external_id" 
+            placeholder="External ID" title="" type="text"
+            ng-model="newItem.external_id" />
+    </div>
     <div class="form-group required" ng-class="{ 'has-error': desc_add_form.locale.$invalid && !desc_add_form.locale.$pristine }">
         <label class="control-label" for="id_locale">Locale</label>
         {% verbatim %}
-        <input class="form-control" type="text" name="locale" ng-model="addItem.locale"  typeahead-editable="false"
+        <input class="form-control" type="text" name="locale" ng-model="newItem.locale"  typeahead-editable="false"
             typeahead="locale.name for locale in locale_choices | filter:$viewValue | limitTo:8" >
         <p class="help-block" ng-show="desc_add_form.locale.$invalid">Select a locale</p>
         {% endverbatim %}
@@ -140,7 +145,12 @@
             placeholder="Description type" title="" type="text"
             ng-model="editedItem.description_type" />
     </div>
-
+    <div class="form-group">
+        <label class="control-label" for="id_external_id">External ID</label>
+        <input class="form-control" id="id_external_id" maxlength="48" name="external_id" 
+            placeholder="External ID" title="" type="text"
+            ng-model="editedItem.external_id" />
+    </div>
     <div class="form-group required" ng-class="{ 'has-error': desc_edit_form.locale.$invalid && !desc_edit_form.locale.$pristine }">
         <label class="control-label" for="id_locale">Locale</label>
         {% verbatim %}

@@ -79,6 +79,12 @@
             placeholder="Nametype, e.g. FULLY_SPECIFIED" type="text"
             ng-model="newItem.name_type" />
     </div>
+    <div class="form-group">
+        <label class="control-label" for="id_external_id">External ID</label>
+        <input class="form-control" id="id_external_id" maxlength="48" name="external_id" 
+            placeholder="External ID" title="" type="text"
+            ng-model="newItem.external_id" />
+    </div>
 
 
     <div class="form-group required" ng-class="{ 'has-error': name_add_form.locale.$invalid && !name_add_form.locale.$pristine }">
@@ -124,6 +130,12 @@
         <input class="form-control" id="id_name_type" maxlength="30" name="name_type" 
             placeholder="Nametype, e.g. FULLY_SPECIFIED" title="" type="text"
             ng-model="editedItem.name_type" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="id_external_id">External ID</label>
+        <input class="form-control" id="id_external_id" maxlength="48" name="external_id" 
+            placeholder="External ID" title="" type="text"
+            ng-model="editedItem.external_id" />
     </div>
 
     <div class="form-group required" ng-class="{ 'has-error': name_edit_form.locale.$invalid && !name_edit_form.locale.$pristine }">

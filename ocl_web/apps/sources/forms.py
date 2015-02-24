@@ -30,6 +30,8 @@ class SourceCreateForm(forms.Form):
     public_access = forms.ChoiceField(
         label=_('Public Access'), required=False, initial='View',
         choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
+    external_id = forms.CharField(
+        label=_('External ID'), max_length=48, required=False)
     default_locale = forms.ChoiceField(
         choices=[(d['code'], d['name']) for d in _get_locale_list()], label=_('Locale'), required=True)
     supported_locales = forms.CharField(max_length=30, label=_('Supported Locales'), required=True)

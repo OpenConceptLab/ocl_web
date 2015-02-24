@@ -198,13 +198,11 @@ function makeController(a_url_part, a_field_names, a_item_key) {
                     data[fn] = item[fn];
                 };
             };
-
             var config = null;
 
             var url = $location.absUrl() + url_part + '/' + item[item_key] + '/';
             $http.post(url, data, null)
                 .success(function(data, status, headers, config) {
-                    console.log(data);
                     $scope.alerts.push({
                         type: 'success',
                         msg: data.message
@@ -268,8 +266,8 @@ function makeController(a_url_part, a_field_names, a_item_key) {
 
 
 // app.controller('ConceptDescriptionController', conceptItemController);
-app.controller('ConceptDescriptionController', makeController('descriptions', ['description', 'description_type', 'locale', 'locale_preferred']));
-app.controller('ConceptNameController', makeController('names', ['name', 'name_type', 'locale', 'locale_preferred']));
+app.controller('ConceptDescriptionController', makeController('descriptions', ['description', 'description_type', 'external_id', 'locale', 'locale_preferred']));
+app.controller('ConceptNameController', makeController('names', ['name', 'name_type', 'external_id', 'locale', 'locale_preferred']));
 app.controller('ConceptMappingController', makeController('mappings', ['map_type', 'from_concept_url', 'to_concept_url']));
 
 app.controller('ResourceExtraController', makeController('extras', ['extra_name', 'extra_value'], 'extra_name'));
