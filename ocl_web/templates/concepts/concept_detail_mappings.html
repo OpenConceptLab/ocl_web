@@ -56,6 +56,7 @@
         <span class="small text-muted">[Move Q/As into sections above and remove this section]</span>
 
         <ul class="list-group">
+            {% comment %} COMMENT OUT FOR NOW
             {% verbatim %}
             <li ng-repeat="q in item_list|filter:{map_type:'q_and_a'}" class="list-group-item">
                 <button type="button" class="btn btn-link" ng-click="setEditedItem(q);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
@@ -72,13 +73,14 @@
             {% verbatim %}
             <li ng-show="(item_list|filter:{map_type:'q_and_a'}).length == 0" class="list-group-item">&nbsp;</li>
             {% endverbatim %}
+            {% endcomment %}
         </ul>
 
     </div> {# list col8 #}
 </div> {# list row #}
 
 
-{# comment #}
+{% comment %}
 <div class="row">
     <div class="col-md-2">
         <span style="text-align:right;font-weight:bold;color:#999;">Concept Sets</span>
@@ -108,7 +110,7 @@
     </div> {# list col8 #}
 </div> {# list row #}
 
-{# endcomment #}
+{% endcomment %}
 
 <div class="row"> {# add name form row #}
     <div class="col-md-2">

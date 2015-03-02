@@ -40,3 +40,10 @@ class OrganizationEditForm(OrganizationCreateForm):
         self.fields.pop('short_name')
 
 
+class OrganizationMemberAddForm(forms.Form):
+
+    member_username = forms.CharField(
+        label="Member user name",
+        max_length="48",
+        widget=forms.TextInput(attrs={'placeholder': "Member username"}))
+

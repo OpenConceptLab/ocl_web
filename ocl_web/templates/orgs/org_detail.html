@@ -320,6 +320,7 @@
 
 <tab heading="Details">
 
+
 &nbsp;
 	<div class="row">
 <!-- Org details pane -->
@@ -360,14 +361,20 @@
 
         <!-- Org members -->
         <div class="col-md-4">
-			<div class="panel panel-default">
+			<div class="panel panel-default" ng-app="ConceptApp" ng-controller="MemberRemoveController">
 				<div class="panel-heading">
 					<h3 class="panel-title">Members</h3>
 				</div>
 				<div class="panel-body">
+					{% include 'includes/ng_alerts_incl.html' %}
+					<a href="{% url 'org-member-add' org.id %}">Add Member</a>
 					{% for member in members %}
-						<h4>{% user_label member %}</h4>
+						<h4>{% user_label member %}
+                <button type="button" class="btn btn-link" data-org='{{org.id}}' ng-click="removeMember('{{org.id}}', '{{member.username}}')" ><span class="glyphicon glyphicon-trash"></span></button>
+					</h4>
 						{% if request.GET.debug %}<pre>{{ member|pprint }}</pre>{% endif %}
+
+
 					{% empty %}
 					No members.
 					{% endfor %}
@@ -377,7 +384,25 @@
 		</div> <!-- /col-md-4 -->
 
 	</div> <!-- /row -->
+
+{% verbatim %}
+<script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Confirm Remove</h3>
+        </div>
+        <div class="modal-body">
+            Are you sure you want to remove {{ username }} from {{ org }}?
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+{% endverbatim %}
+    {% csrf_token %}
+
 </tab>
+
 
 </tabset>
 

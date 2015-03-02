@@ -2,15 +2,17 @@ import requests
 
 from django.shortcuts import redirect
 from django.http import Http404
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.paginator import Paginator
 from braces.views import LoginRequiredMixin
+from braces.views import (CsrfExemptMixin, JsonRequestResponseMixin)
 
 from .forms import (OrganizationCreateForm, OrganizationEditForm)
+from .forms import (OrganizationMemberAddForm)
 from libs.ocl import OCLapi, OCLSearch
 
 
@@ -173,4 +175,65 @@ class OrganizationEditView(FormView):
 
         # TODO:  Add error messages from API to form.
         else:
-            return super(OrganizationEditView, self).form_invalid(self, *args, **kwargs)
+            return super(OrganizationEditView, self).form_invalid(form)
+
+
+class OrganizationMemberAddView(LoginRequiredMixin, FormView):
+
+    form_class = OrganizationMemberAddForm
+    template_name = "orgs/org_member_add.html"
+
+    def get_org(self):
+        self.org_id = self.kwargs.get('org')
+        api = OCLapi(self.request, debug=True)
+        self.org = api.get('orgs', self.org_id).json()
+
+    def get_initial(self):
+        """ Trick to do some initial lookup """
+        self.get_org()
+        data = super(OrganizationMemberAddView, self).get_initial()
+        return data
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        """
+        context = super(OrganizationMemberAddView, self).get_context_data(*args, **kwargs)
+        context['org'] = self.org
+        return context
+
+    def form_valid(self, form, *args, **kwargs):
+        print args
+        print kwargs
+        self.get_org()
+        new_username = form.cleaned_data.pop('member_username')
+
+        api = OCLapi(self.request, debug=True)
+
+        result = api.put('orgs', self.org['id'], 'members', new_username)
+
+        # TODO:  Catch exceptions that will be raised by
+        # Ocl lib.
+        if result.status_code == 204:
+            messages.add_message(self.request, messages.INFO, _('Member Added'))
+            return redirect(reverse('org-detail', kwargs={'org': self.org['id']}))
+
+        # TODO:  Add error messages from API to form.
+        else:
+            return super(OrganizationMemberAddView, self).form_invalid(form)
+
+
+class OrganizationMemberRemoveView(LoginRequiredMixin, JsonRequestResponseMixin,
+                                   View):
+
+    def post(self, *args, **kwargs):
+        self.org_id = self.kwargs.get('org')
+        self.username = self.kwargs.get('username')
+
+        api = OCLapi(self.request, debug=True)
+        result = api.get('orgs', self.org_id)
+
+        if not result.ok:
+            print result
+            return self.render_bad_request_response(result)
+
+        return self.render_json_response(result.json())

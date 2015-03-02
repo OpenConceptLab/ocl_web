@@ -31,6 +31,7 @@ class UserOrOrgMixin(object):
 
             :param self.source_id: set to source ID if view URL has source part.
             :param self.concept_id: set to concept ID if view URL has concept part.
+            :param self.version_id: set to concept version if view URL has concept version part.
 
         """
         self.from_user = False
@@ -52,6 +53,7 @@ class UserOrOrgMixin(object):
         self.source_id = self.kwargs.get('source')
         self.concept_id = self.kwargs.get('concept')
         self.collection_id = self.kwargs.get('collection')
+        self.version_id = self.kwargs.get('version')
 
     def args_string(self):
         """

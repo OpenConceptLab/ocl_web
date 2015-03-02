@@ -368,10 +368,17 @@ class ConceptDetailView(UserOrOrgMixin, TemplateView):
         """ Get all input parameters for view.
         """
         self.get_args()
-        self.source_id = self.kwargs.get('source')
-        self.concept_id = self.kwargs.get('concept')
+        # moved to get_args
+        # self.source_id = self.kwargs.get('source')
+        # self.concept_id = self.kwargs.get('concept')
 
         api = OCLapi(self.request, debug=True)
+
+        self.source = api.get_json(self.own_type, self.own_id, 'sources',
+                                   self.source_id)
+        self.concept = api.get_json(self.own_type, self.own_id, 'sources',
+                                    self.source_id, 'concepts', self.concept_id)
+        return
 
         if self.from_org:
             self.source = api.get_json('orgs', self.org_id, 'sources', self.source_id)

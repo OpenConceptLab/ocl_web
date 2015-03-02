@@ -590,3 +590,54 @@ app.controller('MappingController', function($scope, $http, $location) {
 
 } // MappingController
 );
+
+// Simple function to handle removing member from org
+function removeMember(orgId, memId)
+{
+    alert(orgId);
+    alert(memId);
+};
+
+app.controller('MemberRemoveController', function($scope, $modal, $log) {
+
+    $scope.removeMember = function(org, username) {
+
+        var modalInstance = $modal.open({
+            templateUrl: 'myModalContent.html',
+            controller: 'MemberRemoveModalController',
+            size: 'sm',
+            resolve: {
+                org: function() { return org },
+                username: function() { return username }
+            }
+        });
+    };
+});
+
+app.controller('MemberRemoveModalController', function($scope, $modalInstance,
+    $http, $location, $log, org, username) {
+
+    $log.info(org);
+    $log.info(username);
+    $scope.username = username;
+    $scope.org = org;
+    $scope.alerts = [];
+
+    $scope.ok = function() {
+        var url = $location.absUrl() + 'members/remove/' +
+            username + '/';
+        $log.info(url);
+        $http.post(url)
+            .success(function(data, status, headers, config) {
+                $scope.alerts.push({
+                    type: 'success',
+                    msg: data.message
+                });
+            });
+        $modalInstance.close();
+    };
+
+    $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+    };
+});
