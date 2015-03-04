@@ -1,15 +1,14 @@
 """
     Custom template tags for OCL Web.
 
-    TODO: The label tags could take an optional arg to not include the href, but not
-    sure if we want that anyway.
+    TODO: The label tags could take an optional arg to not include the href,
+    but not sure if we want that anyway.
 """
 import re
 import dateutil.parser
 
 from django import template
-from django.template.defaultfilters import stringfilter
-from django.template.base import (Node, NodeList, Template, Context)
+from django.template.base import (Node, NodeList)
 
 
 from libs.ocl import OCLapi
@@ -51,7 +50,8 @@ def user_label(user):
 @register.inclusion_tag('includes/source_owner_label_incl.html')
 def source_owner_label(source):
     """
-    Display a label for a source owner, which can be either a user or an organization.
+    Display a label for a source owner, which can be either a
+    user or an organization.
     Note that this tag displays the *owner* of the source, not the source.
 
     :param source: is the OCL source object.
@@ -123,29 +123,33 @@ def simple_pager(page, name, url=None):
 
 class IfCanChangeNode(Node):
 
-    def __init__(self, nodelist_true, nodelist_false, source_var):
+    def __init__(self, nodelist_true, nodelist_false, obj_var):
         self.nodelist_true, self.nodelist_false = nodelist_true, nodelist_false
-        self.source_var = template.Variable(source_var)
+        self.obj_var = template.Variable(obj_var)
 
     def render(self, context):
         # Init state storage
         try:
-            source = self.source_var.resolve(context)
+            obj = self.obj_var.resolve(context)
         except template.VariableDoesNotExist:
             return ''
 
         user = context['user']
-
         can = False
-        if source.get('owner_type') == 'Organization':
+        if obj.get('type') == 'Organization':
+            can = user.is_authenticated()
+            # TODO: Actually we need to check to see if this user/member
+            # is an administrative member of this org. How?
+
+        elif obj.get('owner_type') == 'Organization':
             # member can change
             # TODO: need a better API call to check for access
             api = OCLapi(context['request'], debug=True)
-            results = api.get('orgs', source.get('owner'), 'members',
-                user.username)
+            results = api.get('orgs', obj.get('owner'), 'members',
+                              user.username)
             if results.status_code == 204:
                 can = True
-            print 'ACCESS CheCK:', results.status_code
+            print 'ACCESS Check:', results.status_code
 
         else:
             # owned by a user
@@ -160,8 +164,9 @@ class IfCanChangeNode(Node):
 @register.tag('if_can_change')
 def do_if_can_change(parser, token):
     """
-    The ``{% if_can_change source_or_concept %}`` tag evaluates whether the current user have
-    access to the specified source.
+    The ``{% if_can_change source_or_concept %}`` tag
+    evaluates whether the current user have
+    access to the specified object.
 
     If so, the block bracketed are output.
 
@@ -174,8 +179,8 @@ def do_if_can_change(parser, token):
 
     """
     # {% if ... %}
-    # NOTE: the source_var can also be a concept
-    source_var = token.split_contents()[1]
+    # NOTE: the obj_var can also be a source, org or concept
+    obj_var = token.split_contents()[1]
 
     nodelist_true = parser.parse(('else', 'endif_can_change'))
 
@@ -186,4 +191,4 @@ def do_if_can_change(parser, token):
     else:
         nodelist_false = NodeList()
 
-    return IfCanChangeNode(nodelist_true, nodelist_false, source_var)
+    return IfCanChangeNode(nodelist_true, nodelist_false, obj_var)

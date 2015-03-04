@@ -102,13 +102,13 @@ def setup_filters():
 
     f = filters.add_filter('datatype', 'Datatypes')
     f.options = turn_to_tuples(_get_datatype_list())
-    print f.options
+
     f = filters.add_filter('locale', 'Locale')
     f.options = turn_to_tuples(_get_locale_list())
-    print f.options
+
     f = filters.add_filter('includeRetired', 'Include Retired')
     f.options = turn_to_tuples([{'code': u'1', 'name': 'Retired'}])
-    print f.options
+
     concept_filters = filters
 
     # source filter

@@ -222,18 +222,21 @@ class OrganizationMemberAddView(LoginRequiredMixin, FormView):
             return super(OrganizationMemberAddView, self).form_invalid(form)
 
 
-class OrganizationMemberRemoveView(LoginRequiredMixin, JsonRequestResponseMixin,
-                                   View):
+class OrganizationMemberRemoveView(LoginRequiredMixin,
+                                   JsonRequestResponseMixin, View):
 
     def post(self, *args, **kwargs):
         self.org_id = self.kwargs.get('org')
         self.username = self.kwargs.get('username')
 
         api = OCLapi(self.request, debug=True)
-        result = api.get('orgs', self.org_id)
+        result = api.delete('orgs', self.org_id, 'members', self.username)
 
-        if not result.ok:
-            print result
-            return self.render_bad_request_response(result)
+        return self.render_json_response({'message':'Member removed'})
+        if result.status_code == 204:
+            return self.render_json_response({'message':'Member removed'})
 
-        return self.render_json_response(result.json())
+        else:
+            return self.render_bad_request_response({'message': result.status_code})
+
+

@@ -367,6 +367,7 @@
 				</div>
 				<div class="panel-body">
 					{% include 'includes/ng_alerts_incl.html' %}
+					{% if_can_change org %}
 					<a href="{% url 'org-member-add' org.id %}">Add Member</a>
 					{% for member in members %}
 						<h4>{% user_label member %}
@@ -378,6 +379,7 @@
 					{% empty %}
 					No members.
 					{% endfor %}
+					{% endif_can_change %}
 				</div>
 			</div> <!-- /panel -->
 
@@ -394,8 +396,8 @@
             Are you sure you want to remove {{ username }} from {{ org }}?
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="$close()">OK</button>
+            <button class="btn btn-warning" ng-click="$dismiss()">Cancel</button>
         </div>
     </script>
 {% endverbatim %}
