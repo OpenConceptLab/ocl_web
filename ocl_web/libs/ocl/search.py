@@ -134,10 +134,22 @@ def setup_filters():
     f.options = _get_locale_list()
     collection_filters = filters
 
+    # mapping filters
+    filters = FilterList('mappings')
+    f = filters.add_filter('collection_type', 'Collection Types')
+    f.options = turn_to_tuples([
+                'Dictionary',
+                'Interface Terminology',
+                'Indicator Registry',
+                'Reference',
+    ])
+    mapping_filters = filters
+
     user_filters = None
     org_filters = None
 
-    return [user_filters, org_filters, source_filters, concept_filters, collection_filters]
+    return [user_filters, org_filters, source_filters, concept_filters,
+            collection_filters, mapping_filters]
 
 
 class OCLSearch(object):

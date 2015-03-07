@@ -31,6 +31,7 @@ from django.core.management import BaseCommand, CommandError
 
 from .importer import Importer
 
+PUBLIC_ACCESS_VALUES = ('View', 'Edit', 'None')
 
 class Command(BaseCommand):
     help = 'Create demo data'
@@ -40,17 +41,6 @@ class Command(BaseCommand):
                     dest='username',
                     default=None,
                     help='username for an existing user, e.g. demo1'),
-        make_option('--csv',
-                    action='store',
-                    dest='filename',
-                    default=None,
-                    help='CSV Filename'),
-        make_option('--test',
-                    action='store_true',
-                    dest='test_mode',
-                    default=False,
-                    help='Test only, do not create data.'),
-
         make_option('--short_name',
                     action='store',
                     dest='short_name',
@@ -76,53 +66,92 @@ class Command(BaseCommand):
                     dest='location',
                     default=None,
                     help='Location, e.g. Boston, MA, USA'),
+        make_option('--csv',
+                    action='store',
+                    dest='filename',
+                    default=None,
+                    help='CSV Filename'),
+        make_option('--test',
+                    action='store_true',
+                    dest='test_mode',
+                    default=False,
+                    help='Test only, do not create data.'),
     )
 
     def __init__(self):
         super(Command, self).__init__()
         self.importer = Importer()
 
-    def create_org(self, short_name, full_name, website,
-                   company_name, location):
-        """ Create one org for our user """
-        data = {
-            'id': short_name,
-            'name': full_name,
-            'website': website,
-            'company': company_name,
-            'location': location,
-        }
-        print data
+    def create_source(
+        self, org_id,
+        source_id, external_id, short_code,
+        name, full_name, source_type,
+        public_access, default_locale, supported_locales,
+        website, description):
+        """ Create one source for the specified org """
 
-        if not self.importer.test_mode:
-            print 'creating org %s' % short_name
-            result = self.importer.ocl.create_org(data)
-            print result
+        # some basic validation
+        if public_access not in PUBLIC_ACCESS_VALUES:
+            print 'public_access must be one of %s' % PUBLIC_ACCESS_VALUES
+            return
+
+        print 'creating source %s for %s' % (source_id, org_id)
+
+        data = {
+            'org': org_id,
+            'id': source_id,
+            'external_id': external_id,
+            'short_code': short_code,
+            'name': name,
+            'full_name': full_name,
+            'source_type': source_type,
+
+            'public_access': public_access,
+            'default_locale': default_locale,
+            'supported_locales': supported_locales,
+
+            'website': website,
+            'description': description,
+        }
+
+        print data
+        if self.importer.test_mode:
+            print 'Just testing...'
+            return
+        result = self.importer.ocl.create_source_by_org(org_id, data)
+        print result
 
     def handle_file(self):
         self.importer.load_csv()
         for row in self.importer.reader:
-            self.create_org(row['org_short_name'], row['org_full_name'],
-                            row['website'], row['company_name'],
-                            row['location'])
+            self.create_source(
+                row['org'],
+                row['short_code'],  # id
+                row['external_id'],
+                row['short_code'],
+                row['short_code'],  # name
+                row['full_name'],
+                row['source_type'],
+
+                row['public_access'],
+                row['default_locale'],
+                row['supported_locales'],
+
+                row['website'],
+                row['description']
+            )
 
     def handle(self, *args, **options):
 
         self.importer.get_args(args, options)
 
-        self.short_name = options['short_name']
-        self.full_name = options['full_name']
-        self.company_name = options['company_name']
-        self.website = options['website']
-        self.location = options['location']
-
-        if self.short_name is None and self.importer.filename is None:
-            raise CommandError('--short_name or --csv is required.')
+        if self.importer.filename is None:
+            raise CommandError('--org_id or --csv is required.')
 
         self.importer.connect()
 
         if self.importer.filename:
             self.handle_file()
         else:
-            self.create_org(self.short_name, self.full_name,
-                            self.website, self.company_name, self.location)
+            # TBW
+            self.create_source()
