@@ -462,6 +462,7 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
                'concepts', self.concept_id, self.item_name)
 
+
         if not result.ok:
             print result
             return self.render_bad_request_response(result)

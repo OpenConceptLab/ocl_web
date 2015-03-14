@@ -4,12 +4,47 @@
 &nbsp;
 <div ng-controller="MappingController" >
 
+{% if request.GET.debug %}
+<div class="row">
+<pre>
+    MAPPING item list
+    <ul>
+{% verbatim %}
+    <li ng-repeat="q in item_list" class="list-group-item">
+    {{ q}}
+    </li>
+    </ul>
+{% endverbatim %}
+</pre>
+</div>
+{% endif %}
+
 <div class="row">
     <div class="col-md-2">
         <span style="text-align:right;font-weight:bold;color:#999;">Mappings</span><br />
     </div>
     <div class="col-md-8">
         <!-- Mappings here -->
+        <ul>
+            {% verbatim %}
+            <li ng-repeat="q in item_list" class="list-group-item">
+                <button type="button" class="btn btn-link" ng-click="setEditedItem(q);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+
+                    {{ q.map_type }} : {{ q.to_concept_name }} :
+                    (<a href="{{ q.to_source_url }}">{{ q.to_source_url }}</a>)
+                    <span ng-if="q.to_concept_url"><a href="{{ q.to_concept_url }}">{{ q.to_concept_code }}</a></span>
+                    <span ng-if="!q.to_concept_url">{{ q.to_concept_code }}</a></span>
+
+                <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
+
+                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(q)"></span>
+
+            {% endverbatim %}               
+                {% if request.GET.debug %}<br /><pre>{% verbatim %}{{ q }}{% endverbatim %}</pre>{% endif %}</li>
+        </ul>
+
+
         <div class="panel panel-default"><div class="panel-body"><span class="small text-muted">[Display direct mappings here]</span></div></div>
     </div>
 </div>
@@ -28,10 +63,27 @@
     <div class="col-md-2">
         <span style="text-align:right;font-weight:bold;color:#999;">Linked Answers</span><br />
         <span class="small text-muted">(This concept is a question with these answers)</span>
+
+
+
     </div>
     <div class="col-md-8">
         <!-- Linked Answers here -->
-        <div class="panel panel-default"><div class="panel-body"><span class="small text-muted">[Display linked answers here]</span></div></div>
+
+        <ul>
+            {% verbatim %}
+            <li ng-repeat="q in q_and_a_list" class="list-group-item">
+                <button type="button" class="btn btn-link" ng-click="setEditedItem(q);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+
+                    {{ q.to_concept_name }} (<a href="{{ q.to_concept_url }}">{{ q.to_concept_code }}</a>)
+                <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
+
+                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(q)"></span>
+
+            {% endverbatim %}               
+                {% if request.GET.debug %}<br /><pre>{% verbatim %}{{ q }}{% endverbatim %}</pre>{% endif %}</li>
+        </ul>
     </div>
 </div>
 

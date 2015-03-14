@@ -577,9 +577,24 @@ app.controller('MappingController', function($scope, $http, $location) {
                     });
 
                 url = make_sub_url($location.absUrl(), 'mappings/');
+                console.log('Getting mappings:' + url);
                 $http.get(url)
                     .success(function(data) {
-                        $scope.item_list = data;
+                        console.log(data);
+
+                        // split data into separate list because we have
+                        // some special cases
+                        $scope.q_and_a_list = [];
+                        $scope.item_list = [];
+                        for (var i=0; i<data.length; i++) {
+                            var m = data[i];
+                            if (m.map_type === 'Q-AND-A') {
+                                $scope.q_and_a_list.push(m);
+                            }
+                            else {
+                                $scope.item_list.push(m);
+                            }
+                        }
                     });
             } // loadItems
 

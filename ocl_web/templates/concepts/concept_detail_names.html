@@ -13,8 +13,8 @@
     {% if_can_change concept %}
 
         <ul class="list-group">
-
             {% verbatim %}
+            {{ item_list }}
             <li ng-repeat="name in item_list" class="list-group-item">
                 <button type="button" class="btn btn-link" ng-click="setEditedItem(name);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span></button>
                 {{ name.name }}
