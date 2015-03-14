@@ -586,6 +586,9 @@ app.controller('MappingController', function($scope, $http, $location) {
                         // some special cases
                         $scope.q_and_a_list = [];
                         $scope.item_list = [];
+                        $scope.inv_item_list = [];
+                        $scope.inv_q_and_a_list = [];
+
                         for (var i=0; i<data.length; i++) {
                             var m = data[i];
                             if (m.map_type === 'Q-AND-A') {

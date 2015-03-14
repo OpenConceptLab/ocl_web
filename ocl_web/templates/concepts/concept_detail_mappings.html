@@ -25,28 +25,31 @@
     </div>
     <div class="col-md-8">
         <!-- Mappings here -->
-        <ul>
-            {% verbatim %}
-            <li ng-repeat="q in item_list" class="list-group-item">
-                <button type="button" class="btn btn-link" ng-click="setEditedItem(q);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
-                    </button>
+        {% verbatim %}
+        <div ng-repeat="q in item_list" class="list-group-item">
+            <button type="button" class="btn btn-link" ng-click="setEditedItem(q);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
+                </button>
 
-                    {{ q.map_type }} : {{ q.to_concept_name }} :
-                    (<a href="{{ q.to_source_url }}">{{ q.to_source_url }}</a>)
-                    <span ng-if="q.to_concept_url"><a href="{{ q.to_concept_url }}">{{ q.to_concept_code }}</a></span>
-                    <span ng-if="!q.to_concept_url">{{ q.to_concept_code }}</a></span>
+                {{ q.map_type }} : {{ q.to_concept_name }} :
+                (<a href="{{ q.to_source_url }}">{{ q.to_source_url }}</a>)
+                <span ng-if="q.to_concept_url"><a href="{{ q.to_concept_url }}">{{ q.to_concept_code }}</a></span>
+                <span ng-if="!q.to_concept_url">{{ q.to_concept_code }}</a></span>
 
-                <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
+            <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
 
-                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(q)"></span>
+            <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(q)"></span>
 
-            {% endverbatim %}               
-                {% if request.GET.debug %}<br /><pre>{% verbatim %}{{ q }}{% endverbatim %}</pre>{% endif %}</li>
-        </ul>
+        {% endverbatim %}               
+            {% if request.GET.debug %}<br /><pre>{% verbatim %}{{ q }}{% endverbatim %}</pre>{% endif %}
+        </div>
 
+        <div ng-if="item_list.length === 0" class="panel panel-default"><div class="panel-body"><span class="small text-muted">No Mappings found</span></div></div>
 
-        <div class="panel panel-default"><div class="panel-body"><span class="small text-muted">[Display direct mappings here]</span></div></div>
     </div>
+</div>
+
+<div class="row">
+&nbsp;
 </div>
 
 <div class="row">
@@ -54,10 +57,33 @@
         <span style="text-align:right;font-weight:bold;color:#999;">Inverse Mappings</span><br />
     </div>
     <div class="col-md-8">
+        {% verbatim %}
+        <div ng-repeat="q in inv_item_list" class="list-group-item">
+            <button type="button" class="btn btn-link" ng-click="setEditedItem(q);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
+                </button>
+
+                {{ q.map_type }} : {{ q.to_concept_name }} :
+                (<a href="{{ q.to_source_url }}">{{ q.to_source_url }}</a>)
+                <span ng-if="q.to_concept_url"><a href="{{ q.to_concept_url }}">{{ q.to_concept_code }}</a></span>
+                <span ng-if="!q.to_concept_url">{{ q.to_concept_code }}</a></span>
+
+            <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
+
+            <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(q)"></span>
+
+        {% endverbatim %}               
+            {% if request.GET.debug %}<br /><pre>{% verbatim %}{{ q }}{% endverbatim %}</pre>{% endif %}
+        </div>
+
         <!-- Inverse Mappings here -->
-        <div class="panel panel-default"><div class="panel-body"><span class="small text-muted">[Display inverse mappings here]</span></div></div>
+        <div ng-if="inv_item_list.length === 0" class="panel panel-default"><div class="panel-body"><span class="small text-muted">No inverse mappings found</span></div></div>
     </div>
 </div>
+
+<div class="row">
+&nbsp;
+</div>
+
 
 <div class="row">
     <div class="col-md-2">
@@ -70,22 +96,28 @@
     <div class="col-md-8">
         <!-- Linked Answers here -->
 
-        <ul>
-            {% verbatim %}
-            <li ng-repeat="q in q_and_a_list" class="list-group-item">
-                <button type="button" class="btn btn-link" ng-click="setEditedItem(q);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
-                    </button>
+        {% verbatim %}
+        <div ng-repeat="q in q_and_a_list" class="list-group-item">
+            <button type="button" class="btn btn-link" ng-click="setEditedItem(q);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
+                </button>
 
-                    {{ q.to_concept_name }} (<a href="{{ q.to_concept_url }}">{{ q.to_concept_code }}</a>)
-                <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
+                {{ q.to_concept_name }} (<a href="{{ q.to_concept_url }}">{{ q.to_concept_code }}</a>)
+            <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
 
-                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(q)"></span>
+            <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(q)"></span>
 
-            {% endverbatim %}               
-                {% if request.GET.debug %}<br /><pre>{% verbatim %}{{ q }}{% endverbatim %}</pre>{% endif %}</li>
-        </ul>
+        {% endverbatim %}               
+            {% if request.GET.debug %}<br /><pre>{% verbatim %}{{ q }}{% endverbatim %}</pre>{% endif %}
+        </div>
+
+        <div ng-if="q_and_a_list.length === 0" class="panel panel-default"><div class="panel-body"><span class="small text-muted">No answers found</span></div></div>
     </div>
 </div>
+
+<div class="row">
+&nbsp;
+</div>
+
 
 <div class="row">
     <div class="col-md-2">
@@ -94,75 +126,12 @@
     </div>
     <div class="col-md-8">
         <!-- Linked Questions here -->
-        <div class="panel panel-default"><div class="panel-body"><span class="small text-muted">[Display linked questions here]</span></div></div>
+
+        <div ng-if="inv_q_and_a_list.length === 0" class="panel panel-default"><div class="panel-body"><span class="small text-muted">No questions found</span></div></div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-2">
-        <span style="text-align:right;font-weight:bold;color:#999;">Questions &amp; Answers</span>
-        <span class="small text-muted">(Move into Linked Questions and Linked Answers above)</span>
-    </div>
-    <div class="col-md-8">
 
-        <span class="small text-muted">[Move Q/As into sections above and remove this section]</span>
-
-        <ul class="list-group">
-            {% comment %} COMMENT OUT FOR NOW
-            {% verbatim %}
-            <li ng-repeat="q in item_list|filter:{map_type:'q_and_a'}" class="list-group-item">
-                <button type="button" class="btn btn-link" ng-click="setEditedItem(q);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
-                    </button>
-
-                {{ q.map_type }} : {{ q.to_concept_name }}<br />{{ q.to_concept_url }}
-                <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
-
-                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(q)"></span>
-
-            {% endverbatim %}               
-                {% if request.GET.debug %}<br /><pre>{{ q|pprint }}</pre>{% endif %}</li>
-
-            {% verbatim %}
-            <li ng-show="(item_list|filter:{map_type:'q_and_a'}).length == 0" class="list-group-item">&nbsp;</li>
-            {% endverbatim %}
-            {% endcomment %}
-        </ul>
-
-    </div> {# list col8 #}
-</div> {# list row #}
-
-
-{% comment %}
-<div class="row">
-    <div class="col-md-2">
-        <span style="text-align:right;font-weight:bold;color:#999;">Concept Sets</span>
-        <!--span class="small text-muted">(Optional note for Concept Sets)</span-->
-    </div>
-    <div class="col-md-8">
-
-        <ul class="list-group">
-{# }            <li ng-repeat="cs in item_list|filter:{map_type:'concept_set'}" class="list-group-item"> #}
-            {% verbatim %}
-            <li ng-repeat="cs in item_list track by $index" class="list-group-item">
-                <button type="button" class="btn btn-link" ng-click="setEditedItem(cs);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
-                    </button>
-
-                {{ cs.map_type }} : {{ cs.to_concept_name }}<br />{{ cs.to_concept_url }}
-                <span ng-if="name.locale_preferred" class="glyphicon glyphicon-flag"></span>
-
-                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(map)"></span>
-            {% endverbatim %}               
-                {% if request.GET.debug %}<br /><pre>{{ cs|pprint }}</pre>{% endif %}</li>
-
-            {% verbatim %}
-            <li ng-show="(item_list|filter:{map_type:'concept_set'}).length == 0" class="list-group-item">&nbsp;</li>
-            {% endverbatim %}
-
-        </ul>
-    </div> {# list col8 #}
-</div> {# list row #}
-
-{% endcomment %}
 
 <div class="row"> {# add name form row #}
     <div class="col-md-2">
