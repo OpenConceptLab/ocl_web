@@ -486,12 +486,20 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
 
         api = OCLapi(self.request, debug=True)
         if self.is_edit():
-            result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
+            if self.item_name == 'mappings':
+                result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
+                                self.item_name, **data)
+            else:
+                result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
                              'concepts', self.concept_id, self.item_name,
                              self.item_id, **data)
             msg = _('updated')
         else:
-            result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
+            if self.item_name == 'mappings':
+                result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
+                                self.item_name, **data)
+            else:
+                result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
                               'concepts', self.concept_id, self.item_name, **data)
             msg = _('added')
 
@@ -529,13 +537,6 @@ class ConceptNameView(ConceptItemView):
     item_name = 'names'
     kwarg_name = 'name'
     field_names = ['name', 'name_type', 'external_id', 'locale', 'locale_preferred']
-
-
-class ConceptMappingView(ConceptItemView):
-    item_name = 'mappings'
-    kwarg_name = 'mapping'
-    field_names = ['map_type', 'external_id', 'from_concept_url', 'to_concept_url']
-    optional = {'includeInverseMappings': True}
 
 
 class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
@@ -642,3 +643,95 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             return self.render_bad_request_response(result.content)
 
         return self.render_json_response({'message': _('extra deleted')})
+
+
+class ConceptMappingView(JsonRequestResponseMixin, UserOrOrgMixin, View):
+    """
+        Interface to front end json Mappings operations, supporting list, add, update and delete.
+
+    """
+    field_names = ['map_type', 'external_id', 'from_concept_url', 'to_concept_url',
+                    'to_source_url', 'to_concept_code', 'to_concept_name']
+
+    def get_all_args(self):
+        """
+        Get all the input entities' identity, figure out whether this is a user owned
+        sourced concept or an org owned sourced concept, and set self.own_type, self.own_id
+        for easy interface to OCL API.
+        """
+        self.get_args()
+        self.item_id = self.kwargs.get('mapping')
+
+    def is_edit(self):
+        return self.item_id is not None
+
+    def get(self, request, *args, **kwargs):
+        """
+            Return a list of mappings as json.
+        """
+        self.get_all_args()
+        api = OCLapi(self.request, debug=True)
+
+        # Note: value must be lowercase string "true", not boolean
+        result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
+                         'concepts', self.concept_id, 'mappings',
+                         params={'includeInverseMappings': 'true'})
+        if not result.ok:
+            print result
+            return self.render_bad_request_response(result)
+
+        return self.render_json_response(result.json())
+
+    def post(self, request, *args, **kwargs):
+
+        self.get_all_args()
+        data = {}
+        try:
+            print 'request json:', self.request_json
+            for n in self.field_names:
+                # Skipping over fields that are not given -- exception is never thrown now...??
+                v = self.request_json.get(n, None)
+                if v is not None:
+                    data[n] = v
+        except KeyError:
+            resp = {u"message": _('Invalid input')}
+            return self.render_bad_request_response(resp)
+
+        api = OCLapi(self.request, debug=True)
+        if self.is_edit():
+            # Somehow we get more data fields from the lookup  then
+            # what the update will accept
+            if data['to_concept_url']:
+                data.pop('to_source_url',None)
+                data.pop('to_concept_code',None)
+                data.pop('to_concept_name',None)
+
+            result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
+                            'mappings', self.item_id, **data)
+            msg = _('updated')
+        else:
+            result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
+                            'mappings', **data)
+            msg = _('added')
+
+        if not result.ok:
+            logger.warning('Update failed %s' % result.content)
+            return self.render_bad_request_response(result.content)
+
+        return self.render_json_response({'message': msg})
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Delete the specified item.
+        """
+        self.get_all_args()
+        api = OCLapi(self.request, debug=True)
+        if self.is_edit():  # i.e. has item UUID
+            result = api.delete(self.own_type, self.own_id, 'sources', self.source_id,
+                                'mappings', self.item_id)
+        if not result.ok:
+            logger.warning('DEL failed %s' % result.content)
+            return self.render_bad_request_response(result.content)
+
+        return self.render_json_response(
+            {'message': _('deleted')})

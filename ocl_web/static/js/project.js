@@ -444,170 +444,204 @@ app.controller('ConceptController', function($scope, $http, $location) {
 */
 app.controller('MappingController', function($scope, $http, $location) {
 
-        $scope.isCreatingItem = false;
+    $scope.isCreatingItem = false;
+    $scope.isEditingItem = false;
+    $scope.editedItem = null;
+    $scope.item = null;
+    $scope.alerts = [];
+
+    function resetCreateForm() {
+        $scope.newItem = {};
+    }
+
+    function startCreatingItem() {
+        $scope.isCreatingItem = true;
         $scope.isEditingItem = false;
-        $scope.editedItem = null;
-        $scope.item = null;
-        $scope.alerts = [];
+        resetCreateForm();
+    }
 
-        function resetCreateForm() {
-            $scope.newItem = {};
+    function cancelCreatingItem() {
+        $scope.isCreatingItem = false;
+    }
+
+    function startEditingItem() {
+        $scope.isCreatingItem = false;
+        $scope.isEditingItem = true;
+    }
+
+    function cancelEditingItem() {
+        $scope.isEditingItem = false;
+    }
+
+    function shouldShowCreatingItem() {
+        return !$scope.isEditingItem;
+    }
+
+    function shouldShowEditingItem() {
+        return $scope.isEditingItem && !$scope.isCreatingItem;
+    }
+
+    function setEditedItem(item) {
+        // Set the current edited object, copy otherwise Angular will update the real thing
+        $scope.editedItem = angular.copy(item);
+        $scope.editedItem.is_external = ! item.to_concept_url;
+
+        console.log("editing...");
+        console.log($scope.editedItem);
+    };
+
+    $scope.startCreatingItem = startCreatingItem;
+    $scope.cancelCreatingItem = cancelCreatingItem;
+    $scope.startEditingItem = startEditingItem;
+    $scope.cancelEditingItem = cancelEditingItem;
+    $scope.shouldShowCreatingItem = shouldShowCreatingItem;
+    $scope.shouldShowEditingItem = shouldShowEditingItem;
+    $scope.setEditedItem = setEditedItem;
+
+    function addItem(item) {
+
+        var data = angular.copy(item);
+        var config = null;
+        console.log(data);
+        data['from_concept_url'] = URI.parse($location.absUrl()).path;
+
+        if (data.source_type == 'external') {
+            delete data.to_concept_url;
+        } else {
+            delete data.to_source_url;
+            delete data.to_concept_code;
+            delete data.to_concept_name;
+        }
+        delete data.source_type;
+        console.log(data);
+
+        var url = make_sub_url($location.absUrl(), 'mappings/');
+        $http.post(url, data, null)
+            .success(function(data, status, headers, config) {
+                $scope.alerts.push({
+                    type: 'success',
+                    msg: data.message
+                });
+                loadItems();
+            })
+            .error(function(data, status, headers, config) {
+                $scope.alerts.push({
+                    type: 'danger',
+                    msg: data.message
+                });
+            });
+
+        resetCreateForm();
+        cancelCreatingItem();
+    } // addItem()
+
+    $scope.addItem = addItem;
+
+    function updateItem(item) {
+
+            var data = angular.copy(item);
+            console.log('update item');
+            console.log(item);
+            var config = null;
+
+            $http.post(item.url, data, null)
+                .success(function(data, status, headers, config) {
+                    console.log(data);
+                    $scope.alerts.push({
+                        type: 'success',
+                        msg: data.message
+                    });
+                    loadItems();
+                })
+                .error(function(data, status, headers, config) {
+                    console.log('ERROR:' + data.message);
+                    $scope.alerts.push({
+                        type: 'danger',
+                        msg: data.message
+                    });
+                });
+
+            $scope.editedItem = null;
+            cancelEditingItem();
+        } // updateItem
+
+    $scope.updateItem = updateItem;
+
+    function deleteItem(item) {
+
+        var config = null;
+
+        var target = item.to_concept_url || item.to_concept_code;
+        if (!confirm("Are you sure you want to delete mapping to " + target + "?")) {
+            return;
         }
 
-        function startCreatingItem() {
-            $scope.isCreatingItem = true;
-            $scope.isEditingItem = false;
-            resetCreateForm();
-        }
-
-        function cancelCreatingItem() {
-            $scope.isCreatingItem = false;
-        }
-
-        function startEditingItem() {
-            $scope.isCreatingItem = false;
-            $scope.isEditingItem = true;
-        }
-
-        function cancelEditingItem() {
-            $scope.isEditingItem = false;
-        }
-
-        function shouldShowCreatingItem() {
-            return !$scope.isEditingItem;
-        }
-
-        function shouldShowEditingItem() {
-            return $scope.isEditingItem && !$scope.isCreatingItem;
-        }
-
-        function setEditedItem(item) {
-            // Set the current edited object, copy otherwise Angular will update the real thing
-            $scope.editedItem = angular.copy(item);
-
-            // special case for locale, translate codes from API to display object for UI
-            for (var i = 0; i < field_names.length; i++) {
-                if ('locale' == field_names[i]) {
-                    $scope.editedItem.locale = locale_by_code($scope.locale_choices, item.locale).name;
-                };
-            };
-        };
-
-        $scope.startCreatingItem = startCreatingItem;
-        $scope.cancelCreatingItem = cancelCreatingItem;
-        $scope.startEditingItem = startEditingItem;
-        $scope.cancelEditingItem = cancelEditingItem;
-        $scope.shouldShowCreatingItem = shouldShowCreatingItem;
-        $scope.shouldShowEditingItem = shouldShowEditingItem;
-        $scope.setEditedItem = setEditedItem;
-
-        function addItem(item) {
-
-                var data = angular.copy(item);
-                var config = null;
+        console.log('deleting mapping:');
+        console.log(item);
+        $http.delete(item.url)
+            .success(function(data, status, headers, config) {
                 console.log(data);
-                if (data.source_type == 'external') {
-                    delete data.to_concept_url;
-                } else {
-                    delete data.to_source_code;
-                    delete data.to_concept_code;
-                    delete data.to_concept_name;
+                $scope.alerts.push({
+                    type: 'success',
+                    msg: data.message
+                });
+                loadItems();
+            })
+            .error(function(data, status, headers, config) {
+                console.log('DEL error' + data);
+                $scope.alerts.push({
+                    type: 'danger',
+                    msg: data.message
+                });
+
+            });
+        } // deleteItem()
+
+    $scope.deleteItem = deleteItem;
+
+    function loadItems() {
+
+        var url = '/core/options/map_types/';
+        $http.get(url)
+            .success(function(data) {
+                $scope.map_types = data;
+            });
+
+        var concept_url = URI.parse($location.absUrl()).path;
+        url = make_sub_url($location.absUrl(), 'mappings/');
+        $http.get(url)
+            .success(function(data) {
+
+                // split data into separate list because we have
+                // some special cases
+                $scope.q_and_a_list = [];
+                $scope.item_list = [];
+                $scope.inv_item_list = [];
+                $scope.inv_q_and_a_list = [];
+
+                for (var i=0; i<data.length; i++) {
+                    var m = data[i];
+                    if (m.map_type === 'Q-AND-A') {
+                        if (m.to_concept_url === concept_url)
+                            $scope.inv_q_and_a_list.push(m);
+                        else $scope.q_and_a_list.push(m);
+                    }
+                    else {
+                        $scope.item_list.push(m);
+                    }
                 }
-                delete data.source_type;
+            });
 
-                var url = make_sub_url($location.absUrl(), 'mappings/');
-                $http.post(url, data, null)
-                    .success(function(data, status, headers, config) {
-                        $scope.alerts.push({
-                            type: 'success',
-                            msg: data.message
-                        });
-                        loadItems();
-                    })
-                    .error(function(data, status, headers, config) {
-                        console.log('ERROR:' + data);
-                        $scope.alerts.push({
-                            type: 'danger',
-                            msg: data.message
-                        });
-                    });
 
-                resetCreateForm();
-                cancelCreatingItem();
-            } // addItem()
+    }; // loadItems
 
-        $scope.addItem = addItem;
+    loadItems();
+    if (endsWith($location.absUrl(), 'edit/')) {
+        startEdit();
+    };
 
-        function updateItem(item) {
+}); // MappingController
 
-                var data = angular.copy(item);
-                console.log('update item' + item);
-                var config = null;
-
-                var url = $location.absUrl();
-                $http.post(url, data, null)
-                    .success(function(data, status, headers, config) {
-                        console.log(data);
-                        $scope.alerts.push({
-                            type: 'success',
-                            msg: data.message
-                        });
-                        loadItems();
-                    })
-                    .error(function(data, status, headers, config) {
-                        console.log('ERROR:' + data.message);
-                        $scope.alerts.push({
-                            type: 'danger',
-                            msg: data.message
-                        });
-                    });
-
-                $scope.editedItem = null;
-                cancelEditingItem();
-            } // updateItem
-
-        $scope.updateItem = updateItem;
-
-        function loadItems() {
-
-                var url = '/core/options/map_types/';
-                $http.get(url)
-                    .success(function(data) {
-                        $scope.map_types = data;
-                    });
-
-                url = make_sub_url($location.absUrl(), 'mappings/');
-                console.log('Getting mappings:' + url);
-                $http.get(url)
-                    .success(function(data) {
-                        console.log(data);
-
-                        // split data into separate list because we have
-                        // some special cases
-                        $scope.q_and_a_list = [];
-                        $scope.item_list = [];
-                        $scope.inv_item_list = [];
-                        $scope.inv_q_and_a_list = [];
-
-                        for (var i=0; i<data.length; i++) {
-                            var m = data[i];
-                            if (m.map_type === 'Q-AND-A') {
-                                $scope.q_and_a_list.push(m);
-                            }
-                            else {
-                                $scope.item_list.push(m);
-                            }
-                        }
-                    });
-            } // loadItems
-
-        loadItems();
-        if (endsWith($location.absUrl(), 'edit/')) {
-            startEdit();
-        };
-
-    } // MappingController
-);
 
 // Simple function to handle removing member from org
 function removeMember(orgId, memId) {
@@ -663,3 +697,22 @@ app.controller('MemberRemoveController', function($scope, $modal,
     };
 });
 
+// WORK IN PROGRESS. DO NOT USE
+app.directive('textField', function() {
+    return {
+        restrict: 'E',
+        scope: {
+            required: '@required',
+            name: '@name',
+            label: '@label',
+            bindTo: '=',
+            placeholder: '@placeholder',
+            maxlength: '@maxlength'
+        },
+        template: '<div class="form-group {{required ? \'required\':\'\' }} ">' +
+        '<label class="control-label" for="id_{{ name }}">{{ label }}</label>' +
+        '<input class="form-control" id="id_{{name}}" maxlength="{{maxlength}}" name="{{name}}" ' +
+        'placeholder="{{ placeholder}}" title="" type="text" ' +
+        'ng-model="bindTo" /></div>'
+    };
+});
