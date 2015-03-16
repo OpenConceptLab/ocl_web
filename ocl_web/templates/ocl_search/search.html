@@ -161,9 +161,9 @@
 				<h4>
 					<!-- from_concept -->
 					{% if result.from_source_owner_type == 'Organization' %}
-					    <a href="#" style="text-decoration: none;">
+					    <a href="{% url 'concept-detail' org=result.owner source=result.from_source_name concept=result.from_concept_code %}" style="text-decoration: none;">
 					 {% else %}
-					    <a href="#" style="text-decoration: none;">
+					    <a href="{% url 'concept-detail' org=result.owner source=result.from_source_anme concept=result.from_concept_code %}" style="text-decoration: none;">
 			    	{% endif %}
 						<span class="resource-label small concept">
 							<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.from_source_owner }} / {{ result.from_source_name }} / </span><span class="resource-label-id-code">{{ result.from_concept_code }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.from_concept_name }}{% if result.retired %}</s>{% endif %}</span>
@@ -177,9 +177,9 @@
 
 					<!-- to_concept -->
 					{% if result.to_source_owner_type == 'Organization' %}
-					    <a href="#" style="text-decoration: none;">
+					    <a href="{% if result.to_concept_url %}{{ result.to_concept_url }}{% endif %}" style="text-decoration: none;">
 					 {% else %}
-					    <a href="#" style="text-decoration: none;">
+					    <a href="{% if result.to_concept_url %}{{ result.to_concept_url }}{% endif %}" style="text-decoration: none;">
 			    	{% endif %}
 						<span class="resource-label small concept">
 							<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.to_source_owner }} / {{ result.to_source_name }} / </span><span class="resource-label-id-code">{{ result.to_concept_code }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.to_concept_name }}{% if result.retired %}</s>{% endif %}</span>
