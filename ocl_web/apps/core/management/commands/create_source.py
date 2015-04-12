@@ -23,6 +23,7 @@
     website
     company_name
     location
+    hl7_code
 
 """
 from optparse import make_option
@@ -87,13 +88,15 @@ class Command(BaseCommand):
         source_id, external_id, short_code,
         name, full_name, source_type,
         public_access, default_locale, supported_locales,
-        website, description):
+        website, description, hl7_code):
         """ Create one source for the specified org """
 
         # some basic validation
         if public_access not in PUBLIC_ACCESS_VALUES:
             print 'public_access must be one of %s' % PUBLIC_ACCESS_VALUES
             return
+
+        print '>%s<' % hl7_code
 
         print 'creating source %s for %s' % (source_id, org_id)
 
@@ -114,6 +117,10 @@ class Command(BaseCommand):
             'description': description,
         }
 
+        if hl7_code != '':
+            extras = {'hl7_code': hl7_code}
+            data['extras'] = extras
+            
         print data
         if self.importer.test_mode:
             print 'Just testing...'
@@ -138,7 +145,8 @@ class Command(BaseCommand):
                 row['supported_locales'],
 
                 row['website'],
-                row['description']
+                row['description'],
+                row['hl7_code']
             )
 
     def handle(self, *args, **options):

@@ -481,6 +481,8 @@ def create_api_database():
                     print(yellow('creating API database...'))
                     # no super user
                     run('./manage.py syncdb --noinput')
+                    put(_conf_path('mongo_setup.js'), '~/mongo_setup.js')
+                    run('mongo ~/mongo_setup.js')
 
     # now start the server so that we can create base users
     print(yellow('Start up partial API server...'))
@@ -647,3 +649,16 @@ def status():
 def deploy():
     release()
     restart()
+
+@task
+def blah():
+    """ Helper to create the API mongo database """
+    with cd('/opt/deploy/ocl_api/ocl'):
+        with prefix('source /opt/virtualenvs/ocl_api/bin/activate'):
+            with prefix('export DJANGO_CONFIGURATION="Production"'):
+                with prefix('export DJANGO_SECRET_KEY="blah"'):
+
+                    print(yellow('creating API database...'))
+                    put(_conf_path('mongo_setup.js'), '~/mongo_setup.js')
+                    run('mongo ocl ~/mongo_setup.js')
+

@@ -1,4 +1,4 @@
-org,short_code,full_name,default_map_type,description,source_type,public_access,website,default_locale,supported_locales,data,external_id,extra: hl7_code
+org,short_code,full_name,default_map_type,description,source_type,public_access,website,default_locale,supported_locales,data,external_id,hl7_code
 OCL,Classes,Concept Classes,N/A,Standard list of concept classes to populate dropdowns.,Dictionary,View,,en,en,Worksheet: Classes,,
 OCL,Datatypes,Concept Datatypes,N/A,Standard list of concept datatypes to populate dropdowns.,Dictionary,View,,en,en,Worksheet: Datatypes,,
 OCL,NameTypes,Concept Name Types,N/A,Standard list of concept name types to populate dropdowns.,Dictionary,View,,en,en,Worksheet: NameTypes,,
