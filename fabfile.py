@@ -86,6 +86,9 @@ def dev():
     # which sites.json file to load the django site object from.
     env.site_spec = 'dev'
 
+    env.AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+    env.AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-dev'
 
 @task
 def staging():
@@ -100,6 +103,11 @@ def staging():
     env.OCL_ANON_API_TOKEN = os.environ.get('OCL_ANON_API_TOKEN')
     env.random_string = _random_string(32)
     env.site_spec = 'stage'
+
+    env.AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+    env.AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-stage'
+    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-development'
 
 
 @task
@@ -116,6 +124,9 @@ def production():
     env.OCL_ANON_API_TOKEN = 'dummy'
     env.random_string = _random_string(32)
 
+    env.AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+    env.AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-prod'
 
 @task
 def test_local():
@@ -232,7 +243,8 @@ def common_install():
     # if you don't want database, at least install the client
     # sudo("apt-get -y -q install postgresql-client")
     sudo("apt-get -y -q install postgresql postgresql-contrib")
-
+    # Could use redis for celery but not yet
+    # sudo("apt-get -q install redis-server")
 
 @task
 def setup_supervisor():
@@ -501,6 +513,14 @@ def create_api_database():
     setup_supervisor()
     run('supervisorctl reread')
     run('supervisorctl update')
+    # update shell env setup file with new tokens
+    files.upload_template(_conf_path('shell_prep.sh'),
+        '~/shell_prep.sh', env)
+
+    # create sysadmin user
+    with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
+        print(yellow('creating sysadmin user...'))
+        run('source ~/shell_prep.sh;/opt/deploy/ocl_web/ocl_web/manage.py create_sysadmin')
 
 
 @task
@@ -659,6 +679,12 @@ def blah():
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
 
                     print(yellow('creating API database...'))
-                    put(_conf_path('mongo_setup.js'), '~/mongo_setup.js')
-                    run('mongo ocl ~/mongo_setup.js')
+                    auth_token, anon_token = get_api_tokens()
+                    if auth_token is not None and anon_token is not None:
+                        env.OCL_API_TOKEN = auth_token
+                        env.OCL_ANON_API_TOKEN = anon_token
+
+                    files.upload_template(_conf_path('shell_prep.sh'),
+                        '~/shell_prep.sh', env)
+
 
