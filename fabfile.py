@@ -476,11 +476,13 @@ def checkout_api_app(do_pip=False):
         # there is no need for this, settings.py.eploy is actually wrong?
         # run("cp settings.py.deploy settings.py")
         with prefix("source /opt/virtualenvs/ocl_api/bin/activate"):
-            # this is really slow because it pull down django-norel
-            if do_pip:
-                run("pip install -r requirements.txt")
+            with prefix('export DJANGO_CONFIGURATION="Production"'):
+                with prefix('export DJANGO_SECRET_KEY="blah"'):
+                    # this is really slow because it pull down django-norel
+                    if do_pip:
+                        run("pip install -r requirements.txt")
 
-            run("./manage.py build_solr_schema > /opt/deploy/solr/collection1/conf/schema.xml")
+                    run("./manage.py build_solr_schema > /opt/deploy/solr/collection1/conf/schema.xml")
 
 
 def create_api_database():
@@ -605,10 +607,10 @@ def clear_databases():
 def rebuild_index():
     """ Rebuild search index """
     with prefix("source /opt/virtualenvs/ocl_api/bin/activate"):
-
-        sudo('/etc/init.d/jetty restart')
-        sleep(5)
-        run("/opt/deploy/ocl_api/ocl/manage.py rebuild_index")
+        with prefix('export DJANGO_CONFIGURATION="Production"'):
+            sudo('/etc/init.d/jetty restart')
+            sleep(5)
+            run("/opt/deploy/ocl_api/ocl/manage.py rebuild_index")
 
 
 @task
@@ -678,7 +680,7 @@ def blah():
             with prefix('export DJANGO_CONFIGURATION="Production"'):
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
 
-                    print(yellow('creating API database...'))
+                    print(yellow('preping environment due to changes...'))
                     auth_token, anon_token = get_api_tokens()
                     if auth_token is not None and anon_token is not None:
                         env.OCL_API_TOKEN = auth_token
