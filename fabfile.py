@@ -88,7 +88,9 @@ def dev():
 
     env.AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     env.AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-dev'
+    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-development'
+
+
 
 @task
 def staging():
@@ -106,8 +108,7 @@ def staging():
 
     env.AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     env.AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-stage'
-    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-development'
+    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-staging'
 
 
 @task
@@ -126,7 +127,7 @@ def production():
 
     env.AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     env.AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-prod'
+    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-production'
 
 @task
 def test_local():
