@@ -226,7 +226,7 @@ def common_install():
     sudo('apt-get update')
 
     # user console tools
-    sudo("apt-get -y -q install emacs23-nox unzip lsof byobu")
+    sudo("apt-get -y -q install emacs23-nox unzip lsof byobu httpie")
 
     # application libraries
     sudo("apt-get -y -q  install python-pip git-core")
@@ -380,23 +380,26 @@ def get_api_tokens():
 
     with cd('/opt/deploy/ocl_api/ocl'):
         with prefix("source /opt/virtualenvs/ocl_api/bin/activate"):
-            print(yellow('Getting AUTH Tokens'))
-            data = run('./manage.py create_tokens')
-            # get back two lines in export form:
-            #    export OCL_API_TOKEN='NNN'
-            #    export OCL_ANON_API_TOKEN='NNNN'
-            lines = data.split('\n')
-            r = re.search("export OCL_API_TOKEN='(\w+)'", lines[0])
-            if r is None:
-                return (None, None)
-            api_token = r.group(1)
-            r = re.search("export OCL_ANON_API_TOKEN='(\w+)'", lines[1])
-            if r is None:
-                return (None, None)
-            anon_token = r.group(1)
+            with prefix('export DJANGO_CONFIGURATION="Production"'):
+                with prefix('export DJANGO_SECRET_KEY="blah"'):
 
-            print 'API Token: %s,  Anon Token: %s' % (api_token, anon_token)
-            return (api_token, anon_token)
+                    print(yellow('Getting AUTH Tokens'))
+                    data = run('./manage.py create_tokens')
+                    # get back two lines in export form:
+                    #    export OCL_API_TOKEN='NNN'
+                    #    export OCL_ANON_API_TOKEN='NNNN'
+                    lines = data.split('\n')
+                    r = re.search("export OCL_API_TOKEN='(\w+)'", lines[0])
+                    if r is None:
+                        return (None, None)
+                    api_token = r.group(1)
+                    r = re.search("export OCL_ANON_API_TOKEN='(\w+)'", lines[1])
+                    if r is None:
+                        return (None, None)
+                    anon_token = r.group(1)
+
+                    print 'API Token: %s,  Anon Token: %s' % (api_token, anon_token)
+                    return (api_token, anon_token)
 
 
 def build_app(app_name, repo_name=None, no_git=False):
@@ -497,7 +500,7 @@ def create_api_database():
                     # no super user
                     run('./manage.py syncdb --noinput')
                     put(_conf_path('mongo_setup.js'), '~/mongo_setup.js')
-                    run('mongo ~/mongo_setup.js')
+                    run('mongo ocl ~/mongo_setup.js')
 
     # now start the server so that we can create base users
     print(yellow('Start up partial API server...'))
@@ -603,6 +606,16 @@ def clear_databases():
     run('echo -e "use ocl \n db.dropDatabase();" | mongo')
     create_api_database()
 
+@task
+def load_orgs_and_sources():
+    """
+    Load standard set of organization and source
+    """
+    with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
+        with cd('/opt/deploy/ocl_web/ocl_web'):
+                print(yellow('creating basic ORGS and SOURCES...'))
+                run('source ~/shell_prep.sh;/opt/deploy/ocl_web/ocl_web/manage.py create_org --username=sysadmin --csv=fixtures/orgs.csv')
+                run('source ~/shell_prep.sh;/opt/deploy/ocl_web/ocl_web/manage.py create_source --username=sysadmin --csv=fixtures/ocl_sources.csv')
 
 @task
 def rebuild_index():
