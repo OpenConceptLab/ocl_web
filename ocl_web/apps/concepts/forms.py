@@ -16,8 +16,9 @@ class ConceptRetireForm(forms.Form):
     """
     required_css_class = 'required'
 
-    comment = forms.CharField(max_length=80, label=_('Comment'),
-                              required=False)
+    comment = forms.CharField(
+        label=_('Retire Reason'),
+        required=False)
 
 
 class ConceptCreateForm(forms.Form):
@@ -26,13 +27,28 @@ class ConceptCreateForm(forms.Form):
     """
     required_css_class = 'required'
 
-    concept_id = forms.CharField(max_length=30, label=_('Concept ID'), required=True)
-    concept_class = forms.CharField(max_length=30, label=_('Concept Class'), required=True)
-    datatype = forms.CharField(max_length=30, label=_('Datatype'), required=False)
-    name = forms.CharField(max_length=30, label=_('Name'), required=True)
+    concept_id = forms.CharField(
+        label=_('Concept ID'), 
+        max_length=256, 
+        required=True)
+    concept_class = forms.CharField(
+        label=_('Concept Class'), 
+        required=True)
+    datatype = forms.CharField(
+        label=_('Datatype'), 
+        required=False)
+    name = forms.CharField(
+        label=_('Name'),
+        max_length=256,
+        required=True)
     locale = forms.ChoiceField(
-        choices=[(d['code'], d['name']) for d in _get_locale_list()], label=_('Locale'), required=True)
-    preferred_locale = forms.BooleanField(label=_('Preferred Locale'), required=False, initial=False)
+        label=_('Name Locale'), 
+        choices=[(d['code'], d['name']) for d in _get_locale_list()], 
+        required=True)
+    preferred_locale = forms.BooleanField(
+        label=_('Preferred Locale'), 
+        required=False, 
+        initial=False)
 
     def clean_concept_id(self):
         """ concept ID must be unique """
@@ -42,7 +58,7 @@ class ConceptCreateForm(forms.Form):
         api = OCLapi(request, debug=True)
         result = api.get('orgs', source['owner'], 'sources', source['id'], 'concepts', concept_id)
         if result.status_code == 200:
-            raise forms.ValidationError(_('This Concept ID is already used.'))
+            raise forms.ValidationError(_('This Concept ID is already used in this source.'))
         return concept_id
 
 
