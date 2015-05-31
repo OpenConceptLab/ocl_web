@@ -388,7 +388,12 @@ def get_api_tokens():
                     # get back two lines in export form:
                     #    export OCL_API_TOKEN='NNN'
                     #    export OCL_ANON_API_TOKEN='NNNN'
+                    # sometimes we get into a chicken and egg situation
+                    # with a bad server image. So handle error cases
                     lines = data.split('\n')
+                    if len(lines) < 2:
+                        return (None, None)
+
                     r = re.search("export OCL_API_TOKEN='(\w+)'", lines[0])
                     if r is None:
                         return (None, None)
@@ -464,6 +469,7 @@ def checkout_api_app(do_pip=False):
     """
     with cd('/var/tmp'):
         print(blue('pulling new code...'))
+        sudo('/etc/init.d/jetty stop')
         run("rm -rf oclapi")
         run("git clone https://github.com/OpenConceptLab/oclapi.git")
 
@@ -487,6 +493,7 @@ def checkout_api_app(do_pip=False):
                         run("pip install -r requirements.txt")
 
                     run("./manage.py build_solr_schema > /opt/deploy/solr/collection1/conf/schema.xml")
+    sudo('/etc/init.d/jetty start')
 
 
 def create_api_database():
@@ -557,6 +564,7 @@ def release_api_app(do_pip=False):
     """
     checkout_api_app(do_pip)
     run('supervisorctl restart ocl_api')
+    run('supervisorctl restart celery')
 
 
 def release(app_name, do_pip):
