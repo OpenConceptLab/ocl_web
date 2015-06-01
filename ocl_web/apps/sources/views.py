@@ -267,7 +267,7 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
                          'versions', '?verbose=True')
         if not result.ok:
-            logger.warning('GET error %s : %s' % api.url)
+            logger.warning('GET error %s : %s' % (result.status_code, api.url))
             return self.render_bad_request_response(result)
 
         return self.render_json_response(result.json())
