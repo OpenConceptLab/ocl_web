@@ -562,6 +562,22 @@ def api_backup():
 def release_api_app(do_pip=False):
     """ Release latest API server software.
     """
+    run('/etc/init.d/jetty stop')
+    run('supervisorctl stop ocl_api')
+    run('supervisorctl stop celery')
+    sleep(5)
+
+    release('ocl_api', do_pip)
+    # However, the ocl directory structure in git is not yet aligned with
+    # runtime. Hence this symlink
+    with cd("/opt/deploy/ocl_api"):
+        run('ln -s django-nonrel/ocl ocl')
+
+    run('supervisorctl start ocl_api')
+    run('supervisorctl start celery')
+
+    # old style
+    return
     checkout_api_app(do_pip)
     run('supervisorctl restart ocl_api')
     run('supervisorctl restart celery')
@@ -712,3 +728,29 @@ def blah():
                         '~/shell_prep.sh', env)
 
 
+@task
+def fix_solr():
+    """ Fix solr
+        work in progress
+    """
+    with cd('/var/tmp'):
+        print(blue('pulling new code...'))
+        sudo('/etc/init.d/jetty stop')
+        sleep(5)
+        # run('rm -rf /opt/deploy/solr/collection1')
+
+        print(blue('copying new code...'))
+        # run('mkdir -p /opt/deploy/solr/collection1')
+        # run("cp -r oclapi/solr/collection1/conf /opt/deploy/solr/collection1")
+
+    with cd("/opt/deploy/ocl_api/ocl"):
+        # there is no need for this, settings.py.eploy is actually wrong?
+        # run("cp settings.py.deploy settings.py")
+        with prefix("source /opt/virtualenvs/ocl_api/bin/activate"):
+            with prefix('export DJANGO_CONFIGURATION="Production"'):
+                with prefix('export DJANGO_SECRET_KEY="blah"'):
+                    # this is really slow because it pull down django-norel
+
+                    run("./manage.py build_solr_schema > /opt/deploy/solr/collection1/conf/schema.xml")
+    sleep(5)
+    sudo('/etc/init.d/jetty start')
