@@ -12,18 +12,17 @@
     <ul>
         <li ng-repeat="version in item_list|orderBy:'-created_on'" class="list-group-item">
             {% verbatim %}
-                    <button type="button" class="btn btn-link" ng-click="setEditedItem(version);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span>
-                    </button>
-                <span>{{ version.id }}<br />{{ version.description }}
-                    created on {{ version.created_on|date:'yyyy-MM-dd HH:mm:ss' }}
+                <button type="button" class="btn btn-link" ng-click="setEditedItem(version);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span></button>
+                <span>{{ version.id }}
+                    <span class="label label-primary" ng-if="version.released">Released</span>
+                    <br />
+                    {{ version.description }}
+                    <span class="text-muted small">Created on {{ version.created_on|date:'yyyy-MM-dd HH:mm:ss' }}</span>
                 </span>
-                <span ng-if="version.released">Released</span>
-                <div class="pull-right">
-                <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(version)"></span>
-            </div>
-            {% endverbatim %}               
+                <div class="pull-right"><span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(version)"></span></div>
+            {% endverbatim %}
         </li>
-    </lu>
+    </ul>
     </div> {# list col10 #}
 </div> {# list row #}
 

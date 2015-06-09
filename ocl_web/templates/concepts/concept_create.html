@@ -4,8 +4,8 @@
 {% load ocl_tags %}
 
 {% block title %}{% trans "Add Concept" %}{% endblock %}
-{% block content %}
 
+{% block content %}
 <h3>
     {% source_owner_label source %} / {% source_label source %} / Add Concept
 </h3>
@@ -49,13 +49,12 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label" for="id_external_id">External ID</label>
-                    <input class="form-control" id="id_name" maxlength="48" name="external_id" placeholder="Extern ID"
+                    <input class="form-control" id="id_name" maxlength="48" name="external_id" placeholder="External ID"
                     required="false" title="" type="text" ng-model="item.extern_id">
                 </div>
                 <div class="form-group">
                     <label class="control-label" for="id_name_type">Nametype</label>
-                    <input class="form-control" id="id_name_type" maxlength="30" name="name_type" placeholder="Nametype, e.g. FULLY_SPECIFIED"
-                    required="false" title="" type="text" ng-model="item.name_type">
+                    <input class="form-control" id="id_name_type" maxlength="30" name="name_type" placeholder="Nametype, e.g. FULLY_SPECIFIED" required="false" title="" type="text" ng-model="item.name_type">
                 </div>
 
                 <div class="form-group required" ng-class="{ 'has-error': concept_form.locale.$invalid && !concept_form.locale.$pristine }">
@@ -65,7 +64,6 @@
                     typeahead="locale.name for locale in locale_choices | filter:$viewValue | limitTo:8">
                     <p class="help-block" ng-show="concept_form.locale.$invalid">Select a locale</p>
                     {% endverbatim %}
-
                 </div>
 
                 <div class="form-group">
