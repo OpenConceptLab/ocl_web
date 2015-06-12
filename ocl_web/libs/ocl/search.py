@@ -201,7 +201,6 @@ class OCLSearch(object):
         i.e. checkboxes can stay checked.
 
         :returns: a list of Filter object for constructing the HTML filter display.
-
         """
         return self.filters[self.resource_type]
 
@@ -309,14 +308,16 @@ class OCLSearch(object):
 
         for key in params.keys():
             print 'trying key:%s' % key
-            f = self.get_filters().match_filter(key)
-            if f:
-                v = params.pop(key)
-                # set this option as selected
-                f.select_option(v)
-                search_params[key] = v
-                print 'add key %s = %s' % (key, v)
-                print f
+            f = None
+            if self.get_filters():
+                f = self.get_filters().match_filter(key)
+                if f:
+                    v = params.pop(key)
+                    # set this option as selected
+                    f.select_option(v)
+                    search_params[key] = v
+                    print 'add key %s = %s' % (key, v)
+                    print f
         from libs.ocl import OCLapi
         print 'Searcher %s params: %s' % (OCLapi.resource_type_name(self.resource_type), search_params)
         self.search_params = search_params
