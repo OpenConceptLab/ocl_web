@@ -12,13 +12,11 @@
   {% csrf_token %}
   {% bootstrap_form form %}
 
-
   {% buttons %}
   <button type="submit" class="btn btn-primary">
-    {% trans "Update" %}
+    {% trans "Create Organization" %}
   </button>
   {% endbuttons %}
 </form>
-
 
 {% endblock content %}

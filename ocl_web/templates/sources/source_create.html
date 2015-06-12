@@ -16,8 +16,6 @@
 / <span class="glyphicon glyphicon-list" style="color:#e5e5e5;"></span>&nbsp;&nbsp;{% trans 'Add Source' %}
 	</h3>
 
-
-
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
@@ -28,19 +26,18 @@
   <div class="form-group required"><label class="col-md-2 control-label">Source</label>
     <div class="col-md-4">
       {% if org %}
-      {% trans "Create a source for this organization" %} : {{ org.id }}
+        {% trans "Create a source for this organization" %} : {{ org.id }}
       {% else %}
-      {% trans "Create a source for this user" %} : {{ ocl_user.username }}
+        {% trans "Create a source for this user" %} : {{ ocl_user.username }}
       {% endif %}
-
-</div></div>
+    </div>
+  </div>
 
   {% bootstrap_form form layout="horizontal" %}
 
-
   {% buttons layout="horizontal" %}
   <button type="submit" class="btn btn-primary">
-    {% trans "Add" %}
+    {% trans "Create Source" %}
   </button>
   {% endbuttons %}
 
@@ -49,6 +46,5 @@
         </div>
     </div>
 </div>
-
 
 {% endblock %}
