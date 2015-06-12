@@ -295,11 +295,11 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             # rather, it is /owner/:owner/sources/:source/:version/
             result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
                              self.item_id, **data)
-            msg = _('Source Version <strong>%s</strong> updated!' % data.id)
+            msg = _('Source Version <strong>%s</strong> updated!' % data[id])
         else:
             result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
                               'versions', **data)
-            msg = _('New Source Version <strong>%s</strong> added!' % data.id)
+            msg = _('Source Version <strong>%s</strong> created!' % data[id])
 
         if not result.ok:
             logger.warning('Source Version POST error: %s' % result.status_code)
@@ -320,4 +320,4 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             logger.warning('Source Version DELETE error: %s' % result.status_code)
             return self.render_bad_request_response(result.content)
 
-        return self.render_json_response({'message': _('Version deleted')})
+        return self.render_json_response({'message': _('Source Version deleted!')})
