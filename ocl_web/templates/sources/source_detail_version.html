@@ -55,41 +55,37 @@
         {% trans 'Add Version' %}
     </button>
 
-
     <div>
       {% verbatim %}{{ message }}{% endverbatim %}
     </div>
 
     <form ng-submit="addItem(newItem)" ng-show="isCreatingItem">
     {% csrf_token %}
-    <div class="form-group">
-        <label class="control-label" for="id_id">ID</label>
-        <input class="form-control" id="id_id" maxlength="30" name="description_type" 
-            placeholder="ID" required="required" title="" type="text"
-            ng-model="newItem.id" />
-    </div>
+        <div class="form-group">
+            <label class="control-label" for="id_id">Version ID</label>
+            <input class="form-control" id="id_id" maxlength="60" name="version_id" placeholder="Version ID (e.g. 'v1.1' or '2015-06-15')" required="required" title="" type="text" ng-model="newItem.id" />
+        </div>
 
-    <div class="form-group required">
-        <label class="control-label" for="id_description">Description</label>
-        <input class="form-control" id="id_description" maxlength="30" name="description" 
-            placeholder="Description" required="required" title="" type="text"
-            ng-model="newItem.description" />
-    </div>
+        <div class="form-group required">
+            <label class="control-label" for="id_description">Description</label>
+            <input class="form-control" id="id_description" maxlength="250" name="description" placeholder="Description" required="required" title="" type="text" ng-model="newItem.description" />
+        </div>
 
-    <div class="form-group required">
+        <div class="form-group required">
+            <label class="control-label" for="id_previous_version">Previous Version ID</label>
+            <input class="form-control" id="id_previous_version" maxlength="60" name="previous_version" placeholder="Previous Version ID (e.g. 'v0.9' or '2014-10-19')" required="required" title="" type="text" ng-model="newItem.previous_version" />
+        </div>
+
+        <div class="form-group required">
           <div class="checkbox">
-        <label>
-          <input type="checkbox" name="released" ng-model="newItem.released">{% trans 'Released' %}
-        </label>
-      </div>
-    </div>
+            <label><input type="checkbox" name="released" ng-model="newItem.released">{% trans 'Released' %}</label>
+          </div>
+        </div>
 
-    <div class="form-group">
-      <button type="submit" class="btn btn-primary">
-        {% trans 'Add Version' %}
-      </button>
-      <button type="button" class="btn btn-default pull-right" ng-click="cancelCreatingItem()">{% trans 'Cancel' %}</button>
-     </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">{% trans 'Add Version' %}</button>
+          <button type="button" class="btn btn-default pull-right" ng-click="cancelCreatingItem()">{% trans 'Cancel' %}</button>
+         </div>
     </form>
 </div> {# if creating show #}
 
@@ -97,36 +93,26 @@
 <!-- EDITING -->
 <div ng-if="shouldShowEditingItem()">
 
-     {% verbatim %}<h4>Editing Version  {{ editedItem.id }}</h4> {% endverbatim %}
+    {% verbatim %}<h4>Editing Version  {{ editedItem.id }}</h4> {% endverbatim %}
     <form ng-submit="updateItem(editedItem)" ng-show="isEditingItem">
     {% csrf_token %}
-        <input class="form-control" id="id_id" maxlength="30" name="id" 
-            placeholder="ID" required="required" title="" type="hidden"
-            value="editedItem.id"
-            ng-model="editedItem.uuid" />
+        <input class="form-control" id="id_id" maxlength="60" name="id" placeholder="ID" required="required" title="" type="hidden" value="editedItem.id" ng-model="editedItem.uuid" />
 
+        <div class="form-group required">
+            <label class="control-label" for="id_description">Description</label>
+            <input class="form-control" id="id_description" maxlength="250" name="description" placeholder="Description" required="required" title="" type="text" ng-model="editedItem.description" />
+        </div>
 
-    <div class="form-group required">
-        <label class="control-label" for="id_description">Description</label>
-        <input class="form-control" id="id_description" maxlength="30" name="description" 
-            placeholder="Description" required="required" title="" type="text"
-            ng-model="editedItem.description" />
-    </div>
-
-    <div class="form-group required">
+        <div class="form-group required">
           <div class="checkbox">
-        <label>
-          <input type="checkbox" name="released" ng-model="editedItem.released">{% trans 'Released' %}
-        </label>
-      </div>
-    </div>
+            <label><input type="checkbox" name="released" ng-model="editedItem.released">{% trans 'Released' %}</label>
+          </div>
+        </div>
 
-    <div class="form-group">
-      <button type="submit" class="btn btn-primary">
-        {% trans 'Update Version' %}
-      </button>
-      <button type="button" class="btn btn-default pull-right" ng-click="cancelEditingItem()">{% trans 'Cancel' %}</button>
-     </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">{% trans 'Update Version' %}</button>
+          <button type="button" class="btn btn-default pull-right" ng-click="cancelEditingItem()">{% trans 'Cancel' %}</button>
+        </div>
     </form>
 </div> {# editing #}
 
