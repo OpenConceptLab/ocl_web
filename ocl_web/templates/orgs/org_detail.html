@@ -321,7 +321,7 @@
 {% endcomment %}
 
 
-<tab heading="Details">
+<tab heading="Organization Details">
 
 
 &nbsp;
@@ -338,20 +338,30 @@
 
                 <div class="panel-body">
                 	{% field_label 'ID' org.id %}
-                	{% field_label 'Name' org.name %}
+                	{% field_label 'Full Name' org.name %}
+                	<hr />
                 	{% field_label 'Company' org.company %}
                 	{% field_label 'Website' org.website url=True %}
                 	{% field_label 'Location' org.location %}
                 	{% field_label 'Public Access' org.public_access %}
+                	{% field_label '# Public Source' org.public_source %}
+                	<hr />
                 	{% field_label 'Created By' org.created_by %}
                 	{% field_label 'Created On' org.created_on|smart_date %}
                 	{% field_label 'Updated By' org.updated_by %}
                 	{% field_label 'Updated On' org.updated_on|smart_date %}
+                	<hr />
+                	<dl>
+                		{% for key, value in org.extras.items %}
+							<dt class="small">{{ key }}:</dt>
+							<dd class="small" style="padding-bottom:6px;">{{ value }}</dd>
+						{% endfor %}
+                	</dl>
                 </div>
 
 
 				<div class="panel-body hidden">
-
+					<hr />
 					<dl style="margin-bottom:0;">
 					{% for key, value in org.items %}
 						<dt class="small">{{ key }}:</dt>
