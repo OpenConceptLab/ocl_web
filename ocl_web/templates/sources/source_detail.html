@@ -217,7 +217,16 @@
 
 
 <tab heading="About"> {# ----- start source About tab #}
+	<p>&nbsp;</p>
+	<div class="panel panel-default">
+	  <div class="panel-body" style="height:140px;">
+	  	<h4>About</h4>
+	    <p>[Add licensing and about text here.]</p>
+	  </div>
+	</div>
+	{% comment %}
 	{% include 'sources/source_about_text.html' %}
+	{% endcomment %}
 </tab> {# ----- end source About tab #}
 
 {% if request.GET.debug %}
