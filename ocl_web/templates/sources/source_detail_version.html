@@ -12,14 +12,22 @@
     <ul>
         <li ng-repeat="version in item_list|orderBy:'-created_on'" class="list-group-item">
             {% verbatim %}
-                <button type="button" class="btn btn-link" ng-click="setEditedItem(version);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span></button>
-                <span>{{ version.id }}
-                    <span class="label label-primary" ng-if="version.released">Released</span>
-                    <br />
+                <div class="search-result-col-icon pull-left" style="padding-top:0;padding-right:14px;margin-bottom:20px;">
+                  <span class="glyphicon glyphicon-asterisk search-result-icon"></span>
+                </div>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-link" ng-click="setEditedItem(version);startEditingItem();" ><span class="glyphicon glyphicon-pencil"></span></button>
+                    <button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash" ng-click="deleteItem(version)"></span></button>
+                </div>
+                <h4>
+                    <span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ version.owner }} / [:source] / </span><span class="resource-label-id-code">{{ version.id }}</span></span></span>
+
+                    <span ng-if="version.released">&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">Released</span></span>
+                </h4>
+                <p>
                     {{ version.description }}
-                    <span class="text-muted small">Created on {{ version.created_on|date:'yyyy-MM-dd HH:mm:ss' }}</span>
-                </span>
-                <div class="pull-right"><span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(version)"></span></div>
+                    <br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ version.created_on|date:'yyyy-MM-dd HH:mm:ss' }}</span>
+                </p>
             {% endverbatim %}
         </li>
     </ul>
