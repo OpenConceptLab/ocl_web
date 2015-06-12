@@ -295,11 +295,11 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             # rather, it is /owner/:owner/sources/:source/:version/
             result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
                              self.item_id, **data)
-            msg = _('Source Version <strong>%s</strong> updated!' % data[id])
+            msg = _('Source Version updated!')
         else:
             result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
                               'versions', **data)
-            msg = _('Source Version <strong>%s</strong> created!' % data[id])
+            msg = _('Source Version created!')
 
         if not result.ok:
             logger.warning('Source Version POST error: %s' % result.status_code)
