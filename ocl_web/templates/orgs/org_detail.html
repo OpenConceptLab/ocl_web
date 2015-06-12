@@ -192,7 +192,7 @@
     </div> {# row #}
 </tab>
 
-
+{% comment %}
 <tab heading="Collections">
 
 
@@ -318,6 +318,9 @@
     </div> {# row #}
 </tab> {# collections #}
 
+{% endcomment %}
+
+
 <tab heading="Details">
 
 
@@ -403,8 +406,17 @@
 {% endverbatim %}
     {% csrf_token %}
 
-</tab>
 
+
+<tab heading="About"> {# ----- start org About tab #}
+	<p>&nbsp;</p>
+	<div class="panel panel-default">
+	  <div class="panel-body" style="height:140px;">
+	  	<h4>About</h4>
+	    <p>[Add organization about text here.]</p>
+	  </div>
+	</div>
+</tab> {# ----- end org About tab #}</tab>
 
 </tabset>
 

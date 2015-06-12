@@ -25,8 +25,8 @@
                     <span ng-if="version.released">&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">Released</span></span>
                 </h4>
                 <p>
-                    {{ version.description }}
-                    <br /><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ version.created_on|date:'yyyy-MM-dd HH:mm:ss' }}</span>
+                    <span ng-if="version.description">{{ version.description }}<br /></span>
+                    <span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ version.created_on|date:'yyyy-MM-dd HH:mm:ss' }}</span>
                 </p>
             {% endverbatim %}
         </li>
