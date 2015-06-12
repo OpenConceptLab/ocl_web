@@ -253,6 +253,7 @@ def _get_source_type_list():
         'Interface Terminology',
         'Indicator Registry',
         'Reference',
+        'External'
     ]
 
 

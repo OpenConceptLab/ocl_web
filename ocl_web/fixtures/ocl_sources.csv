@@ -26,7 +26,7 @@ IHTSDO,SNOMED-US,SNOMED US,SAME AS,SNOMED CT US Extension,External,View,,en,en,N
 HL7,HL7-2.x-Route-of-Administration,HL7 2.x Route of Administration,SAME AS,Members of value set from HL7 for routes of administration,External,View,,en,en,N/A,98e77229-19e7-45e0-88dd-e30214dd2fad,HL70162
 3BT,3BT,Belgian Bilingual Bi-encoded Thesaurus,SAME AS,Belgian Bilingual Bi-encoded Thesaurus (3BT),External,View,,en,en,N/A,ef7f179f-d97d-4a8c-994c-67c544428684,
 WICC,ICPC2,International Classification of Primary Care version 2,NARROWER THAN,International Classification of Primary Care version 2 from WONCA.,External,View,,en,en,N/A,32fb691d-928b-48a9-b3ee-ca64f21f20bf,
-CIEL,CIEL,Columbia International eHealth Laboratory,SAME AS,Columbia International eHealth Laboratory concept ID,External,View,,en,en,N/A,249b13c8-72fa-4b96-8d3d-b200efed985e,
+CIEL,CIEL,Columbia International eHealth Laboratory,SAME AS,Columbia International eHealth Laboratory concept ID,Interface Terminology,View,,en,en,N/A,249b13c8-72fa-4b96-8d3d-b200efed985e,
 CCAM,CCAM,Classification Commune des Actes Médicaux,SAME AS,French classification of procedures known as Classification Commune des Actes MÃ©dicaux,External,View,,en,en,N/A,8f40d58b-a968-4bd0-befd-99f88549ff8d,
 OpenMRS,org.openmrs.module.emrapi,org.openmrs.module.emrapi,SAME AS,Reference application module,External,View,,en,en,N/A,12fb0fda-77f2-4006-830c-504520f8f3ce,
 IMO,IMO-ProblemIT,IMO ProblemIT,SAME AS,"Intelligent Medical Objects, Inc. problem/disease/finding datasource",External,View,,en,en,N/A,2ec62780-6cb7-4024-b396-c9388793156b,

@@ -128,6 +128,7 @@ def setup_filters():
                 'Interface Terminology',
                 'Indicator Registry',
                 'Reference',
+                'External'
     ])
 
     f = filters.add_filter('language', 'Locale')
@@ -142,6 +143,7 @@ def setup_filters():
                 'Interface Terminology',
                 'Indicator Registry',
                 'Reference',
+                'External'
     ])
     mapping_filters = filters
 
