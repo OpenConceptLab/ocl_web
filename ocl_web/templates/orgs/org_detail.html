@@ -351,24 +351,8 @@
                 	{% field_label 'Updated By' org.updated_by %}
                 	{% field_label 'Updated On' org.updated_on|smart_date %}
                 	<hr />
-                	<dl>
-                		{% for key, value in org.extras.items %}
-							<dt class="small">{{ key }}:</dt>
-							<dd class="small" style="padding-bottom:6px;">{{ value }}</dd>
-						{% endfor %}
-                	</dl>
+                	{% field_label 'Extras' org.extras %}
                 </div>
-
-
-				<div class="panel-body hidden">
-					<hr />
-					<dl style="margin-bottom:0;">
-					{% for key, value in org.items %}
-						<dt class="small">{{ key }}:</dt>
-						<dd class="small" style="padding-bottom:6px;">{{ value }}</dd>
-					{% endfor %}
-					</dl>
-				</div>
 			</div> <!-- /panel -->
     	</div>
 

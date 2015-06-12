@@ -61,8 +61,6 @@ class OrganizationDetailView(TemplateView):
             else:
                 results.raise_for_status()
         org = results.json()
-        if org.extras:
-            org.extras = json.loads(org.extras)
 
         results = api.get('orgs', org_id, 'sources', params=source_searcher.search_params)
         if results.status_code == requests.codes.not_found:
