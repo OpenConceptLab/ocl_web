@@ -35,6 +35,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
 
         api = OCLapi(self.request, debug=True)
 
+        # source
         results = api.get(self.own_type, self.own_id, 'sources', self.source_id)
         if results.status_code != 200:
             if results.status_code == 404:
@@ -43,6 +44,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
                 results.raise_for_status()
         source = results.json()
 
+        # source concepts
         results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts',
                           params=searcher.search_params)
         if results.status_code != 200:
@@ -50,11 +52,18 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
                 raise Http404
             else:
                 results.raise_for_status()
-
         concept_list = results.json()
+
+        # source mappings - TODO
+
+        # source about - TODO
+        about = '[Add licensing and about text here.]'
+        #if source.extras['about']:
+        #    about = source.extras['about']
+
+        # set the context
         context['source'] = source
         context['concepts'] = concept_list
-
         context['q'] = searcher.get_query()
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
@@ -63,6 +72,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         pg = Paginator(range(num_found), searcher.num_per_page)
         context['page'] = pg.page(searcher.current_page)
         context['pagination_url'] = self.request.get_full_path()
+        context['about'] = about
         return context
 
 
