@@ -17,10 +17,10 @@ class SourceCreateForm(forms.Form):
     required_css_class = 'required'
 
     short_name = forms.CharField(
-        label=_('Source Short Name'), max_length=48, required=True,
+        label=_('Source Short Name'), max_length=100, required=True,
         help_text=_('Short Name (e.g. ICD-10), Your new source will live at: https://OpenConceptLab.org/[OwnerType]/[Owner]/sources/<span id="source-name">[SourceName]</span>'))
     full_name = forms.CharField(
-        label=_('Source Full Name'), max_length=48, required=True,
+        label=_('Source Full Name'), max_length=300, required=True,
         help_text=_('Full Name (e.g. International Classification for Diseases v10)'))
     website = forms.URLField(
         label=_('Website'), required=False,

@@ -22,49 +22,44 @@
 
             {% include 'includes/ng_alerts_incl.html' %}
 
-            <form class="form" name="concept_form" ng-submit="concept_form.$valid && updateItem(item)"
-            autcomplete="off">
+            <form class="form" name="concept_form" ng-submit="concept_form.$valid && updateItem(item)" autcomplete="off">
+
                 {% csrf_token %}
                 <div class="form-group required" ng-class="{ 'has-error': concept_form.concept_class.$invalid &amp;&amp; !concept_form.concept_class.$pristine }">
                     <label class="control-label" for="id_locale">Concept Class</label>
                     {% verbatim %}
-                    <input class="form-control" type="text" name="concept_class" ng-model="item.concept_class"
-                    typeahead-editable="false" typeahead="ct for ct in concept_classes | filter:$viewValue | limitTo:20">
+                    <input class="form-control" type="text" name="concept_class" ng-model="item.concept_class" typeahead-editable="false" typeahead="ct for ct in concept_classes | filter:$viewValue | limitTo:20">
                     <p class="help-block" ng-show="concept_form.concept_class.$invalid">
                         Select a valid Concept class
                     </p>{% endverbatim %}
                 </div>
 
-                <div class="form-group">
-                    <label class="control-label" for="id_external_id">External ID</label>
-                    <input class="form-control" id="id_name" maxlength="48" name="external_id" placeholder="External ID"
-                    required="false" title="" type="text" ng-model="item.external_id">
-                </div>
-
                 <div class="form-group" ng-class="{ 'has-error': concept_form.datatype.$invalid &amp;&amp; !concept_form.datatype.$pristine }">
-                    <label class="control-label" for="id_datatype">Datatype</label>
+                    <label class="control-label" for="id_datatype">Concept Datatype</label>
                     {% verbatim %}
-                    <input class="form-control" type="text" name="datatype" ng-model="item.datatype"
-                    typeahead-editable="false" typeahead="t for t in datatypes | filter:$viewValue | limitTo:20">
+                    <input class="form-control" type="text" name="datatype" ng-model="item.datatype" typeahead-editable="false" typeahead="t for t in datatypes | filter:$viewValue | limitTo:20">
                     <p class="help-block" ng-show="concept_form.datatype.$invalid">
                         Select a valid Datatype
                     </p>{% endverbatim %}
                 </div>
 
+                <div class="form-group">
+                    <label class="control-label" for="id_external_id">Concept External ID</label>
+                    <input class="form-control" id="id_name" name="external_id" placeholder="External ID" title="" type="text" ng-model="item.external_id">
+                </div>
 
                 <div class="form-group">
                     <label class="control-label" for="id_update_comment">Update Comment</label>
-                    <input class="form-control" id="id_update_comment" maxlength="90" name="update_comment"
-                    placeholder="Update Comment" title="" type="text" ng-model="item.update_comment"
-                    />
+                    <input class="form-control" id="id_update_comment" name="update_comment" placeholder="Update Comment" title="" type="text" ng-model="item.update_comment" />
                 </div>
 
                 {% buttons %}
-                <button type="submit" class="btn btn-primary">{% trans "Update" %}</button>
+                <button type="submit" class="btn btn-primary">{% trans "Update Concept" %}</button>
                 {% endbuttons %}
 
             </form>
 
         </div>
     </div>
+
 {% endblock %}

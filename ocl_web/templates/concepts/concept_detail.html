@@ -25,7 +25,6 @@
 						{% endif %}
 					</h3>
 
-
 					<p>
 						<span {% if concept.retired %}class="retired"{% endif %}>{{ concept.display_name }}</span>
 						{% if concept.display_locale %}&nbsp;&nbsp;<span class="small text-muted"><em>[{{ concept.display_locale }}]</em></span>{% endif %}&nbsp;&nbsp;<span id="element-info" data-toggle="tooltip" data-placement="right" title="Preferred name in selected language"><span class="glyphicon glyphicon-info-sign"></span></span><br />
@@ -38,7 +37,6 @@
 					</p>
 				</div>
 
-
 			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
 	</div> <!-- /container -->
@@ -50,82 +48,81 @@
 {# tabs #}
 <tabset>
 
-<tab heading="Concept Details">
-{# ----- Start of concept detail tab ----- #}
-&nbsp;
+<tab heading="Concept Details"> {# ----- Start of concept detail tab ----- #}
 
-{% include 'concepts/concept_detail_names.html' %}
+	&nbsp;
 
-<div class="row"><hr /></div>
+	{% include 'concepts/concept_detail_names.html' %}
+	<div class="row"><hr /></div>
 
-{% include 'concepts/concept_detail_descs.html' %}
+	{% include 'concepts/concept_detail_descs.html' %}
+	<div class="row"><hr /></div>
 
-<div class="row"><hr /></div>
-
-<!-- External ID -->
-<div class="row">
-    <div class="col-md-2" style="text-align:right;font-weight:bold;color:#999;">
-        External ID
-    </div>
-    <div class="col-md-8">
-    	{{ concept.external_id}}
-    </div>
-</div>
-{% include 'core/resource_detail_extra.html' %}
+	<!-- External ID -->
+	<div class="row">
+	    <div class="col-md-2" style="text-align:right;font-weight:bold;color:#999;">
+	        External ID
+	    </div>
+	    <div class="col-md-8">
+	    	{{ concept.external_id}}
+	    </div>
+	</div>
+	{% include 'core/resource_detail_extra.html' %}
 
 </tab> {# ------- end of detail tab ----- #}
 
 
 <tab heading="Mappings">
-{% include 'concepts/concept_detail_mappings.html' %}
+	{% include 'concepts/concept_detail_mappings.html' %}
 </tab> {# ------- end of mappings tab ----- #}
+
 
 {% comment %}
 {# Jon commented out this block until Collections fully implemented #}
 <tab heading="Collections">
 	 {# ------- start of collection tab ----- #}
-Collections go here. -- HIDE FOR NOW
+	Collections go here. -- HIDE FOR NOW
 </tab> {# ------- end of collection tab ----- #}
 {% endcomment %}
 
-<tab heading="History" ng-controller="ConceptVersionController">
 
-{# ------- start of versions tab ----- #}
-<div class="row">
-	<div class="col-md-10">
-	&nbsp;
-	    <ul>
-	    	<li ng-repeat="version in item_list|orderBy:'-version_created_on'" class="list-group-item">
+<tab heading="History" ng-controller="ConceptVersionController"> {# ------- start of versions tab ----- #}
 
-				{% verbatim %}
-	                <div class="pull-right text-muted">
-						<a href="{{ version.url }}">{{ version.version }}&nbsp;&nbsp;<span class="glyphicon glyphicon-search pull-right" ></span></a>
-	     			</div>
+	<div class="row">
+		<div class="col-md-10">
+		&nbsp;
+		    <ul>
+		    	<li ng-repeat="version in item_list|orderBy:'-version_created_on'" class="list-group-item">
 
-					<div>{{ version.update_comment }}</div>
+					{% verbatim %}
+		                <div class="pull-right text-muted">
+							<a href="{{ version.url }}">{{ version.version }}&nbsp;&nbsp;<span class="glyphicon glyphicon-search pull-right" ></span></a>
+		     			</div>
 
-					<p>
-						<span class="text-muted small">
-							<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Updated by {{ version.version_created_by ||'Unknown User' }}
-							&nbsp;&nbsp;&nbsp;
-							<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Updated on {{ version.version_created_on|date:'yyyy-MM-dd HH:mm:ss' }}
-						</span>
-					</p>
+						<div>{{ version.update_comment }}</div>
 
-	                <span ng-show="debug"><br /><pre>{{ version }}</pre></span>
-				{% endverbatim %}	
+						<p>
+							<span class="text-muted small">
+								<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Updated by {{ version.version_created_by ||'Unknown User' }}
+								&nbsp;&nbsp;&nbsp;
+								<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Updated on {{ version.version_created_on|date:'yyyy-MM-dd HH:mm:ss' }}
+							</span>
+						</p>
 
-	        </li>
-		</ul>
-    </div> {# list col8 #}
-</div> {# list row #}
+		                <span ng-show="debug"><br /><pre>{{ version }}</pre></span>
+					{% endverbatim %}	
+
+		        </li>
+			</ul>
+	    </div> {# list col8 #}
+	</div> {# list row #}
 
 </tab> {# ------- end of versions tab ----- #}
 
 
 {% if request.GET.debug %}
 <tab heading="Debug">
-<pre>{{ concept|pprint }}</pre>
+	<pre>{{ concept|pprint }}</pre>
 </tab>
 {% endif %}
 
@@ -133,8 +130,8 @@ Collections go here. -- HIDE FOR NOW
 
 </div> {# app #}
 
-
 {% endblock content-no-container %}
+
 
 {% block extrajavascript %}
 <script>

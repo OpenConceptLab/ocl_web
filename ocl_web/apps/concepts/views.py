@@ -48,6 +48,7 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
         else:
             return TemplateResponse(request, 'concepts/concept_edit.html', data)
 
+
     def get_success_url(self):
         if self.from_org:
             return reverse("source-detail",
@@ -58,6 +59,7 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
                            kwargs={"user": self.user_id,
                                    'source': self.kwargs.get('source')})
 
+
     def clean_concept_id(self, request, concept_id):
         """ concept ID must be unique """
 
@@ -67,6 +69,7 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
             return _('This Concept ID is already used.')
         else:
             return None
+
 
     def add(self):
         print self.request_json
@@ -94,13 +97,14 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
         result = api.create_concept(
             self.own_type, self.own_id, self.source_id, data, names=names)
         if result.status_code != 201:
-            logger.warning('Concept create POST failed %s' % result.content)
+            logger.warning('Concept create POST failed: %s' % result.content)
             return self.render_bad_request_response({'message': result.content})
         else:
-            return self.render_json_response({'message': _('Concept created')})
+            # TODO: If successful, redirect browser to new concept details page
+            return self.render_json_response({'message': _('Concept created!')})
+
 
     def edit(self):
-
         data = {}
         data['concept_class'] = self.request_json.get('concept_class')
         data['datatype'] = self.request_json.get('datatype')
@@ -117,7 +121,9 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
             logger.warning('Concept update POST failed %s' % emsg)
             return self.render_bad_request_response({'message': emsg})
         else:
-            return self.render_json_response({'message': _('Concept updated')})
+            # TODO: If successful, redirect browser to concept details page
+            return self.render_json_response({'message': _('Concept updated!')})
+
 
     def post(self, *args, **kwargs):
         """

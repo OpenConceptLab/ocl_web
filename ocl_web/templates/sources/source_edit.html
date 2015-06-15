@@ -6,49 +6,39 @@
 {% block title %}{% trans "Edit Source" %}{% endblock %}
 {% block content %}
 
-	<h3>
+<h3>
   {% source_owner_label source %} / {% source_label source %} / {% trans "Edit Source" %}
-    {# TODO: Only show if admin or owner #}
-    <a href="#" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
-	</h3>
-
-
+  {# TODO: Only show if admin or owner #}
+  <a href="#" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+</h3>
 
 <div class="container">
 
-<div class="row">
-
-<div class="col-md-8">
-&nbsp;
-{% field_label 'Created By' source.created_by %}
-{% field_label 'Created On' source.created_on|smart_date %}
-{% field_label 'Owner' source.owner %}
-&nbsp;
-</div>
-</div> {# row #}
-
-
-<div class="row">
+  <div class="row">
     <div class="col-md-8">
-
-<form id="source_edit_form" method="post" action=".">
-  {% csrf_token %}
-
-
-  {% bootstrap_form form %}
-
-
-  {% buttons %}
-  <button type="submit" class="btn btn-primary">
-    {% trans "Update" %}
-  </button>
-  {% endbuttons %}
-
-    </form>
-
-        </div>
+      &nbsp;
+      {% field_label 'Short Code' source.short_code %}
+      {% field_label 'Created By' source.created_by %}
+      {% field_label 'Created On' source.created_on|smart_date %}
+      {% field_label 'Owner' source.owner %}
+      &nbsp;
     </div>
-</div>
+  </div> {# end row #}
 
+  <div class="row">
+    <div class="col-md-8">
+      <form id="source_edit_form" method="post" action=".">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+          <button type="submit" class="btn btn-primary">
+            {% trans "Update" %}
+          </button>
+        {% endbuttons %}
+      </form>
+    </div>
+  </div> {# end row #}
+
+</div> {# end container #}
 
 {% endblock %}
