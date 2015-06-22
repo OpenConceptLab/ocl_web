@@ -13,7 +13,8 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <h1>Retiring Concept:</h1>
+            <h1>Retire Concept</h1>
+
             <form class="form-horizontal" id="source_create_form" method="post" action=".">
                 {% csrf_token %}
 
@@ -29,10 +30,10 @@
                     {% trans "Retire" %}
                 </button>
                 {% endbuttons %}
-
             </form>
 
-        </div>
-    </div>
-</div>
+        </div> {# col-lg-12 #}
+    </div> {# row #}
+</div> {# container #}
+
 {% endblock %}
