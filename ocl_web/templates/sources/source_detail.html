@@ -219,23 +219,20 @@
 
 </tab> {# ----- end source details tab #}
 
+
 {% include 'sources/source_detail_version.html' %}
 
 
 <tab heading="About"> {# ----- start source About tab #}
 	<p>&nbsp;</p>
 	<div class="panel panel-default">
-	  <div class="panel-body" style="height:140px;">
-	  	<h4>About</h4>
-	    <div class="row">
-	    {{ about|safe }}
-	    </div>
-	  </div>
+		<div class="panel-heading"><h4 class="panel-title">About</h4></div>
+	  	<div class="panel-body" style="min-height:140px;">
+	    	{{ about|safe }}
+	  	</div>
 	</div>
-	{% comment %}
-	{% include 'sources/source_about_text.html' %}
-	{% endcomment %}
 </tab> {# ----- end source About tab #}
+
 
 {% if request.GET.debug %}
 <tab heading="Debug">
@@ -245,7 +242,6 @@
 
 </tabset>
 </div> <!-- /container -->
-
 
 
 {% endblock content-no-container %}
