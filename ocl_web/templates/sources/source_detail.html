@@ -75,33 +75,27 @@
 			<div class="row" style="padding-top:20px;">
 				<div class="col-md-12">
 
-
-
 					<div class="btn-group pull-right">
-
-					  <select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
-					  	{% for o in search_sort_options %}
-					    <option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
-					    {% endfor %}
-					  </select>
-
+					  	<select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
+					  		{% for o in search_sort_options %}
+					    	<option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
+					    	{% endfor %}
+					  	</select>
 					</div>
 
-					<div class="btn-group pull-right">
-					<span>Sort by:&nbsp;</span>
-     				</div>
-
+					<div class="btn-group pull-right"><span>Sort by:&nbsp;</span></div>
 
 					<div class="btn-group">
-					  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-					    <span class="text-muted">Version:</span> <strong>Latest</strong> <span class="caret"></span>
-					  </button>
-					  <ul class="dropdown-menu" role="menu">
-					    <li><a href="#">Head</a></li>
-					    <li><a href="#">Latest Version</a></li>
-					    <li><a href="#">An older version</a></li>
-					  </ul>
+					  	<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+					    	<span class="text-muted">Version:</span> <strong>Latest</strong> <span class="caret"></span>
+					  	</button>
+					  	<ul class="dropdown-menu" role="menu">
+					    	<li><a href="#">Head</a></li>
+					    	<li><a href="#">Latest Version</a></li>
+					    	<li><a href="#">An older version</a></li>
+					  	</ul>
 					</div>
+
 				</div>
 			</div>
 
@@ -233,7 +227,9 @@
 	<div class="panel panel-default">
 	  <div class="panel-body" style="height:140px;">
 	  	<h4>About</h4>
-	    <p>{{ about }}</p>
+	    <div class="row">
+	    {{ about|safe }}
+	    </div>
 	  </div>
 	</div>
 	{% comment %}

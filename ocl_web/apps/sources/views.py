@@ -45,8 +45,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         source = results.json()
 
         # source concepts
-        results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts',
-                          params=searcher.search_params)
+        results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', params=searcher.search_params)
         if results.status_code != 200:
             if results.status_code == 404:
                 raise Http404
@@ -55,11 +54,6 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         concept_list = results.json()
 
         # source mappings - TODO
-
-        # source about - TODO
-        about = '[Add licensing and about text here.]'
-        #if source.extras['about']:
-        #    about = source.extras['about']
 
         # set the context
         context['source'] = source
@@ -72,7 +66,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         pg = Paginator(range(num_found), searcher.num_per_page)
         context['page'] = pg.page(searcher.current_page)
         context['pagination_url'] = self.request.get_full_path()
-        context['about'] = about
+        context['about'] = source['extras'].get('about', 'No about entry.')
         return context
 
 
