@@ -10,7 +10,6 @@
         &nbsp;
         <ul>
             <li ng-repeat="version in item_list|orderBy:'-created_on'" class="list-group-item">
-                {% with version_is_processing=version|get:"_ocl_processing" %}
                 {% verbatim %}
                     <div class="search-result-col-icon pull-left" style="padding-top:0;padding-right:14px;margin-bottom:20px;">
                       <span class="glyphicon glyphicon-asterisk search-result-icon"></span>
@@ -23,16 +22,12 @@
                         <span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ version.owner }} / [:source] / </span><span class="resource-label-id-code">{{ version.id }}</span></span></span>
                         <span ng-if="version.released">&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">Released</span></span>
                         <span ng-if="version._ocl_processing">&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">PROCESSING</span></span>
-                {% endverbatim %}
-                        {% if version_is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-default">processing</span></span>{% endif %}
-                {% verbatim %}
                     </h4>
                     <p>
                         <span ng-if="version.description">{{ version.description }}<br /></span>
                         <span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ version.created_on|date:'yyyy-MM-dd HH:mm:ss' }}</span>
                     </p>
                 {% endverbatim %}
-                {% endwith %}
             </li>
         </ul>
 
