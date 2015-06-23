@@ -9,7 +9,7 @@
 
         &nbsp;
         <ul>
-            <li ng-repeat="version in item_list|orderBy:'-created_on'" class="list-group-item" ng-style="{'background-color: #eee;': version._ocl_processing }">
+            <li ng-repeat="version in item_list|orderBy:'-created_on'" class="list-group-item" ng-style="version._ocl_processing && {'background-color': '#eee;'}">
                 {% verbatim %}
                     <div class="search-result-col-icon pull-left" style="padding-top:0;padding-right:14px;margin-bottom:20px;">
                       <span class="glyphicon glyphicon-asterisk search-result-icon"></span>
