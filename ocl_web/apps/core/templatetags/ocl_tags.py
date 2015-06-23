@@ -192,3 +192,8 @@ def do_if_can_change(parser, token):
         nodelist_false = NodeList()
 
     return IfCanChangeNode(nodelist_true, nodelist_false, obj_var)
+
+
+@register.filter(name='get')
+def get(d, k):
+    return d.get(k, None)
