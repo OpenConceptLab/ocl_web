@@ -25,13 +25,14 @@
                         <span ng-if="version._ocl_processing">&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">PROCESSING</span></span>
                 {% endverbatim %}
                         {% if version_is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-default">processing</span></span>{% endif %}
-                {% verbatim %}                
-                    </h4>                    
+                {% verbatim %}
+                    </h4>
                     <p>
                         <span ng-if="version.description">{{ version.description }}<br /></span>
                         <span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ version.created_on|date:'yyyy-MM-dd HH:mm:ss' }}</span>
                     </p>
                 {% endverbatim %}
+                {% endwith %}
             </li>
         </ul>
 
