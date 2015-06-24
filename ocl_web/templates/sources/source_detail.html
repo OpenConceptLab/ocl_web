@@ -32,21 +32,20 @@
                 	</p>
 				</div>
 
-
 			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
 	</div> <!-- /container -->
 </header> <!-- /source-header -->
 
 
-<!-- Start concepts section -->
 
+<!-- Start concepts section -->
 <div id="concepts" class="container" ng-app="ConceptApp">
 
 {# tabs #}
 <tabset>
-<tab heading="Concepts">
-{# ----- Start of source concepts tab ----- #}
+
+<tab heading="Concepts"> {# ----- Start of source concepts tab ----- #}
 
 	<div class="row" ng-controllerx="SourceSearchController">
 		<form action="." method="get">
@@ -171,7 +170,7 @@
 					</div>
 				</div> <!-- /row -->
 			{% empty %}
-			{% trans 'No concepts found' %}
+				{% trans 'No concepts found' %}
 			{% endfor %}
 
 	<!-- Pagination -->
@@ -184,39 +183,34 @@
 		</div>
 	</div> <!-- /row -->
 
-</tab> {# ----- end source concepts tab #}
+</tab> {# ----- end source Concepts tab #}
+
 
 <tab heading="Mappings"> {# ----- start source mappings tab #}
 	<p>&nbsp;</p>
 	<div class="panel panel-default">
-	  <div class="panel-body" style="height:140px;">
-	  	<h4>Mappings</h4>
-	    <p>[Mappings stored in this source will be displayed here]</p>
-	  </div>
+	  	<div class="panel-body" style="height:140px;">
+	  		<h4>Mappings</h4>
+	    	<p>[Mappings stored in this source will be displayed here]</p>
+	  	</div>
 	</div>
-	{% comment %}
-	{% include 'sources/source_about_text.html' %}
-	{% endcomment %}
 </tab> {# ----- end source mappings tab #}
 
+
 <tab heading="Source Details"> {# ----- start source details tab #}
-<div class="row">
-&nbsp;
-</div>
-{% field_label 'Full Name' source.full_name %}
-{% field_label 'Description' source.description %}
-{% field_label 'Source Type' source.source_type %}
-{% field_label 'Website' source.website url=True %}
-{% field_label 'External ID' source.external_id %}
-{% field_label 'Source URL' source.url %}
-{% field_label 'Created By' source.created_by %}
-{% field_label 'Created on' source.created_on|smart_date %}
-{% field_label 'Updated by' source.created_by %}
-{% field_label 'Updated on' source.created_on|smart_date %}
+	<div class="row">&nbsp;</div>
+	{% field_label 'Full Name' source.full_name %}
+	{% field_label 'Description' source.description %}
+	{% field_label 'Source Type' source.source_type %}
+	{% field_label 'Website' source.website url=True %}
+	{% field_label 'External ID' source.external_id %}
+	{% field_label 'Source URL' source.url %}
+	{% field_label 'Created By' source.created_by %}
+	{% field_label 'Created on' source.created_on|smart_date %}
+	{% field_label 'Updated by' source.created_by %}
+	{% field_label 'Updated on' source.created_on|smart_date %}
 
-
-{% include 'core/resource_detail_extra.html' %}
-
+	{% include 'core/resource_detail_extra.html' %}
 </tab> {# ----- end source details tab #}
 
 
@@ -235,9 +229,15 @@
 
 
 {% if request.GET.debug %}
-<tab heading="Debug">
-<pre>{{ source|pprint }}</pre>
-</tab>
+<tab heading="Debug"> {# ----- start source Debug tab #}
+	<p>&nbsp;</p>
+	<div class="panel panel-default">
+		<div class="panel-heading"><h4 class="panel-title">Debug</h4></div>
+	  	<div class="panel-body" style="min-height:140px;">
+	    	<pre>{{ source|pprint }}</pre>
+	  	</div>
+	</div>
+</tab> {# ----- end source Debug tab #}
 {% endif %}
 
 </tabset>
