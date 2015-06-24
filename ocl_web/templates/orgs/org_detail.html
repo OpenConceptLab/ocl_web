@@ -31,16 +31,6 @@
 						</span>
 					</p>
 				</div>
-
-				{% if request.GET.debug %}
-				<p>
-				  Org: <br /><pre>{{ org|pprint }}</pre>
-				  Sources: <br /><pre>{{ sources|pprint }}</pre>
-				  Collections: <br /><pre>{{ collections|pprint }}</pre>
-				  Members: <br /><pre>{{ members|pprint }}</pre>
-				</p>
-				{% endif %}
-
 			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
 	</div> <!-- /container -->
@@ -50,81 +40,74 @@
 <!-- Start content section of org -->
 
 <div class="container" ng-app="ConceptApp">
-
 <tabset>
-<tab heading="Sources">
 
+
+<tab heading="Sources">
 	<div class="row">
-<!-- Filters -->
 
         <form action="." method="get">
         	<input type="hidden" name="resource_type" value="source" />
-		<div class="col-md-3">
-
-	      	{% for f in source_filters %}
-			<div class="filter-group">
-				<div class="filter-group-header">{{ f.name }}</div>
-				<div class="filter-group-body">
-					{% for c in f.options %}
-					<div class="checkbox"><label><input type="checkbox" name="{{ f.filter_id }}"
-						value="{{ c.code }}" {% if c.selected %}checked{% endif %}>{{ c.name }}</label></div>
-	       			{% endfor %}
-				</div>
-			</div>
-			{% endfor %}
-
-		</div>
 
 
-
-
-<!-- Listing of sources -->
-
-		<div class="col-md-8">
-
-<!-- Sort / filter -->
-
-			<div class="row" style="margin-bottom:20px;">
-				&nbsp;
-				<div class="col-md-12">
-
-
-					<div class="btn-group pull-right">
-
-					  <select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
-					  	{% for o in search_sort_options %}
-					    <option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
-					    {% endfor %}
-					  </select>
-
-					</div>
-
-					<div class="btn-group pull-right">
-					<span>Sort by:&nbsp;</span>
-     				</div>
-
-					<div class="form-group">
-
-					    {% comment %}
-						<div class="btn-group">
-							<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-								<span class="text-muted">Filter:</span> <strong>None</strong> <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu" role="menu">
-								<li><a href="#">Public</a></li>
-								<li><a href="#">Private</a></li>
-								<li><a href="#">Sources</a></li>
-								<li><a href="#">Collections</a></li>
-							</ul>
-						</div> {# filter #}
-					    {% endcomment %}
+			<!-- Filters -->
+			<div class="col-md-3">
+		      	{% for f in source_filters %}
+				<div class="filter-group">
+					<div class="filter-group-header">{{ f.name }}</div>
+					<div class="filter-group-body">
+						{% for c in f.options %}
+						<div class="checkbox"><label><input type="checkbox" name="{{ f.filter_id }}"
+							value="{{ c.code }}" {% if c.selected %}checked{% endif %}>{{ c.name }}</label></div>
+		       			{% endfor %}
 					</div>
 				</div>
+				{% endfor %}
 			</div>
 
-			<div class="row" style="margin-bottom:20px;">
-				<div class="col-md-12">
 
+			<!-- Listing of sources -->
+			<div class="col-md-8">
+
+				<!-- Sort / filter -->
+				<div class="row" style="margin-bottom:20px;">
+					&nbsp;
+					<div class="col-md-12">
+
+						<!-- Sort dropdown -->
+						<div class="btn-group pull-right">
+						 	<select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
+						  		{% for o in search_sort_options %}
+						    	<option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
+						    	{% endfor %}
+						  	</select>
+						</div>
+
+						<div class="btn-group pull-right">
+							<span>Sort by:&nbsp;</span>
+	     				</div>
+
+						<div class="form-group">
+						    {% comment %}
+							<div class="btn-group">
+								<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+									<span class="text-muted">Filter:</span> <strong>None</strong> <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#">Public</a></li>
+									<li><a href="#">Private</a></li>
+									<li><a href="#">Sources</a></li>
+									<li><a href="#">Collections</a></li>
+								</ul>
+							</div> {# filter #}
+						    {% endcomment %}
+						</div>
+
+					</div> <!-- /col-md-12 -->
+				</div> <!-- /row -->
+
+				<div class="row" style="margin-bottom:20px;">
+					<div class="col-md-12">
 
                         {% simple_pager source_page 'Source' url=source_pagination_url %}
 
@@ -136,20 +119,23 @@
 								</span>
 							</div>
 						</div>
+
+					{# this appears to be extra -- flagging for deletion later #}
 					</form>
-	        <span class="pull-right">
-	        	{% if user.is_authenticated %}
-	        	{# TBD: probably a more complete tag to check for access #}
-				<a href="{% url "source-create-for-org" org.id %}" class="btn"><span class="glyphicon glyphicon-plus"></span>Add Source</a>
-				{% endif %}
-			</span>
 
-				</div>
-			</div> <!-- /row -->
-        </form>
+				        <span class="pull-right">
+				        	{% if user.is_authenticated %}
+				        	{# TBD: probably a more complete tag to check for access #}
+							<a href="{% url "source-create-for-org" org.id %}" class="btn"><span class="glyphicon glyphicon-plus"></span>Add Source</a>
+							{% endif %}
+						</span>
 
-<!-- Display sources that belong to this org -->
-		{% for result in sources %}
+					</div>
+				</div> <!-- /row -->
+	        </form>
+
+			<!-- Display sources that belong to this org -->
+			{% for result in sources %}
 			<div class="row row-search-result">
 				<div class="col-md-1 search-result-col-icon">
 					<span class="glyphicon glyphicon-th-list search-result-icon"></span>
@@ -166,32 +152,29 @@
 					</a></h4>
 					<p>
 						<em>Source type:</em> {{ result.source_type }}<br />
-
 						{% if result.description %}{{ result.description }}<br />{% endif %}
 						{% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
 					</p>
 					{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 				</div>
 			</div>
-		{% endfor %}
+			{% endfor %}
 
-<!-- Pagination -->
-
-	        {% if sources %}
+			<!-- Pagination -->
+        	{% if sources %}
 			<div class="row" style="text-align:center;">
 				{% bootstrap_pagination source_page url=source_pagination_url %}
 			</div>
 			{% endif %}
 
-<!-- End Org source listing -->
-
-		</div> <!-- /col-md-8 -->
+		</div> {# col-md-8 #}
     </div> {# row #}
-</tab>
+</tab> {# end tab Sources #}
+
+
 
 {% comment %}
 <tab heading="Collections">
-
 
 	<div class="row">
 <!-- Filters -->
@@ -313,26 +296,21 @@
 
 		</div> <!-- /col-md-8 -->
     </div> {# row #}
-</tab> {# collections #}
-
+</tab> {# end tab Collections #}
 {% endcomment %}
 
 
+
 <tab heading="Organization Details">
+	<p>&nbsp;</p>
 
-
-&nbsp;
+	<!-- Org details pane -->
 	<div class="row">
-<!-- Org details pane -->
 
+		<!-- Org attributes -->
 		<div class="col-md-8">
-<!-- Org attributes -->
-
 			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">Organization Details</h3>
-				</div>
-
+				<div class="panel-heading"><h3 class="panel-title">Organization Details</h3></div>
                 <div class="panel-body">
                 	{% field_label 'ID' org.id %}
                 	{% field_label 'Full Name' org.name %}
@@ -351,66 +329,87 @@
                 	{% field_label 'Extras' org.extras %}
                 </div>
 			</div> <!-- /panel -->
-    	</div>
+    	</div> <!-- /col-md-8 -->
 
         <!-- Org members -->
         <div class="col-md-4">
 			<div class="panel panel-default" ng-app="ConceptApp" ng-controller="MemberRemoveController">
-				<div class="panel-heading">
-					<h3 class="panel-title">Members</h3>
-				</div>
+				<div class="panel-heading"><h3 class="panel-title">Members</h3></div>
 				<div class="panel-body">
 					{% include 'includes/ng_alerts_incl.html' %}
 					{% if_can_change org %}
-					<a href="{% url 'org-member-add' org.id %}">Add Member</a>
-					{% for member in members %}
-						<h4>{% user_label member %}
-                <button type="button" class="btn btn-link" data-org='{{org.id}}' ng-click="removeMember('{{org.id}}', '{{member.username}}')" ><span class="glyphicon glyphicon-trash"></span></button>
-					</h4>
-						{% if request.GET.debug %}<pre>{{ member|pprint }}</pre>{% endif %}
+						<a href="{% url 'org-member-add' org.id %}">Add Member</a>
+						{% for member in members %}
+							<h4>{% user_label member %}<button type="button" class="btn btn-link" data-org='{{org.id}}' ng-click="removeMember('{{org.id}}', '{{member.username}}')" ><span class="glyphicon glyphicon-trash"></span></button></h4>
+					
+							{% if request.GET.debug %}<pre>{{ member|pprint }}</pre>{% endif %}
 
-
-					{% empty %}
-					No members.
-					{% endfor %}
+						{% empty %}
+							No members.
+						{% endfor %}
 					{% endif_can_change %}
 				</div>
 			</div> <!-- /panel -->
-
 		</div> <!-- /col-md-4 -->
 
 	</div> <!-- /row -->
 
 {% verbatim %}
 <script type="text/ng-template" id="myModalContent.html">
-        <div class="modal-header">
-            <h3 class="modal-title">Confirm Remove</h3>
-        </div>
-        <div class="modal-body">
-            Are you sure you want to remove {{ username }} from {{ org }}?
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="$close()">OK</button>
-            <button class="btn btn-warning" ng-click="$dismiss()">Cancel</button>
-        </div>
-    </script>
+    <div class="modal-header">
+        <h3 class="modal-title">Confirm Remove</h3>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to remove {{ username }} from {{ org }}?
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="$close()">OK</button>
+        <button class="btn btn-warning" ng-click="$dismiss()">Cancel</button>
+    </div>
+</script>
 {% endverbatim %}
-    {% csrf_token %}
+{% csrf_token %}
 
-</tab>
+</tab> {# end tab Organization Details #}
+
+
 
 <tab heading="About"> {# ----- start org About tab #}
 	<p>&nbsp;</p>
 	<div class="panel panel-default">
-	  <div class="panel-body" style="height:140px;">
-	  	<h4>About</h4>
-	    <p>[Add organization about text here.]</p>
-	  </div>
-	</div>
+		<div class="panel-heading"><h4 class="panel-title">About</h4></div>
+	  	<div class="panel-body" style="height:140px;">{{ about|safe }}</div>
+	</div> {# end panel #}
 </tab> {# ----- end org About tab #}</tab>
 
-</tabset>
 
+
+{% if request.GET.debug %}
+<tab heading="Debug"> {# ----- start org Debug tab #}
+	<p>&nbsp;</p>
+	<div class="panel panel-default">
+		<div class="panel-heading"><h4 class="panel-title">Debug</h4></div>
+	  	<div class="panel-body" style="min-height:140px;">
+	  		<h4>Organization</h4>
+	  		<pre style="border:0; background-color:transparent;">{{ org|pprint }}</pre>
+
+	  		<h4>Sources</h4>
+	  		<pre style="border:0; background-color:transparent;">{{ sources|pprint }}</pre>
+
+			{% comment %}
+	  		<h4>Collections</h4>
+	  		<pre style="border:0; background-color:transparent;">{{ collections|pprint }}</pre>
+	  		{% endcomment %}
+
+	  		<h4>Members</h4>
+	  		<pre style="border:0; background-color:transparent;">{{ members|pprint }}</pre>
+	  	</div>
+	</div>
+</tab> {# ----- end org Debug tab #}
+{% endif %}
+
+
+</tabset>
 </div> <!-- /container -->
 
 {% endblock content-no-container %}

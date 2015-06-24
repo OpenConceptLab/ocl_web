@@ -35,7 +35,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
 
         api = OCLapi(self.request, debug=True)
 
-        # source
+        # load the source
         results = api.get(self.own_type, self.own_id, 'sources', self.source_id)
         if results.status_code != 200:
             if results.status_code == 404:
@@ -44,7 +44,13 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
                 results.raise_for_status()
         source = results.json()
 
-        # source concepts
+        # source about text -- need a more generic method for extras
+        if isinstance(source['extras'], dict):
+            about = source['extras'].get('about', 'No about entry.')
+        else:
+            about = 'No about entry.'
+
+        # load the concepts in this source
         results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', params=searcher.search_params)
         if results.status_code != 200:
             if results.status_code == 404:
@@ -53,7 +59,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
                 results.raise_for_status()
         concept_list = results.json()
 
-        # source mappings - TODO
+        # load the mappings in this source - TODO
 
         # set the context
         context['source'] = source
@@ -66,7 +72,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         pg = Paginator(range(num_found), searcher.num_per_page)
         context['page'] = pg.page(searcher.current_page)
         context['pagination_url'] = self.request.get_full_path()
-        context['about'] = source['extras'].get('about', 'No about entry.')
+        context['about'] = about
         return context
 
 
