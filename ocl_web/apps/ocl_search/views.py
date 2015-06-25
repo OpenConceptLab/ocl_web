@@ -51,7 +51,7 @@ class HomeSearchView(TemplateView):
         search_response = api.get(search_type, params=searcher.search_params)
         if search_type_info[search_type]['facets']:
             search_response_json = search_response.json()
-            search_facets = searcher.process_facets(search_response_json['facets'])
+            search_facets = searcher.process_facets(search_type, search_response_json['facets'])
             search_results = search_response_json['results']
             search_response_json = ''
         else:
