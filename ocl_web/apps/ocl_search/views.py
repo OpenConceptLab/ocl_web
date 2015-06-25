@@ -64,8 +64,7 @@ class HomeSearchView(TemplateView):
         # Perform the primary search via the API
         searcher = OCLSearch(resource_type).parse(self.request.GET)
         api = OCLapi(self.request, debug=True)
-        search_url = search_type_paths[search_type]
-        search_response = api.get(search_url, params=searcher.search_params)
+        search_response = api.get(search_type, params=searcher.search_params)
         search_results = search_response.json()
         num_found = int(search_response.headers['num_found'])
 
@@ -83,26 +82,35 @@ class HomeSearchView(TemplateView):
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
 
+        # Build URL parameters for switching to other resources
+        other_resource_search_params = {}
+        if 'q' in searcher.search_params:
+            other_resource_search_params['q'] = searcher.search_params.get('q','')
+        if 'limit' in searcher.search_params:
+            other_resource_search_params['limit'] = searcher.search_params.get('limit','25')
+        if 'debug' in self.request.GET:
+            other_resource_search_params['debug'] = self.request.GET.get('debug', 'false')
+        context['other_resource_search_params'] = ''
+        if len(other_resource_search_params):
+            context['other_resource_search_params'] = '&' + urllib.urlencode(other_resource_search_params)
+
         # Perform the counter searches
         if search_response:
-            for resource_type in search_type_names:
-                
-                # Skip this resource if the primary search type
+            for resource_type in search_type_names:                
+                # Skip this resource if the primary search type (already calculated above)
                 if resource_type == search_type:
                     continue
 
-                # Need to apply search criteria to this url
-                counter_search_url = search_type_paths[resource_type]
-                count_response = api.head(counter_search_url, params=searcher.search_params)
+                # Get resource count using same search criteria
+                count_response = api.head(resource_type, params=other_resource_search_params)
                 if 'num_found' in count_response.headers:
                     resource_count[resource_type] = int(count_response.headers['num_found'])
                 else:
                     resource_count[resource_type] = 0
         context['resource_count'] = resource_count
 
-        # for debug display only
+        # debug display variables
         context['search_params'] = searcher.search_params
-        context['api_search_query'] = search_url
         context['search_response_headers'] = search_response.headers
 
         # to remove closing form tag in nav.html
