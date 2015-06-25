@@ -83,13 +83,11 @@ class HomeSearchView(TemplateView):
         context['search_sort'] = searcher.get_sort()
 
         # Build URL parameters for switching to other resources
+        allowed_other_resource_search_params = ['q', 'limit', 'debug']
         other_resource_search_params = {}
-        if 'q' in searcher.search_params:
-            other_resource_search_params['q'] = searcher.search_params.get('q','')
-        if 'limit' in searcher.search_params:
-            other_resource_search_params['limit'] = searcher.search_params.get('limit','25')
-        if 'debug' in self.request.GET:
-            other_resource_search_params['debug'] = self.request.GET.get('debug', 'false')
+        for param in allowed_other_resource_search_params:
+            if param in self.request.GET:
+                other_resource_search_params[param] = self.request.GET.get(param)
         context['other_resource_search_params'] = ''
         if len(other_resource_search_params):
             context['other_resource_search_params'] = '&' + urllib.urlencode(other_resource_search_params)
