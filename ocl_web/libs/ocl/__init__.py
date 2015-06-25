@@ -59,7 +59,7 @@ class OCLapi(object):
         if type_id == cls.USER_TYPE:
             return 'User Type'
         if type_id == cls.ORG_TYPE:
-            return 'User Type'
+            return 'Organization Type'
         if type_id == cls.SOURCE_TYPE:
             return 'Souce Type'
         if type_id == cls.CONCEPT_TYPE:
@@ -70,12 +70,16 @@ class OCLapi(object):
             return 'Mapping Type'
         return 'Unknown type'
 
-    def __init__(self, request=None, debug=False, admin=False):
+    def __init__(self, request=None, debug=False, admin=False, facets=False):
         """
-        :param admin: optional, if set to True, access API as admin user.
-                      Needed for create_user.
         :param request: gives the API access to the current active session,
-                        to get Authorization etc.
+            to get Authorization etc.
+        :param admin: optional, if set to True, access API as admin user.
+            Needed for create_user.
+        :param facets: optional, if set to True, API returns faceted search
+            information instead of clean JSON results. Note that faceted
+            results are only applicable on certain list requests, and this
+            argument is ignored otherwise.
         """
         self.status_code = None
         self.debug = debug
@@ -87,6 +91,9 @@ class OCLapi(object):
         self.anon_api_key = os.environ.get('OCL_ANON_API_TOKEN', None)
         self.url = None
         self.api_key = None
+
+        if facets:
+            self.headers['includeFacets'] = 'true'
 
         if admin:
             self.headers['Authorization'] = 'Token %s' % self.admin_api_key
