@@ -58,7 +58,7 @@ class HomeSearchView(TemplateView):
         search_type = self.request.GET.get('type', 'concepts')
         if search_type in search_type_int:
             resource_type = search_type_int[search_type]
-        else
+        else:
             resource_type = OCLapi.CONCEPT_TYPE
 
         # Perform the primary search via the API
