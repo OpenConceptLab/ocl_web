@@ -29,11 +29,11 @@
 
 		<div role="form">
 
-			{% for facet_name, facet_options in search_facets.fields %}
+			{% for facet_name in search_facets.fields %}
 			<div class="filter-group">
 				<div class="filter-group-header">{{ facet_name }}</div>
 				<div class="filter-group-body">
-					{% for facet_option_name, facet_option_num in facet_options %}
+					{% for facet_option_name, facet_option_num in search_facets.fields.facet_name %}
 					<div class="checkbox"><label><input type="checkbox" name="{{ facet_name }}"
 						value="{{ facet_option_name }}">{{ facet_option_name }} [{{ facet_option_num }}]</label></div>
 					{% endfor %}

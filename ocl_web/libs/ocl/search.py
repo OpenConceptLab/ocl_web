@@ -7,40 +7,61 @@ import logging
 logger = logging.getLogger('oclweb')
 
 
+class FilterOption(object):
+    """
+        Defines a specific filter option
+    """
+    def __init__(self, filter=None, option_value='', option_name='', option_num=0, selected=False):
+        self.filter = filter
+        self.option_value = option_value
+        self.option_name = option_name
+        self.option_num = option_num
+        self.selected = selected
+
+    def __str__(self):
+        return "%s: %s [%s] %s" % (self.filter.filter_name, self.option_name, self.option_num, self.selected)
+
+
+
 class Filter(object):
     """
         A specific filter for searching OCL
 
-        options is a list of {'code': v, 'name': v, 'selected': boolean} dictionary
+        options is a dictionary of FilterOption instances
     """
-    def __init__(self, filter_id, name):
+    def __init__(self, filter_id='', filter_name=''):
         self.filter_id = filter_id  # unique ID for query etc
-        self.name = name  # for display
-        self.options = []  # a select list of choices
+        self.filter_name = filter_name  # for display
+        self.options = {}  # a dictionary of filter options
 
-    def select_option(self, option_code):
+    def add_option(self, option_value='', option_name='', option_num=0, selected=False):
+        self.options[option_value] = FilterOption(filter=self, option_value=option_value, 
+            option_name=option_name, option_num=option_num, selected=selected)
+
+    def select_option(self, option_value):
         """
-        Mark option with the specified code as selected.
+        Mark as selected the option(s) according to the value or list of values passed.
         """
-        # handle the case where option_code is a list of options
-        if not isinstance(option_code, list):
-            ls = [option_code]
+        # handle the case where option_value is a list of options
+        if not isinstance(option_value, list):
+            ls = [option_value]
         else:
-            ls = option_code
+            ls = option_value
 
         for i in self.options:
-            if i['code'] in ls:
-                i['selected'] = True
+            if self.options[i].option_value in ls:
+                self.options[i].selected = True
 
     def __str__(self):
-        return "%s (%s): %s" % (self.name, self.filter_id, self.options)
+        return "%s (%s): %s" % (self.filter_name, self.filter_id, [str(self.options[k]) for k in self.options.keys()] )
+
 
 
 class FilterList(object):
     """
         A list of filter spec for a specific resource type (concept, source, etc)
     """
-    def __init__(self, resource_name):
+    def __init__(self, resource_name=''):
         self.resource_name = resource_name
         self.filter_list = []
 
@@ -56,7 +77,7 @@ class FilterList(object):
         else:
             return r[0]
 
-    def add_filter(self, filter_id, filter_name):
+    def add_filter(self, filter_id='', filter_name=''):
         f = Filter(filter_id, filter_name)
         self.filter_list.append(f)
         return f
@@ -65,7 +86,8 @@ class FilterList(object):
         return self.filter_list.__iter__()
 
     def __str__(self):
-        return 'Resource %s: %s' % (self.resource_name, [str(f) for f in self.filter_list])
+        return 'Resource %s: %s\n\n' % (self.resource_name, [str(f) for f in self.filter_list])
+
 
 
 def turn_to_tuples(values):
@@ -86,6 +108,7 @@ def turn_to_tuples(values):
         # input is a list of codes which are the same as values, split up into
         # code, value and selected dictionary
         return [{'code': v, 'name': v, 'selected': False} for v in values]
+
 
 
 def setup_filters():
@@ -154,6 +177,7 @@ def setup_filters():
             collection_filters, mapping_filters]
 
 
+
 class OCLSearch(object):
     """
         Helper to handle search query URL
@@ -204,18 +228,20 @@ class OCLSearch(object):
         """
         return self.filters[self.resource_type]
 
+
     def get_sort_options(self):
         """
         :returns: a list of sort options.
         """
         return [
             'Best Match',
-            'Last Update (desc)',
-            'Last Update (asc)',
-            'Name (asc)',
-            'Name (desc)',
+            'Last Update (Desc)',
+            'Last Update (Asc)',
+            'Name (Asc)',
+            'Name (Desc)',
 
         ]
+
 
     def get_sort(self):
         """
@@ -223,11 +249,31 @@ class OCLSearch(object):
         """
         return '' if self.search_sort is None else self.search_sort
 
+
     def get_query(self):
         """
         Returns the current query string
         """
         return '' if self.q is None else self.q
+
+
+    def process_facets(self, search_type, facets):
+        """
+        :params facets: Dictionary of the form { 'fields':{ } }
+        :returns: FilterList
+        """
+        if isinstance(facets, dict) and 'fields' in facets and isinstance(facets['fields'], dict):
+            fl = FilterList(resource_name=search_type)
+            for facet in facets['fields']:
+                # TODO: Need method to convert field name to display name
+                facet_display_name = facet
+                f = fl.add_filter(filter_id=facet, filter_name=facet_display_name)
+                for facet_option in facets['fields'][facet]:
+                    facet_option_name = facet_option[0]
+                    facet_option_num = facet_option[1]                    
+                    f.add_option(option_value=facet_option_name, option_name=facet_option_name, option_num=facet_option_num)
+        return fl
+
 
     def parse(self, request_get):
 
