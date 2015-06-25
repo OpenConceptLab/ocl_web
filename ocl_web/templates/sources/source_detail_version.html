@@ -60,7 +60,7 @@
 
     <form ng-submit="addItem(newItem)" ng-show="isCreatingItem">
     {% csrf_token %}
-        <div class="form-group">
+        <div class="form-group required">
             <label class="control-label" for="id_id">Version ID</label>
             <input class="form-control" id="id_id" maxlength="60" name="version_id" placeholder="Version ID (e.g. 'v1.1' or '2015-06-15')" required="required" title="" type="text" ng-model="newItem.id" />
         </div>
