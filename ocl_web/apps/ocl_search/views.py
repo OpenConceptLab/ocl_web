@@ -22,50 +22,41 @@ class HomeSearchView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
 
-        search_type_names = {
-            'concepts': 'concept',
-            'mappings': 'mapping',
-            'sources': 'source',
-            'collections': 'collection',
-            'orgs': 'organization',
-            'users': 'user'
-        }
-        search_type_paths = {
-            'concepts': 'concepts',
-            'mappings': 'mappings',
-            'sources': 'sources',
-            'collections': 'collections',
-            'orgs': 'orgs',
-            'users': 'users'
-        }
-        search_type_int = {
-            'concepts': OCLapi.CONCEPT_TYPE,
-            'mappings': OCLapi.MAPPING_TYPE,
-            'sources': OCLapi.SOURCE_TYPE,
-            'collections': OCLapi.COLLECTION_TYPE,
-            'orgs': OCLapi.ORG_TYPE,
-            'users': OCLapi.USER_TYPE
+        search_type_info = {
+            'concepts': { 'int': OCLapi.CONCEPT_TYPE, 'name': 'concept', 'facets': True },
+            'mappings': { 'int': OCLapi.MAPPING_TYPE, 'name': 'mapping', 'facets': True },
+            'sources': { 'int': OCLapi.SOURCE_TYPE, 'name': 'source', 'facets': True },
+            'collections': { 'int': OCLapi.COLLECTION_TYPE, 'name': 'collection', 'facets': True },
+            'orgs': { 'int': OCLapi.ORG_TYPE, 'name': 'organization', 'facets': False },
+            'users': { 'int': OCLapi.USER_TYPE, 'name': 'user', 'facets': False }
         }
 
         context = super(HomeSearchView, self).get_context_data(*args, **kwargs)
 
         # Setup the resource count dictionary
         resource_count = {}
-        for resource_type in search_type_names:
+        for resource_type in search_type_info:
             resource_count[resource_type] = 0
 
-        # Map resource_type string to INT
+        # Map resource_type string to integer
         search_type = self.request.GET.get('type', 'concepts')
-        if search_type in search_type_int:
-            resource_type = search_type_int[search_type]
+        if search_type in search_type_info:
+            resource_type = search_type_info[search_type]['int']
         else:
             resource_type = OCLapi.CONCEPT_TYPE
 
         # Perform the primary search via the API
         searcher = OCLSearch(resource_type).parse(self.request.GET)
-        api = OCLapi(self.request, debug=True)
+        api = OCLapi(self.request, debug=True, facets=search_type_info[search_type]['facets'])
         search_response = api.get(search_type, params=searcher.search_params)
-        search_results = search_response.json()
+        if search_type_info[search_type]['facets']:
+            search_response_json = search_response.json()
+            search_facets = search_response_json['facets']
+            search_results = search_response_json['results']
+            search_response_json = ''
+        else:
+            search_results = search_response.json()
+            search_facets = {}
         num_found = int(search_response.headers['num_found'])
 
         # Set count for primary search type here, the rest is below
@@ -78,7 +69,7 @@ class HomeSearchView(TemplateView):
         context['search_filters'] = searcher.get_filters()
         context['results'] = search_results
         context['search_type'] = search_type
-        context['search_type_name'] = search_type_names[search_type]
+        context['search_type_name'] = search_type_info[search_type]['name']
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
 
@@ -94,7 +85,7 @@ class HomeSearchView(TemplateView):
 
         # Perform the counter searches
         if search_response:
-            for resource_type in search_type_names:                
+            for resource_type in search_type_info:                
                 # Skip this resource if the primary search type (already calculated above)
                 if resource_type == search_type:
                     continue
@@ -110,6 +101,7 @@ class HomeSearchView(TemplateView):
         # debug display variables
         context['search_params'] = searcher.search_params
         context['search_response_headers'] = search_response.headers
+        context['search_facets'] = search_facets
 
         # to remove closing form tag in nav.html
         context['extend_nav_form'] = True  
