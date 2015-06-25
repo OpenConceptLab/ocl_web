@@ -66,7 +66,7 @@ class HomeSearchView(TemplateView):
         pg = Paginator(range(num_found), searcher.num_per_page)
         context['page'] = pg.page(searcher.current_page)
         context['pagination_url'] = self.request.get_full_path()
-        context['search_filters'] = searcher.get_filters()
+        context['search_filter_lists'] = searcher.get_filters()
         context['results'] = search_results
         context['search_type'] = search_type
         context['search_type_name'] = search_type_info[search_type]['name']

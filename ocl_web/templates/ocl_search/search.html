@@ -25,17 +25,16 @@
 			<a href="{% url 'search' %}?type=users{{ other_resource_search_params }}" class="list-group-item {% if search_type == 'users' %}active{% endif %}"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users <span class="badge">{{ resource_count.users }}</span></a>
   		</div>
 
-<!-- Filters -->
+<!-- Search Filters -->
 
 		<div role="form">
 
-
-         	{% for f in search_filters %}
+         	{% for fl in search_filter_lists %}
 			<div class="filter-group">
-				<div class="filter-group-header">{{ f.name }}</div>
+				<div class="filter-group-header">{{ fl.name }}</div>
 				<div class="filter-group-body">
-					{% for c in f.options %}
-					<div class="checkbox"><label><input type="checkbox" name="{{ f.filter_id }}"
+					{% for c in fl.options %}
+					<div class="checkbox"><label><input type="checkbox" name="{{ fl.filter_id }}"
 						value="{{ c.code }}" {% if c.selected %}checked{% endif %}>{{ c.name }}</label></div>
         			{% endfor %}
 				</div>
@@ -61,7 +60,11 @@
 				<pre><strong>API Search Params:</strong><br />{{ search_params|pprint }}</pre>
 				<pre><strong>Response Headers:</strong><br />{{ search_response_headers|pprint }}</pre>
 				<pre><strong>Facets:</strong><br />{{ search_facets|pprint }}</pre>
-				<pre><strong>Search Filters:</strong><br />{{ search_filters|pprint }}</pre>
+				<pre><strong>Search Filter Lists:</strong><br />
+					{% for fl in search_filter_lists %}
+						<p>{{ fl|pprint }}</p>
+					{% endfor %}
+				</pre>
 			</div>
 		</div>
 	{% endif %}
