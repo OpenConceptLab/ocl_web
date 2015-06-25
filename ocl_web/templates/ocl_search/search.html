@@ -33,26 +33,12 @@
 			<div class="filter-group">
 				<div class="filter-group-header">{{ facet.filter_name }}</div>
 				<div class="filter-group-body">
-					{% for facet_option in facet.options.iteritems %}
-					<div class="checkbox"><label><input type="checkbox" name="{{ facetfilter_name }}" value="{{ facet_option.filter_value }}">{{ facet_option.filter_name }} [{{ facet_option.filter_num }}]</label></div>
+					{% for facet_key, facet_option in facet.options.iteritems %}
+					<div class="checkbox"><label><input type="checkbox" name="{{ facet.filter_name }}" value="{{ facet_option.option_value }}" {% if facet_option.selected %}checked{% endif %}>{{ facet_option.option_name }}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ facet_option.option_num }}</span></label></div>
 					{% endfor %}
 				</div>
 			</div>
 			{% endfor %}
-
-			{% comment %}
-			<hr />
-         	{% for fl in search_filter_lists %}
-			<div class="filter-group">
-				<div class="filter-group-header">{{ fl.name }}</div>
-				<div class="filter-group-body">
-					{% for c in fl.options %}
-					<div class="checkbox"><label><input type="checkbox" name="{{ fl.filter_id }}" value="{{ c.code }}" {% if c.selected %}checked{% endif %}>{{ c.name }}</label></div>
-        			{% endfor %}
-				</div>
-			</div>
-			{% endfor %}
-			{% endcomment %}
 
 		</div> <!-- end div:role=form -->
 
