@@ -21,6 +21,8 @@ class FilterOption(object):
     def __str__(self):
         return "%s: %s [%s] %s" % (self.filter.filter_name, self.option_name, self.option_num, self.selected)
 
+    def __unicode__(self):
+        return "%s: %s [%s] %s" % (self.filter.filter_name, self.option_name, self.option_num, self.selected)
 
 
 class Filter(object):
@@ -53,6 +55,9 @@ class Filter(object):
                 self.options[i].selected = True
 
     def __str__(self):
+        return "%s (%s): %s" % (self.filter_name, self.filter_id, [str(self.options[k]) for k in self.options.keys()] )
+
+    def __unicode__(self):
         return "%s (%s): %s" % (self.filter_name, self.filter_id, [str(self.options[k]) for k in self.options.keys()] )
 
 
@@ -88,6 +93,8 @@ class FilterList(object):
     def __str__(self):
         return 'Resource %s: %s\n\n' % (self.resource_name, [str(f) for f in self.filter_list])
 
+    def __unicode__(self):
+        return 'Resource %s: %s\n\n' % (self.resource_name, [str(f) for f in self.filter_list])
 
 
 def turn_to_tuples(values):
