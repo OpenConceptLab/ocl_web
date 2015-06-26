@@ -221,7 +221,7 @@
 
 				<p>
 					{% if result.description %}{{ result.description }}<br />{% endif %}
-					{% if result.source_type %}<span class="text-muted small"><span class="glyphicon glyphicon-th-large"></span>&nbsp;&nbsp;{{ result.source_type }}</span>{% endif %}
+					{% if result.source_type %}<span class="text-muted small"><span class="glyphicon glyphicon-th-large"></span>&nbsp;&nbsp;{{ result.source_type }}</span>&nbsp;&nbsp;&nbsp;&nbsp;{% endif %}
 					{% if result.updated_on %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
@@ -284,7 +284,7 @@
 					{% if result.description %}<p>{{ result.description|truncatechars:180 }}</p>{% endif %}
 					<span class="text-muted small">
 						{% if result.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ result.location }}
-						&nbsp;&nbsp;&nbsp;{% endif %}
+						&nbsp;&nbsp;&nbsp;&nbsp;{% endif %}
 						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ result.created_on|smart_date }}
 					</span>
 				</p>
