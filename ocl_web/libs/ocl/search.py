@@ -312,6 +312,8 @@ class OCLSearch(object):
     def parse(self, request_get):
 
         search_params = {}
+
+        # Verbose - all searches should return resource details, so set verbose to true
         search_params['verbose'] = 'true'
 
         # make a copy of the parameters so that we can delete entries from it
@@ -377,13 +379,17 @@ class OCLSearch(object):
         # query text
         if 'q' in params:
             q = params.pop('q')
-            if len(q) == 1:
-                self.q = q[0]
-                search_params['q'] = self.q
-        print 'q[0]:', self.q, ', q:', q
+            if isinstance(q, basestring):
+                self.q = q
+            elif all(isinstance(item, basestring) for item in q):
+                self.q = ' '.join(q)
+            else:
+                raise TypeError
+            search_params['q'] = self.q
+        print 'q:', self.q
 
         # Apply facets/filters - everything that's left should be a filter/facet
-        # Note: currently not doing any translation of filter values
+        # Note: currently not doing any thatranslation of filter values
         for key in params.keys():
             value = params.pop(key)
             # TODO: any processing that needs to happen should go here
