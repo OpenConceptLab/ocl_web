@@ -362,7 +362,16 @@ class OCLSearch(object):
         sort_direction = None
         sort_value = None
         if 'sort' in params:
-            self.search_sort = params.pop('sort')
+            # convert sort parameter into string format if a list
+            raw_search_sort = params.pop('sort')
+            if isinstance(raw_search_sort, basestring):            
+                self.search_sort = raw_search_sort
+            elif all(isinstance(item, basestring) for item in raw_search_sort):
+                self.search_sort = ' '.join(raw_search_sort)
+            else:
+                self.search_sort = ''
+
+            # process sort
             p = self.search_sort.lower()
             if 'asc' in p:
                 sort_direction = 'sortAsc'
@@ -384,7 +393,7 @@ class OCLSearch(object):
             elif all(isinstance(item, basestring) for item in q):
                 self.q = ' '.join(q)
             else:
-                raise TypeError
+                self.q = ''
             search_params['q'] = self.q
         print 'q:', self.q
 
