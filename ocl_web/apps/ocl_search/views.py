@@ -22,56 +22,60 @@ class HomeSearchView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
 
-        search_type_info = {
-            'concepts': { 'int': OCLapi.CONCEPT_TYPE, 'name': 'concept', 'facets': True },
-            'mappings': { 'int': OCLapi.MAPPING_TYPE, 'name': 'mapping', 'facets': True },
-            'sources': { 'int': OCLapi.SOURCE_TYPE, 'name': 'source', 'facets': True },
-            'collections': { 'int': OCLapi.COLLECTION_TYPE, 'name': 'collection', 'facets': True },
-            'orgs': { 'int': OCLapi.ORG_TYPE, 'name': 'organization', 'facets': False },
-            'users': { 'int': OCLapi.USER_TYPE, 'name': 'user', 'facets': False }
-        }
-
         context = super(HomeSearchView, self).get_context_data(*args, **kwargs)
 
-        # Setup the resource count dictionary
-        resource_count = {}
-        for resource_type in search_type_info:
-            resource_count[resource_type] = 0
-
-        # Map resource_type string to integer
+        # Handle the search type
         search_type = self.request.GET.get('type', 'concepts')
-        if search_type in search_type_info:
-            resource_type = search_type_info[search_type]['int']
-        else:
-            resource_type = OCLapi.CONCEPT_TYPE
+        if search_type not in OCLSearch.resource_type_info:
+            search_type = 'concepts'
+        # change this to an object method
+        resource_type = OCLSearch.resource_type_info[search_type]['int']
+        search_type_name = OCLSearch.resource_type_info[search_type]['name']
+
+        # Setup the searcher helper class
+        searcher = OCLSearch(resource_type)
+
+        # Parse requires that filters have been setup, but filters aren't setup until the 
+        # request has been made because it is using facets --- need to separate out parsing of paramaters
+        # and handling of facets before this actually works
+        searcher.parse(self.request.GET)
 
         # Perform the primary search via the API
-        searcher = OCLSearch(resource_type).parse(self.request.GET)
-        api = OCLapi(self.request, debug=True, facets=search_type_info[search_type]['facets'])
+        has_facets = OCLSearch.resource_type_info[search_type]['facets']
+        api = OCLapi(self.request, debug=True, facets=has_facets)
         search_response = api.get(search_type, params=searcher.search_params)
-        if search_type_info[search_type]['facets']:
+        if has_facets:
             search_response_json = search_response.json()
-            search_facets = searcher.process_facets(search_type, search_response_json['facets'])
+            search_facets_json = search_response_json['facets']
+            search_facets = searcher.process_facets(search_type, search_facets_json)
             search_results = search_response_json['results']
-            search_response_json = ''
         else:
             search_results = search_response.json()
             search_facets = {}
+            search_facets_json = {}
         num_found = int(search_response.headers['num_found'])
 
-        # Set count for primary search type here, the rest is below
-        resource_count[search_type] = num_found
+        # Setup filters based on the current resource_type
+        # NOTE: Facets should be processed separately from filters -- 
+        #       Facets are what are returned by Solr, filters are what are displayed
+        #       Some processing will be required to convert between the two
+        # TODO: sort filters
+        # TODO: add some other filters (e.g. Include Retired)
+
+        # Select filters
+        searcher.select_filters(searcher.search_params)
 
         # Setup paginator and context for primary search
         pg = Paginator(range(num_found), searcher.num_per_page)
         context['page'] = pg.page(searcher.current_page)
         context['pagination_url'] = self.request.get_full_path()
-        context['search_filter_lists'] = searcher.get_filters()
+        #context['search_filter_lists'] = searcher.get_filters()
         context['results'] = search_results
         context['search_type'] = search_type
-        context['search_type_name'] = search_type_info[search_type]['name']
+        context['search_type_name'] = search_type_name
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
+        context['search_facets'] = search_facets
 
         # Build URL parameters for switching to other resources
         allowed_other_resource_search_params = ['q', 'limit', 'debug']
@@ -83,13 +87,13 @@ class HomeSearchView(TemplateView):
         if len(other_resource_search_params):
             context['other_resource_search_params'] = '&' + urllib.urlencode(other_resource_search_params)
 
-        # Perform the counter searches
-        if search_response:
-            for resource_type in search_type_info:                
-                # Skip this resource if the primary search type (already calculated above)
-                if resource_type == search_type:
-                    continue
-
+        # Perform the counter searches for the other resources
+        resource_count = {}
+        for resource_type in OCLSearch.resource_type_info:
+            if resource_type == search_type:
+                # this search has already been performed, so just set value from above
+                resource_count[search_type] = num_found
+            else:
                 # Get resource count using same search criteria
                 count_response = api.head(resource_type, params=other_resource_search_params)
                 if 'num_found' in count_response.headers:
@@ -101,7 +105,7 @@ class HomeSearchView(TemplateView):
         # debug display variables
         context['search_params'] = searcher.search_params
         context['search_response_headers'] = search_response.headers
-        context['search_facets'] = search_facets
+        context['search_facets_json'] = search_facets_json
 
         # to remove closing form tag in nav.html
         context['extend_nav_form'] = True  

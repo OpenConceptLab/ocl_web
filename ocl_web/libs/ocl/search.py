@@ -25,6 +25,7 @@ class FilterOption(object):
         return "%s: %s [%s] %s" % (self.filter.filter_name, self.option_name, self.option_num, self.selected)
 
 
+
 class Filter(object):
     """
         A specific filter for searching OCL
@@ -74,13 +75,13 @@ class FilterList(object):
         """
         Lookup a filter by filter_id.
 
-        :returns: FilterSpec or None
+        :returns: Matched Filter or None
         """
-        r = filter(lambda f: f.filter_id == filter_id, self.filter_list)
-        if len(r) == 0:
+        matched_filters = filter(lambda f: f.filter_id == filter_id, self.filter_list)
+        if len(matched_filters) == 0:
             return None
         else:
-            return r[0]
+            return matched_filters[0]
 
     def add_filter(self, filter_id='', filter_name=''):
         f = Filter(filter_id, filter_name)
@@ -138,7 +139,6 @@ def setup_filters():
 
     f = filters.add_filter('includeRetired', 'Include Retired')
     f.options = turn_to_tuples([{'code': u'1', 'name': 'Retired'}])
-
     concept_filters = filters
 
     # source filter
@@ -192,23 +192,31 @@ class OCLSearch(object):
         type=concepts|sources|collections|orgs|users
         page=N
         limit=N
-
     """
+
+    # resource types
+    USER_TYPE = 0
+    ORG_TYPE = 1
+    SOURCE_TYPE = 2
+    CONCEPT_TYPE = 3
+    COLLECTION_TYPE = 4
+    MAPPING_TYPE = 5
 
     DEFAULT_NUM_PER_PAGE = 25
     DEFAULT_SEARCH_TYPE = 'concepts'
 
-    search_type_names = {
-        'concepts': 'concept',
-        'sources': 'source',
-        'collections': 'collection',
-        'orgs': 'organization',
-        'users': 'user'
+    resource_type_info = {
+        'concepts': { 'int': CONCEPT_TYPE, 'name': 'concept', 'facets': True },
+        'mappings': { 'int': MAPPING_TYPE, 'name': 'mapping', 'facets': True },
+        'sources': { 'int': SOURCE_TYPE, 'name': 'source', 'facets': True },
+        'collections': { 'int': COLLECTION_TYPE, 'name': 'collection', 'facets': True },
+        'orgs': { 'int': ORG_TYPE, 'name': 'organization', 'facets': False },
+        'users': { 'int': USER_TYPE, 'name': 'user', 'facets': False }
     }
 
-    filters = None
+    filter_list = None
 
-    def __init__(self, resource_type):
+    def __init__(self, resource_type='', params=None):
         """
         :param resource_type: is a resource type from OCLapi.resource_types
         """
@@ -218,13 +226,19 @@ class OCLSearch(object):
         self.current_page = None
         self.search_params = None
         self.search_sort = None
-        self.resource_type = resource_type
         self.q = None
+        self.resource_type = resource_type
 
         # one time initialization
-        if self.filters is None:
-            self.filters = setup_filters()
+        #if self.filter_list is None:
+        #    self.filter_list = setup_filters()
 
+        # parse search parameters (i.e. GET request parameters)
+        if (params):
+            self.parse(params)
+
+
+    # TODO: Planning to retire this method
     def get_filters(self):
         """
         Get the appropriate filters applicable for this search object type.
@@ -233,7 +247,7 @@ class OCLSearch(object):
 
         :returns: a list of Filter object for constructing the HTML filter display.
         """
-        return self.filters[self.resource_type]
+        return self.filter_list[self.resource_type]
 
 
     def get_sort_options(self):
@@ -264,13 +278,14 @@ class OCLSearch(object):
         return '' if self.q is None else self.q
 
 
-    def process_facets(self, search_type, facets):
+    def process_facets(self, resource_type='', facets=None):
         """
+        :params resource_type: Resource type
         :params facets: Dictionary of the form { 'fields':{ } }
         :returns: FilterList
         """
         if isinstance(facets, dict) and 'fields' in facets and isinstance(facets['fields'], dict):
-            fl = FilterList(resource_name=search_type)
+            fl = FilterList(resource_name=resource_type)
             for facet in facets['fields']:
                 # TODO: Need method to convert field name to display name
                 facet_display_name = facet
@@ -279,99 +294,101 @@ class OCLSearch(object):
                     facet_option_name = facet_option[0]
                     facet_option_num = facet_option[1]                    
                     f.add_option(option_value=facet_option_name, option_name=facet_option_name, option_num=facet_option_num)
+        self.filter_list = fl
         return fl
+
+
+    def select_filters(self, params):
+        print 'Selecting filters...'
+        if isinstance(self.filter_list, FilterList):
+            for key in params.keys():
+                print 'Attempting to select filter: %s = %s' % (key, params[key])
+                matched_filter = self.filter_list.match_filter(key)
+                if matched_filter:
+                    matched_filter.select_option(params[key])
+                print '\tMatched filter:', matched_filter
 
 
     def parse(self, request_get):
 
+        search_params = {}
+        search_params['verbose'] = 'true'
+
+        # make a copy of the parameters so that we can delete entries from it
         print 'parsing:', request_get
         if request_get is None:
             params = {}
         else:
-            # make a copy so that we can delete things from it
             params = request_get.copy()
 
-        # search what object type?
+        # determine the search type
         if 'type' in params:
-            if params['type'] in self.search_type_names:
+            if params['type'] in self.resource_type_info:
                 self.search_type = params['type']
-                del params['type']
             else:
                 self.search_type = self.DEFAULT_SEARCH_TYPE
+            del params['type']
+        else:
+            self.search_type = self.DEFAULT_SEARCH_TYPE
+        print 'search type:', self.search_type
 
         # paging
         if 'page' in params:
             try:
-                print 'getting page'
                 self.current_page = int(params['page'])
-                print 'getting page', self.current_page
-                del params['page']
             except ValueError:
-                # some problem with the page=N input
                 self.current_page = 1
+            del params['page']
         else:
             self.current_page = 1
+        search_params['page'] = self.current_page
+        print 'page:', self.current_page
 
+        # limit
         if 'limit' in params:
             try:
                 self.num_per_page = int(params['limit'])
             except ValueError:
                 self.num_per_page = self.DEFAULT_NUM_PER_PAGE
+            del params['limit']
         else:
             self.num_per_page = self.DEFAULT_NUM_PER_PAGE
-
-        search_params = {}
         search_params['limit'] = self.num_per_page
-        search_params['page'] = self.current_page
-        search_params['verbose'] = 'true'
-
-        # sort
-        # sortAsc/sortDesc (optional) string
-        # sort results on one of the following fields: "name", "last_update"
-        # (default), "num_stars"
-        sort_key = None
+        print 'limit:', self.num_per_page
+ 
+        # sort - sortAsc/sortDesc (optional) string
+        sort_direction = None
         sort_value = None
         if 'sort' in params:
-            self.search_sort = params['sort']
+            self.search_sort = params.pop('sort')
             p = self.search_sort.lower()
             if 'asc' in p:
-                sort_key = 'sortAsc'
+                sort_direction = 'sortAsc'
             elif 'desc' in p:
-                sort_key = 'sortDesc'
+                sort_direction = 'sortDesc'
             if 'last update' in p:
                 sort_value = 'last_update'
-            if 'name' in p:
+            elif 'name' in p:
                 sort_value = 'name'
-            if sort_key and sort_value:
-                search_params[sort_key] = sort_value
+            if sort_direction and sort_value:
+                search_params[sort_direction] = sort_value
+        print 'sort:', self.search_sort, sort_direction, ':', sort_value
 
         # query text
-        # q=    for name, full_name, desc in source
         if 'q' in params:
             q = params.pop('q')
             if len(q) == 1:
                 self.q = q[0]
                 search_params['q'] = self.q
+        print 'q[0]:', self.q, ', q:', q
 
-        # for source
-        # source_type (optional) string - Filter results to a given source type
-        # e.g. "dictionary", "reference"
-        # language (optional) string - Filter results to those with a given
-        # language in their supported_locales, e.g. "en", "fr"
-
+        # Apply facets/filters - everything that's left should be a filter/facet
+        # Note: currently not doing any translation of filter values
         for key in params.keys():
-            print 'trying key:%s' % key
-            f = None
-            if self.get_filters():
-                f = self.get_filters().match_filter(key)
-                if f:
-                    v = params.pop(key)
-                    # set this option as selected
-                    f.select_option(v)
-                    search_params[key] = v
-                    print 'add key %s = %s' % (key, v)
-                    print f
-        from libs.ocl import OCLapi
-        print 'Searcher %s params: %s' % (OCLapi.resource_type_name(self.resource_type), search_params)
+            value = params.pop(key)
+            # TODO: any processing that needs to happen should go here
+            search_params[key] = value
+            print 'filter [%s] = %s' % (key, value)
+
         self.search_params = search_params
-        return self
+        print 'Searcher %s params: %s' % (self.resource_type, search_params)
