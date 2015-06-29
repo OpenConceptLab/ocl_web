@@ -42,18 +42,14 @@ class Filter(object):
         self.options[option_value] = FilterOption(filter=self, option_value=option_value, 
             option_name=option_name, option_num=option_num, selected=selected)
 
-    def select_option(self, option_value):
+    def select_option(self, option_values):
         """
-        Mark as selected the option(s) according to the value or list of values passed.
+        Mark as selected the option(s) according to the value or list of string values passed.
         """
-        # handle the case where option_value is a list of options
-        if not isinstance(option_value, list):
-            ls = [option_value]
-        else:
-            ls = option_value
-
+        if not isinstance(option_values, list):
+            option_values = [option_values]
         for i in self.options:
-            if self.options[i].option_value in ls:
+            if self.options[i].option_value in option_values:
                 self.options[i].selected = True
 
     def __str__(self):
@@ -327,10 +323,10 @@ class OCLSearch(object):
         print 'Selecting filters...'
         if isinstance(self.filter_list, FilterList):
             for key in params.keys():
-                print 'Attempting to select filter: %s = %s' % (key, params[key])
+                print 'Attempting to select filter: %s = %s' % (key, params.getlist(key))
                 matched_filter = self.filter_list.match_filter(key)
                 if matched_filter:
-                    matched_filter.select_option(params[key])
+                    matched_filter.select_option(params.getlist(key)
                 print '\tMatched filter:', matched_filter
 
 
