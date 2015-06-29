@@ -216,29 +216,48 @@ class OCLSearch(object):
 
     filter_list = None
 
-    def __init__(self, resource_type='', params=None):
+    def __init__(self, search_type='', params=None):
         """
         :param resource_type: is a resource type from OCLapi.resource_types
         """
         # outputs
-        self.search_type = None
+        self.search_type = search_type
         self.num_per_page = None
         self.current_page = None
         self.search_params = None
         self.search_sort = None
         self.q = None
-        self.resource_type = resource_type
-
-        # one time initialization
-        #if self.filter_list is None:
-        #    self.filter_list = setup_filters()
 
         # parse search parameters (i.e. GET request parameters)
         if (params):
             self.parse(params)
 
 
-    # TODO: Planning to retire this method
+    @property
+    def search_resource_id(self):
+        if self.search_type in self.resource_type_info:
+            return self.resource_type_info[self.search_type]['int']
+        else:
+            return None
+
+
+    @property
+    def search_resource_name(self):
+        if self.search_type in self.resource_type_info:
+            return self.resource_type_info[self.search_type]['name']
+        else:
+            return ''
+
+
+    @property
+    def search_resource_has_facets(self):
+        if self.search_type in self.resource_type_info:
+            return self.resource_type_info[self.search_type]['facets']
+        else:
+            return False
+
+
+    # TODO: Retire this method - not used on global search but maybe on other searches
     def get_filters(self):
         """
         Get the appropriate filters applicable for this search object type.
@@ -250,6 +269,7 @@ class OCLSearch(object):
         return self.filter_list[self.resource_type]
 
 
+    # TODO: Develop roadmap to do this more generically
     def get_sort_options(self):
         """
         :returns: a list of sort options.
@@ -264,6 +284,7 @@ class OCLSearch(object):
         ]
 
 
+    # TODO: Develop roadmap to do this more generically
     def get_sort(self):
         """
         Returns the current sort option
@@ -271,6 +292,7 @@ class OCLSearch(object):
         return '' if self.search_sort is None else self.search_sort
 
 
+    # TODO: Develop roadmap to do this more generically
     def get_query(self):
         """
         Returns the current query string
@@ -280,6 +302,8 @@ class OCLSearch(object):
 
     def process_facets(self, resource_type='', facets=None):
         """
+        Processes facets into a FilterList object as returned by a Solr search.
+
         :params resource_type: Resource type
         :params facets: Dictionary of the form { 'fields':{ } }
         :returns: FilterList
@@ -310,20 +334,27 @@ class OCLSearch(object):
 
 
     def parse(self, request_get):
+        """
+        Parse processes a request string, dictionary or QueryDict as the input/criteria for an OCL search.
+        The parsed search inputs are saved in self.search_params
 
-        search_params = {}
+        :params request_get: request string, dictionary or QueryDict of search inputs/criteria
+        :returns: None
+        """
+
+        search_params_dict = {}
 
         # Verbose - all searches should return resource details, so set verbose to true
-        search_params['verbose'] = 'true'
+        search_params_dict['verbose'] = 'true'
 
-        # make a copy of the parameters so that we can delete entries from it
+        # Get into QueryDict format if not already and make a copy
         print 'parsing:', request_get
-        if request_get is None:
-            params = {}
-        else:
+        if isinstance(request_get, QueryDict):
             params = request_get.copy()
+        else:
+            params = QueryDict(request_get, mutable=True)
 
-        # determine the search type
+        # Determine the search type - gets the latest occurence of type
         if 'type' in params:
             if params['type'] in self.resource_type_info:
                 self.search_type = params['type']
@@ -334,7 +365,7 @@ class OCLSearch(object):
             self.search_type = self.DEFAULT_SEARCH_TYPE
         print 'search type:', self.search_type
 
-        # paging
+        # Paging - gets the latest occurence of type
         if 'page' in params:
             try:
                 self.current_page = int(params['page'])
@@ -346,7 +377,7 @@ class OCLSearch(object):
         search_params['page'] = self.current_page
         print 'page:', self.current_page
 
-        # limit
+        # limit - gets the latest occurence of type
         if 'limit' in params:
             try:
                 self.num_per_page = int(params['limit'])
@@ -358,42 +389,29 @@ class OCLSearch(object):
         search_params['limit'] = self.num_per_page
         print 'limit:', self.num_per_page
  
-        # sort - sortAsc/sortDesc (optional) string
+        # sort - gets the latest occurence of sort
         sort_direction = None
-        sort_value = None
+        sort_field = None
         if 'sort' in params:
-            # convert sort parameter into string format if a list
-            raw_search_sort = params.pop('sort')
-            if isinstance(raw_search_sort, basestring):            
-                self.search_sort = raw_search_sort
-            elif all(isinstance(item, basestring) for item in raw_search_sort):
-                self.search_sort = ' '.join(raw_search_sort)
-            else:
-                self.search_sort = ''
-
-            # process sort
-            p = self.search_sort.lower()
-            if 'asc' in p:
+            self.search_sort = params.get('sort', '')
+            sort = self.search_sort.lower()
+            del params['sort']
+            if 'asc' in sort:
                 sort_direction = 'sortAsc'
-            elif 'desc' in p:
+            elif 'desc' in sort:
                 sort_direction = 'sortDesc'
-            if 'last update' in p:
-                sort_value = 'last_update'
-            elif 'name' in p:
-                sort_value = 'name'
-            if sort_direction and sort_value:
-                search_params[sort_direction] = sort_value
-        print 'sort:', self.search_sort, sort_direction, ':', sort_value
+            if 'last update' in sort:
+                sort_field = 'last_update'
+            elif 'name' in sort:
+                sort_field = 'name'
+            if sort_direction and sort_field:
+                search_params[sort_direction] = sort_field
+        print 'sort:', self.search_sort, sort_direction, ':', sort_field
 
         # query text
         if 'q' in params:
-            q = params.pop('q')
-            if isinstance(q, basestring):
-                self.q = q
-            elif all(isinstance(item, basestring) for item in q):
-                self.q = ' '.join(q)
-            else:
-                self.q = ''
+            self.q = params.get('q')
+            del params['q']
             search_params['q'] = self.q
         print 'q:', self.q
 
@@ -402,8 +420,8 @@ class OCLSearch(object):
         for key in params.keys():
             value = params.pop(key)
             # TODO: any processing that needs to happen should go here
-            search_params[key] = value
-            print 'filter [%s] = %s' % (key, value)
+            search_params[key] = ','.join(value)
+            print 'filter [%s] = %s' % (key, search_params[key])
 
         self.search_params = search_params
         print 'Searcher %s params: %s' % (self.resource_type, search_params)

@@ -24,38 +24,35 @@ class HomeSearchView(TemplateView):
 
         context = super(HomeSearchView, self).get_context_data(*args, **kwargs)
 
-        # Handle the search type
-        search_type = self.request.GET.get('type', 'concepts')
-        if search_type not in OCLSearch.resource_type_info:
-            search_type = 'concepts'
-        # change this to an object method
-        resource_type = OCLSearch.resource_type_info[search_type]['int']
-        search_type_name = OCLSearch.resource_type_info[search_type]['name']
-
-        # Setup the searcher helper class
-        searcher = OCLSearch(resource_type)
-
-        # Parse requires that filters have been setup, but filters aren't setup until the 
-        # request has been made because it is using facets --- need to separate out parsing of paramaters
-        # and handling of facets before this actually works
-        searcher.parse(self.request.GET)
+        # Setup the OCL Search helper class
+        searcher = OCLSearch(params=self.request.GET)
+        #search_type = searcher.search_type
+        #resource_type = searcher.search_resource_id
+        #search_type_name = searcher.search_resource_name
 
         # Perform the primary search via the API
-        has_facets = OCLSearch.resource_type_info[search_type]['facets']
-        api = OCLapi(self.request, debug=True, facets=has_facets)
-        search_response = api.get(search_type, params=searcher.search_params)
-        if has_facets:
+        api = OCLapi(self.request, debug=True, facets=searcher.search_resource_has_facets)
+        search_response = api.get(searcher.search_type, params=searcher.search_params)
+        if searcher.search_resource_has_facets:
             search_response_json = search_response.json()
             search_facets_json = search_response_json['facets']
-            search_facets = searcher.process_facets(search_type, search_facets_json)
+            search_facets = searcher.process_facets(searcher.search_type, search_facets_json)
             search_results = search_response_json['results']
         else:
             search_results = search_response.json()
             search_facets = {}
             search_facets_json = {}
-        num_found = int(search_response.headers['num_found'])
 
-        # Setup filters based on the current resource_type
+        # Process number of results found in primary search
+        if 'num_found' in search_response.headers:
+            try:
+                num_found = int(search_response.headers['num_found'])
+            except ValueError:
+                num_found = 0
+        else:
+            num_found = 0
+
+        # Setup filters based on the current search
         # NOTE: Facets should be processed separately from filters -- 
         #       Facets are what are returned by Solr, filters are what are displayed
         #       Some processing will be required to convert between the two
@@ -63,6 +60,8 @@ class HomeSearchView(TemplateView):
         # TODO: add some other filters (e.g. Include Retired)
 
         # Select filters
+        # TODO: Currently this is selecting the filters created only by the facets returned but this
+        #       should change to select the actual filters
         searcher.select_filters(searcher.search_params)
 
         # Setup paginator and context for primary search
@@ -71,8 +70,8 @@ class HomeSearchView(TemplateView):
         context['pagination_url'] = self.request.get_full_path()
         #context['search_filter_lists'] = searcher.get_filters()
         context['results'] = search_results
-        context['search_type'] = search_type
-        context['search_type_name'] = search_type_name
+        context['search_type'] = searcher.search_type
+        context['search_type_name'] = searcher.search_resource_name
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
         context['search_facets'] = search_facets
@@ -91,9 +90,9 @@ class HomeSearchView(TemplateView):
         # Perform the counter searches for the other resources
         resource_count = {}
         for resource_type in OCLSearch.resource_type_info:
-            if resource_type == search_type:
+            if resource_type == searcher.search_type:
                 # this search has already been performed, so just set value from above
-                resource_count[search_type] = num_found
+                resource_count[searcher.search_type] = num_found
             else:
                 # Get resource count using same search criteria
                 count_response = api.head(resource_type, params=other_resource_search_params)
