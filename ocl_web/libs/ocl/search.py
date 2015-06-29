@@ -375,7 +375,7 @@ class OCLSearch(object):
             del params['page']
         else:
             self.current_page = 1
-        search_params['page'] = self.current_page
+        search_params_dict['page'] = self.current_page
         print 'page:', self.current_page
 
         # limit - gets the latest occurence of type
@@ -387,7 +387,7 @@ class OCLSearch(object):
             del params['limit']
         else:
             self.num_per_page = self.DEFAULT_NUM_PER_PAGE
-        search_params['limit'] = self.num_per_page
+        search_params_dict['limit'] = self.num_per_page
         print 'limit:', self.num_per_page
  
         # sort - gets the latest occurence of sort
@@ -406,14 +406,14 @@ class OCLSearch(object):
             elif 'name' in sort:
                 sort_field = 'name'
             if sort_direction and sort_field:
-                search_params[sort_direction] = sort_field
+                search_params_dict[sort_direction] = sort_field
         print 'sort:', self.search_sort, sort_direction, ':', sort_field
 
         # query text
         if 'q' in params:
             self.q = params.get('q')
             del params['q']
-            search_params['q'] = self.q
+            search_params_dict['q'] = self.q
         print 'q:', self.q
 
         # Apply facets/filters - everything that's left should be a filter/facet
@@ -421,8 +421,8 @@ class OCLSearch(object):
         for key in params.keys():
             value = params.pop(key)
             # TODO: any processing that needs to happen should go here
-            search_params[key] = ','.join(value)
-            print 'filter [%s] = %s' % (key, search_params[key])
+            search_params_dict[key] = ','.join(value)
+            print 'filter [%s] = %s' % (key, search_params_dict[key])
 
-        self.search_params = search_params
-        print 'Searcher %s params: %s' % (self.resource_type, search_params)
+        self.search_params = search_params_dict
+        print 'Searcher %s params: %s' % (self.resource_type, search_params_dict)
