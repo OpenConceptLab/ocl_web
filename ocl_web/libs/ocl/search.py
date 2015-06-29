@@ -326,7 +326,7 @@ class OCLSearch(object):
                 print 'Attempting to select filter: %s = %s' % (key, params.getlist(key))
                 matched_filter = self.filter_list.match_filter(key)
                 if matched_filter:
-                    matched_filter.select_option(params.getlist(key)
+                    matched_filter.select_option(params.getlist(key))
                 print '\tMatched filter:', matched_filter
 
 
