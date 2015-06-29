@@ -2,6 +2,7 @@
     Search helper for interfacing web with OCL API.
 
 """
+from django.http import QueryDict
 import logging
 
 logger = logging.getLogger('oclweb')
