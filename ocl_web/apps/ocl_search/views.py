@@ -26,9 +26,6 @@ class HomeSearchView(TemplateView):
 
         # Setup the OCL Search helper class
         searcher = OCLSearch(params=self.request.GET)
-        #search_type = searcher.search_type
-        #resource_type = searcher.search_resource_id
-        #search_type_name = searcher.search_resource_name
 
         # Perform the primary search via the API
         api = OCLapi(self.request, debug=True, facets=searcher.search_resource_has_facets)
@@ -62,7 +59,7 @@ class HomeSearchView(TemplateView):
         # Select filters
         # TODO: Currently this is selecting the filters created only by the facets returned but this
         #       should change to select the actual filters
-        searcher.select_filters(searcher.search_params)
+        searcher.select_filters(self.request.GET)
 
         # Setup paginator and context for primary search
         pg = Paginator(range(num_found), searcher.num_per_page)
