@@ -78,6 +78,7 @@ class HomeSearchView(TemplateView):
         context['search_facets'] = search_facets
 
         # Build URL parameters for switching to other resources
+        # TODO: should this use GET or search_params?
         allowed_other_resource_search_params = ['q', 'limit', 'debug']
         other_resource_search_params = {}
         for param in allowed_other_resource_search_params:
@@ -103,6 +104,7 @@ class HomeSearchView(TemplateView):
         context['resource_count'] = resource_count
 
         # debug display variables
+        context['get_params'] = self.request.GET
         context['search_params'] = searcher.search_params
         context['search_response_headers'] = search_response.headers
         context['search_facets_json'] = search_facets_json
