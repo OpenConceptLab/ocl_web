@@ -219,7 +219,7 @@ class OCLSearch(object):
 
     def __init__(self, search_type='', params=None):
         """
-        :param resource_type: is a resource type from OCLapi.resource_types
+        :param search_type: string representation of one of the resource types
         """
         # outputs
         self.search_type = search_type
@@ -267,7 +267,7 @@ class OCLSearch(object):
 
         :returns: a list of Filter object for constructing the HTML filter display.
         """
-        return self.filter_list[self.resource_type]
+        return self.filter_list[self.search_type]
 
 
     # TODO: Develop roadmap to do this more generically
@@ -425,4 +425,4 @@ class OCLSearch(object):
             print 'filter [%s] = %s' % (key, search_params_dict[key])
 
         self.search_params = search_params_dict
-        print 'Searcher %s params: %s' % (self.resource_type, search_params_dict)
+        print 'Searcher %s params: %s' % (self.search_type, search_params_dict)
