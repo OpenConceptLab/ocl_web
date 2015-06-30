@@ -204,7 +204,7 @@ class OCLSearch(object):
     DEFAULT_NUM_PER_PAGE = 25
     DEFAULT_SEARCH_TYPE = 'concepts'
 
-    filter_info {
+    filter_info = {
         'concepts': [
             { 'id': 'source', 'display_name': 'Sources', 'facet': 'source' },
             { 'id': 'conceptClass', 'display_name': 'Concept Classes', 'facet': 'conceptClass' },
@@ -225,10 +225,10 @@ class OCLSearch(object):
             { 'id': 'locale', 'display_name': 'Locale', 'facet': 'locale' }
         ],
         'source': [
-            { 'id': 'sourceType', 'display_name': 'Source Type', 'facet': 'sourceType' }
+            { 'id': 'sourceType', 'display_name': 'Source Type', 'facet': 'sourceType' },
             { 'id': 'owner', 'display_name': 'Owner', 'facet': 'owner' },
             { 'id': 'ownerType', 'display_name': 'Owner Type', 'facet': 'ownerType' },
-            { 'id': 'locale', 'display_name': 'Locale', 'facet': 'locale' },
+            { 'id': 'locale', 'display_name': 'Locale', 'facet': 'locale' }
         ],
         'collections': [],
         'orgs': [],
