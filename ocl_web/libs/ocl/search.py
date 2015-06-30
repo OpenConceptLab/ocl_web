@@ -3,6 +3,7 @@
 
 """
 from django.http import QueryDict
+from urllib import quote
 import logging
 
 logger = logging.getLogger('oclweb')
@@ -199,8 +200,40 @@ class OCLSearch(object):
     COLLECTION_TYPE = 4
     MAPPING_TYPE = 5
 
+    #defaults
     DEFAULT_NUM_PER_PAGE = 25
     DEFAULT_SEARCH_TYPE = 'concepts'
+
+    filter_info {
+        'concepts': [
+            { 'id': 'source', 'display_name': 'Sources', 'facet': 'source' },
+            { 'id': 'conceptClass', 'display_name': 'Concept Classes', 'facet': 'conceptClass' },
+            { 'id': 'datatype', 'display_name': 'Datatype', 'facet': 'datatype' },
+            { 'id': 'includeRetired', 'display_name': 'Include Retired' },
+            { 'id': 'retired', 'display_name': 'Retired', 'facet': 'retired' },
+            { 'id': 'owner', 'display_name': 'Owner', 'facet': 'owner' },
+            { 'id': 'ownerType', 'display_name': 'Owner Type', 'facet': 'ownerType' },
+            { 'id': 'locale', 'display_name': 'Locale', 'facet': 'locale' }
+        ],
+        'mappings': [
+            { 'id': 'source', 'display_name': 'Sources', 'facet': 'source' },
+            { 'id': 'conceptClass', 'display_name': 'Concept Classes', 'facet': 'conceptClass' },
+            { 'id': 'datatype', 'display_name': 'Datatype', 'facet': 'datatype' },
+            { 'id': 'retired', 'display_name': 'Retired', 'facet': 'retired' },
+            { 'id': 'owner', 'display_name': 'Owner', 'facet': 'owner' },
+            { 'id': 'ownerType', 'display_name': 'Owner Type', 'facet': 'ownerType' },
+            { 'id': 'locale', 'display_name': 'Locale', 'facet': 'locale' }
+        ],
+        'source': [
+            { 'id': 'sourceType', 'display_name': 'Source Type', 'facet': 'sourceType' }
+            { 'id': 'owner', 'display_name': 'Owner', 'facet': 'owner' },
+            { 'id': 'ownerType', 'display_name': 'Owner Type', 'facet': 'ownerType' },
+            { 'id': 'locale', 'display_name': 'Locale', 'facet': 'locale' },
+        ],
+        'collections': [],
+        'orgs': [],
+        'users': []
+    }
 
     resource_type_info = {
         'concepts': { 'int': CONCEPT_TYPE, 'name': 'concept', 'facets': True },
@@ -413,11 +446,10 @@ class OCLSearch(object):
         print 'q:', self.q
 
         # Apply facets/filters - everything that's left should be a filter/facet
-        # Note: currently not doing any thatranslation of filter values
-        for key in params.keys():
-            value = params.pop(key)
-            # TODO: any processing that needs to happen should go here
-            search_params_dict[key] = ','.join(value)
+        # NOTE: Quoting and URL encoding parameters before passing on to API
+        for filter_key in params.keys():
+            filter_value = map(lambda x: quote('"'+x+'"') if ' ' in x else quote(x), params.pop(filter_key))
+            search_params_dict[filter_key] = ','.join(filter_value)
             print 'filter [%s] = %s' % (key, search_params_dict[key])
 
         self.search_params = search_params_dict
