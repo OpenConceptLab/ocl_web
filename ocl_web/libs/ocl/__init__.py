@@ -200,22 +200,20 @@ class OCLapi(object):
             :returns: requests.response object.
 
         """
+        # Build the URL
         self.url = '%s/' % (self.host)
         if len(args) > 0:
             self.url = self.url + '/'.join(args)
-
         if self.url[-1] != '/':
             self.url += '/'
 
-        # look for optional keyword argument params for constructing URL param
-        # i.e. ?f1=v1&f2=v2
+        # Look for optional keyword argument params for constructing URL param e.g. ?f1=v1&f2=v2
         params = kwargs.get('params')
 
         if self.debug:
             self.logger.debug('GET %s %s %s' % (self.url, params, self.headers))
 
-        results = requests.get(self.url, params=params,
-                               headers=self.headers)
+        results = requests.get(self.url, params=params, headers=self.headers)
 
         self.status_code = results.status_code
         if self.debug:

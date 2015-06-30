@@ -34,29 +34,31 @@ class OrganizationDetailView(TemplateView):
         context['collections']
         context['members']
         """
+        # TODO: Change page so that only one tab loaded at a time
 
         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
 
+        # Set the organization ID
         org_id = self.kwargs.get('org')
 
-        # prepare to retreive/search the sources/collections in this org
+        # Prepare to search the sources and collections in this org
+        # NOTE: Both are searched no matter what, but only one accepts search criteria/filters at a time
         res_type = self.request.GET.get('resource_type')
         print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
         print res_type
         if res_type == 'source':
-            source_searcher = OCLSearch(OCLapi.SOURCE_TYPE).parse(self.request.GET)
-            collection_searcher = OCLSearch(OCLapi.COLLECTION_TYPE).parse(None)
+            source_searcher = OCLSearch(search_type=OCLapi.SOURCE_TYPE, params=self.request.GET)
+            collection_searcher = OCLSearch(search_type=OCLapi.COLLECTION_TYPE, parmas={})
         elif res_type == 'collection':
-            source_searcher = OCLSearch(OCLapi.SOURCE_TYPE).parse(None)
-            collection_searcher = OCLSearch(OCLapi.COLLECTION_TYPE).parse(self.request.GET)
+            source_searcher = OCLSearch(search_type=OCLapi.SOURCE_TYPE, params={})
+            collection_searcher = OCLSearch(search_type=OCLapi.COLLECTION_TYPE, params=self.request.GET)
         else:
-            # need to pass down paging parameters
-            source_searcher = OCLSearch(OCLapi.SOURCE_TYPE).parse(self.request.GET)
-            collection_searcher = OCLSearch(OCLapi.COLLECTION_TYPE).parse(self.request.GET)
+            # Still pass down paging parameters
+            source_searcher = OCLSearch(search_type=OCLapi.SOURCE_TYPE, params=self.request.GET)
+            collection_searcher = OCLSearch(search_type=OCLapi.COLLECTION_TYPE, params=self.request.GET)
 
+        # Load the org
         api = OCLapi(self.request, debug=True)
-
-        # load the org
         results = api.get('orgs', org_id)
         if results.status_code != 200:
             if results.status_code == 404:
@@ -65,13 +67,15 @@ class OrganizationDetailView(TemplateView):
                 results.raise_for_status()
         org = results.json()
 
-        # org about text -- need a more generic method for extras
-        if isinstance(org['extras'], dict):
+        # Set org about text
+        # TODO: Need a more generic method for getting at extras
+        if 'extras' in org and isinstance(org['extras'], dict):
             about = org['extras'].get('about', 'No about entry.')
         else:
+            # TODO: If user has editing privileges to this org, then prompt them to create an about entry
             about = 'No about entry.'
 
-        # load the sources in this org
+        # Load the sources in this org
         results = api.get('orgs', org_id, 'sources', params=source_searcher.search_params)
         if results.status_code == requests.codes.not_found:
             num_found = 0
@@ -83,15 +87,16 @@ class OrganizationDetailView(TemplateView):
             pg = Paginator(range(num_found), source_searcher.num_per_page)
             context['source_page'] = pg.page(source_searcher.current_page)
 
-        # set the context for the child sources
+        # Set the context for the child sources
         context['source_pagination_url'] = self.request.get_full_path()
         context['sources'] = sources
         context['source_filters'] = source_searcher.get_filters()
+        context['source_q'] = source_searcher.get_query()
+        # TODO: Sort is not setup correctly to work with both sources and collections
         context['search_sort_options'] = source_searcher.get_sort_options()
         context['search_sort'] = source_searcher.get_sort()
-        context['source_q'] = source_searcher.get_query()
 
-        # load the collections in this org
+        # Load the collections in this org
         results = api.get('orgs', org_id, 'collections', params=collection_searcher.search_params)
         if results.status_code == requests.codes.not_found:
             collections = []
@@ -103,12 +108,12 @@ class OrganizationDetailView(TemplateView):
             pg = Paginator(range(num_found), collection_searcher.num_per_page)
             context['collection_page'] = pg.page(collection_searcher.current_page)
 
-        # set the context for the child collections
+        # Set the context for the child collections
         context['collection_pagination_url'] = self.request.get_full_path()
         context['collections'] = collections
         context['collection_filters'] = collection_searcher.get_filters()
 
-        # load members of this org
+        # Load members of this org
         # TODO: access issue, error if user is not super user??
         members = []
         r = api.get('orgs', org_id, 'members')

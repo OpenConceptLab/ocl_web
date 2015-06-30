@@ -254,7 +254,7 @@ class OCLSearch(object):
         self.search_type = search_type
         self.num_per_page = None
         self.current_page = None
-        self.search_params = None
+        self.search_params = {}
         self.search_sort = None
         self.q = None
 
