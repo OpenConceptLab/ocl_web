@@ -450,7 +450,7 @@ class OCLSearch(object):
         for filter_key in params.keys():
             filter_value = map(lambda x: quote('"'+x+'"') if ' ' in x else quote(x), params.pop(filter_key))
             search_params_dict[filter_key] = ','.join(filter_value)
-            print 'filter [%s] = %s' % (key, search_params_dict[key])
+            print 'filter [%s] = %s' % (filter_key, search_params_dict[filter_key])
 
         self.search_params = search_params_dict
         print 'Searcher %s params: %s' % (self.search_type, search_params_dict)
