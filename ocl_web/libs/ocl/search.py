@@ -448,9 +448,9 @@ class OCLSearch(object):
         # Apply facets/filters - everything that's left should be a filter/facet
         # NOTE: Quoting and URL encoding parameters before passing on to API
         for filter_key in params.keys():
-            filter_value = map(lambda x: quote('"'+x+'"') if ' ' in x else quote(x), params.pop(filter_key))
+            filter_value = map(lambda x: '"'+x+'"' if ' ' in x else x, params.pop(filter_key))
             search_params_dict[filter_key] = ','.join(filter_value)
-            print 'filter [%s] = %s' % (filter_key, search_params_dict[filter_key])
+            print 'filter [%s] = %s' % (filter_key, search_params_dict  [filter_key])
 
         self.search_params = search_params_dict
         print 'Searcher %s params: %s' % (self.search_type, search_params_dict)
