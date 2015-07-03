@@ -48,7 +48,7 @@ class OrganizationDetailView(TemplateView):
         print res_type
         if res_type == 'source':
             source_searcher = OCLSearch(search_type=OCLapi.SOURCE_TYPE, params=self.request.GET)
-            collection_searcher = OCLSearch(search_type=OCLapi.COLLECTION_TYPE, parmas={})
+            collection_searcher = OCLSearch(search_type=OCLapi.COLLECTION_TYPE, params={})
         elif res_type == 'collection':
             source_searcher = OCLSearch(search_type=OCLapi.SOURCE_TYPE, params={})
             collection_searcher = OCLSearch(search_type=OCLapi.COLLECTION_TYPE, params=self.request.GET)
@@ -80,7 +80,7 @@ class OrganizationDetailView(TemplateView):
         if results.status_code == requests.codes.not_found:
             num_found = 0
             sources = []
-            context['source_page'] = None
+            context['source_page'] = 0
         else:
             num_found = int(results.headers['num_found'])
             sources = results.json()
@@ -101,7 +101,7 @@ class OrganizationDetailView(TemplateView):
         if results.status_code == requests.codes.not_found:
             collections = []
             num_found = 0
-            context['collection_page'] = None
+            context['collection_page'] = 0
         else:
             collections = results.json()
             num_found = int(results.headers['num_found'])
