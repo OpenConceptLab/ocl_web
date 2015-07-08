@@ -20,8 +20,7 @@ class OCLapi(object):
         Handles all the authentication and formating.
         Also contain helper and utility functions.
 
-        :logging: This class outputs debug level information to the "oclapi"
-                  logger.
+        :logging: This class outputs debug level information to the "oclapi" logger.
     """
     # resource types
     USER_TYPE = 0
@@ -91,9 +90,7 @@ class OCLapi(object):
         self.anon_api_key = os.environ.get('OCL_ANON_API_TOKEN', None)
         self.url = None
         self.api_key = None
-
-        if facets:
-            self.headers['includeFacets'] = 'true'
+        self.include_facets = facets
 
         if admin:
             self.headers['Authorization'] = 'Token %s' % self.admin_api_key
@@ -103,6 +100,20 @@ class OCLapi(object):
                 key = request.session.get(SESSION_TOKEN_KEY, self.anon_api_key)
                 self.api_key = request.session.get(SESSION_TOKEN_KEY, None)
                 self.headers['Authorization'] = 'Token %s' % key
+
+    @include_facets.setter
+    def include_facets(self, include_facets_bool):
+        if include_facets_bool:
+            self.headers['includeFacets'] = 'true'
+        elif 'includeFacets' in self.headers:
+            del(self.headers['includeFacets'])
+
+    @property
+    def include_facets(self):
+        if 'includeFacets' in self.headers:
+            return true
+        else:
+            return false
 
     def post(self, type_name, *args, **kwargs):
         """ Issue Post request to API.
