@@ -38,10 +38,11 @@ class OrganizationDetailView(TemplateView):
 
         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
 
-        # Set the organization ID
+        # Determine the organization ID
         org_id = self.kwargs.get('org')
 
         # Prepare to search the sources and collections in this org
+        # BUG: OCLSearch.parse() fails if no URL parameters are passed
         # NOTE: Both are searched no matter what, but only one accepts search criteria/filters at a time
         res_type = self.request.GET.get('resource_type')
         print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
@@ -57,15 +58,15 @@ class OrganizationDetailView(TemplateView):
             source_searcher = OCLSearch(search_type=OCLSearch.SOURCE_TYPE, params=self.request.GET)
             collection_searcher = OCLSearch(search_type=OCLSearch.COLLECTION_TYPE, params=self.request.GET)
 
-        # Load the org
+        # Load the organization
         api = OCLapi(self.request, debug=True)
-        results = api.get('orgs', org_id)
-        if results.status_code != 200:
-            if results.status_code == 404:
+        search_result_org = api.get('orgs', org_id)
+        if search_result_org.status_code != 200:
+            if search_result_org.status_code == 404:
                 raise Http404
             else:
-                results.raise_for_status()
-        org = results.json()
+                search_result_org.raise_for_status()
+        org = search_result_org.json()
 
         # Set org about text
         # TODO: Need a more generic method for getting at extras
@@ -76,46 +77,70 @@ class OrganizationDetailView(TemplateView):
             about = 'No about entry.'
 
         # Load the sources in this org
-        results = api.get('orgs', org_id, 'sources', params=source_searcher.search_params)
-        if results.status_code == requests.codes.not_found:
-            num_found = 0
+        api.include_facets = True
+        search_result_sources = api.get('orgs', org_id, 'sources', params=source_searcher.search_params)
+        if search_result_sources.status_code == requests.codes.not_found:
+            sources_response_json = {}
+            sources_facets_json = {}
+            sources_facets = {}
             sources = []
-            context['source_page'] = 0
+            sources_num_found = 0
+            sources_paginator = None
+            sources_current_page = 0
         else:
-            num_found = int(results.headers['num_found'])
-            sources = results.json()
-            pg = Paginator(range(num_found), source_searcher.num_per_page)
-            current_page = source_searcher.current_page
-            context['source_page'] = pg.page(source_searcher.current_page)
+            sources_response_json = search_result_sources.json()
+            sources_facets_json = sources_response_json['facets']
+            sources_facets = source_searcher.process_facets('sources', sources_facets_json)
+            sources = sources_response_json['results']
+            # BUG: If num_found is not present or if sources_num_found is 0, that may cause paginator error
+            if 'num_found' in search_result_sources.headers:
+                try:
+                    sources_num_found = int(search_result_sources.headers['num_found'])
+                except ValueError:
+                    sources_num_found = 0
+            else:
+                sources_num_found = 0
+            sources_paginator = Paginator(range(num_found), source_searcher.num_per_page)
+            sources_current_page = sources_paginator.page(source_searcher.current_page)
+
+        # TODO: Setup source filters based on the current search
+
+        # Select filters
+        # TODO: This is passing all parameters, but should pass only those relevant to sources
+        source_searcher.select_filters(self.request.GET)
 
         # Set the context for the child sources
-        context['source_pagination_url'] = self.request.get_full_path()
         context['sources'] = sources
-        context['source_filters'] = source_searcher.get_filters()
+        context['source_page'] = sources_current_page
+        context['source_pagination_url'] = self.request.get_full_path()
         context['source_q'] = source_searcher.get_query()
+        context['source_facets'] = source_facets
+
         # TODO: Sort is not setup correctly to work with both sources and collections
         context['search_sort_options'] = source_searcher.get_sort_options()
         context['search_sort'] = source_searcher.get_sort()
 
         # Load the collections in this org
-        results = api.get('orgs', org_id, 'collections', params=collection_searcher.search_params)
-        if results.status_code == requests.codes.not_found:
-            collections = []
-            num_found = 0
-            context['collection_page'] = 0
-        else:
-            collections = results.json()
-            num_found = int(results.headers['num_found'])
-            pg = Paginator(range(num_found), collection_searcher.num_per_page)
-            context['collection_page'] = pg.page(collection_searcher.current_page)
-
+        # TODO: Collections not implemented yet
+        #api.include_facets = True
+        #search_result_collections = api.get('orgs', org_id, 'collections', params=collection_searcher.search_params)
+        # if search_result_collections.status_code == requests.codes.not_found:
+        #     collections = []
+        #     num_found = 0
+        #     context['collection_page'] = 0
+        # else:
+        #     collections = search_result_collections.json()
+        #     num_found = int(search_result_collections.headers['num_found'])
+        #     pg = Paginator(range(num_found), collection_searcher.num_per_page)
+        #     context['collection_page'] = pg.page(collection_searcher.current_page)
+        #
         # Set the context for the child collections
-        context['collection_pagination_url'] = self.request.get_full_path()
-        context['collections'] = collections
-        context['collection_filters'] = collection_searcher.get_filters()
+        #context['collection_pagination_url'] = self.request.get_full_path()
+        #context['collections'] = collections
+        #context['collection_filters'] = collection_searcher.get_filters()
 
         # Load members of this org
-        # TODO: access issue, error if user is not super user??
+        # TODO: Access issue, error if user is not super user??
         members = []
         r = api.get('orgs', org_id, 'members')
         if r.status_code == 200:

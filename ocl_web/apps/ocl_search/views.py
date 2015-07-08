@@ -37,8 +37,8 @@ class HomeSearchView(TemplateView):
             search_results = search_response_json['results']
         else:
             search_results = search_response.json()
-            search_facets = {}
             search_facets_json = {}
+            search_facets = {}
 
         # Process number of results found in primary search
         if 'num_found' in search_response.headers:

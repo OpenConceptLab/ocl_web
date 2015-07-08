@@ -11,9 +11,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-
 				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-home"></span></div>
-
 				<div style="display:inline-block;padding-left:20px">
 					<h3>
 						{% org_label org %}
@@ -23,15 +21,11 @@
 					<p>
 						<h4>{{ org.name }}</h4>
 						<span class="text-muted small">
-						{% if org.location %}
-							<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ org.location }}
-							&nbsp;&nbsp;&nbsp;
-						{% endif %}
+						{% if org.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ org.location }}&nbsp;&nbsp;&nbsp;{% endif %}
 						<span class="glyphicon glyphicon-calendar"></span> Created on {{ org.created_on|smart_date }}
 						</span>
 					</p>
 				</div>
-
 			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
 	</div> <!-- /container -->
@@ -39,20 +33,34 @@
 
 
 <!-- Start content section of org -->
-
 <div class="container" ng-app="ConceptApp">
 <tabset>
 
 
+<!-- Sources Tab -->
 <tab heading="Sources">
-	<div class="row">
 
+	<div class="row">
         <form action="." method="get">
         	<input type="hidden" name="resource_type" value="source" />
 
-
 			<!-- Filters -->
 			<div class="col-md-3">
+
+				{% for facet in source_facets %}
+				<div class="filter-group">
+					<div class="filter-group-header">{{ facet.filter_name }}</div>
+					<div class="filter-group-body">
+						{% for facet_key, facet_option in facet.options.iteritems %}
+							{% if facet_option.option_num > 0 %}
+								<div class="checkbox"><label><input type="checkbox" name="{{ facet.filter_name }}" value="{{ facet_option.option_value }}" {% if facet_option.selected %}checked{% endif %}>{{ facet_option.option_name }}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ facet_option.option_num }}</span></label></div>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+				{% endfor %}
+
+				{% comment %}
 		      	{% for f in source_filters %}
 				<div class="filter-group">
 					<div class="filter-group-header">{{ f.name }}</div>
@@ -64,6 +72,8 @@
 					</div>
 				</div>
 				{% endfor %}
+				{% endcomment %}
+				
 			</div>
 
 
