@@ -47,15 +47,15 @@ class OrganizationDetailView(TemplateView):
         print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
         print res_type
         if res_type == 'source':
-            source_searcher = OCLSearch(search_type=OCLapi.SOURCE_TYPE, params=self.request.GET)
-            collection_searcher = OCLSearch(search_type=OCLapi.COLLECTION_TYPE, params={})
+            source_searcher = OCLSearch(search_type=OCLSearch.SOURCE_TYPE, params=self.request.GET)
+            collection_searcher = OCLSearch(search_type=OCLSearch.COLLECTION_TYPE, params={})
         elif res_type == 'collection':
-            source_searcher = OCLSearch(search_type=OCLapi.SOURCE_TYPE, params={})
-            collection_searcher = OCLSearch(search_type=OCLapi.COLLECTION_TYPE, params=self.request.GET)
+            source_searcher = OCLSearch(search_type=OCLSearch.SOURCE_TYPE, params={})
+            collection_searcher = OCLSearch(search_type=OCLSearch.COLLECTION_TYPE, params=self.request.GET)
         else:
             # Still pass down paging parameters
-            source_searcher = OCLSearch(search_type=OCLapi.SOURCE_TYPE, params=self.request.GET)
-            collection_searcher = OCLSearch(search_type=OCLapi.COLLECTION_TYPE, params=self.request.GET)
+            source_searcher = OCLSearch(search_type=OCLSearch.SOURCE_TYPE, params=self.request.GET)
+            collection_searcher = OCLSearch(search_type=OCLSearch.COLLECTION_TYPE, params=self.request.GET)
 
         # Load the org
         api = OCLapi(self.request, debug=True)

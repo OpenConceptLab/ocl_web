@@ -252,14 +252,14 @@ class OCLSearch(object):
         """
         # outputs
         self.search_type = search_type
-        self.num_per_page = None
+        self.num_per_page = self.DEFAULT_NUM_PER_PAGE
         self.current_page = None
         self.search_params = {}
         self.search_sort = None
         self.q = None
 
-        # parse search parameters (i.e. GET request parameters)
-        if (params):
+        # Optionally parse search parameters (i.e. GET request parameters)
+        if params:
             self.parse(params)
 
 
@@ -407,7 +407,7 @@ class OCLSearch(object):
         search_params_dict['page'] = self.current_page
         print 'page:', self.current_page
 
-        # limit - gets the latest occurence of type
+        # Limit - gets the latest occurence of type
         if 'limit' in params:
             try:
                 self.num_per_page = int(params['limit'])
@@ -419,7 +419,7 @@ class OCLSearch(object):
         search_params_dict['limit'] = self.num_per_page
         print 'limit:', self.num_per_page
  
-        # sort - gets the latest occurence of sort
+        # Sort - gets the latest occurence of sort
         sort_direction = None
         sort_field = None
         if 'sort' in params:
@@ -438,7 +438,7 @@ class OCLSearch(object):
                 search_params_dict[sort_direction] = sort_field
         print 'sort:', self.search_sort, sort_direction, ':', sort_field
 
-        # query text
+        # Query text
         if 'q' in params:
             self.q = params.get('q')
             del params['q']
