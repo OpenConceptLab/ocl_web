@@ -85,6 +85,7 @@ class OrganizationDetailView(TemplateView):
             num_found = int(results.headers['num_found'])
             sources = results.json()
             pg = Paginator(range(num_found), source_searcher.num_per_page)
+            current_page = source_searcher.current_page
             context['source_page'] = pg.page(source_searcher.current_page)
 
         # Set the context for the child sources
