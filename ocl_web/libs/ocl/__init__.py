@@ -101,19 +101,19 @@ class OCLapi(object):
                 self.api_key = request.session.get(SESSION_TOKEN_KEY, None)
                 self.headers['Authorization'] = 'Token %s' % key
 
-    @include_facets.setter
-    def include_facets(self, include_facets_bool):
-        if include_facets_bool:
-            self.headers['includeFacets'] = 'true'
-        elif 'includeFacets' in self.headers:
-            del(self.headers['includeFacets'])
-
     @property
     def include_facets(self):
         if 'includeFacets' in self.headers:
             return true
         else:
             return false
+
+    @include_facets.setter
+    def include_facets(self, include_facets_bool):
+        if include_facets_bool:
+            self.headers['includeFacets'] = 'true'
+        elif 'includeFacets' in self.headers:
+            del(self.headers['includeFacets'])
 
     def post(self, type_name, *args, **kwargs):
         """ Issue Post request to API.
