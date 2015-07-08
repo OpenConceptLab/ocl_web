@@ -100,7 +100,7 @@ class OrganizationDetailView(TemplateView):
                     sources_num_found = 0
             else:
                 sources_num_found = 0
-            sources_paginator = Paginator(range(num_found), source_searcher.num_per_page)
+            sources_paginator = Paginator(range(sources_num_found), source_searcher.num_per_page)
             sources_current_page = sources_paginator.page(source_searcher.current_page)
 
         # TODO: Setup source filters based on the current search
