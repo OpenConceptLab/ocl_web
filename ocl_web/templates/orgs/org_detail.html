@@ -162,11 +162,13 @@
 			{% endfor %}
 
 			<!-- Pagination -->
+			{% comment %}
         	{% if sources %}
 			<div class="row" style="text-align:center;">
 				{% bootstrap_pagination source_page url=source_pagination_url %}
 			</div>
 			{% endif %}
+			{% endcomment %}
 
 		</div> {# col-md-8 #}
     </div> {# row #}
