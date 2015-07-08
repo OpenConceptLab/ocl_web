@@ -114,7 +114,7 @@ class OrganizationDetailView(TemplateView):
         context['source_page'] = sources_current_page
         context['source_pagination_url'] = self.request.get_full_path()
         context['source_q'] = source_searcher.get_query()
-        context['source_facets'] = source_facets
+        context['source_facets'] = sources_facets
 
         # TODO: Sort is not setup correctly to work with both sources and collections
         context['search_sort_options'] = source_searcher.get_sort_options()
