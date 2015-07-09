@@ -1,3 +1,6 @@
+"""OCL Users
+"""
+
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -20,12 +23,17 @@ from libs.ocl import OCLapi
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
+    """OCL Users Detail view
+    """
+
     model = User
     # These next two lines tell the view to index lookups by username
     slug_field = "username"
     slug_url_kwarg = "username"
 
     def get_context_data(self, *args, **kwargs):
+        """Set the context for OCL user
+        """
 
         context = super(UserDetailView, self).get_context_data(*args, **kwargs)
 
@@ -50,6 +58,9 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
+    """User Redirect View
+    """
+
     permanent = False
 
     def get_redirect_url(self):
@@ -58,9 +69,9 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
 
 class UserUpdateView(LoginRequiredMixin, FormView):
+    """Update a user profile, need to update both web side and API side.
     """
-        Update a user profile, need to update both web side and API side.
-    """
+
     form_class = UserForm
     template_name = 'users/user_form.html'
 
@@ -104,6 +115,9 @@ class UserUpdateView(LoginRequiredMixin, FormView):
 
 
 class UserListView(LoginRequiredMixin, ListView):
+    """User List View
+    """
+
     model = User
     # These next two lines tell the view to index lookups by username
     slug_field = "username"

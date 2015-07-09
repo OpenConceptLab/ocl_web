@@ -1,3 +1,5 @@
+"""OCL Web Core Functionality
+"""
 import requests
 import logging
 
@@ -12,10 +14,9 @@ logger = logging.getLogger('oclweb')
 
 
 class UserOrOrgMixin(object):
+    """Figure out if a view is called from a user or an organization "owner".
     """
-    Figure out if a view is called from a user or an organization "owner".
 
-    """
     def get_args(self):
         """
             Are we called from org or user? Useful helper for most views.
@@ -56,35 +57,33 @@ class UserOrOrgMixin(object):
         self.version_id = self.kwargs.get('version')
 
     def args_string(self):
+        """Debug method to return all args parsed as a printable string.
         """
-        Debug method to return all args parsed as a printable string.
-        """
-        s = ''
+        output_string = ''
         if self.org_id:
-            s += 'org: %s  ' % self.org_id
+            output_string += 'org: %s  ' % self.org_id
         if self.user_id:
-            s += 'user: %s  ' % self.user_id
+            output_string += 'user: %s  ' % self.user_id
         if self.own_type:
-            s += 'own_type: %s  ' % self.own_type
+            output_string += 'own_type: %s  ' % self.own_type
         if self.own_id:
-            s += 'own_id: %s  ' % self.own_id
+            output_string += 'own_id: %s  ' % self.own_id
         if self.source_id:
-            s += 'source: %s  ' % self.source_id
+            output_string += 'source: %s  ' % self.source_id
         if self.concept_id:
-            s += 'concept: %s  ' % self.concept_id
-        return s
+            output_string += 'concept: %s  ' % self.concept_id
+        return output_string
 
 
 class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
-    """
-        Extra handling for org/user/source is different from concept...
+    """Extra handling for org/user/source is different from concept...
 
-        The extras field name IS the attribute name, the data is stored as a dictionary.
-        So in this view, we translate the API style of data to be like descriptions and names.
-        e.g.:
+    The extras field name IS the attribute name, the data is stored as a dictionary.
+    So in this view, we translate the API style of data to be like descriptions and names.
+    e.g.:
 
-        API version:   {'price': 100}
-        front end version: {extra_name: 'price', extra_value: 100}
+    API version:   {'price': 100}
+    front end version: {extra_name: 'price', extra_value: 100}
     """
 
     def get_all_args(self):
@@ -119,11 +118,12 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         return url_args
 
     def is_edit(self):
+        """Return whether extra_id is set in instance
+        """
         return self.extra_id is not None
 
     def get(self, request, *args, **kwargs):
-        """
-            Return a list of descriptions as json.
+        """Return a list of descriptions as json.
         """
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
@@ -133,16 +133,17 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             logger.warning('Extra GET failed %s' % result.content)
             return self.render_bad_request_response(result.content)
 
-        # convert OCLAPI dictionary style data to a list of dictionary objects
+        # Convert OCLAPI dictionary style data to a list of dictionary objects
         # so that we can use the same front end JS to work with extras.
-        ls = []
-        for k, v in result.json().iteritems():
-            o = {'extra_name': k, 'extra_value': v}
-            ls.append(o)
+        output_list = []
+        for key, value in result.json().iteritems():
+            output_list.append({'extra_name': key, 'extra_value': value})
 
-        return self.render_json_response(ls)
+        return self.render_json_response(output_list)
 
     def post(self, request, *args, **kwargs):
+        """Post
+        """
 
         self.get_all_args()
 
@@ -173,8 +174,7 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             return self.render_json_response({'message': msg})
 
     def delete(self, request, *args, **kwargs):
-        """
-        Delete the specified item.
+        """Delete the specified item.
         """
         self.get_all_args()
 
@@ -192,8 +192,10 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         return self.render_json_response({'message': _('extra deleted')})
 
 
+# TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
 def _get_concept_class_list():
-    """
+    """Return a list of concept classes.
+
     This is a temporary function. Should get this data from the database.
     currently from OpenMRS dataset 2014/10/19
     """
@@ -229,8 +231,12 @@ def _get_concept_class_list():
     ]
 
 
+# TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
 def _get_datatype_list():
-    """     currently from OpenMRS dataset 2014/10/19 """
+    """Return a list of datatypes.
+
+    Currently from OpenMRS dataset 2014/10/19
+    """
     return [
         'Boolean',
         'Coded',
@@ -247,7 +253,10 @@ def _get_datatype_list():
     ]
 
 
+# TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
 def _get_source_type_list():
+    """Return a list of source types
+    """
     return [
         'Dictionary',
         'Interface Terminology',
@@ -257,7 +266,10 @@ def _get_source_type_list():
     ]
 
 
+# TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
 def _get_locale_list():
+    """Return a list of locales
+    """
     return [
         {'code': 'ar', 'name': 'Arabic'},
         {'code': 'eu', 'name': 'Basque'},
@@ -273,7 +285,10 @@ def _get_locale_list():
     ]
 
 
+# TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
 def _get_map_type_list():
+    """Return a list of map types
+    """
     return [
         "Access",
         "After",
@@ -348,19 +363,19 @@ def _get_map_type_list():
     ]
 
 
+# TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
 class GetOptionListView(JsonRequestResponseMixin, View):
-    """
-        Utility to get a list of valid options for attributes for
-        different resource types for the front end.
+    """Utility to get a list of valid options for attributes for
+    different resource types for the front end.
 
-        TODO: Get this from the database
+    TODO: Get this from the database
 
-        :returns: json list of either strings, or dictionaries in
-            case of locales.
+    :returns: json list of either strings, or dictionaries in
+        case of locales.
     """
+
     def get(self, request, *args, **kwargs):
-        """
-            Return a list of descriptions as json.
+        """Return a list of descriptions as json.
         """
         option_type = self.kwargs['type']
         if option_type == 'concept_classes':
@@ -374,13 +389,11 @@ class GetOptionListView(JsonRequestResponseMixin, View):
 
 
 class GetStatsView(View):
+    """Utility views to get basic statistics to monitoring services.
     """
-        Utility views to get basic statistics to monitoring services.
 
-    """
     def get(self, request, *args, **kwargs):
-        """
-            Return a ... number !
+        """Return a ... number !
         """
         key = self.kwargs['key']
         cnt = 0
