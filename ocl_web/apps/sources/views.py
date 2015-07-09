@@ -1,3 +1,5 @@
+"""Views for OCL Sources
+"""
 import requests
 import logging
 
@@ -18,8 +20,7 @@ logger = logging.getLogger('oclweb')
 
 
 class SourceDetailView(UserOrOrgMixin, TemplateView):
-    """
-    The source detail view is both a source display *and* a concept search view.
+    """OCL Sources detailed view
     """
 
     template_name = "sources/source_detail.html"
@@ -32,9 +33,11 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
 
         context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
         context['get_params'] = self.request.GET
-
-        self.get_args()
         print 'Source Detail INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
+
+        # Adds identifying attributes to the instance
+        # TODO: This is poorly named and kind of a hack -- fix it!
+        self.get_args()
 
         # Load the source
         api = OCLapi(self.request, debug=True)
@@ -58,7 +61,9 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         # Load the concepts in this source
         api.include_facets = True
         concept_searcher = OCLSearch(search_type=OCLapi.CONCEPT_TYPE, params=self.request.GET)
-        concept_search_results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', params=concept_searcher.search_params)
+        concept_search_results = api.get(
+            self.own_type, self.own_id, 'sources', self.source_id,
+            'concepts', params=concept_searcher.search_params)
         if concept_search_results.status_code != 200:
             if concept_search_results.status_code == 404:
                 raise Http404

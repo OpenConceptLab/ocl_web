@@ -1,3 +1,6 @@
+"""OCL Concept Views
+"""
+# TODO: Split tabs into separate pages
 import requests
 import logging
 
@@ -26,7 +29,10 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
     on Get returns full HTML display page.
     create is handled via ajax post via angular.
     """
+
     def get(self, request, *args, **kwargs):
+        """Get concept
+        """
 
         self.get_args()
         data = {}
@@ -37,7 +43,9 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
 
         if self.concept_id is not None:
             # edit
-            concept = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', self.concept_id).json()
+            concept = api.get(
+                self.own_type, self.own_id, 'sources', self.source_id,
+                'concepts', self.concept_id).json()
             data['concept'] = concept
 
             if request.is_ajax():
@@ -50,6 +58,9 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
 
 
     def get_success_url(self):
+        """Get success URL
+        """
+
         if self.from_org:
             return reverse("source-detail",
                            kwargs={"org": self.org_id,
@@ -61,10 +72,13 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
 
 
     def clean_concept_id(self, request, concept_id):
-        """ concept ID must be unique """
+        """ concept ID must be unique
+        """
 
         api = OCLapi(request, debug=True)
-        result = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', concept_id)
+        result = api.get(
+            self.own_type, self.own_id, 'sources', self.source_id,
+            'concepts', concept_id)
         if result.status_code == 200:
             return _('This Concept ID is already used.')
         else:
@@ -72,6 +86,9 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
 
 
     def add(self):
+        """Create new concept
+        """
+
         print self.request_json
         data = {}
         data['id'] = self.request_json.get('concept_id')
@@ -105,6 +122,9 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
 
 
     def edit(self):
+        """Edit concept
+        """
+
         data = {}
         data['concept_class'] = self.request_json.get('concept_class')
         data['datatype'] = self.request_json.get('datatype')
@@ -115,7 +135,9 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
         # return self.render_json_response({'message': _('Concept updated')})
 
         api = OCLapi(self.request, debug=True)
-        result = api.update_concept(self.own_type, self.own_id, self.source_id, self.concept_id, data)
+        result = api.update_concept(
+            self.own_type, self.own_id, self.source_id,
+            self.concept_id, data)
         if result.status_code != requests.codes.ok:
             emsg = result.json().get('detail', 'Error')
             logger.warning('Concept update POST failed %s' % emsg)
@@ -126,9 +148,9 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
 
 
     def post(self, *args, **kwargs):
+        """Post create or new concept
         """
-            Handle actual creation or edit.
-        """
+
         self.get_args()
         print self.args_string()
 
@@ -139,9 +161,9 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
 
 
 class ConceptRetireView(UserOrOrgMixin, FormView):
+    """View for retiring a concept. This is like a logical delete.
     """
-    View for retiring a concept. This is like a logical delete.
-    """
+
     form_class = ConceptRetireForm
     template_name = "concepts/concept_retire.html"
 
@@ -153,7 +175,9 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
         api = OCLapi(self.request, debug=True)
         source = api.get(self.own_type, self.own_id, 'sources', self.source_id).json()
         context['source'] = source
-        concept = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', self.concept_id).json()
+        concept = api.get(
+            self.own_type, self.own_id, 'sources', self.source_id,
+            'concepts', self.concept_id).json()
         context['concept'] = concept
         return context
 
@@ -212,6 +236,7 @@ class ConceptCreateView(UserOrOrgMixin, FormView):
     def get_context_data(self, *args, **kwargs):
         """ Supply related data for the add form
         """
+
         context = super(ConceptCreateView, self).get_context_data(*args, **kwargs)
 
         print 'get context...'
@@ -231,7 +256,9 @@ class ConceptCreateView(UserOrOrgMixin, FormView):
         return context
 
     def get_initial(self):
-        """ Load some useful data, not really for form display but internal use """
+        """ Load some useful data, not really for form display but internal use
+        """
+
         self.get_args()
         source_id = self.kwargs.get('source')
 
@@ -248,6 +275,8 @@ class ConceptCreateView(UserOrOrgMixin, FormView):
         return data
 
     def form_valid(self, form, *args, **kwargs):
+        """Form validator
+        """
 
         self.get_args()
         source_id = self.kwargs.get('source')
@@ -303,13 +332,19 @@ class ConceptEditView(UserOrOrgMixin, FormView):
 
         if self.from_org:
             self.source = api.get('orgs', self.org_id, 'sources', self.source_id).json()
-            self.concept = api.get('orgs', self.org_id, 'sources', self.source_id, 'concepts', self.concept_id).json()
+            self.concept = api.get(
+                'orgs', self.org_id, 'sources', self.source_id,
+                'concepts', self.concept_id).json()
         else:
             self.source = api.get('users', self.user_id, 'sources', self.source_id).json()
-            self.concept = api.get('users', self.user_id, 'sources', self.source_id, 'concepts', self.concept_id).json()
+            self.concept = api.get(
+                'users', self.user_id, 'sources', self.source_id,
+                'concepts', self.concept_id).json()
         return ConceptEditForm
 
     def get_success_url(self):
+        """Get success URL
+        """
         if self.from_org:
             return reverse("concept-detail",
                            kwargs={"org": self.org_id,
@@ -353,7 +388,8 @@ class ConceptEditView(UserOrOrgMixin, FormView):
         if self.from_org:
             result = api.update_concept('orgs', self.org_id, self.source_id, self.concept_id, data)
         else:
-            result = api.update_concept('users', self.user_id, self.source_id, self.concept_id, data)
+            result = api.update_concept(
+                'users', self.user_id, self.source_id, self.concept_id, data)
         if result.status_code != requests.codes.ok:
             emsg = result.json().get('detail', 'Error')
             messages.add_message(self.request, messages.ERROR, emsg)
@@ -386,12 +422,19 @@ class ConceptDetailView(UserOrOrgMixin, TemplateView):
                                     self.source_id, 'concepts', self.concept_id)
         return
 
-        if self.from_org:
-            self.source = api.get_json('orgs', self.org_id, 'sources', self.source_id)
-            self.concept = api.get_json('orgs', self.org_id, 'sources', self.source_id, 'concepts', self.concept_id)
-        else:
-            self.source = api.get('users', self.user_id, 'sources', self.source_id).json()
-            self.concept = api.get('users', self.user_id, 'sources', self.source_id, 'concepts', self.concept_id).json()
+        # TODO(paynejd@gmail.com): Unreachable code -- remove?
+        #if self.from_org:
+        #    self.source = api.get_json(
+        #        'orgs', self.org_id, 'sources', self.source_id)
+        #    self.concept = api.get_json(
+        #        'orgs', self.org_id, 'sources', self.source_id,
+        #        'concepts', self.concept_id)
+        #else:
+        #    self.source = api.get(
+        #        'users', self.user_id, 'sources', self.source_id).json()
+        #    self.concept = api.get(
+        #        'users', self.user_id, 'sources', self.source_id,
+        #        'concepts', self.concept_id).json()
 
     def get_context_data(self, *args, **kwargs):
         """ Supply related data for the add form
@@ -433,8 +476,8 @@ class ConceptVersionListView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOr
 
 
 class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
-    """
-        Interface to AngularJS concept description operations, supporting list, add, update and delete.
+    """Interface to AngularJS concept description operations,
+    supporting list, add, update and delete.
     """
     # override this, set to 'descriptions', 'names', etc
     item_name = None
@@ -462,11 +505,13 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         api = OCLapi(self.request, debug=True)
 
         if self.optional:
-            result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
-               'concepts', self.concept_id, self.item_name, params=self.optional)
+            result = api.get(
+                self.own_type, self.own_id, 'sources', self.source_id,
+                'concepts', self.concept_id, self.item_name, params=self.optional)
         else:
-            result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
-               'concepts', self.concept_id, self.item_name)
+            result = api.get(
+                self.own_type, self.own_id, 'sources', self.source_id,
+                'concepts', self.concept_id, self.item_name)
 
 
         if not result.ok:
@@ -493,20 +538,23 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         api = OCLapi(self.request, debug=True)
         if self.is_edit():
             if self.item_name == 'mappings':
-                result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
-                                self.item_name, **data)
+                result = api.put(
+                    self.own_type, self.own_id, 'sources', self.source_id,
+                    self.item_name, **data)
             else:
-                result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
-                             'concepts', self.concept_id, self.item_name,
-                             self.item_id, **data)
+                result = api.put(
+                    self.own_type, self.own_id, 'sources', self.source_id,
+                    'concepts', self.concept_id, self.item_name, self.item_id, **data)
             msg = _('updated')
         else:
             if self.item_name == 'mappings':
-                result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
-                                self.item_name, **data)
+                result = api.post(
+                    self.own_type, self.own_id, 'sources', self.source_id,
+                    self.item_name, **data)
             else:
-                result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
-                              'concepts', self.concept_id, self.item_name, **data)
+                result = api.post(
+                    self.own_type, self.own_id, 'sources', self.source_id,
+                    'concepts', self.concept_id, self.item_name, **data)
             msg = _('added')
 
         if not result.ok:
@@ -522,9 +570,9 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
         if self.is_edit():  # i.e. has item UUID
-            result = api.delete(self.own_type, self.own_id, 'sources', self.source_id,
-                                'concepts', self.concept_id,
-                                self.item_name, self.item_id)
+            result = api.delete(
+                self.own_type, self.own_id, 'sources', self.source_id,
+                'concepts', self.concept_id, self.item_name, self.item_id)
         if not result.ok:
             logger.warning('DEL failed %s' % result.content)
             return self.render_bad_request_response(result.content)
@@ -546,16 +594,15 @@ class ConceptNameView(ConceptItemView):
 
 
 class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
-    """
-        Concept extras handling is different from descriptions and names. So the view
-        is similar to the ConceptItemView but not the same.
+    """Concept extras handling is different from descriptions and names.
+    So the view is similar to the ConceptItemView but not the same.
 
-        The extras field name IS the attribute name, the data is stored as a dictionary.
-        So in this view, we translate the API style of data to be like descriptions and names.
-        e.g.:
+    The extras field name IS the attribute name, the data is stored as a dictionary.
+    So in this view, we translate the API style of data to be like descriptions and names.
+    e.g.:
 
-        API version:   {'price': 100}
-        front end version: {extra_name: 'price', extra_value: 100}
+    API version:   {'price': 100}
+    front end version: {extra_name: 'price', extra_value: 100}
     """
 
     item_name = 'extras'  # used in calling API URL
@@ -574,8 +621,7 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         return self.item_id is not None
 
     def get(self, request, *args, **kwargs):
-        """
-            Return a list of descriptions as json.
+        """Return a list of descriptions as json.
         """
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
@@ -657,7 +703,7 @@ class ConceptMappingView(JsonRequestResponseMixin, UserOrOrgMixin, View):
 
     """
     field_names = ['map_type', 'external_id', 'from_concept_url', 'to_concept_url',
-                    'to_source_url', 'to_concept_code', 'to_concept_name']
+                   'to_source_url', 'to_concept_code', 'to_concept_name']
 
     def get_all_args(self):
         """
@@ -708,16 +754,18 @@ class ConceptMappingView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             # Somehow we get more data fields from the lookup  then
             # what the update will accept
             if data['to_concept_url']:
-                data.pop('to_source_url',None)
-                data.pop('to_concept_code',None)
-                data.pop('to_concept_name',None)
+                data.pop('to_source_url', None)
+                data.pop('to_concept_code', None)
+                data.pop('to_concept_name', None)
 
-            result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
-                            'mappings', self.item_id, **data)
+            result = api.put(
+                self.own_type, self.own_id, 'sources', self.source_id,
+                'mappings', self.item_id, **data)
             msg = _('updated')
         else:
-            result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
-                            'mappings', **data)
+            result = api.post(
+                self.own_type, self.own_id, 'sources', self.source_id,
+                'mappings', **data)
             msg = _('added')
 
         if not result.ok:

@@ -1,3 +1,5 @@
+"""OCL Organization Views
+"""
 import requests
 import logging
 
@@ -20,8 +22,7 @@ logger = logging.getLogger('oclweb')
 
 
 class OrganizationDetailView(TemplateView):
-    """
-    Organization details and source search view.
+    """Organization details and source search view.
     """
 
     template_name = "orgs/org_detail.html"
@@ -40,26 +41,34 @@ class OrganizationDetailView(TemplateView):
         # TODO: Change each tab to a separate page (like GitHub)
 
         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
+        context['get_params'] = self.request.GET
 
         # Determine the organization ID
         # TODO: Make the organization object self-aware like the source context (e.g. self.org_id)
         org_id = self.kwargs.get('org')
 
         # Prepare to search the sources and collections in this org
-        # NOTE: Both are searched no matter what, but only one accepts search criteria/filters at a time
+        # NOTE: Both are searched no matter what, but only one accepts search
+        # criteria/filters at a time
         res_type = self.request.GET.get('resource_type')
         print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
         print res_type
         if res_type == 'source':
-            source_searcher = OCLSearch(search_type=OCLSearch.SOURCE_TYPE, params=self.request.GET)
-            #collection_searcher = OCLSearch(search_type=OCLSearch.COLLECTION_TYPE, params={})
+            source_searcher = OCLSearch(
+                search_type=OCLSearch.SOURCE_TYPE, params=self.request.GET)
+            #collection_searcher = OCLSearch(
+            #    search_type=OCLSearch.COLLECTION_TYPE, params={})
         elif res_type == 'collection':
-            source_searcher = OCLSearch(search_type=OCLSearch.SOURCE_TYPE, params={})
-            #collection_searcher = OCLSearch(search_type=OCLSearch.COLLECTION_TYPE, params=self.request.GET)
+            source_searcher = OCLSearch(
+                search_type=OCLSearch.SOURCE_TYPE, params={})
+            #collection_searcher = OCLSearch(
+            #    search_type=OCLSearch.COLLECTION_TYPE, params=self.request.GET)
         else:
             # Still pass down paging parameters
-            source_searcher = OCLSearch(search_type=OCLSearch.SOURCE_TYPE, params=self.request.GET)
-            #collection_searcher = OCLSearch(search_type=OCLSearch.COLLECTION_TYPE, params=self.request.GET)
+            source_searcher = OCLSearch(
+                search_type=OCLSearch.SOURCE_TYPE, params=self.request.GET)
+            #collection_searcher = OCLSearch(
+            #    search_type=OCLSearch.COLLECTION_TYPE, params=self.request.GET)
 
         # Load the organization
         api_org = OCLapi(self.request, debug=True)
@@ -70,18 +79,21 @@ class OrganizationDetailView(TemplateView):
             else:
                 search_result_org.raise_for_status()
         org = search_result_org.json()
+        context['org'] = org
 
         # Set about text for the organization
         # TODO: Create a generic method for getting at extras
         if 'extras' in org and isinstance(org['extras'], dict):
             about = org['extras'].get('about', 'No about entry.')
         else:
-            # TODO: If user has editing privileges to this org, then prompt them to create an about entry
+            # TODO: If user has editing privileges, prompt them to create about entry
             about = 'No about entry.'
+        context['about'] = about
 
         # Load the sources in this organization
         api_sources = OCLapi(self.request, debug=True, facets=True)
-        search_result_sources = api_sources.get('orgs', org_id, 'sources', params=source_searcher.search_params)
+        search_result_sources = api_sources.get(
+            'orgs', org_id, 'sources', params=source_searcher.search_params)
         if search_result_sources.status_code == requests.codes.not_found:
             sources_response_json = {}
             sources_facets_json = {}
@@ -95,7 +107,6 @@ class OrganizationDetailView(TemplateView):
             sources_facets_json = sources_response_json['facets']
             sources_facets = source_searcher.process_facets('sources', sources_facets_json)
             sources = sources_response_json['results']
-            # BUG: If num_found is not present or if sources_num_found is 0, that may cause paginator error
             if 'num_found' in search_result_sources.headers:
                 try:
                     sources_num_found = int(search_result_sources.headers['num_found'])
@@ -132,7 +143,8 @@ class OrganizationDetailView(TemplateView):
         # Load the collections in this org
         # TODO: Collections not implemented yet
         #api.include_facets = True
-        #search_result_collections = api.get('orgs', org_id, 'collections', params=collection_searcher.search_params)
+        #search_result_collections = api.get(
+        #    'orgs', org_id, 'collections', params=collection_searcher.search_params)
         # if search_result_collections.status_code == requests.codes.not_found:
         #     collections = []
         #     num_found = 0
@@ -152,22 +164,20 @@ class OrganizationDetailView(TemplateView):
         # TODO: Access issue, error if user is not super user??
         members = []
         api_members = OCLapi(self.request, debug=True)
-        r = api_members.get('orgs', org_id, 'members')
-        if r.status_code == 200:
-            members = r.json()
-        elif r.status_code != 404:
+        members_search_results = api_members.get('orgs', org_id, 'members')
+        if members_search_results.status_code == 200:
+            members = members_search_results.json()
+        elif members_search_results.status_code != 404:
             #raise Exception(r.json())
             pass
-
-        # Set the context
-        context['get_params'] = self.request.GET
-        context['org'] = org
         context['members'] = members
-        context['about'] = about
+
         return context
 
 
 class OrganizationCreateView(LoginRequiredMixin, FormView):
+    """View to create new organization
+    """
 
     form_class = OrganizationCreateForm
     template_name = "orgs/org_new.html"
@@ -198,6 +208,8 @@ class OrganizationCreateView(LoginRequiredMixin, FormView):
 
 
 class OrganizationEditView(FormView):
+    """View to edit organization
+    """
 
     template_name = 'orgs/org_edit.html'
 
@@ -236,6 +248,8 @@ class OrganizationEditView(FormView):
 
 
 class OrganizationMemberAddView(LoginRequiredMixin, FormView):
+    """View to add member to organization
+    """
 
     form_class = OrganizationMemberAddForm
     template_name = "orgs/org_member_add.html"
@@ -281,6 +295,8 @@ class OrganizationMemberAddView(LoginRequiredMixin, FormView):
 
 class OrganizationMemberRemoveView(LoginRequiredMixin,
                                    JsonRequestResponseMixin, View):
+    """View to remove member from organization
+    """
 
     def post(self, *args, **kwargs):
         self.org_id = self.kwargs.get('org')
@@ -295,5 +311,3 @@ class OrganizationMemberRemoveView(LoginRequiredMixin,
 
         else:
             return self.render_bad_request_response({'message': result.status_code})
-
-

@@ -1,14 +1,16 @@
-# Basic search
-# https://github.com/search?q=malaria&ref=cmdform
-# Search by type (when sidebar is clicked)
-# https://github.com/search?q=malaria&ref=cmdform&type=Code
+"""Views for OCL Global search
+
+Examples:
+https://github.com/search?q=malaria&ref=cmdform
+https://github.com/search?q=malaria&ref=cmdform&type=Code
+"""
 import logging
 
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.core.paginator import Paginator
 import urllib
-import math
+#import math
 
 from libs.ocl import (OCLapi, OCLSearch)
 
@@ -17,10 +19,14 @@ logger = logging.getLogger('oclweb')
 
 
 class HomeSearchView(TemplateView):
+    """View for global OCL search
+    """
 
     template_name = "ocl_search/search.html"
 
     def get_context_data(self, *args, **kwargs):
+        """Set context for OCL global search_type
+        """
 
         context = super(HomeSearchView, self).get_context_data(*args, **kwargs)
 
@@ -50,7 +56,7 @@ class HomeSearchView(TemplateView):
             num_found = 0
 
         # Setup filters based on the current search
-        # NOTE: Facets should be processed separately from filters -- 
+        # NOTE: Facets should be processed separately from filters --
         #       Facets are what are returned by Solr, filters are what are displayed
         #       Some processing will be required to convert between the two
         # TODO: sort filters
@@ -61,11 +67,13 @@ class HomeSearchView(TemplateView):
         #       should change to select the actual filters
         searcher.select_filters(self.request.GET)
 
-        # Setup paginator and context for primary search
-        pg = Paginator(range(num_found), searcher.num_per_page)
-        context['page'] = pg.page(searcher.current_page)
+        # Setup paginator for primary search
+        search_paginator = Paginator(range(num_found), searcher.num_per_page)
+        search_current_page = search_paginator.page(searcher.current_page)
+
+        # Set context for primary search
+        context['page'] = search_current_page
         context['pagination_url'] = self.request.get_full_path()
-        #context['search_filter_lists'] = searcher.get_filters()
         context['results'] = search_results
         context['search_type'] = searcher.search_type
         context['search_type_name'] = searcher.search_resource_name
@@ -75,14 +83,15 @@ class HomeSearchView(TemplateView):
 
         # Build URL parameters for switching to other resources
         # TODO: should this use GET or search_params?
-        allowed_other_resource_search_params = ['q', 'limit', 'debug']
+        allowed_params = ['q', 'limit', 'debug']
         other_resource_search_params = {}
-        for param in allowed_other_resource_search_params:
+        for param in allowed_params:
             if param in self.request.GET:
                 other_resource_search_params[param] = self.request.GET.get(param)
         context['other_resource_search_params'] = ''
         if len(other_resource_search_params):
-            context['other_resource_search_params'] = '&' + urllib.urlencode(other_resource_search_params)
+            context['other_resource_search_params'] = (
+                '&' + urllib.urlencode(other_resource_search_params))
 
         # Perform the counter searches for the other resources
         resource_count = {}
@@ -106,6 +115,6 @@ class HomeSearchView(TemplateView):
         context['search_facets_json'] = search_facets_json
 
         # to remove closing form tag in nav.html
-        context['extend_nav_form'] = True  
+        context['extend_nav_form'] = True
 
         return context
