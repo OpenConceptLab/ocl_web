@@ -73,7 +73,7 @@
 				</div>
 				{% endfor %}
 				{% endcomment %}
-				
+
 			</div>
 
 
@@ -144,6 +144,19 @@
 					</div>
 				</div> <!-- /row -->
 	        </form>
+
+			<!-- Debug -->
+
+			{% if request.GET.debug %}
+			<div class="row">
+				<div class="col-md-12">
+					<pre><strong>GET Params:</strong><br />{{ get_params|pprint }}</pre>
+					<pre><strong>API Search Params:</strong><br />{{ sources_search_params|pprint }}</pre>
+					<pre><strong>Response Headers:</strong><br />{{ sources_search_response_headers|pprint }}</pre>
+					<pre><strong>Facets</strong><br />{{ sources_search_facets_json|pprint }}</pre>
+				</div>
+			</div>
+			{% endif %}
 
 			<!-- Display sources that belong to this org -->
 			{% for result in sources %}

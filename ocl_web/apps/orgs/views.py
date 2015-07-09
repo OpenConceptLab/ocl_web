@@ -34,7 +34,7 @@ class OrganizationDetailView(TemplateView):
         context['collections']
         context['members']
         """
-        # TODO: Change page so that only one tab loaded at a time
+        # TODO: Change each tab to a separate page
 
         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
 
@@ -42,7 +42,6 @@ class OrganizationDetailView(TemplateView):
         org_id = self.kwargs.get('org')
 
         # Prepare to search the sources and collections in this org
-        # BUG: OCLSearch.parse() fails if no URL parameters are passed
         # NOTE: Both are searched no matter what, but only one accepts search criteria/filters at a time
         res_type = self.request.GET.get('resource_type')
         print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
@@ -68,8 +67,8 @@ class OrganizationDetailView(TemplateView):
                 search_result_org.raise_for_status()
         org = search_result_org.json()
 
-        # Set org about text
-        # TODO: Need a more generic method for getting at extras
+        # Set about text for the organization
+        # TODO: Create a generic method for getting at extras
         if 'extras' in org and isinstance(org['extras'], dict):
             about = org['extras'].get('about', 'No about entry.')
         else:
@@ -115,6 +114,12 @@ class OrganizationDetailView(TemplateView):
         context['source_pagination_url'] = self.request.get_full_path()
         context['source_q'] = source_searcher.get_query()
         context['source_facets'] = sources_facets
+
+        # Set debug context
+        context['get_params'] = self.request.GET
+        context['sources_search_params'] = source_searcher.search_params
+        context['sources_search_response_headers'] = search_result_sources.headers
+        context['sources_search_facets_json'] = sources_facets_json
 
         # TODO: Sort is not setup correctly to work with both sources and collections
         context['search_sort_options'] = source_searcher.get_sort_options()
