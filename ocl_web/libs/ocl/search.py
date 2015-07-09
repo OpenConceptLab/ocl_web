@@ -259,7 +259,7 @@ class OCLSearch(object):
         self.q = None
 
         # Optionally parse search parameters (i.e. GET request parameters)
-        if params:
+        if params is not None:
             self.parse(params)
 
 
