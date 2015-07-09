@@ -58,8 +58,8 @@ class OrganizationDetailView(TemplateView):
             collection_searcher = OCLSearch(search_type=OCLSearch.COLLECTION_TYPE, params=self.request.GET)
 
         # Load the organization
-        api = OCLapi(self.request, debug=True)
-        search_result_org = api.get('orgs', org_id)
+        api_org = OCLapi(self.request, debug=True)
+        search_result_org = api_org.get('orgs', org_id)
         if search_result_org.status_code != 200:
             if search_result_org.status_code == 404:
                 raise Http404
@@ -76,8 +76,8 @@ class OrganizationDetailView(TemplateView):
             about = 'No about entry.'
 
         # Load the sources in this org
-        api.include_facets = True
-        search_result_sources = api.get('orgs', org_id, 'sources', params=source_searcher.search_params)
+        api_sources = OCLapi(self.request, debug=True, facets=True)
+        search_result_sources = api_sources.get('orgs', org_id, 'sources', params=source_searcher.search_params)
         if search_result_sources.status_code == requests.codes.not_found:
             sources_response_json = {}
             sources_facets_json = {}
@@ -116,7 +116,7 @@ class OrganizationDetailView(TemplateView):
         context['source_facets'] = sources_facets
 
         # Set debug context for sources
-        context['sources_request_url'] = api.url
+        context['sources_request_url'] = api_sources.url
         context['sources_search_params'] = source_searcher.search_params
         context['sources_search_response_headers'] = search_result_sources.headers
         context['sources_search_facets_json'] = sources_facets_json
@@ -147,7 +147,8 @@ class OrganizationDetailView(TemplateView):
         # Load members of this org
         # TODO: Access issue, error if user is not super user??
         members = []
-        r = api.get('orgs', org_id, 'members')
+        api_members = OCLapi(self.request, debug=True)
+        r = api_members.get('orgs', org_id, 'members')
         if r.status_code == 200:
             members = r.json()
         elif r.status_code != 404:
