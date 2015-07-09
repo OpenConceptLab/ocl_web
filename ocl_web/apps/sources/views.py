@@ -58,8 +58,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         # Load the concepts in this source
         api.include_facets = True
         concept_searcher = OCLSearch(search_type=OCLapi.CONCEPT_TYPE, params=self.request.GET)
-        concept_search_results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', 
-            params=concept_searcher.search_params)
+        concept_search_results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', params=concept_searcher.search_params)
         if concept_search_results.status_code != 200:
             if concept_search_results.status_code == 404:
                 raise Http404
@@ -72,7 +71,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         if 'num_found' in concept_search_results.headers:
             try:
                 concepts_num_found = int(concept_search_results.headers['num_found'])
-            else:
+            except ValueError:
                 concepts_num_found = 0
         else:
             concepts_num_found = 0
@@ -90,7 +89,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         context['concept_page'] = concepts_current_page
         context['concept_pagination_url'] = self.request.get_full_path()
         context['concept_q'] = concept_searcher.get_query()
-        context['concept_facets'] = concept_facets
+        context['concept_facets'] = concepts_facets
         #context['search_filters'] = concept_searcher.get_filters()
 
         # TODO: Sort is not setup correctly to work with both concepts and mappings
