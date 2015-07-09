@@ -1,4 +1,5 @@
 import requests
+import logging
 
 from django.shortcuts import redirect
 from django.http import Http404
@@ -14,6 +15,8 @@ from braces.views import (CsrfExemptMixin, JsonRequestResponseMixin)
 from .forms import (OrganizationCreateForm, OrganizationEditForm)
 from .forms import (OrganizationMemberAddForm)
 from libs.ocl import OCLapi, OCLSearch
+
+logger = logging.getLogger('oclweb')
 
 
 class OrganizationDetailView(TemplateView):
@@ -31,14 +34,15 @@ class OrganizationDetailView(TemplateView):
         -------------
         context['org']
         context['sources']
-        context['collections']
+        context['collections']   # not implemented yet
         context['members']
         """
-        # TODO: Change each tab to a separate page
+        # TODO: Change each tab to a separate page (like GitHub)
 
         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
 
         # Determine the organization ID
+        # TODO: Make the organization object self-aware like the source context (e.g. self.org_id)
         org_id = self.kwargs.get('org')
 
         # Prepare to search the sources and collections in this org
@@ -75,7 +79,7 @@ class OrganizationDetailView(TemplateView):
             # TODO: If user has editing privileges to this org, then prompt them to create an about entry
             about = 'No about entry.'
 
-        # Load the sources in this org
+        # Load the sources in this organization
         api_sources = OCLapi(self.request, debug=True, facets=True)
         search_result_sources = api_sources.get('orgs', org_id, 'sources', params=source_searcher.search_params)
         if search_result_sources.status_code == requests.codes.not_found:

@@ -10,7 +10,6 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from braces.views import JsonRequestResponseMixin
 
-
 from libs.ocl import OCLapi, OCLSearch
 from .forms import (SourceCreateForm, SourceEditForm)
 from apps.core.views import UserOrOrgMixin
@@ -26,53 +25,83 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
     template_name = "sources/source_detail.html"
 
     def get_context_data(self, *args, **kwargs):
+        """
+        Loads the source then the concepts for the source
+        """
+        # TODO: Change each tab to a separate page (like GitHub)
+
         context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
+        context['get_params'] = self.request.GET
 
-        self.get_args()
-
+        #self.get_args()
         print 'Source Detail INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
-        searcher = OCLSearch(OCLapi.CONCEPT_TYPE).parse(self.request.GET)
 
+        # Load the source
         api = OCLapi(self.request, debug=True)
-
-        # load the source
-        results = api.get(self.own_type, self.own_id, 'sources', self.source_id)
-        if results.status_code != 200:
-            if results.status_code == 404:
+        # TODO: Change own_type and own_id to owner_type and owner_id
+        source_search_results = api.get(self.own_type, self.own_id, 'sources', self.source_id)
+        if source_search_results.status_code != 200:
+            if source_search_results.status_code == 404:
                 raise Http404
             else:
-                results.raise_for_status()
-        source = results.json()
+                source_search_results.raise_for_status()
+        source = source_search_results.json()
+        context['source'] = source
 
-        # source about text -- need a more generic method for extras
+        # Set about text for the source
         if isinstance(source['extras'], dict):
             about = source['extras'].get('about', 'No about entry.')
         else:
             about = 'No about entry.'
+        context['about'] = about
 
-        # load the concepts in this source
-        results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', params=searcher.search_params)
-        if results.status_code != 200:
-            if results.status_code == 404:
+        # Load the concepts in this source
+        api.include_facets = True
+        concept_searcher = OCLSearch(search_type=OCLapi.CONCEPT_TYPE, params=self.request.GET)
+        concept_search_results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts', 
+            params=concept_searcher.search_params)
+        if concept_search_results.status_code != 200:
+            if concept_search_results.status_code == 404:
                 raise Http404
             else:
-                results.raise_for_status()
-        concept_list = results.json()
+                concept_search_results.raise_for_status()
+        concepts_response_json = concept_search_results.json()
+        concepts_facets_json = concepts_response_json['facets']
+        concepts_facets = concept_searcher.process_facets('concepts', concepts_facets_json)
+        concepts = concepts_response_json['results']
+        if 'num_found' in concept_search_results.headers:
+            try:
+                concepts_num_found = int(concept_search_results.headers['num_found'])
+            else:
+                concepts_num_found = 0
+        else:
+            concepts_num_found = 0
+        concepts_paginator = Paginator(range(concepts_num_found), concept_searcher.num_per_page)
+        concepts_current_page = concepts_paginator.page(concept_searcher.current_page)
 
-        # load the mappings in this source - TODO
+        # TODO: Setup source filters based on the current search
 
-        # set the context
-        context['source'] = source
-        context['concepts'] = concept_list
-        context['q'] = searcher.get_query()
-        context['search_sort_options'] = searcher.get_sort_options()
-        context['search_sort'] = searcher.get_sort()
-        context['search_filters'] = searcher.get_filters()
-        num_found = int(results.headers['num_found'])
-        pg = Paginator(range(num_found), searcher.num_per_page)
-        context['page'] = pg.page(searcher.current_page)
-        context['pagination_url'] = self.request.get_full_path()
-        context['about'] = about
+        # Select concept filters
+        # TODO: This is passing all parameters, but should pass only those relevant to concepts
+        concept_searcher.select_filters(self.request.GET)
+
+        # Set the context for the child concepts
+        context['concepts'] = concepts
+        context['concept_page'] = concepts_current_page
+        context['concept_pagination_url'] = self.request.get_full_path()
+        context['concept_q'] = concept_searcher.get_query()
+        context['concept_facets'] = concept_facets
+        #context['search_filters'] = concept_searcher.get_filters()
+
+        # TODO: Sort is not setup correctly to work with both concepts and mappings
+        context['search_sort_options'] = concept_searcher.get_sort_options()
+        context['search_sort'] = concept_searcher.get_sort()
+
+        # TODO: Load the mappings in this source
+        # TODO: Setup source filters based on the current search
+        # TODO: Select mapping filters
+        # TODO: Set the context for the child mappings
+
         return context
 
 

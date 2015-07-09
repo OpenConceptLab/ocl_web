@@ -11,9 +11,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-
 				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-th-list"></span></div>
-
 				<div style="display:inline-block;padding-left:20px">
 					<h3>
 						{% source_owner_label source %} / {% source_label source %}
@@ -25,13 +23,11 @@
 						{% endif %}
 						{% endif_can_change source %}
 					</h3>
-
 					<p>
-					<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ source.updated_on|smart_datetime }})</span>
-					<span class="org-privacy">public</span>
+						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ source.updated_on|smart_datetime }})</span>
+						<span class="org-privacy">public</span>
                 	</p>
 				</div>
-
 			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
 	</div> <!-- /container -->
@@ -45,15 +41,29 @@
 {# tabs #}
 <tabset>
 
+
 <tab heading="Concepts"> {# ----- Start of source concepts tab ----- #}
 
 	<div class="row" ng-controllerx="SourceSearchController">
 		<form action="." method="get">
 
-<!-- Filters -->
-
+		<!-- Filters -->
 	    <div class="col-md-3">
 
+			{% for facet in concept_facets %}
+			<div class="filter-group">
+				<div class="filter-group-header">{{ facet.filter_name }}</div>
+				<div class="filter-group-body">
+					{% for facet_key, facet_option in facet.options.iteritems %}
+						{% if facet_option.option_num > 0 %}
+							<div class="checkbox"><label><input type="checkbox" name="{{ facet.filter_name }}" value="{{ facet_option.option_value }}" {% if facet_option.selected %}checked{% endif %}>{{ facet_option.option_name }}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ facet_option.option_num }}</span></label></div>
+						{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+			{% endfor %}
+
+			{% comment %}
 	    	{% for f in search_filters %}
 			<div class="filter-group">
 				<div class="filter-group-header">{{ f.name }}</div>
@@ -65,6 +75,7 @@
 				</div>
 			</div>
 			{% endfor %}
+			{% endcomment %}
 
 		</div>
 
@@ -101,11 +112,11 @@
 			<div class="row">
 				<div class="col-md-12" style="padding-top:20px;padding-bottom:20px;">
 
-                    {% simple_pager page 'concept' url=pagination_url %}
+                    {% simple_pager concept_page 'concept' url=concept_pagination_url %}
 
 
 			        <div class="input-group">
-			            <input type="text" name="q" class="form-control" placeholder="Search concepts within source" value="{{ q }}">
+			            <input type="text" name="q" class="form-control" placeholder="Search concepts within source" value="{{ concept_q }}">
 			            <span class="input-group-btn">
                             <button class="btn btn-default" type="submit" >Search</button>
                         </span>
@@ -177,7 +188,7 @@
 
 	        {% if concepts %}
 			<div class="row" style="text-align:center;">
-				{% bootstrap_pagination page url=pagination_url %}
+				{% bootstrap_pagination concept_page url=concept_pagination_url %}
 			</div>
 			{% endif %}
 		</div>
