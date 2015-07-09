@@ -33,7 +33,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
         context['get_params'] = self.request.GET
 
-        #self.get_args()
+        self.get_args()
         print 'Source Detail INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
 
         # Load the source
