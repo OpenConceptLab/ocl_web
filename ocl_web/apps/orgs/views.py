@@ -115,8 +115,8 @@ class OrganizationDetailView(TemplateView):
         context['source_q'] = source_searcher.get_query()
         context['source_facets'] = sources_facets
 
-        # Set debug context
-        context['get_params'] = self.request.GET
+        # Set debug context for sources
+        context['sources_request_url'] = api.url
         context['sources_search_params'] = source_searcher.search_params
         context['sources_search_response_headers'] = search_result_sources.headers
         context['sources_search_facets_json'] = sources_facets_json
@@ -155,6 +155,7 @@ class OrganizationDetailView(TemplateView):
             pass
 
         # Set the context
+        context['get_params'] = self.request.GET
         context['org'] = org
         context['members'] = members
         context['about'] = about
