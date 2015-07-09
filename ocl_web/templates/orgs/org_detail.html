@@ -46,7 +46,6 @@
 
 			<!-- Filters -->
 			<div class="col-md-3">
-
 				{% for facet in source_facets %}
 				<div class="filter-group">
 					<div class="filter-group-header">{{ facet.filter_name }}</div>
@@ -59,21 +58,6 @@
 					</div>
 				</div>
 				{% endfor %}
-
-				{% comment %}
-		      	{% for f in source_filters %}
-				<div class="filter-group">
-					<div class="filter-group-header">{{ f.name }}</div>
-					<div class="filter-group-body">
-						{% for c in f.options %}
-						<div class="checkbox"><label><input type="checkbox" name="{{ f.filter_id }}"
-							value="{{ c.code }}" {% if c.selected %}checked{% endif %}>{{ c.name }}</label></div>
-		       			{% endfor %}
-					</div>
-				</div>
-				{% endfor %}
-				{% endcomment %}
-
 			</div>
 
 
