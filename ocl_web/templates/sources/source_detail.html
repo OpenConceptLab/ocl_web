@@ -49,7 +49,6 @@
 
 		<!-- Filters -->
 	    <div class="col-md-3">
-
 			{% for facet in concept_facets %}
 			<div class="filter-group">
 				<div class="filter-group-header">{{ facet.filter_name }}</div>
@@ -62,21 +61,6 @@
 				</div>
 			</div>
 			{% endfor %}
-
-			{% comment %}
-	    	{% for f in search_filters %}
-			<div class="filter-group">
-				<div class="filter-group-header">{{ f.name }}</div>
-				<div class="filter-group-body">
-					{% for c in f.options %}
-					<div class="checkbox"><label><input type="checkbox" name="{{ f.filter_id }}"
-						value="{{ c.code }}" {% if c.selected %}checked{% endif %}>{{ c.name }}</label></div>
-        			{% endfor %}
-				</div>
-			</div>
-			{% endfor %}
-			{% endcomment %}
-
 		</div>
 
 <!-- Search selecters -->
@@ -97,12 +81,12 @@
 
 					<div class="btn-group">
 					  	<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-					    	<span class="text-muted">Version:</span> <strong>Latest</strong> <span class="caret"></span>
+					    	<span class="text-muted">Source Version:</span> <strong>Latest</strong> <span class="caret"></span>
 					  	</button>
 					  	<ul class="dropdown-menu" role="menu">
-					    	<li><a href="#">Head</a></li>
-					    	<li><a href="#">Latest Version</a></li>
-					    	<li><a href="#">An older version</a></li>
+					  	{% for source_version in source_versions %}
+					  		<li><a href="#">{% if source_version.released %}<strong>{% endif %}{{ source_version.id }}{% if source_version.released %}</strong>{% endif %}</a></li>
+					    {% endfor %}
 					  	</ul>
 					</div>
 
