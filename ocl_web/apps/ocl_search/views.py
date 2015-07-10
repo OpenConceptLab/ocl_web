@@ -65,7 +65,7 @@ class HomeSearchView(TemplateView):
         # Select filters
         # TODO: Currently this is selecting the filters created only by the facets returned but this
         #       should change to select the actual filters
-        searcher.select_filters(self.request.GET)
+        searcher.select_search_filters(self.request.GET)
 
         # Setup paginator for primary search
         search_paginator = Paginator(range(num_found), searcher.num_per_page)

@@ -121,7 +121,7 @@ class OrganizationDetailView(TemplateView):
 
         # Select filters
         # TODO: This is passing all parameters, but should pass only those relevant to sources
-        source_searcher.select_filters(self.request.GET)
+        source_searcher.select_search_filters(self.request.GET)
 
         # Set the context for the child sources
         context['sources'] = sources
@@ -158,7 +158,7 @@ class OrganizationDetailView(TemplateView):
         # Set the context for the child collections
         #context['collection_pagination_url'] = self.request.get_full_path()
         #context['collections'] = collections
-        #context['collection_filters'] = collection_searcher.get_filters()
+        #context['collection_filters'] = collection_searcher.get_search_filters()
 
         # Load members of this org
         # TODO: Access issue, error if user is not super user??

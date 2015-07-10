@@ -1,51 +1,56 @@
-"""
-    Search helper for interfacing web with OCL API.
-
-"""
+""" Search helper for interfacing web with OCL API. """
 from django.http import QueryDict
-from urllib import quote
+#from urllib import quote
 import logging
 
 logger = logging.getLogger('oclweb')
 
 
-class FilterOption(object):
+class SearchFilterOption(object):
+    """Defines a specific search filter option
     """
-        Defines a specific filter option
-    """
-    def __init__(self, filter=None, option_value='', option_name='', option_num=0, selected=False):
-        self.filter = filter
+    def __init__(
+            self, search_filter=None, option_value='',
+            option_name='', option_num=0, selected=False):
+        self.search_filter = search_filter
         self.option_value = option_value
         self.option_name = option_name
         self.option_num = option_num
         self.selected = selected
 
     def __str__(self):
-        return "%s: %s [%s] %s" % (self.filter.filter_name, self.option_name, self.option_num, self.selected)
+        return "%s: %s [%s] %s" % (self.search_filter.search_filter_name,
+                                   self.option_name,
+                                   self.option_num,
+                                   self.selected)
 
     def __unicode__(self):
-        return "%s: %s [%s] %s" % (self.filter.filter_name, self.option_name, self.option_num, self.selected)
+        return "%s: %s [%s] %s" % (self.search_filter.search_filter_name,
+                                   self.option_name,
+                                   self.option_num,
+                                   self.selected)
 
 
 
-class Filter(object):
+class SearchFilter(object):
+    """A specific search filter for searching OCL
+
+    options is a dictionary of SearchFilterOption instances
     """
-        A specific filter for searching OCL
-
-        options is a dictionary of FilterOption instances
-    """
-    def __init__(self, filter_id='', filter_name=''):
-        self.filter_id = filter_id  # unique ID for query etc
-        self.filter_name = filter_name  # for display
-        self.options = {}  # a dictionary of filter options
+    def __init__(self, search_filter_id='', search_filter_name=''):
+        self.search_filter_id = search_filter_id      # unique ID for query etc
+        self.search_filter_name = search_filter_name  # for display
+        self.options = {}                             # a dictionary of search filter options
 
     def add_option(self, option_value='', option_name='', option_num=0, selected=False):
-        self.options[option_value] = FilterOption(filter=self, option_value=option_value, 
-            option_name=option_name, option_num=option_num, selected=selected)
+        """Add SearchFilterOption to the SearchFilter.
+        """
+        self.options[option_value] = SearchFilterOption(
+            search_filter=self, option_value=option_value, option_name=option_name,
+            option_num=option_num, selected=selected)
 
     def select_option(self, option_values):
-        """
-        Mark as selected the option(s) according to the value or list of string values passed.
+        """Mark as selected the option(s) according to the value or list of string values passed.
         """
         if not isinstance(option_values, list):
             option_values = [option_values]
@@ -54,48 +59,57 @@ class Filter(object):
                 self.options[i].selected = True
 
     def __str__(self):
-        return "%s (%s): %s" % (self.filter_name, self.filter_id, [str(self.options[k]) for k in self.options.keys()] )
+        return "%s (%s): %s" % (self.search_filter_name,
+                                self.search_filter_id,
+                                [str(self.options[k]) for k in self.options.keys()])
 
     def __unicode__(self):
-        return "%s (%s): %s" % (self.filter_name, self.filter_id, [str(self.options[k]) for k in self.options.keys()] )
+        return "%s (%s): %s" % (self.search_filter_name,
+                                self.search_filter_id,
+                                [str(self.options[k]) for k in self.options.keys()])
 
 
-
-class FilterList(object):
-    """
-        A list of filter spec for a specific resource type (concept, source, etc)
+class SearchFilterList(object):
+    """A list of filter spec for a specific resource type (concept, source, etc)
     """
     def __init__(self, resource_name=''):
         self.resource_name = resource_name
-        self.filter_list = []
+        self.search_filter_list = []
 
-    def match_filter(self, filter_id):
+    def match_search_filter(self, search_filter_id):
         """
-        Lookup a filter by filter_id.
+        Lookup a search filter by search_filter_id.
 
-        :returns: Matched Filter or None
+        :returns: Matched SearchFilter or None
         """
-        matched_filters = filter(lambda f: f.filter_id == filter_id, self.filter_list)
-        if len(matched_filters) == 0:
+        matched_search_filters = filter(lambda f: f.search_filter_id == search_filter_id,
+                                        self.search_filter_list)
+        if len(matched_search_filters) == 0:
             return None
         else:
-            return matched_filters[0]
+            return matched_search_filters[0]
 
-    def add_filter(self, filter_id='', filter_name=''):
-        f = Filter(filter_id, filter_name)
-        self.filter_list.append(f)
-        return f
+    def add_search_filter(self, search_filter_id='', search_filter_name=''):
+        """Add SearchFilter to the SearchFilterList.
+        """
+        search_filter = SearchFilter(search_filter_id, search_filter_name)
+        self.search_filter_list.append(search_filter)
+        return search_filter
 
     def __iter__(self):
-        return self.filter_list.__iter__()
+        return self.search_filter_list.__iter__()
 
     def __str__(self):
-        return 'Resource %s: %s\n\n' % (self.resource_name, [str(f) for f in self.filter_list])
+        return 'Resource %s: %s\n\n' % (self.resource_name,
+                                        [str(f) for f in self.search_filter_list])
 
     def __unicode__(self):
-        return 'Resource %s: %s\n\n' % (self.resource_name, [str(f) for f in self.filter_list])
+        return 'Resource %s: %s\n\n' % (self.resource_name,
+                                        [str(f) for f in self.search_filter_list])
 
 
+
+# TOOD(paynejd@gmail.com): Only setup_filters uses this -- possibly retire?
 def turn_to_tuples(values):
     """
     Temporary util to turn a list of values into a list of json friendly dictionary.
@@ -117,62 +131,60 @@ def turn_to_tuples(values):
 
 
 
+# TODO(paynejd@gmail.com): Replace with new facets/filter methodology
 def setup_filters():
-
+    """Sets up filters with static options. Deprecated.
+    """
     from apps.core.views import _get_concept_class_list
     from apps.core.views import _get_datatype_list
     from apps.core.views import _get_source_type_list
     from apps.core.views import _get_locale_list
 
     # concept filters
-    filters = FilterList('concepts')
-    f = filters.add_filter('concept_class', 'Concept Classes')
+    filters = SearchFilterList('concepts')
+    f = filters.add_search_filter('concept_class', 'Concept Classes')
     f.options = turn_to_tuples(_get_concept_class_list())
 
-    f = filters.add_filter('datatype', 'Datatypes')
+    f = filters.add_search_filter('datatype', 'Datatypes')
     f.options = turn_to_tuples(_get_datatype_list())
 
-    f = filters.add_filter('locale', 'Locale')
+    f = filters.add_search_filter('locale', 'Locale')
     f.options = turn_to_tuples(_get_locale_list())
 
-    f = filters.add_filter('includeRetired', 'Include Retired')
+    f = filters.add_search_filter('includeRetired', 'Include Retired')
     f.options = turn_to_tuples([{'code': u'1', 'name': 'Retired'}])
     concept_filters = filters
 
     # source filter
-    filters = FilterList('sources')
-    f = filters.add_filter('source_type', 'Source Types')
+    filters = SearchFilterList('sources')
+    f = filters.add_search_filter('source_type', 'Source Types')
     f.options = turn_to_tuples(_get_source_type_list())
 
-    f = filters.add_filter('language', 'Locale')
+    f = filters.add_search_filter('language', 'Locale')
     f.options = _get_locale_list()
     source_filters = filters
 
     # collection filters
-    filters = FilterList('collections')
-    f = filters.add_filter('collection_type', 'Collection Types')
-    f.options = turn_to_tuples([
-                'Dictionary',
-                'Interface Terminology',
-                'Indicator Registry',
-                'Reference',
-                'External'
-    ])
+    filters = SearchFilterList('collections')
+    f = filters.add_search_filter('collection_type', 'Collection Types')
+    f.options = turn_to_tuples(['Dictionary',
+                                'Interface Terminology',
+                                'Indicator Registry',
+                                'Reference',
+                                'External'])
 
-    f = filters.add_filter('language', 'Locale')
+    f = filters.add_search_filter('language', 'Locale')
     f.options = _get_locale_list()
     collection_filters = filters
 
     # mapping filters
-    filters = FilterList('mappings')
-    f = filters.add_filter('collection_type', 'Collection Types')
-    f.options = turn_to_tuples([
-                'Dictionary',
-                'Interface Terminology',
-                'Indicator Registry',
-                'Reference',
-                'External'
-    ])
+    filters = SearchFilterList('mappings')
+    f = filters.add_search_filter('collection_type', 'Collection Types')
+    f.options = turn_to_tuples(['Dictionary',
+                                'Interface Terminology',
+                                'Indicator Registry',
+                                'Reference',
+                                'External'])
     mapping_filters = filters
 
     user_filters = None
@@ -184,12 +196,11 @@ def setup_filters():
 
 
 class OCLSearch(object):
-    """
-        Helper to handle search query URL
+    """Helper to handle search query URL
 
-        type=concepts|sources|collections|orgs|users
-        page=N
-        limit=N
+    type=concepts|sources|collections|orgs|users
+    page=N
+    limit=N
     """
 
     # resource types
@@ -204,31 +215,31 @@ class OCLSearch(object):
     DEFAULT_NUM_PER_PAGE = 25
     DEFAULT_SEARCH_TYPE = 'concepts'
 
-    filter_info = {
+    search_filter_info = {
         'concepts': [
-            { 'id': 'source', 'display_name': 'Sources', 'facet': 'source' },
-            { 'id': 'conceptClass', 'display_name': 'Concept Classes', 'facet': 'conceptClass' },
-            { 'id': 'datatype', 'display_name': 'Datatype', 'facet': 'datatype' },
-            { 'id': 'includeRetired', 'display_name': 'Include Retired' },
-            { 'id': 'retired', 'display_name': 'Retired', 'facet': 'retired' },
-            { 'id': 'owner', 'display_name': 'Owner', 'facet': 'owner' },
-            { 'id': 'ownerType', 'display_name': 'Owner Type', 'facet': 'ownerType' },
-            { 'id': 'locale', 'display_name': 'Locale', 'facet': 'locale' }
+            {'id': 'source', 'display_name': 'Sources', 'facet': 'source'},
+            {'id': 'conceptClass', 'display_name': 'Concept Classes', 'facet': 'conceptClass'},
+            {'id': 'datatype', 'display_name': 'Datatype', 'facet': 'datatype'},
+            {'id': 'includeRetired', 'display_name': 'Include Retired'},
+            {'id': 'retired', 'display_name': 'Retired', 'facet': 'retired'},
+            {'id': 'owner', 'display_name': 'Owner', 'facet': 'owner'},
+            {'id': 'ownerType', 'display_name': 'Owner Type', 'facet': 'ownerType'},
+            {'id': 'locale', 'display_name': 'Locale', 'facet': 'locale'}
         ],
         'mappings': [
-            { 'id': 'source', 'display_name': 'Sources', 'facet': 'source' },
-            { 'id': 'conceptClass', 'display_name': 'Concept Classes', 'facet': 'conceptClass' },
-            { 'id': 'datatype', 'display_name': 'Datatype', 'facet': 'datatype' },
-            { 'id': 'retired', 'display_name': 'Retired', 'facet': 'retired' },
-            { 'id': 'owner', 'display_name': 'Owner', 'facet': 'owner' },
-            { 'id': 'ownerType', 'display_name': 'Owner Type', 'facet': 'ownerType' },
-            { 'id': 'locale', 'display_name': 'Locale', 'facet': 'locale' }
+            {'id': 'source', 'display_name': 'Sources', 'facet': 'source'},
+            {'id': 'conceptClass', 'display_name': 'Concept Classes', 'facet': 'conceptClass'},
+            {'id': 'datatype', 'display_name': 'Datatype', 'facet': 'datatype'},
+            {'id': 'retired', 'display_name': 'Retired', 'facet': 'retired'},
+            {'id': 'owner', 'display_name': 'Owner', 'facet': 'owner'},
+            {'id': 'ownerType', 'display_name': 'Owner Type', 'facet': 'ownerType'},
+            {'id': 'locale', 'display_name': 'Locale', 'facet': 'locale'}
         ],
         'source': [
-            { 'id': 'sourceType', 'display_name': 'Source Type', 'facet': 'sourceType' },
-            { 'id': 'owner', 'display_name': 'Owner', 'facet': 'owner' },
-            { 'id': 'ownerType', 'display_name': 'Owner Type', 'facet': 'ownerType' },
-            { 'id': 'locale', 'display_name': 'Locale', 'facet': 'locale' }
+            {'id': 'sourceType', 'display_name': 'Source Type', 'facet': 'sourceType'},
+            {'id': 'owner', 'display_name': 'Owner', 'facet': 'owner'},
+            {'id': 'ownerType', 'display_name': 'Owner Type', 'facet': 'ownerType'},
+            {'id': 'locale', 'display_name': 'Locale', 'facet': 'locale'}
         ],
         'collections': [],
         'orgs': [],
@@ -236,15 +247,15 @@ class OCLSearch(object):
     }
 
     resource_type_info = {
-        'concepts': { 'int': CONCEPT_TYPE, 'name': 'concept', 'facets': True },
-        'mappings': { 'int': MAPPING_TYPE, 'name': 'mapping', 'facets': True },
-        'sources': { 'int': SOURCE_TYPE, 'name': 'source', 'facets': True },
-        'collections': { 'int': COLLECTION_TYPE, 'name': 'collection', 'facets': True },
-        'orgs': { 'int': ORG_TYPE, 'name': 'organization', 'facets': False },
-        'users': { 'int': USER_TYPE, 'name': 'user', 'facets': False }
+        'concepts': {'int': CONCEPT_TYPE, 'name': 'concept', 'facets': True},
+        'mappings': {'int': MAPPING_TYPE, 'name': 'mapping', 'facets': True},
+        'sources': {'int': SOURCE_TYPE, 'name': 'source', 'facets': True},
+        'collections': {'int': COLLECTION_TYPE, 'name': 'collection', 'facets': True},
+        'orgs': {'int': ORG_TYPE, 'name': 'organization', 'facets': False},
+        'users': {'int': USER_TYPE, 'name': 'user', 'facets': False}
     }
 
-    filter_list = None
+    search_filter_list = None
 
     def __init__(self, search_type='', params=None):
         """
@@ -256,7 +267,7 @@ class OCLSearch(object):
         self.current_page = None
         self.search_params = {}
         self.search_sort = None
-        self.q = None
+        self.search_query = None
 
         # Optionally parse search parameters (i.e. GET request parameters)
         if params is not None:
@@ -265,6 +276,7 @@ class OCLSearch(object):
 
     @property
     def search_resource_id(self):
+        """Get numeric resource identifier."""
         if self.search_type in self.resource_type_info:
             return self.resource_type_info[self.search_type]['int']
         else:
@@ -273,6 +285,7 @@ class OCLSearch(object):
 
     @property
     def search_resource_name(self):
+        """Get singular display name of the resource."""
         if self.search_type in self.resource_type_info:
             return self.resource_type_info[self.search_type]['name']
         else:
@@ -281,6 +294,7 @@ class OCLSearch(object):
 
     @property
     def search_resource_has_facets(self):
+        """Get whether the set resource type supports facets."""
         if self.search_type in self.resource_type_info:
             return self.resource_type_info[self.search_type]['facets']
         else:
@@ -288,15 +302,15 @@ class OCLSearch(object):
 
 
     # TODO: Retire this method - not used on global search but maybe on other searches
-    def get_filters(self):
+    def get_search_filters(self):
         """
-        Get the appropriate filters applicable for this search object type.
-        The filters returned will have state information of the current search criteria,
+        Get the search filters applicable for this search object type.
+        The searfch filters returned will have state information of the current search criteria,
         i.e. checkboxes can stay checked.
 
-        :returns: a list of Filter object for constructing the HTML filter display.
+        :returns: a list of SearchFilter object for constructing the HTML filter display.
         """
-        return self.filter_list[self.search_type]
+        return self.search_filter_list[self.search_type]
 
 
     # TODO: Develop roadmap to do this more generically
@@ -327,48 +341,57 @@ class OCLSearch(object):
         """
         Returns the current query string
         """
-        return '' if self.q is None else self.q
+        return '' if self.search_query is None else self.search_query
 
 
     def process_facets(self, resource_type='', facets=None):
         """
-        Processes facets into a FilterList object as returned by a Solr search.
+        Processes facets into a SearchFilterList object as returned by a Solr search.
 
         :params resource_type: Resource type
         :params facets: Dictionary of the form { 'fields':{ } }
-        :returns: FilterList
+        :returns: SearchFilterList
         """
         if isinstance(facets, dict) and 'fields' in facets and isinstance(facets['fields'], dict):
-            fl = FilterList(resource_name=resource_type)
+            filter_list = SearchFilterList(resource_name=resource_type)
             for facet in facets['fields']:
                 # TODO: Need method to convert field name to display name
                 facet_display_name = facet
-                f = fl.add_filter(filter_id=facet, filter_name=facet_display_name)
+                search_filter = filter_list.add_search_filter(
+                    search_filter_id=facet, search_filter_name=facet_display_name)
                 for facet_option in facets['fields'][facet]:
                     facet_option_name = facet_option[0]
-                    facet_option_num = facet_option[1]                    
-                    f.add_option(option_value=facet_option_name, option_name=facet_option_name, option_num=facet_option_num)
-        self.filter_list = fl
-        return fl
+                    facet_option_num = facet_option[1]
+                    search_filter.add_option(option_value=facet_option_name,
+                                             option_name=facet_option_name,
+                                             option_num=facet_option_num)
+        self.search_filter_list = filter_list
+        return filter_list
 
 
-    def select_filters(self, params):
-        print 'Selecting filters...'
-        if isinstance(self.filter_list, FilterList):
+    def select_search_filters(self, params):
+        """Sets the selected attribute to true for the specified filter options.
+
+        Filter options must be specified in the URL parameter format.
+        """
+        print 'Selecting search filters...'
+        if isinstance(self.search_filter_list, SearchFilterList):
             for key in params.keys():
-                print 'Attempting to select filter: %s = %s' % (key, params.getlist(key))
-                matched_filter = self.filter_list.match_filter(key)
-                if matched_filter:
-                    matched_filter.select_option(params.getlist(key))
-                print '\tMatched filter:', matched_filter
+                print 'Attempting to select search filter: %s = %s' % (key, params.getlist(key))
+                matched_search_filter = self.search_filter_list.match_search_filter(key)
+                if matched_search_filter:
+                    matched_search_filter.select_option(params.getlist(key))
+                print '\tMatched search filter:', matched_search_filter
 
 
     def parse(self, request_get):
         """
-        Parse processes a request string, dictionary or QueryDict as the input/criteria for an OCL search.
-        The parsed search inputs are saved in self.search_params
+        Parse processes a request string, dictionary or QueryDict as
+        the input/criteria for an OCL search. The parsed search inputs
+        are saved in self.search_params
 
-        :params request_get: request string, dictionary or QueryDict of search inputs/criteria
+        :params request_get: request string, dictionary or QueryDict of
+            search inputs/criteria
         :returns: None
         """
 
@@ -418,7 +441,7 @@ class OCLSearch(object):
             self.num_per_page = self.DEFAULT_NUM_PER_PAGE
         search_params_dict['limit'] = self.num_per_page
         print 'limit:', self.num_per_page
- 
+
         # Sort - gets the latest occurence of sort
         sort_direction = None
         sort_field = None
@@ -440,17 +463,19 @@ class OCLSearch(object):
 
         # Query text
         if 'q' in params:
-            self.q = params.get('q')
+            self.search_query = params.get('q')
             del params['q']
-            search_params_dict['q'] = self.q
-        print 'q:', self.q
+            search_params_dict['q'] = self.search_query
+        print 'q:', self.search_query
 
         # Apply facets/filters - everything that's left should be a filter/facet
         # NOTE: Quoting and URL encoding parameters before passing on to API
-        for filter_key in params.keys():
-            filter_value = map(lambda x: '"'+x+'"' if ' ' in x else x, params.pop(filter_key))
-            search_params_dict[filter_key] = ','.join(filter_value)
-            print 'filter [%s] = %s' % (filter_key, search_params_dict  [filter_key])
+        for search_filter_key in params.keys():
+            search_filter_value = map(lambda x: '"'+x+'"' if ' ' in x else x,
+                                      params.pop(search_filter_key))
+            search_params_dict[search_filter_key] = ','.join(search_filter_value)
+            print 'search filter [%s] = %s' % (search_filter_key,
+                                               search_params_dict[search_filter_key])
 
         self.search_params = search_params_dict
         print 'Searcher %s params: %s' % (self.search_type, search_params_dict)

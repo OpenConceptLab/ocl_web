@@ -87,7 +87,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
 
         # Select concept filters
         # TODO: This is passing all parameters, but should pass only those relevant to concepts
-        concept_searcher.select_filters(self.request.GET)
+        concept_searcher.select_search_filters(self.request.GET)
 
         # Set the context for the child concepts
         context['concepts'] = concepts
@@ -95,7 +95,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         context['concept_pagination_url'] = self.request.get_full_path()
         context['concept_q'] = concept_searcher.get_query()
         context['concept_facets'] = concepts_facets
-        #context['search_filters'] = concept_searcher.get_filters()
+        #context['search_filters'] = concept_searcher.get_search_filters()
 
         # TODO: Sort is not setup correctly to work with both concepts and mappings
         context['search_sort_options'] = concept_searcher.get_sort_options()

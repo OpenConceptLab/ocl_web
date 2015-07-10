@@ -52,7 +52,7 @@ class CollectionDetailView(UserOrOrgMixin, TemplateView):
         context['source'] = source
         context['concepts'] = concept_list
 
-        context['search_filters'] = searcher.get_filters()
+        context['search_filters'] = searcher.get_search_filters()
         num_found = int(results.headers['num_found'])
         pg = Paginator(range(num_found), searcher.num_per_page)
         context['page'] = pg.page(searcher.current_page)
