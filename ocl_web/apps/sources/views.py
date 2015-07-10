@@ -106,6 +106,19 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         # TODO: Select mapping filters
         # TODO: Set the context for the child mappings
 
+        # Load the source versions
+        source_version_api = OCLapi(self.request, debug=True)
+        source_version_search_results = source_version_api.get(
+            self.own_type, self.own_id, 'sources', self.source_id,
+            'versions')
+        if source_version_search_results.status_code != 200:
+            if source_version_search_results.status_code == 404:
+                raise Http404
+            else:
+                source_version_search_results.raise_for_status()
+        source_versions = source_version_search_results.json()
+        context['source_versions'] = source_versions
+
         return context
 
 
