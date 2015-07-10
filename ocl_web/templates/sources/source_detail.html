@@ -85,7 +85,7 @@
 					  	</button>
 					  	<ul class="dropdown-menu" role="menu">
 					  	{% for source_version in source_versions %}
-					  		<li><a href="#">{% if source_version.released %}<strong>{% endif %}{{ source_version.id }}{% if source_version.released %}</strong>{% endif %}</a></li>
+					  		<li><a href="#">{% if source_version.released %}<strong>{% endif %}{{ source_version.id }}{% if source_version.released %} <span class="text-muted">(Released)</span></strong>{% endif %}</a></li>
 					    {% endfor %}
 					  	</ul>
 					</div>
@@ -97,7 +97,6 @@
 				<div class="col-md-12" style="padding-top:20px;padding-bottom:20px;">
 
                     {% simple_pager concept_page 'concept' url=concept_pagination_url %}
-
 
 			        <div class="input-group">
 			            <input type="text" name="q" class="form-control" placeholder="Search concepts within source" value="{{ concept_q }}">

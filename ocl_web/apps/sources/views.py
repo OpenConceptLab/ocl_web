@@ -1,4 +1,5 @@
-"""Views for OCL Sources
+"""
+Views for OCL Sources and Source Versions.
 """
 import requests
 import logging
@@ -20,7 +21,8 @@ logger = logging.getLogger('oclweb')
 
 
 class SourceDetailView(UserOrOrgMixin, TemplateView):
-    """OCL Sources detailed view
+    """
+    OCL Source detailed view.
     """
 
     template_name = "sources/source_detail.html"
@@ -95,7 +97,6 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         context['concept_pagination_url'] = self.request.get_full_path()
         context['concept_q'] = concept_searcher.get_query()
         context['concept_facets'] = concepts_facets
-        #context['search_filters'] = concept_searcher.get_search_filters()
 
         # TODO: Sort is not setup correctly to work with both concepts and mappings
         context['search_sort_options'] = concept_searcher.get_sort_options()
@@ -124,8 +125,9 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
 
 class SourceCreateView(UserOrOrgMixin, FormView):
     """
-        Create new source, either for an org or a user.
+    Create new source, either for an org or a user.
     """
+
     form_class = SourceCreateForm
     template_name = "sources/source_create.html"
 
@@ -143,6 +145,9 @@ class SourceCreateView(UserOrOrgMixin, FormView):
         return data
 
     def get_context_data(self, *args, **kwargs):
+        """
+
+        """
         context = super(SourceCreateView, self).get_context_data(*args, **kwargs)
 
         self.get_args()
@@ -164,8 +169,10 @@ class SourceCreateView(UserOrOrgMixin, FormView):
 
     def form_valid(self, form):
         """
-            Source input is good, update API backend.
+        Retrun whether source input is valid and then update API backend.
         """
+        # TODO(paynejd@gmail.com): Rename class method -- it is submitting & validating the form
+
         print form.cleaned_data
 
         self.get_args()
@@ -200,12 +207,14 @@ class SourceCreateView(UserOrOrgMixin, FormView):
 
 class SourceEditView(UserOrOrgMixin, FormView):
     """
-        Edit source, either for an org or a user.
+    Edit source, either for an org or a user.
     """
     template_name = "sources/source_edit.html"
 
     def get_form_class(self):
-        """ Trick to load initial data """
+        """
+        Trick to load initial data
+        """
         self.get_args()
         api = OCLapi(self.request, debug=True)
         self.source_id = self.kwargs.get('source')
@@ -216,7 +225,9 @@ class SourceEditView(UserOrOrgMixin, FormView):
         return SourceEditForm
 
     def get_initial(self):
-        """ Load some useful data, not really for form display but internal use """
+        """
+        Load some useful data, not really for form display but internal use
+        """
 
         data = {
             'org_id': self.org_id,
@@ -258,8 +269,10 @@ class SourceEditView(UserOrOrgMixin, FormView):
 
     def form_valid(self, form):
         """
-            Source input is good, update API backend.
+        If Source input is valid, then update API backend.
         """
+        # TODO(paynejd@gmail.com): Rename this class method -- it is validating & submitting form
+
         print form.cleaned_data
 
         self.get_args()
