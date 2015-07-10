@@ -29,7 +29,7 @@
     Useful:
     4. restart_web
     5. restart_api
-    
+
     Security:
 
     Note that all access is setup to user your SSH key.
@@ -88,7 +88,7 @@ def dev():
 
     env.AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     env.AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-development'
+    env.AWS_STORAGE_BUCKET_NAME = 'ocl-source-export-development'
 
 
 
@@ -108,7 +108,7 @@ def staging():
 
     env.AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     env.AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-staging'
+    env.AWS_STORAGE_BUCKET_NAME = 'ocl-source-export-staging'
 
 
 @task
@@ -127,7 +127,7 @@ def production():
 
     env.AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     env.AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-    env.AWS_STORAGE_BUCKET_NAME='ocl-source-export-production'
+    env.AWS_STORAGE_BUCKET_NAME = 'ocl-source-export-production'
 
 @task
 def test_local():
@@ -154,25 +154,24 @@ def _conf_path(file_name):
         This module will be installed by users into site-packages.
         We need to figure out where the runtime files sit.
     """
-    p = dirname(abspath(__file__))
-    p = join(p, 'conf', file_name)
-    return p
+    path = dirname(abspath(__file__))
+    path = join(path, 'conf', file_name)
+    return path
 
 
-def _random_string(n):
+def _random_string(number_chars):
     """ Generate a random string for settings.
     """
     return ''.join(random.sample(string.ascii_uppercase +
-                                 string.ascii_lowercase + string.digits, n))
+                                 string.ascii_lowercase + string.digits, number_chars))
 
 
 @task
 def install_root_key():
-    """
-        Install your SSH key for root. One time task.
+    """Install your SSH key for root. One time task.
     """
     with settings(user='root'):
-        print(yellow('setting up SSH for root'))
+        print yellow('setting up SSH for root')
         ssh_path = '/root/.ssh'
         if not files.exists(ssh_path, verbose=True):
             run('mkdir %s' % ssh_path)
@@ -183,11 +182,10 @@ def install_root_key():
 
 @task
 def add_deploy_user():
-    """
-        Create the deploy user account, one time task.
+    """Create the deploy user account, one time task.
 
-        The deploy user is used for almost all processes.
-        Your SSH key is pushed so that you can login via ssh keys.
+    The deploy user is used for almost all processes.
+    Your SSH key is pushed so that you can login via ssh keys.
     """
     username = 'deploy'
     with settings(user='root'):
@@ -216,13 +214,12 @@ def add_deploy_user():
 
 @task
 def common_install():
-    """
-    Basic one-time setup for common packages for ubuntu servers.
+    """Basic one-time setup for common packages for ubuntu servers.
 
     Currently DB stuff and web stuff are listed together. Could split
     them if we run separate servers.
     """
-    print(yellow('common_install...'))
+    print yellow('common_install...')
     sudo('apt-get update')
 
     # user console tools
@@ -249,11 +246,10 @@ def common_install():
 
 @task
 def setup_supervisor():
-    """
-        Setup supervisor daemon for running OCL processes.
+    """Setup supervisor daemon for running OCL processes.
 
-        One of the key function is to put the API tokens required in the
-        environment for Web server.
+    One of the key function is to put the API tokens required in the
+    environment for Web server.
      """
 
     # first time this will fail because we have a chicken and egg
@@ -272,11 +268,10 @@ def setup_supervisor():
 
 @task
 def setup_nginx():
-    """
-        Setup nginx.
+    """Setup nginx.
 
-        This can be re-run to update the application configuration via
-        the ocl_nginx.conf.
+    This can be re-run to update the application configuration via
+    the ocl_nginx.conf.
     """
     with settings(warn_only=True):
         sudo('unlink /etc/nginx/sites-enabled/default')
@@ -292,15 +287,13 @@ def setup_nginx():
 
 @task
 def setup_environment():
+    """Create OCL directories and files.
     """
-        create OCL directories and files.
-
-    """
-    for d in ['/opt/virtualenvs', '/opt/deploy']:
-        if not files.exists(d):
-            print(yellow('Creating directory %s...' % d))
-            sudo('mkdir %s' % d)
-            sudo('chown deploy:deploy %s' % d)
+    for directory in ['/opt/virtualenvs', '/opt/deploy']:
+        if not files.exists(directory):
+            print yellow('Creating directory %s...' % directory)
+            sudo('mkdir %s' % directory)
+            sudo('chown deploy:deploy %s' % directory)
 
     # all logs go to /var/log/ocl subdirectories.
     if not files.exists('/var/log/ocl'):
@@ -320,8 +313,8 @@ def setup_environment():
 @task
 def setup_postgres():
     """ Setup postgres database.
-        Give deploy user createdb access to database so that she can
-        create test db as well. Also make control easier.
+    Give deploy user createdb access to database so that she can
+    create test db as well. Also make control easier.
     """
     sudo('createuser --createdb deploy', user='postgres')
     sudo("psql --command=\"ALTER USER deploy with PASSWORD 'deploy';\" ", user='postgres')
@@ -362,7 +355,7 @@ def setup_solr():
         sudo('chown deploy:deploy /var/log/solr')
 
     with cd('/opt/deploy/'):
-        print(yellow('creating project root for %s' % 'solr'))
+        print yellow('creating project root for %s' % 'solr')
         run('mkdir %s' % 'solr')
 
 
@@ -383,7 +376,7 @@ def get_api_tokens():
             with prefix('export DJANGO_CONFIGURATION="Production"'):
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
 
-                    print(yellow('Getting AUTH Tokens'))
+                    print yellow('Getting AUTH Tokens')
                     data = run('./manage.py create_tokens')
                     # get back two lines in export form:
                     #    export OCL_API_TOKEN='NNN'
@@ -436,7 +429,7 @@ def load_site_name():
         with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
             with prefix('export DJANGO_CONFIGURATION="Production"'):
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
-                    print(yellow('setting site name...'))
+                    print yellow('setting site name...')
                     run('ocl_web/manage.py loaddata ocl_web/config/sites.%s.json' % env.site_spec)
 
 
@@ -453,7 +446,7 @@ def build_web_app():
         with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
             with prefix('export DJANGO_CONFIGURATION="Production"'):
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
-                    print(yellow('creating WEB database...'))
+                    print yellow('creating WEB database...')
                     run('ocl_web/manage.py syncdb --noinput --migrate')
 
 
@@ -468,16 +461,16 @@ def checkout_api_app(do_pip=False):
         run time.
     """
     with cd('/var/tmp'):
-        print(blue('pulling new code...'))
+        print blue('pulling new code...')
         sudo('/etc/init.d/jetty stop')
         run("rm -rf oclapi")
         run("git clone https://github.com/OpenConceptLab/oclapi.git")
 
-        print(blue('deleting old code...'))
+        print blue('deleting old code...')
         run('rm -rf /opt/deploy/ocl_api/ocl')
         run('rm -rf /opt/deploy/solr/collection1')
 
-        print(blue('copying new code...'))
+        print blue('copying new code...')
         run("cp -r oclapi/django-nonrel/ocl /opt/deploy/ocl_api")
         run('mkdir -p /opt/deploy/solr/collection1')
         run("cp -r oclapi/solr/collection1/conf /opt/deploy/solr/collection1")
@@ -491,8 +484,8 @@ def checkout_api_app(do_pip=False):
                     # this is really slow because it pull down django-norel
                     if do_pip:
                         run("pip install -r requirements.txt")
-
-                    run("./manage.py build_solr_schema > /opt/deploy/solr/collection1/conf/schema.xml")
+                    run('./manage.py build_solr_schema > ' +
+                        '/opt/deploy/solr/collection1/conf/schema.xml')
     sudo('/etc/init.d/jetty start')
 
 
@@ -503,14 +496,14 @@ def create_api_database():
             with prefix('export DJANGO_CONFIGURATION="Production"'):
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
 
-                    print(yellow('creating API database...'))
+                    print yellow('creating API database...')
                     # no super user
                     run('./manage.py syncdb --noinput')
                     put(_conf_path('mongo_setup.js'), '~/mongo_setup.js')
                     run('mongo ocl ~/mongo_setup.js')
 
     # now start the server so that we can create base users
-    print(yellow('Start up partial API server...'))
+    print yellow('Start up partial API server...')
     run('supervisorctl start ocl_api')
 
     with cd('/opt/deploy/ocl_api/ocl'):
@@ -518,21 +511,21 @@ def create_api_database():
             with prefix('export DJANGO_CONFIGURATION="Production"'):
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
 
-                    print(yellow('creating internal users: admin and anon ...'))
+                    print yellow('creating internal users: admin and anon ...')
                     run('./manage.py create_tokens --create --password password')
 
     # now grab the token for the web config
-    print(yellow('Put tokens into WEB app config...'))
+    print yellow('Put tokens into WEB app config...')
     setup_supervisor()
     run('supervisorctl reread')
     run('supervisorctl update')
     # update shell env setup file with new tokens
-    files.upload_template(_conf_path('shell_prep.sh'),
-        '~/shell_prep.sh', env)
+    files.upload_template(_conf_path(
+        'shell_prep.sh'), '~/shell_prep.sh', env)
 
     # create sysadmin user
     with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
-        print(yellow('creating sysadmin user...'))
+        print yellow('creating sysadmin user...')
         run('source ~/shell_prep.sh;/opt/deploy/ocl_web/ocl_web/manage.py create_sysadmin')
 
 
@@ -578,9 +571,11 @@ def release_api_app(do_pip=False):
 
     # old style
     return
-    checkout_api_app(do_pip)
-    run('supervisorctl restart ocl_api')
-    run('supervisorctl restart celery')
+
+    # TODO(paynejd@gmail.com): Unreachable code -- remove?
+    #checkout_api_app(do_pip)
+    #run('supervisorctl restart ocl_api')
+    #run('supervisorctl restart celery')
 
 
 def release(app_name, do_pip):
@@ -607,26 +602,26 @@ def clear_databases():
     require('hosts', provided_by=['dev', 'staging', 'production'])
     ans = prompt('This will completely wipe out the database. Are you sure (YES/no)?')
     if ans != 'YES':
-        print(yellow('Glad you were just kidding.'))
+        print yellow('Glad you were just kidding.')
         return
 
     ans = prompt(yellow('%s' % env.hosts[0]) + ' database will be wiped. Are you sure (YES/no)?')
     if ans != 'YES':
-        print("Didn't think so.")
+        print "Didn't think so."
         return
 
     run('supervisorctl stop all')
-    print(yellow('Recreate WEB database'))
+    print yellow('Recreate WEB database')
     run('dropdb  ocl_web')
     run('createdb -O deploy ocl_web')
     # setup DB
     with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
         with prefix('export DJANGO_CONFIGURATION="Production"'):
             with prefix('export DJANGO_SECRET_KEY="blah"'):
-                print(yellow('creating WEB database...'))
+                print yellow('creating WEB database...')
                 run('/opt/deploy/ocl_web/ocl_web/manage.py syncdb --noinput --migrate')
 
-    print(yellow('Recreate API database'))
+    print yellow('Recreate API database')
     run('echo -e "use ocl \n db.dropDatabase();" | mongo')
     create_api_database()
 
@@ -637,9 +632,11 @@ def load_orgs_and_sources():
     """
     with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
         with cd('/opt/deploy/ocl_web/ocl_web'):
-                print(yellow('creating basic ORGS and SOURCES...'))
-                run('source ~/shell_prep.sh;/opt/deploy/ocl_web/ocl_web/manage.py create_org --username=sysadmin --csv=fixtures/orgs.csv')
-                run('source ~/shell_prep.sh;/opt/deploy/ocl_web/ocl_web/manage.py create_source --username=sysadmin --csv=fixtures/ocl_sources.csv')
+            print yellow('creating basic ORGS and SOURCES...')
+            run('source ~/shell_prep.sh;/opt/deploy/ocl_web/ocl_web/manage.py ' +
+                'create_org --username=sysadmin --csv=fixtures/orgs.csv')
+            run('source ~/shell_prep.sh;/opt/deploy/ocl_web/ocl_web/manage.py ' +
+                'create_source --username=sysadmin --csv=fixtures/ocl_sources.csv')
 
 @task
 def rebuild_index():
@@ -667,12 +664,12 @@ def build_new_server():
     require('hosts', provided_by=['dev', 'staging', 'production'])
     ans = prompt('This will completely wipe out the server. Are you sure (YES/no)?')
     if ans != 'YES':
-        print(yellow('Glad you were just kidding.'))
+        print yellow('Glad you were just kidding.')
         return
 
     ans = prompt(yellow('%s' % env.hosts[0]) + ' will be wiped and rebuilt. Are you sure (YES/no)?')
     if ans != 'YES':
-        print("Didn't think so.")
+        print "Didn't think so."
         return
 
     env.keepalive = 30
@@ -703,11 +700,14 @@ def restart_api():
 
 @task
 def status():
+    """ Displays supervisorctl status """
     run('supervisorctl status')
 
 
 def deploy():
+    """ Releases then restarts server """
     release()
+    # TODO(paynejd@gmail.com): Undefined method call -- remove this entire method?
     restart()
 
 @task
@@ -718,14 +718,14 @@ def blah():
             with prefix('export DJANGO_CONFIGURATION="Production"'):
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
 
-                    print(yellow('preping environment due to changes...'))
+                    print yellow('preping environment due to changes...')
                     auth_token, anon_token = get_api_tokens()
                     if auth_token is not None and anon_token is not None:
                         env.OCL_API_TOKEN = auth_token
                         env.OCL_ANON_API_TOKEN = anon_token
 
-                    files.upload_template(_conf_path('shell_prep.sh'),
-                        '~/shell_prep.sh', env)
+                    files.upload_template(
+                        _conf_path('shell_prep.sh'), '~/shell_prep.sh', env)
 
 
 @task
@@ -734,23 +734,23 @@ def fix_solr():
         work in progress
     """
     with cd('/var/tmp'):
-        print(blue('pulling new code...'))
+        print blue('pulling new code...')
         sudo('/etc/init.d/jetty stop')
         sleep(5)
         # run('rm -rf /opt/deploy/solr/collection1')
 
-        print(blue('copying new code...'))
+        print blue('copying new code...')
         # run('mkdir -p /opt/deploy/solr/collection1')
         # run("cp -r oclapi/solr/collection1/conf /opt/deploy/solr/collection1")
 
     with cd("/opt/deploy/ocl_api/ocl"):
         # there is no need for this, settings.py.eploy is actually wrong?
         # run("cp settings.py.deploy settings.py")
-        with prefix("source /opt/virtualenvs/ocl_api/bin/activate"):
+        with prefix('source /opt/virtualenvs/ocl_api/bin/activate'):
             with prefix('export DJANGO_CONFIGURATION="Production"'):
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
                     # this is really slow because it pull down django-norel
-
-                    run("./manage.py build_solr_schema > /opt/deploy/solr/collection1/conf/schema.xml")
+                    run('./manage.py build_solr_schema > ' +
+                        '/opt/deploy/solr/collection1/conf/schema.xml')
     sleep(5)
     sudo('/etc/init.d/jetty start')
