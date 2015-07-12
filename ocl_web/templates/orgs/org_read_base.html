@@ -30,27 +30,29 @@
             </div> <!-- /col-md-12 -->
         </div> <!-- /row -->
     </div> <!-- /container -->
-</header> <!-- /org-header -->
+</header>
 {% endblock resource-header %}
+
 
 {% block resource-tabs %}
 <div class="container">
     <ul class="nav nav-tabs">
-        <li role="presentation" {% if selected_tab == "Sources" %}class="active"{% endif %}><a href="#">Sources</a></li>
-        {% comment %}<li role="presentation" {% if selected_tab == "Collections" %}class="active"{% endif %}><a href="#">Collections</a></li>{% endcomment %}
-        <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="#">Details</a></li>
-        <li role="presentation" {% if selected_tab == "About" %}class="active"{% endif %}><a href="#">About</a></li>
+        <li role="presentation" {% if selected_tab == "Sources" %}class="active"{% endif %}><a href="/orgs/{{ org.id }}/sources/">Sources</a></li>
+        {% comment %}<li role="presentation" {% if selected_tab == "Collections" %}class="active"{% endif %}><a href="/orgs/{{ org.id }}/collections/">Collections</a></li>{% endcomment %}
+        <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="/orgs/{{ org.id }}/sources/details/">Details</a></li>
+        <li role="presentation" {% if selected_tab == "About" %}class="active"{% endif %}><a href="/orgs/{{ org.id }}/about/">About</a></li>
         {% comment %}<li role="presentation" {% if selected_tab == "Debug" %}class="active"{% endif %}><a href="#">Debug</a></li>{% endcomment %}
     </ul>
 </div>
 {% endblock resource-tabs %}
 
+
 {% block tab-content %}
 {% endblock tab-content %}
 
+
 {% if request.GET.debug %}
-<p>&nbsp;</p>
-<div class="container">
+<div class="container" style="margin-top: 30px;">
     <div class="panel panel-default">
         <div class="panel-heading"><h4 class="panel-title">Debug</h4></div>
         <div class="panel-body" style="min-height:140px;">
@@ -61,5 +63,6 @@
     </div>
 </div>
 {% endif %}
+
 
 {% endblock content-no-container %}
