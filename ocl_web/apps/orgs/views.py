@@ -310,7 +310,7 @@ class OrganizationAboutView(OrganizationReadBaseView):
         """
         Loads the org details and about text.
         """
-        context = super(OrganizationDetailAboutView, self).get_context_data(*args, **kwargs)
+        context = super(OrganizationAboutView, self).get_context_data(*args, **kwargs)
 
         # Load the organization
         org_id = self.kwargs.get('org')
