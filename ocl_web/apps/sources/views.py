@@ -38,7 +38,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         print 'Source Detail INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
 
         # Adds identifying attributes to the instance
-        # TODO: This is poorly named and kind of a hack -- fix it!
+        # TODO(paynejd@gmail.com): UserOrOrgMixin.get_args() is poorly named & a hack -- fix it!
         self.get_args()
 
         # Load the source

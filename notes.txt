@@ -12,31 +12,10 @@ export OCL_API_HOST='65.99.230.144'
 Questions
 ===========
 
-1. user
----------
-* where is the hook to create the backend user?
-* does not exists yet. CUrrently pre-gen admin and anonymous user token
-* need to add create user code to create auth code
-
-General
----------
-where are we putting the CRUD actions?
-- add is in the "+"
-- delete inside object detail view?
-
-Others
---------
-- "home" link
-- time reference (updated N days ago, smart time lapse)
 
 user
 -------
 - timezone and locale 
-
-general
----------
-- new resources have dynamic user extra data fields
--
 
 
 list
