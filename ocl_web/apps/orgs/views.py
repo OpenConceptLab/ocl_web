@@ -69,6 +69,7 @@ class OrganizationDetailView(OrganizationReadBaseView):
 
         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
         context['url_params'] = self.request.GET
+        context['selected_tab'] = 'Details'
 
         # Determine the organization ID
         # TODO: Make the org object self-aware like the source context (e.g. self.org_id)
@@ -165,8 +166,10 @@ class OrganizationSourcesListView(OrganizationReadBaseView):
         Load sources search results, facets/filters, etc. for the org
         """
         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
-        context['url_params'] = self.request.GET
 
+        # Set the context
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'Sources'
         return context
 
 
@@ -204,6 +207,7 @@ class OrganizationCollectionsListView(OrganizationReadBaseView):
         #context['collections'] = collections
         #context['collection_filters'] = collection_searcher.get_search_filters()
 
+        context['selected_tab'] = 'Collections'
         return context
 
 
@@ -235,6 +239,7 @@ class OrganizationDetailAboutView(OrganizationReadBaseView):
 
         # Set the context
         context['url_params'] = self.request.GET
+        context['selected_tab'] = 'About'
         context['org'] = org
         context['about'] = about
 

@@ -1,5 +1,9 @@
-database:   
+To do:
+- Remove url files from all the subdirectories -- only the url files in the config file are used
+- Need to store user timezone and locale preferences
 
+
+database:
 or
 postgis://USER:PASSWORD@HOST:PORT/NAME
 
@@ -13,15 +17,9 @@ Questions
 ===========
 
 
-user
--------
-- timezone and locale 
-
-
 list
 ----------
 - user settings
-- sorting, does it work yet at API? (Jon)
 - trailing links at end of org etc (members, etc)
 - user detail link under user list
 - user data should come from the API

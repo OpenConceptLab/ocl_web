@@ -1,9 +1,16 @@
 {% extends "orgs/org_read_base.html" %}
 
-{% block tab-org-about %}
+
+{% block tab-content %}
 	<p>&nbsp;</p>
 	<div class="panel panel-default">
 		<div class="panel-heading"><h4 class="panel-title">About</h4></div>
 	  	<div class="panel-body" style="height:140px;">{{ about|safe }}</div>
 	</div>
-{% endblock tab-org-about %}
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Organization</h4><pre style="border:0; background-color:transparent;">{{ org|pprint }}</pre>
+{% endblock resource-debug %}
