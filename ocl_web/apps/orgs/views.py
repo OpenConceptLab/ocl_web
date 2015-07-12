@@ -168,7 +168,7 @@ class OrganizationDetailsView(OrganizationReadBaseView):
         """
 
         # Set the context
-        context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
+        context = super(OrganizationDetailsView, self).get_context_data(*args, **kwargs)
 
         # Load the organization
         org_id = self.kwargs.get('org')
@@ -197,7 +197,7 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         """
         Load sources search results, facets/filters, etc. for the org
         """
-        context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
+        context = super(OrganizationSourcesView, self).get_context_data(*args, **kwargs)
 
         # Load the organization
         org_id = self.kwargs.get('org')
@@ -272,7 +272,7 @@ class OrganizationCollectionsView(OrganizationReadBaseView):
         """
         Load collection search results, facets/filters, etc. for the org
         """
-        context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
+        context = super(OrganizationCollectionsView, self).get_context_data(*args, **kwargs)
         context['url_params'] = self.request.GET
 
         # Load the collections in this org
