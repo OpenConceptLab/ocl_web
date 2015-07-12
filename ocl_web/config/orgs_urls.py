@@ -32,11 +32,12 @@ urlpatterns = patterns(
     ## ORGANIZATION
 
     # Create new organization - /orgs/new/
-    url(r'^new/$', OrganizationCreateView.as_view(), name='org-create'),
-    # TODO(paynejd@gmail.com): Retire the old URL (/orgs/create/)
+    # TODO(paynejd@gmail.com): Replace /orgs/create/ with /orgs/new/
+    #url(r'^new/$', OrganizationNewView.as_view(), name='org-new'),
     url(r'^create/$', OrganizationCreateView.as_view(), name='org-create'),
 
     # /orgs/:org/
+    # TODO(paynejd@gmail.com): Point /orgs/:org/ to org sources instead of details & remove name
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/$',
         OrganizationDetailView.as_view(), name='org-detail'),
 
@@ -44,10 +45,22 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/edit/$',
         OrganizationEditView.as_view(), name='org-edit'),
 
+    # /orgs/:org/details/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/details/$',
+        OrganizationDetailsView.as_view(), name='org-details'),
+
     # /orgs/:org/about/
-    # TODO(paynejd@gmail.com): Implement org about
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/about/$',
-        OrganizationDetailAboutView.as_view(), name='org-detail-about'),
+        OrganizationAboutView.as_view(), name='org-about'),
+
+    # /orgs/:org/sources/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/$',
+        OrganizationSourcesView.as_view(), name='org-sources'),
+
+    # /orgs/:org/collections/
+    # TODO(paynejd@gmail.com): Activate /orgs/:org/collections/ after implemented
+    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/$',
+    #    OrganizationCollectionsView.as_view(), name='org-collections'),
 
 
     ## ORGANIZATION MEMBERS
@@ -63,18 +76,13 @@ urlpatterns = patterns(
 
     ## SOURCES CORE
 
-    # /orgs/:org/sources/
-    # TODO(paynejd@gmail.com): Implement org source list
-    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/$',
-    #    OrganizationSourceListView.as_view(), name='org-source-list'),
-
     # /orgs/:org/sources/:source/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/$',
         SourceDetailView.as_view(), name='source-detail'),
 
     # Create new source within the org: /orgs/:org/sources/
-    # TODO(paynejd@gmail.com): Change this to: /orgs/:org/new-source/
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/$',
+    # TODO(paynejd@gmail.com): Change this to: /orgs/:org/sources/new/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/new/$',
         SourceCreateView.as_view(), name='source-create-for-org'),
 
     # /orgs/:org/sources/:source/edit/

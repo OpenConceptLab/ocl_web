@@ -1,0 +1,152 @@
+{% extends "orgs/org_read_base.html" %}
+
+
+{% block tab-content %}
+<div class="row">
+    <form action="." method="get">
+        <input type="hidden" name="resource_type" value="source" />
+
+        <!-- Filters -->
+        <div class="col-md-3">
+            {% for facet in source_facets %}
+            <div class="filter-group">
+                <div class="filter-group-header">{{ facet.filter_name }}</div>
+                <div class="filter-group-body">
+                    {% for facet_key, facet_option in facet.options.iteritems %}
+                        {% if facet_option.option_num > 0 %}
+                            <div class="checkbox"><label><input type="checkbox" name="{{ facet.filter_name }}" value="{{ facet_option.option_value }}" {% if facet_option.selected %}checked{% endif %}>{{ facet_option.option_name }}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ facet_option.option_num }}</span></label></div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+
+        <!-- Listing of sources -->
+        <div class="col-md-8">
+
+            <!-- Sort / filter -->
+            <div class="row" style="margin-bottom:20px;">
+                &nbsp;
+                <div class="col-md-12">
+
+                    <!-- Sort dropdown -->
+                    <div class="btn-group pull-right">
+                        <select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
+                            {% for o in search_sort_options %}
+                            <option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="btn-group pull-right">
+                        <span>Sort by:&nbsp;</span>
+                    </div>
+
+                    <div class="form-group">
+                        {% comment %}
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                <span class="text-muted">Filter:</span> <strong>None</strong> <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Public</a></li>
+                                <li><a href="#">Private</a></li>
+                                <li><a href="#">Sources</a></li>
+                                <li><a href="#">Collections</a></li>
+                            </ul>
+                        </div> {# filter #}
+                        {% endcomment %}
+                    </div>
+
+                </div> <!-- /col-md-12 -->
+            </div> <!-- /row -->
+
+            <div class="row" style="margin-bottom:20px;">
+                <div class="col-md-12">
+
+                    {% simple_pager source_page 'Source' url=source_pagination_url %}
+
+                    <div class="form-group">
+                        <div class="input-group input-group-sm">
+                            <input name="q" id="resourceFilter" type="text" value="{{ source_q }}" class="form-control" placeholder="Search sources within organization" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                            </span>
+                        </div>
+                    </div>
+
+                {# this appears to be extra -- flagging for deletion later #}
+                </form>
+
+                    <span class="pull-right">
+                        {% if user.is_authenticated %}
+                        {# TBD: probably a more complete tag to check for access #}
+                        <a href="{% url "source-create-for-org" org.id %}" class="btn"><span class="glyphicon glyphicon-plus"></span>Add Source</a>
+                        {% endif %}
+                    </span>
+
+                </div>
+            </div> <!-- /row -->
+        </form>
+
+        <!-- Debug -->
+
+        {% if request.GET.debug %}
+        <div class="row">
+            <div class="col-md-12">
+                <pre><strong>GET Params:</strong><br />{{ get_params|pprint }}</pre>
+                <pre><strong>Sources Request URL:</strong><br />{{ sources_request_url|pprint }}</pre>
+                <pre><strong>API Search Params:</strong><br />{{ sources_search_params|pprint }}</pre>
+                <pre><strong>Response Headers:</strong><br />{{ sources_search_response_headers|pprint }}</pre>
+                <pre><strong>Facets</strong><br />{{ sources_search_facets_json|pprint }}</pre>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Display sources that belong to this org -->
+        {% for result in sources %}
+        <div class="row row-search-result">
+            <div class="col-md-1 search-result-col-icon">
+                <span class="glyphicon glyphicon-th-list search-result-icon"></span>
+            </div>
+            <div class="col-md-11 search-result-col-content">
+                <div class="pull-right small text-muted" style="padding-top:12px;">
+                    <a href="{% url 'source-detail' org=result.owner source=result.short_code %}#concepts" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts }}</a>
+                </div>
+                <h4><a href="{% url 'source-detail' org=result.owner source=result.short_code %}" style="text-decoration: none;">
+                    <span class="resource-label small source">
+                        <span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-th-list"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / </span><span class="resource-label-id-code">{{ result.short_code }}</span>
+                        </span><span class="resource-label-name">{{ result.name }}</span>
+                    </span>
+                </a></h4>
+                <p>
+                    <em>Source type:</em> {{ result.source_type }}<br />
+                    {% if result.description %}{{ result.description }}<br />{% endif %}
+                    {% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
+                </p>
+                {% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Pagination -->
+        {% comment %}
+        {% if sources %}
+        <div class="row" style="text-align:center;">
+            {% bootstrap_pagination source_page url=source_pagination_url %}
+        </div>
+        {% endif %}
+        {% endcomment %}
+
+    </div> {# col-md-8 #}
+</div> {# row #}
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Organization</h4><pre>{{ org|pprint }}</pre>
+<h4>Sources</h4><pre>{{ sources|pprint }}</pre>
+{% endblock resource-debug %}

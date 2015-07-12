@@ -1,4 +1,5 @@
-"""OCL Organization Views
+"""
+OCL Organization Views
 """
 import requests
 import logging
@@ -154,12 +155,43 @@ class OrganizationDetailView(OrganizationReadBaseView):
         return context
 
 
-class OrganizationSourcesListView(OrganizationReadBaseView):
+class OrganizationDetailsView(OrganizationReadBaseView):
     """
-    Organization Sources List view
+    Organization details view.
     """
 
-    template_name = "orgs/org_detail_about.html"
+    template_name = "orgs/org_details.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the organization details and its members.
+        """
+
+        # Set the context
+        context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
+
+        # Load the organization
+        org_id = self.kwargs.get('org')
+        org = self.get_org_details(org_id)
+
+        # Load members of this org
+        members = self.get_org_members(org_id)
+
+        # Set the context
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'Details'
+        context['org'] = org
+        context['members'] = members
+
+        return context
+
+
+class OrganizationSourcesView(OrganizationReadBaseView):
+    """
+    Organization Sources view
+    """
+
+    template_name = "orgs/org_sources.html"
 
     def get_context_data(self, *args, **kwargs):
         """
@@ -167,18 +199,74 @@ class OrganizationSourcesListView(OrganizationReadBaseView):
         """
         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
 
-        # Set the context
+        # Load the organization
+        org_id = self.kwargs.get('org')
+        org = self.get_org_details(org_id)
+
+        # Load the sources in this organization
+        source_searcher = OCLSearch(
+            search_type=OCLSearch.SOURCE_TYPE, params=self.request.GET)
+        api_sources = OCLapi(self.request, debug=True, facets=True)
+        search_result_sources = api_sources.get(
+            'orgs', org_id, 'sources', params=source_searcher.search_params)
+        if search_result_sources.status_code == requests.codes.not_found:
+            sources_response_json = {}
+            sources_facets_json = {}
+            sources_facets = {}
+            sources = []
+            sources_num_found = 0
+            sources_paginator = None
+            sources_current_page = 0
+        else:
+            sources_response_json = search_result_sources.json()
+            sources_facets_json = sources_response_json['facets']
+            sources_facets = source_searcher.process_facets('sources', sources_facets_json)
+            sources = sources_response_json['results']
+            if 'num_found' in search_result_sources.headers:
+                try:
+                    sources_num_found = int(search_result_sources.headers['num_found'])
+                except ValueError:
+                    sources_num_found = 0
+            else:
+                sources_num_found = 0
+            sources_paginator = Paginator(range(sources_num_found), source_searcher.num_per_page)
+            sources_current_page = sources_paginator.page(source_searcher.current_page)
+
+        # TODO: Setup source filters based on the current search
+
+        # Select filters
+        # TODO: This is passing all parameters, but should pass only those relevant to sources
+        source_searcher.select_search_filters(self.request.GET)
+
+        # Set the context for the sources
+        context['sources'] = sources
+        context['source_page'] = sources_current_page
+        context['source_pagination_url'] = self.request.get_full_path()
+        context['source_q'] = source_searcher.get_query()
+        context['source_facets'] = sources_facets
+        context['search_sort_options'] = source_searcher.get_sort_options()
+        context['search_sort'] = source_searcher.get_sort()
+
+        # Set debug context
         context['url_params'] = self.request.GET
+        context['sources_request_url'] = api_sources.url
+        context['sources_search_params'] = source_searcher.search_params
+        context['sources_search_response_headers'] = search_result_sources.headers
+        context['sources_search_facets_json'] = sources_facets_json
+
+        # Set the context for the org and template
         context['selected_tab'] = 'Sources'
+        context['org'] = org
+
         return context
 
 
-class OrganizationCollectionsListView(OrganizationReadBaseView):
+class OrganizationCollectionsView(OrganizationReadBaseView):
     """
     Organization Collections List view
     """
 
-    template_name = "orgs/org_detail_about.html"
+    template_name = "orgs/org_collections.html"
 
     def get_context_data(self, *args, **kwargs):
         """
@@ -211,12 +299,12 @@ class OrganizationCollectionsListView(OrganizationReadBaseView):
         return context
 
 
-class OrganizationDetailAboutView(OrganizationReadBaseView):
+class OrganizationAboutView(OrganizationReadBaseView):
     """
-    Organization about page
+    Organization about page.
     """
 
-    template_name = "orgs/org_detail_about.html"
+    template_name = "orgs/org_about.html"
 
     def get_context_data(self, *args, **kwargs):
         """
@@ -224,10 +312,8 @@ class OrganizationDetailAboutView(OrganizationReadBaseView):
         """
         context = super(OrganizationDetailAboutView, self).get_context_data(*args, **kwargs)
 
-        # Determine the organization ID
-        org_id = self.kwargs.get('org')
-
         # Load the organization
+        org_id = self.kwargs.get('org')
         org = self.get_org_details(org_id)
 
         # Set about text for the organization

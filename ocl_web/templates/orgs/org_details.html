@@ -1,0 +1,78 @@
+{% extends "orgs/org_read_base.html" %}
+
+
+{% block tab-content %}
+<div class="container" style="margin-top: 20px;">
+	<div class="row">
+
+		<!-- Org attributes -->
+		<div class="col-md-8">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Organization Details</h3></div>
+                <div class="panel-body">
+                	{% field_label 'ID' org.id %}
+                	{% field_label 'Full Name' org.name %}
+                	<hr />
+                	{% field_label 'Company' org.company %}
+                	{% field_label 'Website' org.website url=True %}
+                	{% field_label 'Location' org.location %}
+                	{% field_label 'Public Access' org.public_access %}
+                	{% field_label 'No. Public Sources' org.public_source %}
+                	<hr />
+                	{% field_label 'Created By' org.created_by %}
+                	{% field_label 'Created On' org.created_on|smart_date %}
+                	{% field_label 'Updated By' org.updated_by %}
+                	{% field_label 'Updated On' org.updated_on|smart_date %}
+                	<hr />
+                	{% field_label 'Extras' org.extras %}
+                </div>
+			</div> <!-- /panel -->
+    	</div> <!-- /col-md-8 -->
+
+        <!-- Org members -->
+        <div class="col-md-4">
+			<div class="panel panel-default" ng-app="ConceptApp" ng-controller="MemberRemoveController">
+				<div class="panel-heading"><h3 class="panel-title">Members</h3></div>
+				<div class="panel-body">
+					{% include 'includes/ng_alerts_incl.html' %}
+					{% if_can_change org %}
+						<a href="{% url 'org-member-add' org.id %}">Add Member</a>
+						{% for member in members %}
+							<h4>{% user_label member %}<button type="button" class="btn btn-link" data-org='{{org.id}}' ng-click="removeMember('{{org.id}}', '{{member.username}}')" ><span class="glyphicon glyphicon-trash"></span></button></h4>
+					
+							{% if request.GET.debug %}<pre>{{ member|pprint }}</pre>{% endif %}
+
+						{% empty %}
+							No members.
+						{% endfor %}
+					{% endif_can_change %}
+				</div>
+			</div> <!-- /panel -->
+		</div> <!-- /col-md-4 -->
+
+{% verbatim %}
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Confirm Remove</h3>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to remove {{ username }} from {{ org }}?
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="$close()">OK</button>
+        <button class="btn btn-warning" ng-click="$dismiss()">Cancel</button>
+    </div>
+</script>
+{% endverbatim %}
+{% csrf_token %}
+
+	</div>
+</div>
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Organization</h4><pre>{{ org|pprint }}</pre>
+<h4>Members</h4><pre>{{ members|pprint }}</pre>
+{% endblock resource-debug %}

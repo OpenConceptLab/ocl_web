@@ -25,17 +25,21 @@ urlpatterns = patterns(
     ## USER CORE
 
     # /users/:user/sources/
-    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/$',
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/new/$',
         SourceCreateView.as_view(), name='source-create-for-user'),
+
     # /users/:user/sources/:source/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/$',
         SourceDetailView.as_view(), name='source-detail'),
+
     # /users/:user/sources/:source/edit/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/edit/$',
         SourceEditView.as_view(), name='source-edit'),
+
     # /users/:user/sources/:source/versions/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/$',
         SourceVersionView.as_view(), name='source-version-cl'),
+
     # /users/:user/sources/:source/versions/:source-version/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/(?P<version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         SourceVersionView.as_view(), name='source-version-ud'),
