@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+{% block title %}{{ org.id }} - Open Concept Lab{% endblock title %}
+
+{% block content-no-container %}
+
+{% block resource-header %}
+<header class="org-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-home"></span></div>
+				<div style="display:inline-block;padding-left:20px">
+					<h3>
+						{% org_label org %}
+						{# TODO: Only show if admin or owner #}
+						<a href="{% url 'org-edit' org.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
+					</h3>
+					<p>
+						<h4>{{ org.name }}</h4>
+						<span class="text-muted small">
+						{% if org.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ org.location }}&nbsp;&nbsp;&nbsp;{% endif %}
+						<span class="glyphicon glyphicon-calendar"></span> Created on {{ org.created_on|smart_date }}
+						</span>
+					</p>
+				</div>
+			</div> <!-- /col-md-12 -->
+		</div> <!-- /row -->
+	</div> <!-- /container -->
+</header> <!-- /org-header -->
+{% endblock resource-header %}
+
+{% block resource-tabs %}
+<div class="container">
+<tabset>
+
+<tab heading="Details">
+{% block tab-org-details %}
+{% endblock tab-org-details %}
+</tab>
+
+<tab heading="Sources">
+{% block tab-org-source-list %}
+{% endblock tab-org-source-list %}
+</tab>
+
+{% comment %}
+<tab heading="Collections">
+{% block tab-org-collection-list %}
+{% endblock tab-org-collection-list %}
+</tab>
+{% endcomment %}
+
+<tab heading="About">
+{% block tab-org-about %}
+{% endblock tab-org-about %}
+</tab>
+
+{% if request.GET.debug %}
+<tab heading="Debug">
+{% block resource-debug %}
+	<p>&nbsp;</p>
+	<div class="panel panel-default">
+		<div class="panel-heading"><h4 class="panel-title">Debug</h4></div>
+	  	<div class="panel-body" style="min-height:140px;">
+	  		<h4>Organization</h4>
+	  		<pre style="border:0; background-color:transparent;">{{ org|pprint }}</pre>
+
+	  		<h4>Sources</h4>
+	  		<pre style="border:0; background-color:transparent;">{{ sources|pprint }}</pre>
+
+			{% comment %}
+	  		<h4>Collections</h4>
+	  		<pre style="border:0; background-color:transparent;">{{ collections|pprint }}</pre>
+	  		{% endcomment %}
+
+	  		<h4>Members</h4>
+	  		<pre style="border:0; background-color:transparent;">{{ members|pprint }}</pre>
+	  	</div>
+	</div>
+{% block resource-debug %}
+</tab>
+{% endif %}
+
+
+</tabset>
+</div>
+{% endblock resource-tabs %}
+
+{% endblock content-no-container %}
