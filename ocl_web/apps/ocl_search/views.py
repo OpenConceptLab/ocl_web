@@ -18,7 +18,7 @@ from libs.ocl import (OCLapi, OCLSearch)
 logger = logging.getLogger('oclweb')
 
 
-class HomeSearchView(TemplateView):
+class GlobalSearchView(TemplateView):
     """View for global OCL search
     """
 
@@ -28,7 +28,7 @@ class HomeSearchView(TemplateView):
         """Set context for OCL global search_type
         """
 
-        context = super(HomeSearchView, self).get_context_data(*args, **kwargs)
+        context = super(GlobalSearchView, self).get_context_data(*args, **kwargs)
 
         # Setup the OCL Search helper class
         searcher = OCLSearch(params=self.request.GET)

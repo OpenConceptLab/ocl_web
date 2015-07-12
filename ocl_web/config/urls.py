@@ -13,8 +13,7 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
-from apps.ocl_search.views import HomeSearchView
-from apps.orgs.views import OrganizationDetailView
+from apps.ocl_search.views import GlobalSearchView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -24,8 +23,8 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
 
-    # Global Search - /search/
-    url(r'^search/$', HomeSearchView.as_view(), name="search"),
+    # OCL Global Search - /search/
+    url(r'^search/$', GlobalSearchView.as_view(), name="search"),
 
     # Organizations - /orgs/...
     url(r'^orgs/', include('config.orgs_urls')),
