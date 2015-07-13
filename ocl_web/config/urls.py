@@ -56,8 +56,8 @@ urlpatterns = patterns(
     url(r'^help/$', TemplateView.as_view(template_name='pages/help.html'), name="help"),
 
     # TODO(paynejd@gmail.com): Temporary success page -- remove?
-    url(r'^success/$', TemplateView.as_view(template_name='pages/success.html'),
-        name="form-success"),
+    #url(r'^success/$', TemplateView.as_view(template_name='pages/success.html'),
+    #    name="form-success"),
 
     # Admin - /admin/...
     url(r'^admin/', include(admin.site.urls)),

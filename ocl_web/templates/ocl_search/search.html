@@ -302,13 +302,13 @@
 			</div>
 			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="{% url 'user' %}#orgs" title="Organizations"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.orgs }}</a>
+					<a href="{% url 'users:detail' result.username %}#orgs" title="Organizations"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.orgs }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<!--a href="{% url 'user' %}#followers" title="Followers"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
+					<!--a href="{% url 'users:detail' result.username %}#followers" title="Followers"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;-->
-					<a href="{% url 'user' %}#sources" title="Public sources owned by user"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources }}</a>
+					<a href="{% url 'users:detail' result.username %}#sources" title="Public sources owned by user"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="{% url 'user' %}#collections" title="Public collections owned by user"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections }}</a>
+					<a href="{% url 'users:detail' result.username %}#collections" title="Public collections owned by user"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections }}</a>
 				</div>
 
 				<h4><a href="{% url 'users:detail' result.username %}" style="text-decoration: none;">
