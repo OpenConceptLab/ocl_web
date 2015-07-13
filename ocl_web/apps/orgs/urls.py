@@ -1,20 +1,20 @@
 from django.conf.urls import patterns, url, include
 from django.views.generic import TemplateView
-from .views import OrganizationDetailView, OrganizationCreateView
+from .views import OrganizationDetailView, OrganizationNewView
 
 # TODO(paynejd@gmail.com): I believe this file is retired...
 
 urlpatterns = patterns('',
 
 	# Create new organization - /orgs/new/
-    url(r'^new/$', OrganizationCreateView.as_view(), name='org-new'),
+    #url(r'^new/$', OrganizationNewView.as_view(), name='org-new'),
 
     # Create new organization - /orgs/create/ - RETIRE
     # TODO(paynejd@gmail.com): Retire old URL for creating new organizations
-    url(r'^create/$', OrganizationCreateView.as_view(), name='org-create'),
+    #url(r'^create/$', OrganizationNewView.as_view(), name='org-new'),
 
     # Detailed Org View - /orgs/CIEL/
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/$', OrganizationDetailView.as_view(), name='org-detail'),
+    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/$', OrganizationDetailView.as_view(), name='org-detail'),
 
     # RETIRED
 	#url(r'^$', OrganizationListView.as_view(), name='organization-list'),

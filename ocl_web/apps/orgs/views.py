@@ -333,13 +333,10 @@ class OrganizationAboutView(OrganizationReadBaseView):
 
 
 
-
-
-
-class OrganizationCreateView(LoginRequiredMixin, FormView):
+class OrganizationNewView(LoginRequiredMixin, FormView):
     """View to create new organization"""
 
-    form_class = OrganizationCreateForm
+    form_class = OrganizationNewView
     template_name = "orgs/org_new.html"
 
     def form_valid(self, form, *args, **kwargs):
@@ -369,6 +366,9 @@ class OrganizationCreateView(LoginRequiredMixin, FormView):
         # TODO:  Add error messages from API to form.
         else:
             return super(OrganizationCreateView, self).form_invalid(self, *args, **kwargs)
+
+
+
 
 
 class OrganizationEditView(FormView):

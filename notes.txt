@@ -1,6 +1,7 @@
 To do:
 - Remove url files from all the subdirectories -- only the url files in the config file are used
 - Need to store user timezone and locale preferences
+- Implement "reserved keywords" -- i.e. no org or source can be named "new" or "versions" -- others?
 
 
 database:
