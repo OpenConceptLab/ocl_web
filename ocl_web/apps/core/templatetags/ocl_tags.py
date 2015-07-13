@@ -77,17 +77,24 @@ def concept_label(concept):
 
 
 @register.inclusion_tag('includes/field_display_incl.html')
-def field_label(label, value, url=False):
+def field_label(label, value, url=False, truncate=True):
     """
         Display a simple read only field value to user, like:
 
-        field label text:    field value
+        field label text: field value
 
         See the include template for details.
     """
+    TRUNCATE_LENGTH = 97
+    url_string = ''
+    if url:
+        url_string = value
+    if truncate and len(value) > (TRUNCATE_LENGTH + 3):
+        value = data[:TRUNCATE_LENGTH] + '...'
     return {
         'field_label': label,
         'field_value': value,
+        'url_value': url,
         'is_url': url,
     }
 
