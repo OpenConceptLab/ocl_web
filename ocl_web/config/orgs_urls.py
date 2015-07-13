@@ -34,10 +34,9 @@ urlpatterns = patterns(
 
     # Create new organization - /orgs/new/
     url(r'^new/$', OrganizationNewView.as_view(), name='org-new'),
-    #url(r'^create/$', OrganizationNewView.as_view(), name='org-create'),
 
     # /orgs/:org/
-    # TODO(paynejd@gmail.com): Point /orgs/:org/ to org sources instead of details & remove name
+    # TODO(paynejd@gmail.com): Potentially point /orgs/:org/ to org sources instead of details
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/$',
         OrganizationDetailsView.as_view()),
 
@@ -76,14 +75,13 @@ urlpatterns = patterns(
 
     ## SOURCES CORE
 
+    # /orgs/:org/sources/new/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/new/$',
+        SourceCreateView.as_view(), name='source-create-for-org'),
+
     # /orgs/:org/sources/:source/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/$',
         SourceDetailView.as_view(), name='source-detail'),
-
-    # Create new source within the org: /orgs/:org/sources/
-    # TODO(paynejd@gmail.com): Change this to: /orgs/:org/sources/new/
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/new/$',
-        SourceCreateView.as_view(), name='source-create-for-org'),
 
     # /orgs/:org/sources/:source/edit/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/edit/$',
