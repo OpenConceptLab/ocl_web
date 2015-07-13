@@ -2,7 +2,7 @@ from django.utils.translation import ugettext as _
 from django import forms
 
 
-class OrganizationCreateForm(forms.Form):
+class OrganizationNewForm(forms.Form):
 
     short_name = forms.CharField(
         label="Organization Short Name",
@@ -29,7 +29,7 @@ class OrganizationCreateForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': "Location (e.g. Geneva, Switzerland)"}))
 
 
-class OrganizationEditForm(OrganizationCreateForm):
+class OrganizationEditForm(OrganizationNewForm):
 
     def __init__(self, *args, **kwargs):
         """ Dirty trick to delete one field for edit form. Django 1.6 lets you do this

@@ -15,7 +15,7 @@ from django.core.paginator import Paginator
 from braces.views import LoginRequiredMixin
 from braces.views import (CsrfExemptMixin, JsonRequestResponseMixin)
 
-from .forms import (OrganizationCreateForm, OrganizationEditForm)
+from .forms import (OrganizationNewForm, OrganizationEditForm)
 from .forms import (OrganizationMemberAddForm)
 from libs.ocl import OCLapi, OCLSearch
 
@@ -336,7 +336,7 @@ class OrganizationAboutView(OrganizationReadBaseView):
 class OrganizationNewView(LoginRequiredMixin, FormView):
     """View to create new organization"""
 
-    form_class = OrganizationNewView
+    form_class = OrganizationNewForm
     template_name = "orgs/org_new.html"
 
     def form_valid(self, form, *args, **kwargs):
@@ -366,7 +366,6 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
         # TODO:  Add error messages from API to form.
         else:
             return super(OrganizationCreateView, self).form_invalid(self, *args, **kwargs)
-
 
 
 

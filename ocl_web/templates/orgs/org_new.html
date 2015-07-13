@@ -9,14 +9,13 @@
 &nbsp;
 
 <form role="form" method="post" action=".">
-  {% csrf_token %}
-  {% bootstrap_form form %}
-
-  {% buttons %}
-  <button type="submit" class="btn btn-primary">
-    {% trans "Create Organization" %}
-  </button>
-  {% endbuttons %}
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">
+    	{% trans "Create Organization" %}
+  	</button>
+  	{% endbuttons %}
 </form>
 
 {% endblock content %}
