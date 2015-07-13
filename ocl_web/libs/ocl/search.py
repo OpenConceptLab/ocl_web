@@ -1,6 +1,6 @@
 """ Search helper for interfacing web with OCL API. """
 from django.http import QueryDict
-#from urllib import quote
+from urllib import quote
 import logging
 
 logger = logging.getLogger('oclweb')
@@ -70,7 +70,7 @@ class SearchFilter(object):
 
 
 class SearchFilterList(object):
-    """A list of filter spec for a specific resource type (concept, source, etc)
+    """A list of filters for a specific resource type (concept, source, etc)
     """
     def __init__(self, resource_name=''):
         self.resource_name = resource_name
