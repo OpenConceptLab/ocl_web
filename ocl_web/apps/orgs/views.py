@@ -361,7 +361,7 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
         # Ocl lib.
         if result.ok:
             messages.add_message(self.request, messages.INFO, _('Organization Added'))
-            return redirect(reverse('org-detail', kwargs={'org': org_id}))
+            return redirect(reverse('org-details', kwargs={'org': org_id}))
 
         # TODO:  Add error messages from API to form.
         else:
@@ -409,7 +409,7 @@ class OrganizationEditView(FormView):
         # Ocl lib.
         if result.ok:
             messages.add_message(self.request, messages.INFO, _('Organization updated.'))
-            return redirect(reverse('org-detail', kwargs={'org': self.org_id}))
+            return redirect(reverse('org-details', kwargs={'org': self.org_id}))
 
         # TODO:  Add error messages from API to form.
         else:
@@ -461,7 +461,7 @@ class OrganizationMemberAddView(LoginRequiredMixin, FormView):
         # Ocl lib.
         if result.status_code == 204:
             messages.add_message(self.request, messages.INFO, _('Member Added'))
-            return redirect(reverse('org-detail', kwargs={'org': self.org['id']}))
+            return redirect(reverse('org-details', kwargs={'org': self.org['id']}))
 
         # TODO:  Add error messages from API to form.
         else:

@@ -6,7 +6,7 @@
 {% block content %}
 
 <h3>
-    <a href="{% url 'org-detail' org=source.owner %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ source.owner }}</a>
+    <a href="{% url 'org-details' org=source.owner %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ source.owner }}</a>
     /
     <a href="{% url 'source-detail' org=source.owner source=source.id %}"<span class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ source.id }}</span></a>
     {{ source.name }}

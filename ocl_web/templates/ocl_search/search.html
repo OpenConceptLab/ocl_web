@@ -266,16 +266,16 @@
 			</div>
 			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="{% url 'org-detail' org=result.id %}#members" title="Members in organization"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.members }}</a>
+					<a href="{% url 'org-details' org=result.id %}#members" title="Members in organization"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.members }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<!--a href="{% url 'org-detail' org=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
+					<!--a href="{% url 'org-details' org=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;-->
-					<a href="{% url 'org-detail' org=result.id %}#sources" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources }}</a>
+					<a href="{% url 'org-details' org=result.id %}#sources" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="{% url 'org-detail' org=result.id %}#collections" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections }}</a>
+					<a href="{% url 'org-details' org=result.id %}#collections" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections }}</a>
 				</div>
 
-				<h4><a href="{% url 'org-detail' org=result.id %}" style="text-decoration: none;">
+				<h4><a href="{% url 'org-details' org=result.id %}" style="text-decoration: none;">
 					<span class="resource-label small organization">
 						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-home"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ result.id }}</span>
 						</span><span class="resource-label-name">{{ result.name }}</span>

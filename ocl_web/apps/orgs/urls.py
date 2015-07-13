@@ -14,7 +14,7 @@ urlpatterns = patterns('',
     #url(r'^create/$', OrganizationNewView.as_view(), name='org-new'),
 
     # Detailed Org View - /orgs/CIEL/
-    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/$', OrganizationDetailView.as_view(), name='org-detail'),
+    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/$', OrganizationDetailView.as_view(), name='org-details'),
 
     # RETIRED
 	#url(r'^$', OrganizationListView.as_view(), name='organization-list'),
