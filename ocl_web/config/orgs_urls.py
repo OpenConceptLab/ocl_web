@@ -39,7 +39,7 @@ urlpatterns = patterns(
     # /orgs/:org/
     # TODO(paynejd@gmail.com): Point /orgs/:org/ to org sources instead of details & remove name
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/$',
-        OrganizationDetailView.as_view(), name='org-detail'),
+        OrganizationDetailsView.as_view()),
 
     # /orgs/:org/edit/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/edit/$',
