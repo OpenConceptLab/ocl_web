@@ -1,4 +1,4 @@
-{% extends "orgs/org_read_base.html" %}
+{% extends "orgs/org_base.html" %}
 {% load i18n %}
 {% load ocl_tags %}
 {% load bootstrap3 %}
@@ -26,7 +26,7 @@
                 	{% field_label 'Created On' org.created_on|smart_date %}
                 	{% field_label 'Updated By' org.updated_by %}
                 	{% field_label 'Updated On' org.updated_on|smart_date %}
-                	{% if org.extras %}
+                	{% if org.extras and org.extras.items %}
                 		<hr />
                 		{% for k, v in org.extras.items %}
                 			{% field_label k v %}

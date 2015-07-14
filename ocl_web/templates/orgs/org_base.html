@@ -16,7 +16,7 @@
                 <div style="display:inline-block;padding-left:20px">
                     <h3>
                         {% org_label org %}
-                        {# TODO: Only show if admin or owner #}
+                        {# TODO: Only show if admin or owner - look at source_base.html for example #}
                         <a href="{% url 'org-edit' org.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
                     </h3>
                     <p>
@@ -38,7 +38,7 @@
 <div class="container">
     <ul class="nav nav-tabs">
         <li role="presentation" {% if selected_tab == "Sources" %}class="active"{% endif %}><a href="{% url 'org-sources' org.id %}">Sources</a></li>
-        {% comment %}<li role="presentation" {% if selected_tab == "Collections" %}class="active"{% endif %}><a href="{% url 'org-collections' org.id %}/collections/">Collections</a></li>{% endcomment %}
+        {% comment %}<li role="presentation" {% if selected_tab == "Collections" %}class="active"{% endif %}><a href="{% url 'org-collections' org.id %}">Collections</a></li>{% endcomment %}
         <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{% url 'org-details' org.id %}">Details</a></li>
         <li role="presentation" {% if selected_tab == "About" %}class="active"{% endif %}><a href="{% url 'org-about' org.id %}">About</a></li>
     </ul>
