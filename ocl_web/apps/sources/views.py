@@ -28,17 +28,56 @@ class SourceReadBaseView(TemplateView):
 
     def get_source_details(self, owner_type, owner_id, source_id):
         """
-        Get the source details.
+        Load source details from the API and return as dictionary.
         """
         # TODO(paynejd@gmail.com): Validate the input parameters
-        api_source = OCLapi(self.request, debug=True)
-        source_search_results = api_source.get(owner_type, owner_id, 'sources', source_id)
+        api = OCLapi(self.request, debug=True)
+        source_search_results = api.get(owner_type, owner_id, 'sources', source_id)
         if source_search_results.status_code != 200:
             if source_search_results.status_code == 404:
                 raise Http404
             else:
                 source_search_results.raise_for_status()
         return source_search_results.json()
+
+    def get_source_versions(self, owner_type, owner_id, source_id, params=None):
+        """
+        Load source versions from the API and return as JSON search results.
+        """
+        source_versions = {}
+        return source_versions
+
+    def get_source_concepts(self, owner_type, owner_id, source_id, search_params=None):
+        """
+        Load source concepts from the API and return OCLSearch instance with results.
+        """
+
+        # Create the searcher
+        concept_searcher = OCLSearch(search_type=OCLapi.CONCEPT_TYPE, params=search_params)
+
+        # Perform the search
+        api = OCLapi(self.request, debug=True, facets=True)
+        search_response = api.get(
+            owner_type, owner_id, 'sources', source_id, 'concepts',
+            params=concept_searcher.search_params)
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
+
+        # Process the results
+        concept_searcher.process_faceted_search_results(
+            search_type='concepts', search_response=search_response,
+            search_params=search_params)
+
+        return concept_searcher
+
+    def get_source_mappings(self, owner_type, owner_id, source_id, params=None):
+        """
+        Load source mappings from the API and return as faceted JSON.
+        """
+        mappings = {}
+        return mappings
 
 
 
@@ -122,7 +161,22 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         # Load the source details
         source = self.get_source_details(self.owner_type, self.owner_id, self.source_id)
 
-        # Set the context
+        # Load the concepts in this source
+        concept_searcher = self.get_source_concepts(
+            self.owner_type, self.owner_id, self.source_id,
+            search_params=self.request.GET)
+        concept_paginator = Paginator(
+            range(concept_searcher.num_found), concept_searcher.num_per_page)
+        concept_current_page = concept_paginator.page(concept_searcher.current_page)
+
+        # Set the context for the child concepts
+        context['concepts'] = concept_searcher.search_results
+        context['concept_page'] = concept_current_page
+        context['concept_pagination_url'] = self.request.get_full_path()
+        context['concept_q'] = concept_searcher.get_query()
+        context['concept_facets'] = concept_searcher.search_filter_list
+        context['search_sort_options'] = concept_searcher.get_sort_options()
+        context['search_sort'] = concept_searcher.get_sort()
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Concepts'
         context['source'] = source
@@ -155,6 +209,10 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         context['source'] = source
 
         return context
+
+
+
+
 
 
 

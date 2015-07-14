@@ -34,7 +34,7 @@ class OCLapi(object):
 
     def debug_result(self, results):
         """
-            Some serious debug output.
+        Some serious debug output.
         """
         self.logger.debug('API %s' % (results.request.path_url))
         self.logger.debug('%s RESULT: %s' % (

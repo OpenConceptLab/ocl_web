@@ -62,16 +62,12 @@
             </div>
             <div class="list-group-item">
               {% for org in orgs %}
-
-                {% org_label org %}<br />
-
                 <h4><a href="{% url 'org-details' org=org.id %}" style="text-decoration: none;">
                   <span class="resource-label small organization">
                     <span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-home"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ org.id }}</span>
                     </span><span class="resource-label-name">{{ org.name }}</span>
                   </span>
                 </a></h4>
-
               {% empty %}
                 No organizations
               {% endfor %}

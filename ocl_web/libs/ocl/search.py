@@ -1,13 +1,14 @@
 """ Search helper for interfacing web with OCL API. """
 from django.http import QueryDict
-from urllib import quote
+#from urllib import quote
 import logging
 
 logger = logging.getLogger('oclweb')
 
 
 class SearchFilterOption(object):
-    """Defines a specific search filter option
+    """
+    Defines a specific search filter option (e.g. English).
     """
     def __init__(
             self, search_filter=None, option_value='',
@@ -33,7 +34,8 @@ class SearchFilterOption(object):
 
 
 class SearchFilter(object):
-    """A specific search filter for searching OCL
+    """
+    A specific search filter (e.g. Locale) and its options (e.g. English).
 
     options is a dictionary of SearchFilterOption instances
     """
@@ -69,8 +71,10 @@ class SearchFilter(object):
                                 [str(self.options[k]) for k in self.options.keys()])
 
 
+
 class SearchFilterList(object):
-    """A list of filters for a specific resource type (concept, source, etc)
+    """
+    A list of SearchFilter isntances for a specific resource type (e.g. concept, source, etc.).
     """
     def __init__(self, resource_name=''):
         self.resource_name = resource_name
@@ -110,100 +114,98 @@ class SearchFilterList(object):
 
 
 # TOOD(paynejd@gmail.com): Only setup_filters uses this -- possibly retire?
-def turn_to_tuples(values):
-    """
-    Temporary util to turn a list of values into a list of json friendly dictionary.
-    Used to translate the concept_class_list type of lists to a code/name tuple
-    list for used in filter.
+# def turn_to_tuples(values):
+#     """
+#     Temporary util to turn a list of values into a list of json friendly dictionary.
+#     Used to translate the concept_class_list type of lists to a code/name tuple
+#     list for used in filter.
 
-    Once we clean up these lists to be all code/name pair this will go away.
+#     Once we clean up these lists to be all code/name pair this will go away.
 
-    """
-    if isinstance(values[0], dict):
-        # already a list of dictionary, just add "selected"
-        for d in values:
-            d['selected'] = False
-        return values
-    else:
-        # input is a list of codes which are the same as values, split up into
-        # code, value and selected dictionary
-        return [{'code': v, 'name': v, 'selected': False} for v in values]
+#     """
+#     if isinstance(values[0], dict):
+#         # already a list of dictionary, just add "selected"
+#         for d in values:
+#             d['selected'] = False
+#         return values
+#     else:
+#         # input is a list of codes which are the same as values, split up into
+#         # code, value and selected dictionary
+#         return [{'code': v, 'name': v, 'selected': False} for v in values]
 
 
 
 # TODO(paynejd@gmail.com): Replace with new facets/filter methodology
-def setup_filters():
-    """Sets up filters with static options. Deprecated.
-    """
-    from apps.core.views import _get_concept_class_list
-    from apps.core.views import _get_datatype_list
-    from apps.core.views import _get_source_type_list
-    from apps.core.views import _get_locale_list
+# def setup_filters():
+#     """Sets up filters with static options. Deprecated.
+#     """
+#     from apps.core.views import _get_concept_class_list
+#     from apps.core.views import _get_datatype_list
+#     from apps.core.views import _get_source_type_list
+#     from apps.core.views import _get_locale_list
 
-    # concept filters
-    filters = SearchFilterList('concepts')
-    f = filters.add_search_filter('concept_class', 'Concept Classes')
-    f.options = turn_to_tuples(_get_concept_class_list())
+#     # concept filters
+#     filters = SearchFilterList('concepts')
+#     f = filters.add_search_filter('concept_class', 'Concept Classes')
+#     f.options = turn_to_tuples(_get_concept_class_list())
 
-    f = filters.add_search_filter('datatype', 'Datatypes')
-    f.options = turn_to_tuples(_get_datatype_list())
+#     f = filters.add_search_filter('datatype', 'Datatypes')
+#     f.options = turn_to_tuples(_get_datatype_list())
 
-    f = filters.add_search_filter('locale', 'Locale')
-    f.options = turn_to_tuples(_get_locale_list())
+#     f = filters.add_search_filter('locale', 'Locale')
+#     f.options = turn_to_tuples(_get_locale_list())
 
-    f = filters.add_search_filter('includeRetired', 'Include Retired')
-    f.options = turn_to_tuples([{'code': u'1', 'name': 'Retired'}])
-    concept_filters = filters
+#     f = filters.add_search_filter('includeRetired', 'Include Retired')
+#     f.options = turn_to_tuples([{'code': u'1', 'name': 'Retired'}])
+#     concept_filters = filters
 
-    # source filter
-    filters = SearchFilterList('sources')
-    f = filters.add_search_filter('source_type', 'Source Types')
-    f.options = turn_to_tuples(_get_source_type_list())
+#     # source filter
+#     filters = SearchFilterList('sources')
+#     f = filters.add_search_filter('source_type', 'Source Types')
+#     f.options = turn_to_tuples(_get_source_type_list())
 
-    f = filters.add_search_filter('language', 'Locale')
-    f.options = _get_locale_list()
-    source_filters = filters
+#     f = filters.add_search_filter('language', 'Locale')
+#     f.options = _get_locale_list()
+#     source_filters = filters
 
-    # collection filters
-    filters = SearchFilterList('collections')
-    f = filters.add_search_filter('collection_type', 'Collection Types')
-    f.options = turn_to_tuples(['Dictionary',
-                                'Interface Terminology',
-                                'Indicator Registry',
-                                'Reference',
-                                'External'])
+#     # collection filters
+#     filters = SearchFilterList('collections')
+#     f = filters.add_search_filter('collection_type', 'Collection Types')
+#     f.options = turn_to_tuples(['Dictionary',
+#                                 'Interface Terminology',
+#                                 'Indicator Registry',
+#                                 'Reference',
+#                                 'External'])
 
-    f = filters.add_search_filter('language', 'Locale')
-    f.options = _get_locale_list()
-    collection_filters = filters
+#     f = filters.add_search_filter('language', 'Locale')
+#     f.options = _get_locale_list()
+#     collection_filters = filters
 
-    # mapping filters
-    filters = SearchFilterList('mappings')
-    f = filters.add_search_filter('collection_type', 'Collection Types')
-    f.options = turn_to_tuples(['Dictionary',
-                                'Interface Terminology',
-                                'Indicator Registry',
-                                'Reference',
-                                'External'])
-    mapping_filters = filters
+#     # mapping filters
+#     filters = SearchFilterList('mappings')
+#     f = filters.add_search_filter('collection_type', 'Collection Types')
+#     f.options = turn_to_tuples(['Dictionary',
+#                                 'Interface Terminology',
+#                                 'Indicator Registry',
+#                                 'Reference',
+#                                 'External'])
+#     mapping_filters = filters
 
-    user_filters = None
-    org_filters = None
+#     user_filters = None
+#     org_filters = None
 
-    return [user_filters, org_filters, source_filters, concept_filters,
-            collection_filters, mapping_filters]
+#     return [user_filters, org_filters, source_filters, concept_filters,
+#             collection_filters, mapping_filters]
 
 
 
 class OCLSearch(object):
-    """Helper to handle search query URL
-
-    type=concepts|sources|collections|orgs|users
-    page=N
-    limit=N
+    """
+    Helper to handle search queries and processing of search results.
     """
 
     # resource types
+    # TODO(paynejd@gmail.com): Resource type constants are duplicated in OCLapi
     USER_TYPE = 0
     ORG_TYPE = 1
     SOURCE_TYPE = 2
@@ -211,10 +213,11 @@ class OCLSearch(object):
     COLLECTION_TYPE = 4
     MAPPING_TYPE = 5
 
-    #defaults
+    # Default values
     DEFAULT_NUM_PER_PAGE = 25
     DEFAULT_SEARCH_TYPE = 'concepts'
 
+    # Search filter definitions for each resource
     search_filter_info = {
         'concepts': [
             {'id': 'source', 'display_name': 'Sources', 'facet': 'source'},
@@ -246,6 +249,7 @@ class OCLSearch(object):
         'users': []
     }
 
+    # Resource type definitions
     resource_type_info = {
         'concepts': {'int': CONCEPT_TYPE, 'name': 'concept', 'facets': True},
         'mappings': {'int': MAPPING_TYPE, 'name': 'mapping', 'facets': True},
@@ -255,11 +259,10 @@ class OCLSearch(object):
         'users': {'int': USER_TYPE, 'name': 'user', 'facets': False}
     }
 
-    search_filter_list = None
 
     def __init__(self, search_type='', params=None):
         """
-        :param search_type: string representation of one of the resource types
+        :param search_type: dictionary, QueryDict, or string of search params
         """
         # outputs
         self.search_type = search_type
@@ -268,11 +271,13 @@ class OCLSearch(object):
         self.search_params = {}
         self.search_sort = None
         self.search_query = None
+        self.search_filter_list = None
+        self.search_results = None
+        self.num_found = None
 
         # Optionally parse search parameters (i.e. GET request parameters)
         if params is not None:
-            self.parse(params)
-
+            self.parse_search_request(params)
 
     @property
     def search_resource_id(self):
@@ -282,7 +287,6 @@ class OCLSearch(object):
         else:
             return None
 
-
     @property
     def search_resource_name(self):
         """Get singular display name of the resource."""
@@ -290,7 +294,6 @@ class OCLSearch(object):
             return self.resource_type_info[self.search_type]['name']
         else:
             return ''
-
 
     @property
     def search_resource_has_facets(self):
@@ -300,8 +303,7 @@ class OCLSearch(object):
         else:
             return False
 
-
-    # TODO: Retire this method - not used on global search but maybe on other searches
+    # TODO(paynejd@gmail.com): Use OCLSearch.get_search_filters to create SearchFilterList
     def get_search_filters(self):
         """
         Get the search filters applicable for this search object type.
@@ -312,8 +314,7 @@ class OCLSearch(object):
         """
         return self.search_filter_list[self.search_type]
 
-
-    # TODO: Develop roadmap to do this more generically
+    # TODO(paynejd@gmail.com): Develop plan to handle search sort options better
     def get_sort_options(self):
         """
         :returns: a list of sort options.
@@ -327,8 +328,6 @@ class OCLSearch(object):
 
         ]
 
-
-    # TODO: Develop roadmap to do this more generically
     def get_sort(self):
         """
         Returns the current sort option
@@ -336,13 +335,11 @@ class OCLSearch(object):
         return '' if self.search_sort is None else self.search_sort
 
 
-    # TODO: Develop roadmap to do this more generically
     def get_query(self):
         """
         Returns the current query string
         """
         return '' if self.search_query is None else self.search_query
-
 
     def process_facets(self, resource_type='', facets=None):
         """
@@ -352,6 +349,7 @@ class OCLSearch(object):
         :params facets: Dictionary of the form { 'fields':{ } }
         :returns: SearchFilterList
         """
+        filter_list = None
         if isinstance(facets, dict) and 'fields' in facets and isinstance(facets['fields'], dict):
             filter_list = SearchFilterList(resource_name=resource_type)
             for facet in facets['fields']:
@@ -368,9 +366,9 @@ class OCLSearch(object):
         self.search_filter_list = filter_list
         return filter_list
 
-
     def select_search_filters(self, params):
-        """Sets the selected attribute to true for the specified filter options.
+        """
+        Sets the selected attribute to true for the specified filter options.
 
         Filter options must be specified in the URL parameter format.
         """
@@ -383,8 +381,35 @@ class OCLSearch(object):
                     matched_search_filter.select_option(params.getlist(key))
                 print '\tMatched search filter:', matched_search_filter
 
+    def process_faceted_search_results(self, search_type=None,
+                                       search_response=None, search_params=None):
+        """
+        Processes the search results and saves to the searcher in self.search_filter_list,
+        self.search_results, and self.num_found.
+        """
+        search_response_json = search_response.json()
 
-    def parse(self, request_get):
+        # Create the filter lists based on the returned facets
+        # TODO(paynejd@gmail.com): Create filter list based on filter definitions and
+        # populate the filter options based on the facets
+        if 'facets' in search_response_json:
+            self.process_facets(search_type, search_response_json['facets'])
+            self.select_search_filters(search_params)
+
+        # Get the resources from the search results
+        self.search_results = None
+        if 'results' in search_response_json:
+            self.search_results = search_response_json['results']
+
+        # Process num_found
+        self.num_found = 0
+        if 'num_found' in search_response.headers:
+            try:
+                self.num_found = int(search_response.headers['num_found'])
+            except ValueError:
+                self.num_found = 0
+
+    def parse_search_request(self, request_get):
         """
         Parse processes a request string, dictionary or QueryDict as
         the input/criteria for an OCL search. The parsed search inputs
