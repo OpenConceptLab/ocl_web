@@ -20,15 +20,6 @@
       {% endif %}
       <div><strong>Email:</strong> {{ ocl_user.email }}</div>
       <div><strong>Joined:</strong> {{ ocl_user.created_on|smart_date }}</div>
-      <hr />
-      <h4>Organizations</h4>
-
-      {% for org in orgs %}
-        {% org_label org %}<br />
-      {% empty %}
-      No organizations
-      {% endfor %}
-
     </div>
     <div class="col-sm-9">
       
@@ -51,47 +42,40 @@
       <div class="row">
         <div class="col-sm-6">
           <div class="list-group">
-
             <div class="list-group-item"><h4>Sources</h4>
-              <small><p class="text-right"><a href="{% url 'source-create-for-user' ocl_user.username %}" >Add Source</a></small></p>
+              <small><p class="text-right"><a href="{% url 'source-create-for-user' ocl_user.username %}">Add Source</a></small></p>
             </div>
-
             {% for source in sources %}
               <a class="list-group-item" href="{% url 'source-detail' user=source.owner source=source.short_code %}">{{ source.name }}</a>
             {% empty %}
             <span class="list-group-item">No Sources.</span>
             {% endfor %}
           </div>
-        </div> {# left col #}
+        </div>
 
-        {% comment %}
-        {# hide until we have collections #}
         <div class="col-sm-6">
           <div class="list-group">
-            <div class="list-group-item"><h4>Collections</h4>
-
-              <small><p class="text-right"><a href="{% url 'source-create-for-user' ocl_user.username %}" >Add Source</a></small></p>
-
+            <div class="list-group-item"><h4>Organization Membership</h4>
+              <small><p class="text-right"><a href="{% url 'source-create-for-user' ocl_user.username %}">Create Organization</a></small></p>
             </div>
-
-            {% for collection in collections %}
-              <a class="list-group-item" href="#">{{ collection.name }}<br />{{ collection|pprint }}</a>
+            {% for org in orgs %}
+              {% org_label org %}<br />
             {% empty %}
-            <span class="list-group-item">No collections.</span>
+              No organizations
             {% endfor %}
           </div>
         </div>
-        {% endcomment %}
       </div>
 
-
+{% if api_token %}
       <div class="row">
-        <div class="col-sm-6">
-          {% if api_token %}
+        <div class="col-sm-12">
+          <p>&nbsp;</p>
           API Token: {{  api_token }}
-          {% endif %}
         </div>
       </div>
+{% endif %}
+
 {% if request.GET.debug %}
       <div class="row">
         <pre>{{ ocl_user|pprint }}</pre>

@@ -41,16 +41,20 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         username = (kwargs["object"].username)
         api = OCLapi(self.request, debug=True)
 
+        # Set the limit of records for standard display
+        # TODO(paynejd@gmail.com): Create page for each user resource list to handle > than limit
+        limit = 20
+
         ocl_user = api.get('users', username).json()
-        ocl_user_orgs = api.get('users', username, 'orgs').json()
-        ocl_user_sources = api.get('users', username, 'sources').json()
-        ocl_user_collections = api.get('users', username, 'collections').json()
+        ocl_user_orgs = api.get('users', username, 'orgs', params={'limit':limit}).json()
+        ocl_user_sources = api.get('users', username, 'sources', params={'limit':limit}).json()
+        #ocl_user_collections = api.get('users', username, 'collections', params={'limit':limit}).json()
 
         # Set the context
         context['ocl_user'] = ocl_user
         context['orgs'] = ocl_user_orgs
         context['sources'] = ocl_user_sources
-        context['collections'] = ocl_user_collections
+        #context['collections'] = ocl_user_collections
 
         if self.request.user.username == username:
             context['api_token'] = api.api_key
