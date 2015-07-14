@@ -90,7 +90,7 @@ def field_label(label, value, url=False, truncate=True):
     if url:
         url_string = value
     if truncate and len(value) > (TRUNCATE_LENGTH + 3):
-        value = data[:TRUNCATE_LENGTH] + '...'
+        value = value[:TRUNCATE_LENGTH] + '...'
     return {
         'field_label': label,
         'field_value': value,
