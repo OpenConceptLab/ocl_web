@@ -7,6 +7,8 @@ Tasks
 - - Org delete is not enabled in the web application (trash can icon still points to edit)
 - - Org details website/URL is not correct (not sure what's going on here) - should open into new window
 - Sources
+- - Need a way to edit source extras
+- - Source extras are messed up
 - - Source details display should look the same as the org details display
 - - Source details does not display all info (i.e. public access)
 - Future

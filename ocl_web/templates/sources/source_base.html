@@ -26,7 +26,7 @@
 					</h3>
 					<p>
 						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ source.updated_on|smart_datetime }})</span>
-						<span class="org-privacy">{% if org.public_access == 'View' or org.public_access = 'Edit' %}public{% else %}private{% endif %}</span>
+						<span class="org-privacy">{% if source.public_access == 'View' or org.public_access = 'Edit' %}public{% else %}private{% endif %}</span>
                 	</p>
 				</div>
 			</div> <!-- /col-md-12 -->
