@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load ocl_tags %}
+
+{% block title %}{{ source.owner }} / {{ source.id }} - Open Concept Lab{% endblock title %}
+
+{% block content-no-container %}
+
+{% block resource-header %}
+<header class="source-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-th-list"></span></div>
+				<div style="display:inline-block;padding-left:20px">
+					<h3>
+						{% source_owner_label source %} / {% source_label source %}
+						{% if_can_change source %}
+							{% if source.owner_type == 'Organization' %}
+							<a href="{% url 'source-edit' org=source.owner source=source.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
+							{% else %}
+							<a href="{% url 'source-edit' user=source.owner source=source.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
+							{% endif %}
+						{% endif_can_change source %}
+					</h3>
+					<p>
+						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ source.updated_on|smart_datetime }})</span>
+						<span class="org-privacy">{% if org.public_access == 'View' or org.public_access = 'Edit' %}public{% else %}private{% endif %}</span>
+                	</p>
+				</div>
+			</div> <!-- /col-md-12 -->
+		</div> <!-- /row -->
+	</div> <!-- /container -->
+</header>
+{% endblock resource-header %}
+
+
+{% block resource-tabs %}
+{% if source.owner_type == 'Organization' %}
+	{% url 'source-concepts' org=source.owner source=source.id as source_concepts_url %}
+	{% url 'source-mappings' org=source.owner source=source.id as source_mappings_url %}
+	{% url 'source-details' org=source.owner source=source.id as source_details_url %}
+	{% url 'source-versions' org=source.owner source=source.id as source_versions_url %}
+	{% url 'source-about' org=source.owner source=source.id as source_about_url %}
+{% else %}
+	{% url 'source-concepts' user=source.owner source=source.id as source_concepts_url %}
+	{% url 'source-mappings' user=source.owner source=source.id as source_mappings_url %}
+	{% url 'source-details' user=source.owner source=source.id as source_details_url %}
+	{% url 'source-versions' user=source.owner source=source.id as source_versions_url %}
+	{% url 'source-about' user=source.owner source=source.id as source_about_url %}
+{% endif %}
+<div class="container">
+    <ul class="nav nav-tabs">
+        <li role="presentation" {% if selected_tab == "Concepts" %}class="active"{% endif %}><a href="{{ source_concepts_url }}">Concepts</a>
+		</li>
+        <li role="presentation" {% if selected_tab == "Mappings" %}class="active"{% endif %}><a href="{{ source_mappings_url }}">Mappings</a></li>
+        <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ source_details_url }}">Details</a></li>
+        <li role="presentation" {% if selected_tab == "Versions" %}class="active"{% endif %}><a href="{{ source_versions_url }}">Versions</a></li>
+        <li role="presentation" {% if selected_tab == "About" %}class="active"{% endif %}><a href="{{ source_about_url }}">About</a></li>
+    </ul>
+</div>
+{% endblock resource-tabs %}
+
+
+{% block tab-content %}
+{% endblock tab-content %}
+
+
+{% if request.GET.debug %}
+<div class="container" style="margin-top: 30px;">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h4 class="panel-title">Debug</h4></div>
+        <div class="panel-body" style="min-height:140px;">
+        {% block resource-debug %}
+            <h4>Debug Content</h4>
+        {% endblock resource-debug %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock content-no-container %}

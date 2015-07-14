@@ -1,0 +1,15 @@
+{% extends "sources/source_base.html" %}
+
+
+{% block tab-content %}
+<div class="container" style="margin-top: 20px;">
+	<h4>About {{ source.id }}</h4>
+	<div style="min-height:140px;">{{ about|safe }}</div>
+</div>
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Source</h4><pre>{{ source|pprint }}</pre>
+{% endblock resource-debug %}
