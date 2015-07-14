@@ -44,13 +44,25 @@ class SourceReadBaseView(TemplateView):
         """
         Load source versions from the API and return as JSON search results.
         """
-        source_versions = {}
+        # TODO(paynejd@gmail.com): Validate the input parameters
+
+        # Perform the search
+        api = OCLapi(self.request, debug=True)
+        search_response = api.get(
+            owner_type, owner_id, 'sources', source_id, 'versions')
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
+        source_versions = search_response.json()
+
         return source_versions
 
     def get_source_concepts(self, owner_type, owner_id, source_id, search_params=None):
         """
         Load source concepts from the API and return OCLSearch instance with results.
         """
+        # TODO(paynejd@gmail.com): Validate the input parameters
 
         # Create the searcher
         concept_searcher = OCLSearch(search_type=OCLapi.CONCEPT_TYPE, params=search_params)
@@ -169,6 +181,10 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
             range(concept_searcher.num_found), concept_searcher.num_per_page)
         concept_current_page = concept_paginator.page(concept_searcher.current_page)
 
+        # Load the source versions
+        source_versions = self.get_source_versions(
+            self.owner_type, self.owner_id, self.source_id)
+
         # Set the context for the child concepts
         context['concepts'] = concept_searcher.search_results
         context['concept_page'] = concept_current_page
@@ -180,6 +196,7 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Concepts'
         context['source'] = source
+        context['source_versions'] = source_versions
 
         return context
 
