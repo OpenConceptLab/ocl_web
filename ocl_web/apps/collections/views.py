@@ -32,7 +32,7 @@ class CollectionDetailView(UserOrOrgMixin, TemplateView):
 
         api = OCLapi(self.request, debug=True)
 
-        results = api.get(self.own_type, self.own_id, 'collections', self.collection_id)
+        results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         if results.status_code != 200:
             if results.status_code == 404:
                 raise Http404
@@ -40,7 +40,7 @@ class CollectionDetailView(UserOrOrgMixin, TemplateView):
                 results.raise_for_status()
         concept = results.json()
 
-        results = api.get(self.own_type, self.own_id, 'sources', self.source_id, 'concepts',
+        results = api.get(self.owner_type, self.owner_id, 'sources', self.source_id, 'concepts',
                           params=searcher.search_params)
         if results.status_code != 200:
             if results.status_code == 404:
@@ -115,7 +115,7 @@ class CollectionCreateView(UserOrOrgMixin, FormView):
         data['name'] = short_code
 
         api = OCLapi(self.request, debug=True)
-        result = api.post(self.own_type, self.own_id, 'collections', **data)
+        result = api.post(self.owner_type, self.owner_id, 'collections', **data)
         if not result.status_code == requests.codes.created:
             emsg = result.json().get('detail', 'Error')
             messages.add_message(self.request, messages.ERROR, emsg)

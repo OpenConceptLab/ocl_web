@@ -14,42 +14,42 @@ logger = logging.getLogger('oclweb')
 
 
 class UserOrOrgMixin(object):
-    """Figure out if a view is called from a user or an organization "owner".
+    """
+    Figure out if a view is called from a user or an organization "owner".
     """
 
     def get_args(self):
         """
-            Are we called from org or user? Useful helper for most views.
+        Helper method to set attributes that determine if resource is owned by user or org.
 
-            Set the following:
-            :param self.from_user: set to true/false depending on source type
-            :param self.from_org: set to true/false depending on source type
-            :param self.org_id: set to org id if source is from org
-            :param self.user_id: set to org id if source is from user
+        Method will set the following based on the passed kwargs:
+        :param self.from_user: set to true/false depending on source type
+        :param self.from_org: set to true/false depending on source type
+        :param self.org_id: set to org id if source is from org
+        :param self.user_id: set to username if source is from user
 
-            :param self.own_type: set to "owners" or "organizations", good for calling API
-            :param self.own_id: set to user id or org id, good for calling API
+        :param self.owner_type: set to "users" or "orgs", good for calling API
+        :param self.owner_id: set to user id or org id, good for calling API
 
-            :param self.source_id: set to source ID if view URL has source part.
-            :param self.concept_id: set to concept ID if view URL has concept part.
-            :param self.version_id: set to concept version if view URL has concept version part.
-
+        :param self.source_id: set to source ID if view URL has source part.
+        :param self.concept_id: set to concept ID if view URL has concept part.
+        :param self.version_id: set to concept version if view URL has concept version part.
         """
         self.from_user = False
         self.from_org = False
         self.user_id = self.org_id = None
-        self.own_type = self.own_id = None
+        self.owner_type = self.owner_id = None
 
         self.org_id = self.kwargs.get('org')
         if self.org_id is None:
             self.user_id = self.kwargs.get('user')
             self.from_user = True
-            self.own_type = 'users'
-            self.own_id = self.user_id
+            self.owner_type = 'users'
+            self.owner_id = self.user_id
         else:
             self.from_org = True
-            self.own_type = 'orgs'
-            self.own_id = self.org_id
+            self.owner_type = 'orgs'
+            self.owner_id = self.org_id
 
         self.source_id = self.kwargs.get('source')
         self.concept_id = self.kwargs.get('concept')
@@ -57,17 +57,18 @@ class UserOrOrgMixin(object):
         self.version_id = self.kwargs.get('version')
 
     def args_string(self):
-        """Debug method to return all args parsed as a printable string.
+        """
+        Debug method to return all args parsed as a printable string.
         """
         output_string = ''
         if self.org_id:
             output_string += 'org: %s  ' % self.org_id
         if self.user_id:
             output_string += 'user: %s  ' % self.user_id
-        if self.own_type:
-            output_string += 'own_type: %s  ' % self.own_type
-        if self.own_id:
-            output_string += 'own_id: %s  ' % self.own_id
+        if self.owner_type:
+            output_string += 'owner_type: %s  ' % self.owner_type
+        if self.owner_id:
+            output_string += 'owner_id: %s  ' % self.owner_id
         if self.source_id:
             output_string += 'source: %s  ' % self.source_id
         if self.concept_id:
@@ -76,7 +77,8 @@ class UserOrOrgMixin(object):
 
 
 class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
-    """Extra handling for org/user/source is different from concept...
+    """
+    Extra handling for org/user/source is different from concept...
 
     The extras field name IS the attribute name, the data is stored as a dictionary.
     So in this view, we translate the API style of data to be like descriptions and names.
@@ -89,7 +91,7 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
     def get_all_args(self):
         """
         Get all the input entities' identity, figure out whether this is a user owned
-        sourced concept or an org owned sourced concept, and set self.own_type, self.own_id
+        sourced concept or an org owned sourced concept, and set self.owner_type, self.owner_id
         for easy interface to OCL API.
         """
         self.get_args()
@@ -97,17 +99,17 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
 
     def build_url(self, *args):
         """
-            A tricky bit of code here. The extra maybe for
-              * an org
-              * a user,
-              * a source (owned by org or user),
-              * a concept
-              ...etc...
+        A tricky bit of code here. The extra maybe for
+          * an org
+          * a user,
+          * a source (owned by org or user),
+          * a concept
+          ...etc...
 
-            We will use what's given in the kwargs in the URL to figure out the
-            corresponding OCL API url.
+        We will use what's given in the kwargs in the URL to figure out the
+        corresponding OCL API url.
         """
-        url_args = [self.own_type, self.own_id]  # either org or user
+        url_args = [self.owner_type, self.owner_id]  # either org or user
         if self.source_id is not None:
             url_args += ['sources', self.source_id]
         if self.concept_id is not None:

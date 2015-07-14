@@ -38,13 +38,13 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
         data = {}
         print self.request.is_ajax()
         api = OCLapi(self.request, debug=True)
-        source = api.get(self.own_type, self.own_id, 'sources', self.source_id).json()
+        source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
         data['source'] = source
 
         if self.concept_id is not None:
             # edit
             concept = api.get(
-                self.own_type, self.own_id, 'sources', self.source_id,
+                self.owner_type, self.owner_id, 'sources', self.source_id,
                 'concepts', self.concept_id).json()
             data['concept'] = concept
 
@@ -77,7 +77,7 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
 
         api = OCLapi(request, debug=True)
         result = api.get(
-            self.own_type, self.own_id, 'sources', self.source_id,
+            self.owner_type, self.owner_id, 'sources', self.source_id,
             'concepts', concept_id)
         if result.status_code == 200:
             return _('This Concept ID is already used.')
@@ -112,7 +112,7 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
 
         api = OCLapi(self.request, debug=True)
         result = api.create_concept(
-            self.own_type, self.own_id, self.source_id, data, names=names)
+            self.owner_type, self.owner_id, self.source_id, data, names=names)
         if result.status_code != 201:
             logger.warning('Concept create POST failed: %s' % result.content)
             return self.render_bad_request_response({'message': result.content})
@@ -136,7 +136,7 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
 
         api = OCLapi(self.request, debug=True)
         result = api.update_concept(
-            self.own_type, self.own_id, self.source_id,
+            self.owner_type, self.owner_id, self.source_id,
             self.concept_id, data)
         if result.status_code != requests.codes.ok:
             emsg = result.json().get('detail', 'Error')
@@ -173,10 +173,10 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
         self.get_args()
 
         api = OCLapi(self.request, debug=True)
-        source = api.get(self.own_type, self.own_id, 'sources', self.source_id).json()
+        source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
         context['source'] = source
         concept = api.get(
-            self.own_type, self.own_id, 'sources', self.source_id,
+            self.owner_type, self.owner_id, 'sources', self.source_id,
             'concepts', self.concept_id).json()
         context['concept'] = concept
         return context
@@ -202,7 +202,7 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
         data = {'update_comment': form.cleaned_data['comment']}
         api = OCLapi(self.request, debug=True)
         result = api.delete(
-            self.own_type, self.own_id, 'sources', self.source_id, 'concepts',
+            self.owner_type, self.owner_id, 'sources', self.source_id, 'concepts',
             self.concept_id, **data)
         print result
         if result.status_code != 204:
@@ -416,9 +416,9 @@ class ConceptDetailView(UserOrOrgMixin, TemplateView):
 
         api = OCLapi(self.request, debug=True)
 
-        self.source = api.get_json(self.own_type, self.own_id, 'sources',
+        self.source = api.get_json(self.owner_type, self.owner_id, 'sources',
                                    self.source_id)
-        self.concept = api.get_json(self.own_type, self.own_id, 'sources',
+        self.concept = api.get_json(self.owner_type, self.owner_id, 'sources',
                                     self.source_id, 'concepts', self.concept_id)
         return
 
@@ -466,7 +466,7 @@ class ConceptVersionListView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOr
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
 
-        result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
+        result = api.get(self.owner_type, self.owner_id, 'sources', self.source_id,
                          'concepts', self.concept_id, 'versions')
         if not result.ok:
             print result
@@ -488,7 +488,7 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
     def get_all_args(self):
         """
         Get all the input entities' identity, figure out whether this is a user owned
-        sourced concept or an org owned sourced concept, and set self.own_type, self.own_id
+        sourced concept or an org owned sourced concept, and set self.owner_type, self.owner_id
         for easy interface to OCL API.
         """
         self.get_args()
@@ -506,11 +506,11 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
 
         if self.optional:
             result = api.get(
-                self.own_type, self.own_id, 'sources', self.source_id,
+                self.owner_type, self.owner_id, 'sources', self.source_id,
                 'concepts', self.concept_id, self.item_name, params=self.optional)
         else:
             result = api.get(
-                self.own_type, self.own_id, 'sources', self.source_id,
+                self.owner_type, self.owner_id, 'sources', self.source_id,
                 'concepts', self.concept_id, self.item_name)
 
 
@@ -539,21 +539,21 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         if self.is_edit():
             if self.item_name == 'mappings':
                 result = api.put(
-                    self.own_type, self.own_id, 'sources', self.source_id,
+                    self.owner_type, self.owner_id, 'sources', self.source_id,
                     self.item_name, **data)
             else:
                 result = api.put(
-                    self.own_type, self.own_id, 'sources', self.source_id,
+                    self.owner_type, self.owner_id, 'sources', self.source_id,
                     'concepts', self.concept_id, self.item_name, self.item_id, **data)
             msg = _('updated')
         else:
             if self.item_name == 'mappings':
                 result = api.post(
-                    self.own_type, self.own_id, 'sources', self.source_id,
+                    self.owner_type, self.owner_id, 'sources', self.source_id,
                     self.item_name, **data)
             else:
                 result = api.post(
-                    self.own_type, self.own_id, 'sources', self.source_id,
+                    self.owner_type, self.owner_id, 'sources', self.source_id,
                     'concepts', self.concept_id, self.item_name, **data)
             msg = _('added')
 
@@ -571,7 +571,7 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         api = OCLapi(self.request, debug=True)
         if self.is_edit():  # i.e. has item UUID
             result = api.delete(
-                self.own_type, self.own_id, 'sources', self.source_id,
+                self.owner_type, self.owner_id, 'sources', self.source_id,
                 'concepts', self.concept_id, self.item_name, self.item_id)
         if not result.ok:
             logger.warning('DEL failed %s' % result.content)
@@ -611,7 +611,7 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
     def get_all_args(self):
         """
         Get all the input entities' identity, figure out whether this is a user owned
-        sourced concept or an org owned sourced concept, and set self.own_type, self.own_id
+        sourced concept or an org owned sourced concept, and set self.owner_type, self.owner_id
         for easy interface to OCL API.
         """
         self.get_args()
@@ -626,7 +626,7 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
 
-        result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
+        result = api.get(self.owner_type, self.owner_id, 'sources', self.source_id,
                          'concepts', self.concept_id, self.item_name)
         if not result.ok:
             logger.warning('Extra GET failed %s' % result.content)
@@ -661,12 +661,12 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
 
         api = OCLapi(self.request, debug=True)
         if self.is_edit():
-            result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
+            result = api.put(self.owner_type, self.owner_id, 'sources', self.source_id,
                              'concepts', self.concept_id, 'extras', fn,
                              **data)
             msg = _('Extra updated')
         else:
-            result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
+            result = api.put(self.owner_type, self.owner_id, 'sources', self.source_id,
                              'concepts', self.concept_id, 'extras', fn, **data)
             msg = _('Extra added')
 
@@ -687,7 +687,7 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         if not self.is_edit():  # i.e. has item UUID
             return self.render_bad_request_response({'message': 'key missing'})
 
-        result = api.delete(self.own_type, self.own_id, 'sources', self.source_id,
+        result = api.delete(self.owner_type, self.owner_id, 'sources', self.source_id,
                             'concepts', self.concept_id,
                             self.item_name, self.item_id)
         if not result.ok:
@@ -708,7 +708,7 @@ class ConceptMappingView(JsonRequestResponseMixin, UserOrOrgMixin, View):
     def get_all_args(self):
         """
         Get all the input entities' identity, figure out whether this is a user owned
-        sourced concept or an org owned sourced concept, and set self.own_type, self.own_id
+        sourced concept or an org owned sourced concept, and set self.owner_type, self.owner_id
         for easy interface to OCL API.
         """
         self.get_args()
@@ -725,7 +725,7 @@ class ConceptMappingView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         api = OCLapi(self.request, debug=True)
 
         # Note: value must be lowercase string "true", not boolean
-        result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
+        result = api.get(self.owner_type, self.owner_id, 'sources', self.source_id,
                          'concepts', self.concept_id, 'mappings',
                          params={'includeInverseMappings': 'true'})
         if not result.ok:
@@ -759,12 +759,12 @@ class ConceptMappingView(JsonRequestResponseMixin, UserOrOrgMixin, View):
                 data.pop('to_concept_name', None)
 
             result = api.put(
-                self.own_type, self.own_id, 'sources', self.source_id,
+                self.owner_type, self.owner_id, 'sources', self.source_id,
                 'mappings', self.item_id, **data)
             msg = _('updated')
         else:
             result = api.post(
-                self.own_type, self.own_id, 'sources', self.source_id,
+                self.owner_type, self.owner_id, 'sources', self.source_id,
                 'mappings', **data)
             msg = _('added')
 
@@ -781,7 +781,7 @@ class ConceptMappingView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
         if self.is_edit():  # i.e. has item UUID
-            result = api.delete(self.own_type, self.own_id, 'sources', self.source_id,
+            result = api.delete(self.owner_type, self.owner_id, 'sources', self.source_id,
                                 'mappings', self.item_id)
         if not result.ok:
             logger.warning('DEL failed %s' % result.content)
