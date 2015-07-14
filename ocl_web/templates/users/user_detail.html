@@ -20,7 +20,7 @@
       <div><strong>Website:</strong> {{ ocl_user.website }}</div>
       {% endif %}
       <div><strong>Email:</strong> {{ ocl_user.email }}</div>
-      <div><strong>Joined:</strong> <span class="small">{{ ocl_user.created_on|smart_date }}</span></div>
+      <div><strong>Joined:</strong> {{ ocl_user.created_on|smart_date }}</div>
 {% if api_token %}
       <hr /><div><strong>API Token:</strong> <span class="small">{{ api_token }}</span></div>
 {% endif %}
