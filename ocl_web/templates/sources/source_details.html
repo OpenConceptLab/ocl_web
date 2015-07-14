@@ -33,7 +33,7 @@
 					{% field_label 'Updated on' source.created_on|smart_date %}
                 	{% if source.extras and source.extras.items %}
                 		<hr />
-                		{% for k, v in sources.extras.items %}
+                		{% for k, v in source.extras.items %}
                 			{% field_label k v %}
                 		{% endfor %}
                 	{% endif %}
