@@ -32,7 +32,7 @@ class SourceReadBaseView(TemplateView):
         """
         # TODO(paynejd@gmail.com): Validate the input parameters
         api_source = OCLapi(self.request, debug=True)
-        source_search_results = api.get(owner_type, owner_id, 'sources', source_id)
+        source_search_results = api_source.get(owner_type, owner_id, 'sources', source_id)
         if source_search_results.status_code != 200:
             if source_search_results.status_code == 404:
                 raise Http404
@@ -43,7 +43,7 @@ class SourceReadBaseView(TemplateView):
 
 
 class SourceDetailsView(UserOrOrgMixin, SourceReadBaseView):
-    """ 
+    """
     Source Details view.
     """
     template_name = "sources/source_details.html"
@@ -70,7 +70,7 @@ class SourceDetailsView(UserOrOrgMixin, SourceReadBaseView):
 
 
 class SourceAboutView(UserOrOrgMixin, SourceReadBaseView):
-    """ 
+    """
     Source About view.
     """
     template_name = "sources/source_about.html"
@@ -277,7 +277,7 @@ class SourceCreateView(UserOrOrgMixin, FormView):
 
     def get_context_data(self, *args, **kwargs):
         """
-
+        Return org details
         """
         context = super(SourceCreateView, self).get_context_data(*args, **kwargs)
 
@@ -369,15 +369,18 @@ class SourceEditView(UserOrOrgMixin, FormView):
         }
         data.update(self.source)
         # convert supported locales to string
-        ls = self.source.get('supported_locales')
-        if ls is None:
+        supported_locale_list = self.source.get('supported_locales')
+        if supported_locale_list is None:
             data['supported_locales'] = ''
         else:
-            data['supported_locales'] = ','.join(ls)
+            data['supported_locales'] = ','.join(supported_locale_list)
 
         return data
 
     def get_context_data(self, *args, **kwargs):
+        """
+        Get source details for the edit form
+        """
         context = super(SourceEditView, self).get_context_data(*args, **kwargs)
 
         self.get_args()
@@ -422,12 +425,12 @@ class SourceEditView(UserOrOrgMixin, FormView):
         messages.add_message(self.request, messages.INFO, _('Source updated'))
 
         if self.from_org:
-            return HttpResponseRedirect(reverse("source-detail",
-                                                kwargs={"org": self.org_id,
+            return HttpResponseRedirect(reverse('source-detail',
+                                                kwargs={'org': self.org_id,
                                                         'source': self.source_id}))
         else:
-            return HttpResponseRedirect(reverse("source-detail",
-                                                kwargs={"user": self.user_id,
+            return HttpResponseRedirect(reverse('source-detail',
+                                                kwargs={'user': self.user_id,
                                                         'source': self.source_id}))
 
 
@@ -459,7 +462,7 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
 
     def get(self, request, *args, **kwargs):
         """
-            Return a list of versions as json.
+        Return a list of versions as json.
         """
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
@@ -474,7 +477,7 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
 
     def post(self, request, *args, **kwargs):
         """
-            Create or edit a source version.
+        Create or edit a source version.
         """
         self.get_all_args()
         data = {}
