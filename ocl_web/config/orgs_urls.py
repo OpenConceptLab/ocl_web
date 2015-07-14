@@ -9,8 +9,7 @@ from __future__ import unicode_literals
 
 from django.conf.urls import (patterns, url)
 from apps.orgs.views import (
-    OrganizationDetailView, OrganizationDetailsView,
-    OrganizationAboutView, OrganizationSourcesView,
+    OrganizationDetailsView, OrganizationAboutView, OrganizationSourcesView,
     OrganizationNewView, OrganizationEditView)
 from apps.orgs.views import (
     OrganizationMemberAddView, OrganizationMemberRemoveView)
