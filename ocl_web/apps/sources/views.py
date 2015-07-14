@@ -20,7 +20,99 @@ from apps.core.views import UserOrOrgMixin
 logger = logging.getLogger('oclweb')
 
 
-class SourceDetailView(UserOrOrgMixin, TemplateView):
+
+class SourceReadBaseView(TemplateView):
+    """
+    Base class for Source Read views.
+    """
+
+    def get_source_details(self, owner_type, owner_id, source_id):
+        """
+        Get the source details.
+        """
+        # TODO(paynejd@gmail.com): Validate the input parameters
+        api_source = OCLapi(self.request, debug=True)
+        source_search_results = api.get(owner_type, owner_id, 'sources', source_id)
+        if source_search_results.status_code != 200:
+            if source_search_results.status_code == 404:
+                raise Http404
+            else:
+                source_search_results.raise_for_status()
+        return source_search_results.json()
+
+
+
+class SourceDetailsView(UserOrOrgMixin, SourceReadBaseView):
+    """ 
+    Source Details view.
+    """
+    template_name = "sources/source_details.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the source details.
+        """
+
+        # Setup the context and args
+        context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
+        # print 'Source Detail INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
+
+        # Adds identifying attributes to the instance
+        # TODO(paynejd@gmail.com): UserOrOrgMixin.get_args() is poorly named & a hack -- fix it!
+        self.get_args()
+
+        # Load the source details
+        source = self.get_source_details(self.owner_type, self.owner_id, self.source_id)
+
+        # Set the context
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'Details'
+        context['source'] = source
+
+        return context
+
+
+
+class SourceAboutView(UserOrOrgMixin, SourceReadBaseView):
+    """ 
+    Source About view.
+    """
+    template_name = "sources/source_about.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the source details and about info.
+        """
+
+        # Setup the context and args
+        context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
+        # print 'Source Detail INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
+
+        # Adds identifying attributes to the instance
+        # TODO(paynejd@gmail.com): UserOrOrgMixin.get_args() is poorly named & a hack -- fix it!
+        self.get_args()
+
+        # Load the source details
+        source = self.get_source_details(self.owner_type, self.owner_id, self.source_id)
+
+        # Set about text for the source
+        if isinstance(source['extras'], dict):
+            about = source['extras'].get('about', 'No about entry.')
+        else:
+            about = 'No about entry.'
+        context['about'] = about
+
+        # Set the context
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'About'
+        context['source'] = source
+        context['about'] = about
+
+        return context
+
+
+
+class SourceDetailView(UserOrOrgMixin, SourceReadBaseView):
     """
     OCL Source detailed view.
     """
@@ -42,15 +134,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         self.get_args()
 
         # Load the source
-        api = OCLapi(self.request, debug=True)
-        # TODO: Change own_type and own_id to owner_type and owner_id
-        source_search_results = api.get(self.own_type, self.own_id, 'sources', self.source_id)
-        if source_search_results.status_code != 200:
-            if source_search_results.status_code == 404:
-                raise Http404
-            else:
-                source_search_results.raise_for_status()
-        source = source_search_results.json()
+        source = self.get_source_details(self.owner_type, self.owner_id, self.source_id)
         context['source'] = source
 
         # Set about text for the source
@@ -61,10 +145,11 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         context['about'] = about
 
         # Load the concepts in this source
+        api = OCLapi(self.request, debug=True)
         api.include_facets = True
         concept_searcher = OCLSearch(search_type=OCLapi.CONCEPT_TYPE, params=self.request.GET)
         concept_search_results = api.get(
-            self.own_type, self.own_id, 'sources', self.source_id,
+            self.owner_type, self.owner_id, 'sources', self.source_id,
             'concepts', params=concept_searcher.search_params)
         if concept_search_results.status_code != 200:
             if concept_search_results.status_code == 404:
@@ -110,7 +195,7 @@ class SourceDetailView(UserOrOrgMixin, TemplateView):
         # Load the source versions
         source_version_api = OCLapi(self.request, debug=True)
         source_version_search_results = source_version_api.get(
-            self.own_type, self.own_id, 'sources', self.source_id,
+            self.owner_type, self.owner_id, 'sources', self.source_id,
             'versions')
         if source_version_search_results.status_code != 200:
             if source_version_search_results.status_code == 404:
@@ -317,7 +402,7 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
     def get_all_args(self):
         """
         Get all the input entities' identity, figure out whether this is a user owned
-        sourced concept or an org owned sourced concept, and set self.own_type, self.own_id
+        sourced concept or an org owned sourced concept, and set self.owner_type, self.owner_id
         for easy interface to OCL API.
         """
         self.get_args()
@@ -333,7 +418,7 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
 
-        result = api.get(self.own_type, self.own_id, 'sources', self.source_id,
+        result = api.get(self.owner_type, self.owner_id, 'sources', self.source_id,
                          'versions', '?verbose=True')
         if not result.ok:
             logger.warning('GET error %s : %s' % (result.status_code, api.url))
@@ -362,11 +447,11 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         if self.is_edit():
             # NOTE: updating a version URL does not have the keyword "versions",
             # rather, it is /owner/:owner/sources/:source/:version/
-            result = api.put(self.own_type, self.own_id, 'sources', self.source_id,
+            result = api.put(self.owner_type, self.owner_id, 'sources', self.source_id,
                              self.item_id, **data)
             msg = _('Source Version updated!')
         else:
-            result = api.post(self.own_type, self.own_id, 'sources', self.source_id,
+            result = api.post(self.owner_type, self.owner_id, 'sources', self.source_id,
                               'versions', **data)
             msg = _('Source Version created!')
 
@@ -383,7 +468,7 @@ class SourceVersionView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         self.get_all_args()
         api = OCLapi(self.request, debug=True)
         if self.is_edit():  # i.e. has item UUID
-            result = api.delete(self.own_type, self.own_id, 'sources',
+            result = api.delete(self.owner_type, self.owner_id, 'sources',
                                 self.source_id, self.item_id)
         if not result.ok:
             logger.warning('Source Version DELETE error: %s' % result.status_code)

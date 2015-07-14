@@ -86,6 +86,26 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/edit/$',
         SourceEditView.as_view(), name='source-edit'),
 
+
+
+    # /orgs/:org/sources/:source/details/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/details/$',
+        SourceAboutView.as_view(), name='source-details'),
+
+    # /orgs/:org/sources/:source/about/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/about/$',
+        SourceAboutView.as_view(), name='source-about'),
+
+    # /orgs/:org/sources/:source/concepts/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/$',
+        SourceAboutView.as_view(), name='source-concepts'),
+
+    # /orgs/:org/sources/:source/mappings/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/$',
+        SourceAboutView.as_view(), name='source-mappings'),
+
+
+
     # /orgs/:org/sources/:source/versions/ - JSON ONLY
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/$',
         SourceVersionView.as_view(), name='source-version-cl'),

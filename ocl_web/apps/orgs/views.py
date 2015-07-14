@@ -22,14 +22,15 @@ from libs.ocl import OCLapi, OCLSearch
 logger = logging.getLogger('oclweb')
 
 
+
 class OrganizationReadBaseView(TemplateView):
     """
-    Base class for Organization Read views
+    Base class for Organization Read views.
     """
 
     def get_org_details(self, org_id):
         """
-        Load the org details
+        Get the org details
         """
         api_org = OCLapi(self.request, debug=True)
         search_result_org = api_org.get('orgs', org_id)

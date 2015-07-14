@@ -229,6 +229,7 @@
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 
+	{% comment %}
 	{% elif search_type == 'collections' %}
 			<!--div class="col-md-1 search-result-col-checkbox">
 				<input type="checkbox" />
@@ -256,6 +257,7 @@
 				</p>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
+	{% endcomment %}
 
 	{% elif search_type == 'orgs' %}
 			<!--div class="col-md-1 search-result-col-checkbox">
