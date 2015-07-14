@@ -20,9 +20,12 @@
       <div><strong>Website:</strong> {{ ocl_user.website }}</div>
       {% endif %}
       <div><strong>Email:</strong> {{ ocl_user.email }}</div>
-      <div><strong>Joined:</strong> {{ ocl_user.created_on|smart_date }}</div>
+      <div><strong>Joined:</strong> <span class="small">{{ ocl_user.created_on|smart_date }}</span></div>
+{% if api_token %}
+      <hr /><div><strong>API Token:</strong> <span class="small">{{ api_token }}</span></div>
+{% endif %}
     </div>
-      
+
     <div class="col-sm-9">
 
       <!-- Action buttons -->
@@ -75,15 +78,6 @@
           </div>
         </div>
       </div>
-
-{% if api_token %}
-      <div class="row">
-        <div class="col-sm-12">
-          <p>&nbsp;</p>
-          API Token: {{  api_token }}
-        </div>
-      </div>
-{% endif %}
 
 {% if request.GET.debug %}
       <div class="row">
