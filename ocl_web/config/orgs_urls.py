@@ -14,8 +14,8 @@ from apps.orgs.views import (
 from apps.orgs.views import (
     OrganizationMemberAddView, OrganizationMemberRemoveView)
 from apps.sources.views import (
-    SourceDetailView, SourceCreateView, SourceEditView)
-from apps.sources.views import (SourceVersionView)
+    SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
+    SourceDetailView, SourceCreateView, SourceEditView, SourceVersionView)
 #from apps.collections.views import (
 #    CollectionDetailView, CollectionCreateView, CollectionEditView)
 from apps.concepts.views import (ConceptDetailView)
@@ -90,7 +90,7 @@ urlpatterns = patterns(
 
     # /orgs/:org/sources/:source/details/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/details/$',
-        SourceAboutView.as_view(), name='source-details'),
+        SourceDetailsView.as_view(), name='source-details'),
 
     # /orgs/:org/sources/:source/about/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/about/$',
@@ -98,11 +98,11 @@ urlpatterns = patterns(
 
     # /orgs/:org/sources/:source/concepts/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/$',
-        SourceAboutView.as_view(), name='source-concepts'),
+        SourceConceptsView.as_view(), name='source-concepts'),
 
     # /orgs/:org/sources/:source/mappings/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/$',
-        SourceAboutView.as_view(), name='source-mappings'),
+        SourceMappingsView.as_view(), name='source-mappings'),
 
 
 

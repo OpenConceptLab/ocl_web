@@ -55,10 +55,6 @@ class SourceDetailsView(UserOrOrgMixin, SourceReadBaseView):
 
         # Setup the context and args
         context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
-        # print 'Source Detail INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
-
-        # Adds identifying attributes to the instance
-        # TODO(paynejd@gmail.com): UserOrOrgMixin.get_args() is poorly named & a hack -- fix it!
         self.get_args()
 
         # Load the source details
@@ -86,10 +82,6 @@ class SourceAboutView(UserOrOrgMixin, SourceReadBaseView):
 
         # Setup the context and args
         context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
-        # print 'Source Detail INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
-
-        # Adds identifying attributes to the instance
-        # TODO(paynejd@gmail.com): UserOrOrgMixin.get_args() is poorly named & a hack -- fix it!
         self.get_args()
 
         # Load the source details
@@ -107,6 +99,60 @@ class SourceAboutView(UserOrOrgMixin, SourceReadBaseView):
         context['selected_tab'] = 'About'
         context['source'] = source
         context['about'] = about
+
+        return context
+
+
+
+class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
+    """
+    Source Concepts view.
+    """
+    template_name = "sources/source_concepts.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the concepts that are in the source.
+        """
+
+        # Setup the context and args
+        context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the source details
+        source = self.get_source_details(self.owner_type, self.owner_id, self.source_id)
+
+        # Set the context
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'Concepts'
+        context['source'] = source
+
+        return context
+
+
+
+class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
+    """
+    Source Mappings view.
+    """
+    template_name = "sources/source_mappings.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the mappings that are in the source.
+        """
+
+        # Setup the context and args
+        context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the source details
+        source = self.get_source_details(self.owner_type, self.owner_id, self.source_id)
+
+        # Set the context
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'Mappings'
+        context['source'] = source
 
         return context
 
