@@ -87,19 +87,19 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/edit/$',
         SourceEditView.as_view(), name='source-edit'),
 
-    # /orgs/:org/sources/:source/versions/
+    # /orgs/:org/sources/:source/versions/ - JSON ONLY
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/$',
         SourceVersionView.as_view(), name='source-version-cl'),
 
-    # /orgs/:org/sources/:source/versions/:source-version/
+    # /orgs/:org/sources/:source/versions/:source-version/ - JSON ONLY
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/(?P<version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         SourceVersionView.as_view(), name='source-version-ud'),
 
-    # /orgs/:org/sources/:source/extras/
+    # /orgs/:org/sources/:source/extras/ - JSON ONLY
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/extras/$',
         ExtraJsonView.as_view(), name='source-extra'),
 
-    # /orgs/:org/sources/:source/extras/:extra/
+    # /orgs/:org/sources/:source/extras/:extra/ - JSON ONLY
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/extras/(?P<extra>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ExtraJsonView.as_view(), name='source-extra-add'),
 
@@ -118,7 +118,7 @@ urlpatterns = patterns(
     ## CONCEPTS
 
     # New concept: /orgs/:org/sources/:source/create/
-    # TODO(paynejd@gmail.com): Change this to: /orgs/:org/sources/:source/new-concept/
+    # TODO(paynejd@gmail.com): Change this to: /orgs/:org/sources/:source/concept/new/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/create/$',
         ConceptCreateJsonView.as_view(), name='concept-create-for-org'),
 

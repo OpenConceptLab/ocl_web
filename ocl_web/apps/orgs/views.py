@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.paginator import Paginator
 from braces.views import LoginRequiredMixin
-from braces.views import (CsrfExemptMixin, JsonRequestResponseMixin)
+from braces.views import JsonRequestResponseMixin
 
 from .forms import (OrganizationNewForm, OrganizationEditForm)
 from .forms import (OrganizationMemberAddForm)
@@ -56,103 +56,103 @@ class OrganizationReadBaseView(TemplateView):
         return members
 
 
-class OrganizationDetailView(OrganizationReadBaseView):
-    """
-    Organization details and source search view.
-    """
+# class OrganizationDetailView(OrganizationReadBaseView):
+#     """
+#     Organization details and source search view.
+#     """
 
-    template_name = "orgs/org_detail.html"
+#     template_name = "orgs/org_detail.html"
 
-    def get_context_data(self, *args, **kwargs):
-        """Gets the org, then the sources of that org, and then the
-        concepts from each of those sources.
-        """
+#     def get_context_data(self, *args, **kwargs):
+#         """Gets the org, then the sources of that org, and then the
+#         concepts from each of those sources.
+#         """
 
-        context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
-        context['url_params'] = self.request.GET
-        context['selected_tab'] = 'Details'
+#         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
+#         context['url_params'] = self.request.GET
+#         context['selected_tab'] = 'Details'
 
-        # Determine the organization ID
-        # TODO: Make the org object self-aware like the source context (e.g. self.org_id)
-        org_id = self.kwargs.get('org')
+#         # Determine the organization ID
+#         # TODO: Make the org object self-aware like the source context (e.g. self.org_id)
+#         org_id = self.kwargs.get('org')
 
-        # Prepare to search the sources in this org
-        # NOTE: Both are searched no matter what, but only one accepts search
-        # criteria/filters at a time
-        res_type = self.request.GET.get('resource_type')
-        print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
-        print res_type
-        source_searcher = OCLSearch(
-            search_type=OCLSearch.SOURCE_TYPE, params=self.request.GET)
+#         # Prepare to search the sources in this org
+#         # NOTE: Both are searched no matter what, but only one accepts search
+#         # criteria/filters at a time
+#         res_type = self.request.GET.get('resource_type')
+#         print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
+#         print res_type
+#         source_searcher = OCLSearch(
+#             search_type=OCLSearch.SOURCE_TYPE, params=self.request.GET)
 
-        # Load the organization
-        org = self.get_org_details(org_id)
-        context['org'] = org
+#         # Load the organization
+#         org = self.get_org_details(org_id)
+#         context['org'] = org
 
-        # Set about text for the organization
-        # TODO: Create a generic method for getting at extras
-        if 'extras' in org and isinstance(org['extras'], dict):
-            about = org['extras'].get('about', 'No about entry.')
-        else:
-            # TODO: If user has editing privileges, prompt them to create about entry
-            about = 'No about entry.'
-        context['about'] = about
+#         # Set about text for the organization
+#         # TODO: Create a generic method for getting at extras
+#         if 'extras' in org and isinstance(org['extras'], dict):
+#             about = org['extras'].get('about', 'No about entry.')
+#         else:
+#             # TODO: If user has editing privileges, prompt them to create about entry
+#             about = 'No about entry.'
+#         context['about'] = about
 
-        # Load members of this org
-        members = self.get_org_members(org_id)
-        context['members'] = members
+#         # Load members of this org
+#         members = self.get_org_members(org_id)
+#         context['members'] = members
 
-        # Load the sources in this organization
-        api_sources = OCLapi(self.request, debug=True, facets=True)
-        search_result_sources = api_sources.get(
-            'orgs', org_id, 'sources', params=source_searcher.search_params)
-        if search_result_sources.status_code == requests.codes.not_found:
-            sources_response_json = {}
-            sources_facets_json = {}
-            sources_facets = {}
-            sources = []
-            sources_num_found = 0
-            sources_paginator = None
-            sources_current_page = 0
-        else:
-            sources_response_json = search_result_sources.json()
-            sources_facets_json = sources_response_json['facets']
-            sources_facets = source_searcher.process_facets('sources', sources_facets_json)
-            sources = sources_response_json['results']
-            if 'num_found' in search_result_sources.headers:
-                try:
-                    sources_num_found = int(search_result_sources.headers['num_found'])
-                except ValueError:
-                    sources_num_found = 0
-            else:
-                sources_num_found = 0
-            sources_paginator = Paginator(range(sources_num_found), source_searcher.num_per_page)
-            sources_current_page = sources_paginator.page(source_searcher.current_page)
+#         # Load the sources in this organization
+#         api_sources = OCLapi(self.request, debug=True, facets=True)
+#         search_result_sources = api_sources.get(
+#             'orgs', org_id, 'sources', params=source_searcher.search_params)
+#         if search_result_sources.status_code == requests.codes.not_found:
+#             sources_response_json = {}
+#             sources_facets_json = {}
+#             sources_facets = {}
+#             sources = []
+#             sources_num_found = 0
+#             sources_paginator = None
+#             sources_current_page = 0
+#         else:
+#             sources_response_json = search_result_sources.json()
+#             sources_facets_json = sources_response_json['facets']
+#             sources_facets = source_searcher.process_facets('sources', sources_facets_json)
+#             sources = sources_response_json['results']
+#             if 'num_found' in search_result_sources.headers:
+#                 try:
+#                     sources_num_found = int(search_result_sources.headers['num_found'])
+#                 except ValueError:
+#                     sources_num_found = 0
+#             else:
+#                 sources_num_found = 0
+#             sources_paginator = Paginator(range(sources_num_found), source_searcher.num_per_page)
+#             sources_current_page = sources_paginator.page(source_searcher.current_page)
 
-        # TODO: Setup source filters based on the current search
+#         # TODO: Setup source filters based on the current search
 
-        # Select filters
-        # TODO: This is passing all parameters, but should pass only those relevant to sources
-        source_searcher.select_search_filters(self.request.GET)
+#         # Select filters
+#         # TODO: This is passing all parameters, but should pass only those relevant to sources
+#         source_searcher.select_search_filters(self.request.GET)
 
-        # Set the context for the child sources
-        context['sources'] = sources
-        context['source_page'] = sources_current_page
-        context['source_pagination_url'] = self.request.get_full_path()
-        context['source_q'] = source_searcher.get_query()
-        context['source_facets'] = sources_facets
+#         # Set the context for the child sources
+#         context['sources'] = sources
+#         context['source_page'] = sources_current_page
+#         context['source_pagination_url'] = self.request.get_full_path()
+#         context['source_q'] = source_searcher.get_query()
+#         context['source_facets'] = sources_facets
 
-        # Set debug context for sources
-        context['sources_request_url'] = api_sources.url
-        context['sources_search_params'] = source_searcher.search_params
-        context['sources_search_response_headers'] = search_result_sources.headers
-        context['sources_search_facets_json'] = sources_facets_json
+#         # Set debug context for sources
+#         context['sources_request_url'] = api_sources.url
+#         context['sources_search_params'] = source_searcher.search_params
+#         context['sources_search_response_headers'] = search_result_sources.headers
+#         context['sources_search_facets_json'] = sources_facets_json
 
-        # TODO: Sort is not setup correctly to work with both sources and collections
-        context['search_sort_options'] = source_searcher.get_sort_options()
-        context['search_sort'] = source_searcher.get_sort()
+#         # TODO: Sort is not setup correctly to work with both sources and collections
+#         context['search_sort_options'] = source_searcher.get_sort_options()
+#         context['search_sort'] = source_searcher.get_sort()
 
-        return context
+#         return context
 
 
 class OrganizationDetailsView(OrganizationReadBaseView):
@@ -273,30 +273,14 @@ class OrganizationCollectionsView(OrganizationReadBaseView):
         Load collection search results, facets/filters, etc. for the org
         """
         context = super(OrganizationCollectionsView, self).get_context_data(*args, **kwargs)
+
+        # TODO(paynejd@gmail.com): Implement collections view
+
+        # Set the context
         context['url_params'] = self.request.GET
-
-        # Load the collections in this org
-        # TODO: Collections not implemented yet
-        #api.include_facets = True
-        #search_result_collections = api.get(
-        #    'orgs', org_id, 'collections', params=collection_searcher.search_params)
-        # if search_result_collections.status_code == requests.codes.not_found:
-        #     collections = []
-        #     num_found = 0
-        #     context['collection_page'] = 0
-        # else:
-        #     collections = search_result_collections.json()
-        #     num_found = int(search_result_collections.headers['num_found'])
-        #     pg = Paginator(range(num_found), collection_searcher.num_per_page)
-        #     context['collection_page'] = pg.page(collection_searcher.current_page)
-        #
-        # Set the context for the child collections
-        #context['collection_pagination_url'] = self.request.get_full_path()
-        #context['collections'] = collections
-        #context['collection_filters'] = collection_searcher.get_search_filters()
-
         context['selected_tab'] = 'Collections'
         return context
+
 
 
 class OrganizationAboutView(OrganizationReadBaseView):
@@ -369,9 +353,9 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
 
 
 
-
 class OrganizationEditView(FormView):
-    """View to edit organization
+    """
+    View to edit organization
     """
 
     template_name = 'orgs/org_edit.html'
@@ -417,13 +401,17 @@ class OrganizationEditView(FormView):
 
 
 class OrganizationMemberAddView(LoginRequiredMixin, FormView):
-    """View to add member to organization
+    """
+    View to add member to organization
     """
 
     form_class = OrganizationMemberAddForm
     template_name = "orgs/org_member_add.html"
 
     def get_org(self):
+        """
+        Load the organization
+        """
         self.org_id = self.kwargs.get('org')
         api = OCLapi(self.request, debug=True)
         self.org = api.get('orgs', self.org_id).json()
@@ -470,10 +458,12 @@ class OrganizationMemberAddView(LoginRequiredMixin, FormView):
 
 class OrganizationMemberRemoveView(LoginRequiredMixin,
                                    JsonRequestResponseMixin, View):
-    """View to remove member from organization
+    """
+    View to remove member from organization
     """
 
     def post(self, *args, **kwargs):
+        """Posts member removal request to API"""
         self.org_id = self.kwargs.get('org')
         self.username = self.kwargs.get('username')
 

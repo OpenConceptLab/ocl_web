@@ -1,11 +1,20 @@
-To do:
-- Remove url files from all the subdirectories -- only the url files in the config file are used
-- Need to store user timezone and locale preferences
-- Implement "reserved keywords" -- i.e. no org or source can be named "new" or "versions" -- others?
+Tasks
+============
+- Other
+- - Remove url files from all the subdirectories -- only the url files in the config file are used
 - Org
 - - Org new/edit does not allow you to set values for all fields or edit extras
 - - Org delete is not enabled in the web application (trash can icon still points to edit)
 - - Org details website/URL is not correct (not sure what's going on here) - should open into new window
+- Sources
+- - Source details display should look the same as the org details display
+- - Source details does not display all info (i.e. public access)
+- Future
+- - Need to store user timezone and locale preferences
+- - Implement "reserved keywords" -- i.e. no resource can be identified by "new", "versions", "delete", "concepts", etc.
+
+
+
 
 
 database:
