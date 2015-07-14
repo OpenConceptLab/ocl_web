@@ -381,25 +381,30 @@ class OCLSearch(object):
                     matched_search_filter.select_option(params.getlist(key))
                 print '\tMatched search filter:', matched_search_filter
 
-    def process_faceted_search_results(self, search_type=None,
-                                       search_response=None, search_params=None):
+    def process_search_results(self, search_type=None, search_response=None,
+                               has_facets=False, search_params=None):
         """
-        Processes the search results and saves to the searcher in self.search_filter_list,
-        self.search_results, and self.num_found.
+        Processes the search results and saves to the searcher in
+        self.search_results, and self.num_found. If has_facets is set to True,
+        attempts to process facets and saves to self.search_filter_list.
         """
         search_response_json = search_response.json()
 
         # Create the filter lists based on the returned facets
         # TODO(paynejd@gmail.com): Create filter list based on filter definitions and
         # populate the filter options based on the facets
-        if 'facets' in search_response_json:
+        if has_facets and 'facets' in search_response_json:
             self.process_facets(search_type, search_response_json['facets'])
             self.select_search_filters(search_params)
 
-        # Get the resources from the search results
+        # Get the resources from the search results -- if facets were returned,
+        # then results live under the 'results' dictionary item. If no facets,
+        # then the results are the full JSON response
         self.search_results = None
-        if 'results' in search_response_json:
+        if has_facets and 'results' in search_response_json:
             self.search_results = search_response_json['results']
+        elif not has_facets:
+            self.search_results = search_response_json
 
         # Process num_found
         self.num_found = 0

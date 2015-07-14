@@ -15,7 +15,7 @@
 
 <!-- Filters -->
 
-		{% for facet in concept_facets %}
+		{% for facet in search_facets %}
 		<div class="filter-group">
 			<div class="filter-group-header">{{ facet.search_filter_name }}</div>
 			<div class="filter-group-body">
@@ -63,9 +63,9 @@
 
 		<div class="row">
 			<div class="col-md-12" style="padding-top:20px;padding-bottom:20px;">
-                {% simple_pager concept_page 'concept' url=concept_pagination_url %}
+                {% simple_pager current_page 'concept' url=pagination_url %}
 		        <div class="input-group">
-		            <input type="text" name="q" class="form-control" placeholder="Search concepts within source" value="{{ concept_q }}">
+		            <input type="text" name="q" class="form-control" placeholder="Search concepts within source" value="{{ search_query }}">
 		            <span class="input-group-btn">
                         <button class="btn btn-default" type="submit" >Search</button>
                     </span>
@@ -88,7 +88,7 @@
 
 <!-- Source concept search results -->
 
-        {% for result in concepts %}
+        {% for result in results %}
 			{% if source.owner_type == 'Organization' %}
 				{% url 'concept-detail' org=result.owner source=result.source concept=result.id as concept_url %}
 			{% else %}
@@ -117,9 +117,9 @@
 
 	<!-- Pagination -->
 
-	        {% if concepts %}
+	        {% if results %}
 			<div class="row" style="text-align:center;">
-				{% bootstrap_pagination concept_page url=concept_pagination_url %}
+				{% bootstrap_pagination current_page url=pagination_url %}
 			</div>
 			{% endif %}
 		</div>
@@ -133,6 +133,6 @@
 {% block resource-debug %}
 <h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
 <h4>Source</h4><pre>{{ source|pprint }}</pre>
-<h4>Concepts</h4><pre>{{ concepts|pprint }}</pre>
-<h4>Facets</h4><pre>{{ concept_facets|pprint }}</pre>
+<h4>Concepts</h4><pre>{{ results|pprint }}</pre>
+<h4>Facets</h4><pre>{{ search_facets|pprint }}</pre>
 {% endblock resource-debug %}

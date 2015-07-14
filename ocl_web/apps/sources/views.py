@@ -65,32 +65,51 @@ class SourceReadBaseView(TemplateView):
         # TODO(paynejd@gmail.com): Validate the input parameters
 
         # Create the searcher
-        concept_searcher = OCLSearch(search_type=OCLapi.CONCEPT_TYPE, params=search_params)
+        searcher = OCLSearch(search_type=OCLapi.CONCEPT_TYPE, params=search_params)
 
         # Perform the search
         api = OCLapi(self.request, debug=True, facets=True)
         search_response = api.get(
             owner_type, owner_id, 'sources', source_id, 'concepts',
-            params=concept_searcher.search_params)
+            params=searcher.search_params)
         if search_response.status_code == 404:
             raise Http404
         elif search_response.status_code != 200:
             search_response.raise_for_status()
 
         # Process the results
-        concept_searcher.process_faceted_search_results(
+        searcher.process_search_results(
             search_type='concepts', search_response=search_response,
-            search_params=search_params)
+            has_facets=True, search_params=search_params)
 
-        return concept_searcher
+        return searcher
 
-    def get_source_mappings(self, owner_type, owner_id, source_id, params=None):
+    def get_source_mappings(self, owner_type, owner_id, source_id, search_params=None):
         """
-        Load source mappings from the API and return as faceted JSON.
+        Load source mappings from the API and return OCLSearch instance with results.
         """
-        mappings = {}
-        return mappings
+        # TODO(paynejd@gmail.com): Validate the input parameters
 
+        # Create the searcher
+        searcher = OCLSearch(search_type=OCLapi.MAPPING_TYPE, params=search_params)
+
+        # Perform the search
+        api = OCLapi(self.request, debug=True, facets=True)
+        search_response = api.get(
+            owner_type, owner_id, 'sources', source_id, 'mappings',
+            params=searcher.search_params)
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
+
+        # Process the results
+        # TODO(paynejd@gmail.com): Change has_facets to True after API fixed
+        searcher.process_search_results(
+            search_type='mappings', search_response=search_response,
+            has_facets=False, search_params=search_params)
+
+        return searcher
 
 
 class SourceDetailsView(UserOrOrgMixin, SourceReadBaseView):
@@ -173,26 +192,25 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         # Load the source details
         source = self.get_source_details(self.owner_type, self.owner_id, self.source_id)
 
-        # Load the concepts in this source
-        concept_searcher = self.get_source_concepts(
+        # Load the concepts in this source, applying search parameters
+        searcher = self.get_source_concepts(
             self.owner_type, self.owner_id, self.source_id,
             search_params=self.request.GET)
-        concept_paginator = Paginator(
-            range(concept_searcher.num_found), concept_searcher.num_per_page)
-        concept_current_page = concept_paginator.page(concept_searcher.current_page)
+        search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        search_results_current_page = search_results_paginator.page(searcher.current_page)
 
         # Load the source versions
         source_versions = self.get_source_versions(
             self.owner_type, self.owner_id, self.source_id)
 
         # Set the context for the child concepts
-        context['concepts'] = concept_searcher.search_results
-        context['concept_page'] = concept_current_page
-        context['concept_pagination_url'] = self.request.get_full_path()
-        context['concept_q'] = concept_searcher.get_query()
-        context['concept_facets'] = concept_searcher.search_filter_list
-        context['search_sort_options'] = concept_searcher.get_sort_options()
-        context['search_sort'] = concept_searcher.get_sort()
+        context['results'] = searcher.search_results
+        context['current_page'] = search_results_current_page
+        context['pagination_url'] = self.request.get_full_path()
+        context['search_query'] = searcher.get_query()
+        context['search_facets'] = searcher.search_filter_list
+        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort'] = searcher.get_sort()
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Concepts'
         context['source'] = source
@@ -220,10 +238,29 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         # Load the source details
         source = self.get_source_details(self.owner_type, self.owner_id, self.source_id)
 
-        # Set the context
+        # Load the mappings in this source, applying search parameters
+        searcher = self.get_source_mappings(
+            self.owner_type, self.owner_id, self.source_id,
+            search_params=self.request.GET)
+        search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        search_results_current_page = search_results_paginator.page(searcher.current_page)
+
+        # Load the source versions
+        source_versions = self.get_source_versions(
+            self.owner_type, self.owner_id, self.source_id)
+
+        # Set the context for the child concepts
+        context['results'] = searcher.search_results
+        context['current_page'] = search_results_current_page
+        context['pagination_url'] = self.request.get_full_path()
+        context['search_query'] = searcher.get_query()
+        context['search_facets'] = searcher.search_filter_list
+        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort'] = searcher.get_sort()
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Mappings'
         context['source'] = source
+        context['source_versions'] = source_versions
 
         return context
 
