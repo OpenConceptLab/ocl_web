@@ -22,7 +22,7 @@ class Command(BaseCommand):
         make_option('--company_name',
                     action='store',
                     dest='company_name',
-                    default='Open Concept Labs',
+                    default='Open Concept Lab',
                     help='Company full name'),
         make_option('--location',
                     action='store',
