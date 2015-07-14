@@ -54,7 +54,7 @@ class SourceDetailsView(UserOrOrgMixin, SourceReadBaseView):
         """
 
         # Setup the context and args
-        context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
+        context = super(SourceDetailsView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
         # Load the source details
@@ -81,7 +81,7 @@ class SourceAboutView(UserOrOrgMixin, SourceReadBaseView):
         """
 
         # Setup the context and args
-        context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
+        context = super(SourceAboutView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
         # Load the source details
@@ -116,7 +116,7 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         """
 
         # Setup the context and args
-        context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
+        context = super(SourceConceptsView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
         # Load the source details
@@ -143,7 +143,7 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         """
 
         # Setup the context and args
-        context = super(SourceDetailView, self).get_context_data(*args, **kwargs)
+        context = super(SourceMappingsView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
         # Load the source details
