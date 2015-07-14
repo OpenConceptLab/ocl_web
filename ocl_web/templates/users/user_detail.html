@@ -7,8 +7,9 @@
 
 {% block content %}
 <div class="container">
-
   <div class="row">
+
+    <!-- User details -->
     <div class="col-sm-3">
       <div>{% avatar object size=200 %}</div>
       <h2>{{ ocl_user.name }}<br /><small>{{ object.username }}</small></h2>
@@ -21,8 +22,9 @@
       <div><strong>Email:</strong> {{ ocl_user.email }}</div>
       <div><strong>Joined:</strong> {{ ocl_user.created_on|smart_date }}</div>
     </div>
-    <div class="col-sm-9">
       
+    <div class="col-sm-9">
+
       <!-- Action buttons -->
       {% if object == request.user %}
       <div class="row">
@@ -35,10 +37,9 @@
       {% endif %}
       <!-- End Action buttons -->
 
-      <div class="row">
-        <p></p>
-      </div>
+      <div class="row"><p>&nbsp;</p></div>
 
+      <!-- Source List -->
       <div class="row">
         <div class="col-sm-6">
           <div class="list-group">
@@ -53,16 +54,28 @@
           </div>
         </div>
 
+        <!-- Organization Membership List -->
         <div class="col-sm-6">
           <div class="list-group">
             <div class="list-group-item"><h4>Organization Membership</h4>
               <small><p class="text-right"><a href="{% url 'source-create-for-user' ocl_user.username %}">Create Organization</a></small></p>
             </div>
-            {% for org in orgs %}
-              {% org_label org %}<br />
-            {% empty %}
-              No organizations
-            {% endfor %}
+            <div class="list-group-item">
+              {% for org in orgs %}
+
+                {% org_label org %}<br />
+
+                <h4><a href="{% url 'org-details' org=org.id %}" style="text-decoration: none;">
+                  <span class="resource-label small organization">
+                    <span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-home"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ org.id }}</span>
+                    </span><span class="resource-label-name">{{ org.name }}</span>
+                  </span>
+                </a></h4>
+
+              {% empty %}
+                No organizations
+              {% endfor %}
+            </div>
           </div>
         </div>
       </div>
