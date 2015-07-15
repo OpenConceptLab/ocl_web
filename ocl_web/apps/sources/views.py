@@ -41,17 +41,29 @@ class SourceReadBaseView(TemplateView):
 
     def get_source_versions(self, owner_type, owner_id, source_id, search_params=None):
         """
-        Load source versions from the API and return as JSON search results.
+        Load source versions from the API and return OCLSearch instance with results.
         """
         # TODO(paynejd@gmail.com): Validate the input parameters
-        api = OCLapi(self.request, debug=True)
+
+        # Create the searcher
+        searcher = OCLSearch(search_type=OCLapi.SOURCE_VERSION_TYPE, params=search_params)
+
+        # Perform the search
+        api = OCLapi(self.request, debug=True, facets=False)
         search_response = api.get(
-            owner_type, owner_id, 'sources', source_id, 'versions', params=search_params)
+            owner_type, owner_id, 'sources', source_id, 'versions',
+            params=searcher.search_params)
         if search_response.status_code == 404:
             raise Http404
         elif search_response.status_code != 200:
             search_response.raise_for_status()
-        return search_response.json()
+
+        # Process the results
+        searcher.process_search_results(
+            search_type='source_versions', search_response=search_response,
+            has_facets=False, search_params=search_params)
+
+        return searcher
 
     def get_source_concepts(self, owner_type, owner_id, source_id, search_params=None):
         """
@@ -195,8 +207,9 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
         # Load the source versions
-        source_versions = self.get_source_versions(
-            self.owner_type, self.owner_id, self.source_id)
+        source_version_searcher = self.get_source_versions(
+            self.owner_type, self.owner_id, self.source_id,
+            search_params={'limit': '10'})
 
         # Set the context
         context['results'] = searcher.search_results
@@ -209,7 +222,7 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Concepts'
         context['source'] = source
-        context['source_versions'] = source_versions
+        context['source_versions'] = source_version_searcher.search_results
 
         return context
 
@@ -241,8 +254,9 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
         # Load the source versions
-        source_versions = self.get_source_versions(
-            self.owner_type, self.owner_id, self.source_id)
+        source_version_searcher = self.get_source_versions(
+            self.owner_type, self.owner_id, self.source_id,
+            search_params={'limit': '10'})
 
         # Set the context
         context['results'] = searcher.search_results
@@ -255,7 +269,7 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Mappings'
         context['source'] = source
-        context['source_versions'] = source_versions
+        context['source_versions'] = source_version_searcher.search_results
 
         return context
 
@@ -280,10 +294,14 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
         source = self.get_source_details(self.owner_type, self.owner_id, self.source_id)
 
         # Load the source versions
-        # TODO(paynejd@gmail.com): Source version approach will not allow viewing
-        # of source versions on pages beyond the first
-        source_versions = self.get_source_versions(
-            self.owner_type, self.owner_id, self.source_id, search_params={'verbose':'true'})
+        params = self.request.GET.copy()
+        params['verbose'] = 'true'
+        params['limit'] = 10
+        searcher = self.get_source_versions(
+            self.owner_type, self.owner_id, self.source_id,
+            search_params=params)
+        search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        search_results_current_page = search_results_paginator.page(searcher.current_page)
 
         # Set "is_processing" attribute if "_ocl_processing" is true, because Django
         # does not support attributes that begin with underscore
@@ -292,10 +310,12 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
                 source_version['is_processing'] = 'True'
 
         # Set the context
+        context['current_page'] = search_results_current_page
+        context['pagination_url'] = self.request.get_full_path()
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Versions'
         context['source'] = source
-        context['source_versions'] = source_versions
+        context['source_versions'] = searcher.search_results
 
         return context
 

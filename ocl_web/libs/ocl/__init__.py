@@ -29,6 +29,7 @@ class OCLapi(object):
     CONCEPT_TYPE = 3
     COLLECTION_TYPE = 4
     MAPPING_TYPE = 5
+    SOURCE_VERSION_TYPE = 6
 
     logger = logging.getLogger('oclapi')
 

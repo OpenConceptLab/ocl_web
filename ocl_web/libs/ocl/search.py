@@ -212,6 +212,7 @@ class OCLSearch(object):
     CONCEPT_TYPE = 3
     COLLECTION_TYPE = 4
     MAPPING_TYPE = 5
+    SOURCE_VERSION_TYPE = 6
 
     # Default values
     DEFAULT_NUM_PER_PAGE = 25
@@ -246,7 +247,8 @@ class OCLSearch(object):
         ],
         'collections': [],
         'orgs': [],
-        'users': []
+        'users': [],
+        'source_version': []
     }
 
     # Resource type definitions
@@ -256,7 +258,8 @@ class OCLSearch(object):
         'sources': {'int': SOURCE_TYPE, 'name': 'source', 'facets': True},
         'collections': {'int': COLLECTION_TYPE, 'name': 'collection', 'facets': True},
         'orgs': {'int': ORG_TYPE, 'name': 'organization', 'facets': False},
-        'users': {'int': USER_TYPE, 'name': 'user', 'facets': False}
+        'users': {'int': USER_TYPE, 'name': 'user', 'facets': False},
+        'source_version': {'int': SOURCE_VERSION_TYPE, 'name':'version', 'facets': False}
     }
 
 
@@ -386,7 +389,8 @@ class OCLSearch(object):
         """
         Processes the search results and saves to the searcher in
         self.search_results, and self.num_found. If has_facets is set to True,
-        attempts to process facets and saves to self.search_filter_list.
+        processes facets, selects options from search_params, and saves to
+        self.search_filter_list.
         """
         search_response_json = search_response.json()
 

@@ -5,9 +5,20 @@
 
 
 {% block tab-content %}
-<div class="container">
-<div class="row" style="margin-top: 20px;">
-    <div class="col-md-10">
+<div class="container" style="margin-top: 20px;">
+<div class="row">
+	<div class="col-md-8">
+        {% simple_pager current_page 'source-version' url=pagination_url %}
+        <div class="input-group checkbox">
+			<label><input type="checkbox" name="source-version-filter" value="released" /> Released</label>
+		</div>
+        <div class="input-group checkbox">
+			<label><input type="checkbox" name="source-version-filter" value="is_processing" /> Processing</label>
+        </div>
+	</div>
+</div>
+<div class="row">
+    <div class="col-md-8">
         <ul>
     		{% for source_version in source_versions %}
             <li class="list-group-item">
