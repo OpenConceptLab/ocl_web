@@ -17,7 +17,7 @@ from apps.sources.views import (
     SourceDetailView, SourceCreateView, SourceEditView, SourceVersionView, SourceVersionsView)
 from apps.mappings.views import (MappingDetailsView)
 from apps.concepts.views import (
-    ConceptDetailView, ConceptCreateJsonView, ConceptRetireView,
+    ConceptDetailView, ConceptCreateJsonView, ConceptRetireView, ConceptNewView,
     ConceptDescView, ConceptNameView, ConceptVersionListView, ConceptMappingView)
 from apps.core.views import ExtraJsonView
 #from apps.collections.views import (
