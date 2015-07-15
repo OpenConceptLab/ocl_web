@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-URL Configuration for "/orgs/" and all its children.
+URL Configuration for "/orgs/..." and all its children.
 
 Regex expression not split across lines -- pyline warnings supressed using "# pylint: disable=C0301"
 """
@@ -10,20 +10,18 @@ from __future__ import unicode_literals
 from django.conf.urls import (patterns, url)
 from apps.orgs.views import (
     OrganizationDetailsView, OrganizationAboutView, OrganizationSourcesView,
-    OrganizationNewView, OrganizationEditView)
-from apps.orgs.views import (
+    OrganizationNewView, OrganizationEditView,
     OrganizationMemberAddView, OrganizationMemberRemoveView)
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
     SourceDetailView, SourceCreateView, SourceEditView, SourceVersionView)
-#from apps.collections.views import (
-#    CollectionDetailView, CollectionCreateView, CollectionEditView)
-from apps.concepts.views import (ConceptDetailView)
+from apps.mappings.views import (MappingDetailsView)
 from apps.concepts.views import (
-    ConceptCreateJsonView, ConceptRetireView)
-from apps.concepts.views import (
+    ConceptDetailView, ConceptCreateJsonView, ConceptRetireView,
     ConceptDescView, ConceptNameView, ConceptVersionListView, ConceptMappingView)
 from apps.core.views import ExtraJsonView
+#from apps.collections.views import (
+#    CollectionDetailView, CollectionCreateView, CollectionEditView)
 
 
 urlpatterns = patterns(
@@ -86,8 +84,6 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/edit/$',
         SourceEditView.as_view(), name='source-edit'),
 
-
-
     # /orgs/:org/sources/:source/details/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/details/$',
         SourceDetailsView.as_view(), name='source-details'),
@@ -105,20 +101,19 @@ urlpatterns = patterns(
         SourceMappingsView.as_view(), name='source-mappings'),
 
 
-
-    # /orgs/:org/sources/:source/versions/ - JSON ONLY
+    # /orgs/:org/sources/:source/versions/ - JSON ONLY - Angular
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/$',
         SourceVersionView.as_view(), name='source-version-cl'),
 
-    # /orgs/:org/sources/:source/versions/:source-version/ - JSON ONLY
+    # /orgs/:org/sources/:source/versions/:source-version/ - JSON ONLY - Angular
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/(?P<version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         SourceVersionView.as_view(), name='source-version-ud'),
 
-    # /orgs/:org/sources/:source/extras/ - JSON ONLY
+    # /orgs/:org/sources/:source/extras/ - JSON ONLY - Angular
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/extras/$',
         ExtraJsonView.as_view(), name='source-extra'),
 
-    # /orgs/:org/sources/:source/extras/:extra/ - JSON ONLY
+    # /orgs/:org/sources/:source/extras/:extra/ - JSON ONLY - Angular
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/extras/(?P<extra>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ExtraJsonView.as_view(), name='source-extra-add'),
 
@@ -168,9 +163,11 @@ urlpatterns = patterns(
     # /orgs/:org/sources/:source/concepts/:concept/names/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/$',    # pylint: disable=C0301
         ConceptNameView.as_view(), name='concept-name-cl'),
+
     # /orgs/:org/sources/:source/concepts/:concept/:concept-version/names/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/names/$',    # pylint: disable=C0301
         ConceptNameView.as_view(), name='concept-name-cl'),
+
     # /orgs/:org/sources/:source/concepts/:concept/names/:concept-name/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/(?P<name>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ConceptNameView.as_view(), name='concept-name-ud'),
@@ -189,20 +186,25 @@ urlpatterns = patterns(
         ConceptDescView.as_view(), name='concept-desc-ud'),
 
 
-    ## CONCEPT MAPPINGS
+    ## MAPPINGS
+
+    # /orgs/:org/sources/:source/mappings/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        MappingDetailsView.as_view(), name='mapping-details'),
+
+    # TODO(paynejd@gmail.com): Below Mapping URLs are not implemented correctly
 
     # /orgs/:org/sources/:source/concepts/:concept/mappings/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/mappings/$',    # pylint: disable=C0301
         ConceptMappingView.as_view(), name='concept-mapping-cl'),
+
     # /orgs/:org/sources/:source/concepts/:concept/:concept-version/mappings/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/mappings/$',    # pylint: disable=C0301
         ConceptMappingView.as_view(), name='concept-mapping-cl'),
+
     # /orgs/:org/sources/:source/concepts/:concept/mappings/:mapping/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ConceptMappingView.as_view(), name='concept-mapping-ud'),
-
-
-    ## MAPPING UD
 
     # /orgs/:org/sources/:source/mappings/:mapping/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301

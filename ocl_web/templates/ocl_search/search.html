@@ -71,8 +71,8 @@
 
 		<div class="row" style="margin-bottom:10px;">
 			<div class="col-md-12">
-{% if results %}
 
+{% if results %}
 
 				<div class="btn-group pull-right">
 					  <select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
@@ -82,22 +82,18 @@
 					  </select>
 				</div>
 
-                    {% simple_pager page search_type_name url=pagination_url %}
+                {% simple_pager page search_type_name url=pagination_url %}
 
 			{% comment %}
 			<!-- Jon commented until there are actions that we can perform on resources -->
-
 				<div class="btn-group">
-				  &nbsp;&nbsp;
-				  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-				    <strong>Actions</strong> <span class="caret"></span>
-				  </button>
-				  <ul class="dropdown-menu" role="menu">
-				    <li><a href="#">Add to collection</a></li>
-				  </ul>
-				  &nbsp;&nbsp;
+				  	&nbsp;&nbsp;
+				  	<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><strong>Actions</strong> <span class="caret"></span></button>
+				  	<ul class="dropdown-menu" role="menu">
+				    	<li><a href="#">Add to collection</a></li>
+				  	</ul>
+				  	&nbsp;&nbsp;
 				</div>
-
 			{% endcomment %}
 
 {% else %}
