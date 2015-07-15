@@ -26,6 +26,8 @@
 				{% endfor %}
 			</div>
 		</div>
+		{% empty %}
+		<h3><small>No filters.</small></h3>
 		{% endfor %}
 
 <!-- End left column -->
@@ -42,12 +44,13 @@
 			<div class="col-md-12">
 				<div class="btn-group pull-right">
 				  	<select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
-				  		{% for o in search_sort_options %}
-				    	<option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
+				  		{% for sort_option in search_sort_options %}
+				    	<option {% if search_sort == sort_option %}selected{% endif %}>{{ sort_option }}</option>
 				    	{% endfor %}
 				  	</select>
 				</div>
 				<div class="btn-group pull-right"><span>Sort by:&nbsp;</span></div>
+
 				<div class="btn-group">
 				  	<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 				    	<span class="text-muted">Source Version:</span> <strong>{% if source_version %}{{ source_version }}{% else %}head{% endif %}</strong> <span class="caret"></span>
@@ -57,7 +60,7 @@
 				  		{% if source.owner_type == 'Organization' %}
 				  			{% url 'source-version-concepts' org=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
 				  		{% else %}
-				  			{% url 'source-version-concepts' org=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
+				  			{% url 'source-version-concepts' user=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
 				  		{% endif %}
 				  		<li {% if source_version == source_version_i.id %}class="active"{% endif %}><a href="{{ source_version_i_url }}">{% if source_version_i.released %}<strong>{% endif %}{{ source_version_i.id }}{% if source_version_i.released %}</strong> <span class="text-muted">(Released)</span>{% endif %}</a></li>
 				    {% endfor %}
@@ -72,13 +75,14 @@
 		        <div class="input-group">
 		            <input type="text" name="q" class="form-control" placeholder="Search concepts within source" value="{{ search_query }}">
 		            <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit" >Search</button>
+                        <button class="btn btn-default" type="submit">Search</button>
                     </span>
                 </div>
 			</div>
 		</div>
 
 		{% if_can_change source %}
+		{# TODO: Only allow if viewing "head" #}
 		<div class="row">
 			<div class="col-md-12">
 				{% if source.owner_type == 'Organization' %}
@@ -91,9 +95,10 @@
 		</div>
 		{% endif_can_change %}
 
-<!-- Source concept search results -->
+<!-- Search results -->
 
         {% for result in results %}
+
 			{% if source.owner_type == 'Organization' %}
 				{% url 'concept-detail' org=result.owner source=result.source concept=result.id as concept_url %}
 			{% else %}
@@ -117,19 +122,22 @@
 				</div>
 			</div>
 		{% empty %}
-			{% trans 'No concepts found' %}
+			<h3><small>{% trans 'No concepts found' %}</small></h3>
 		{% endfor %}
 
-	<!-- Pagination -->
+<!-- Pagination -->
 
 	        {% if results %}
 			<div class="row" style="text-align:center;">
 				{% bootstrap_pagination current_page url=pagination_url %}
 			</div>
 			{% endif %}
-		</div>
 
-	</form>
+<!-- End right column -->
+
+	</div>
+
+</form>
 </div>
 </div>
 {% endblock tab-content %}

@@ -45,18 +45,24 @@
 				<div class="btn-group pull-right">
 				  	<select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
 				  		{% for sort_option in search_sort_options %}
-				    	<option {% if search_sort == o %}selected{% endif %}>{{ sort_option }}</option>
+				    	<option {% if search_sort == sort_option %}selected{% endif %}>{{ sort_option }}</option>
 				    	{% endfor %}
 				  	</select>
 				</div>
 				<div class="btn-group pull-right"><span>Sort by:&nbsp;</span></div>
+
 				<div class="btn-group">
 				  	<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-				    	<span class="text-muted">Source Version:</span> <strong>Latest</strong> <span class="caret"></span>
+				    	<span class="text-muted">Source Version:</span> <strong>{% if source_version %}{{ source_version }}{% else %}head{% endif %}</strong> <span class="caret"></span>
 				  	</button>
 				  	<ul class="dropdown-menu" role="menu">
-				  	{% for source_version in source_versions %}
-				  		<li><a href="#">{% if source_version.released %}<strong>{% endif %}{{ source_version.id }}{% if source_version.released %} <span class="text-muted">(Released)</span></strong>{% endif %}</a></li>
+				  	{% for source_version_i in source_versions %}
+				  		{% if source.owner_type == 'Organization' %}
+				  			{% url 'source-version-mappings' org=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
+				  		{% else %}
+				  			{% url 'source-version-mappings' user=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
+				  		{% endif %}
+				  		<li {% if source_version == source_version_i.id %}class="active"{% endif %}><a href="{{ source_version_i_url }}">{% if source_version_i.released %}<strong>{% endif %}{{ source_version_i.id }}{% if source_version_i.released %}</strong> <span class="text-muted">(Released)</span>{% endif %}</a></li>
 				    {% endfor %}
 				  	</ul>
 				</div>
@@ -67,16 +73,17 @@
 			<div class="col-md-12" style="padding-top:20px;padding-bottom:20px;">
                 {% simple_pager current_page 'concept' url=pagination_url %}
 		        <div class="input-group">
-		            <input type="text" name="q" class="form-control" placeholder="Search concepts within source" value="{{ search_query }}">
+		            <input type="text" name="q" class="form-control" placeholder="Search mappings within source" value="{{ search_query }}">
 		            <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit" >Search</button>
+                        <button class="btn btn-default" type="submit">Search</button>
                     </span>
                 </div>
 			</div>
 		</div>
 
 		{% comment %}
-			{% if_can_change source %}
+		{% if_can_change source %}
+		{# TODO: Only allow if viewing "head" #}
 			<div class="row">
 				<div class="col-md-12">
 					{% if source.owner_type == 'Organization' %}
@@ -87,10 +94,10 @@
 					<div class="pull-right"><a class="btn btn-link" href="{{ add_concept_url }}"><span class="glyphicon glyphicon-plus"></span>{% trans 'Add Mapping' %}</a></div>
 				</div>
 			</div>
-			{% endif_can_change %}
+		{% endif_can_change %}
 		{% endcomment %}
 
-<!-- Source mappings search results -->
+<!-- Search results -->
 
         {% for result in results %}
 
@@ -151,6 +158,8 @@
 					{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 				</div>
 			</div>
+		{% empty %}
+			<h3><small>{% trans 'No mappings found' %}</small></h3>
 		{% endfor %}
 
 <!-- Pagination -->
