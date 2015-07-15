@@ -305,7 +305,8 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
 
         # Set "is_processing" attribute if "_ocl_processing" is true, because Django
         # does not support attributes that begin with underscore
-        for source_version in source_versions:
+        # TODO(paynejd@gmail.com): Rename _ocl_processing in the API
+        for source_version in searcher.search_results:
             if '_ocl_processing' in source_version and source_version['_ocl_processing']:
                 source_version['is_processing'] = 'True'
 
