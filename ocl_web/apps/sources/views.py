@@ -39,14 +39,14 @@ class SourceReadBaseView(TemplateView):
             search_response.raise_for_status()
         return search_response.json()
 
-    def get_source_versions(self, owner_type, owner_id, source_id, params=None):
+    def get_source_versions(self, owner_type, owner_id, source_id, search_params=None):
         """
         Load source versions from the API and return as JSON search results.
         """
         # TODO(paynejd@gmail.com): Validate the input parameters
         api = OCLapi(self.request, debug=True)
         search_response = api.get(
-            owner_type, owner_id, 'sources', source_id, 'versions')
+            owner_type, owner_id, 'sources', source_id, 'versions', params=search_params)
         if search_response.status_code == 404:
             raise Http404
         elif search_response.status_code != 200:
@@ -283,7 +283,7 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
         # TODO(paynejd@gmail.com): Source version approach will not allow viewing
         # of source versions on pages beyond the first
         source_versions = self.get_source_versions(
-            self.owner_type, self.owner_id, self.source_id)
+            self.owner_type, self.owner_id, self.source_id, search_params={'verbose':'true'})
 
         # Set "is_processing" attribute if "_ocl_processing" is true, because Django
         # does not support attributes that begin with underscore
