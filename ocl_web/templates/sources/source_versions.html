@@ -34,7 +34,7 @@
 	                </div>
 	                {% endif %}
 	                <h4>
-	                	<a href="{{ source_version_url }}"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} [ </span><span class="resource-label-id-code">{{ source_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
+	                	<a href="{{ source_version_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} [ </span><span class="resource-label-id-code">{{ source_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
 	                    {% if source_version.released %}
 	                    	<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">Released</span></span>
 	                    {% endif %}
