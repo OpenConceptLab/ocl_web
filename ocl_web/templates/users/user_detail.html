@@ -63,7 +63,7 @@
             <div class="list-group-item"><h4>Organization Membership</h4>
               <small><p class="text-right"><a href="{% url 'source-create-for-user' ocl_user.username %}">Create Organization</a></small></p>
             </div>
-            <div class="list-group-item">
+            <div class="list-group-item" style="overflow-x: scroll;">
               {% for org in orgs %}
                 <h4><a href="{% url 'org-details' org=org.id %}" style="text-decoration: none;">
                   <span class="resource-label small organization">

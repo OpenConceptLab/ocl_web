@@ -96,6 +96,10 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/$',
         SourceConceptsView.as_view(), name='source-concepts'),
 
+    # /orgs/:org/sources/:source/:version/concepts/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/concepts/$',
+        SourceConceptsView.as_view(), name='source-concepts'),
+
     # /orgs/:org/sources/:source/mappings/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/$',
         SourceMappingsView.as_view(), name='source-mappings'),

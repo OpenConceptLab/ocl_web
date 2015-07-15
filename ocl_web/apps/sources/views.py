@@ -26,10 +26,11 @@ class SourceReadBaseView(TemplateView):
     Base class for Source Read views.
     """
 
-    def get_source_details(self, owner_type, owner_id, source_id):
+    def get_source_details(self, owner_type, owner_id, source_id, source_version=None):
         """
         Load source details from the API and return as dictionary.
         """
+        # TODO(paynejd@gmail.com): Load details from source version, if applicable
         # TODO(paynejd@gmail.com): Validate the input parameters
         api = OCLapi(self.request, debug=True)
         search_response = api.get(owner_type, owner_id, 'sources', source_id)
@@ -65,7 +66,8 @@ class SourceReadBaseView(TemplateView):
 
         return searcher
 
-    def get_source_concepts(self, owner_type, owner_id, source_id, search_params=None):
+    def get_source_concepts(self, owner_type, owner_id, source_id,
+                            source_version=None, search_params=None):
         """
         Load source concepts from the API and return OCLSearch instance with results.
         """
@@ -76,9 +78,14 @@ class SourceReadBaseView(TemplateView):
 
         # Perform the search
         api = OCLapi(self.request, debug=True, facets=True)
-        search_response = api.get(
-            owner_type, owner_id, 'sources', source_id, 'concepts',
-            params=searcher.search_params)
+        if (source_version):
+            search_response = api.get(
+                owner_type, owner_id, 'sources', source_id, source_version, 'concepts',
+                params=searcher.search_params)
+        else:
+            search_response = api.get(
+                owner_type, owner_id, 'sources', source_id, 'concepts',
+                params=searcher.search_params)
         if search_response.status_code == 404:
             raise Http404
         elif search_response.status_code != 200:
@@ -91,7 +98,8 @@ class SourceReadBaseView(TemplateView):
 
         return searcher
 
-    def get_source_mappings(self, owner_type, owner_id, source_id, search_params=None):
+    def get_source_mappings(self, owner_type, owner_id, source_id,
+                            source_version=None, search_params=None):
         """
         Load source mappings from the API and return OCLSearch instance with results.
         """
@@ -102,9 +110,14 @@ class SourceReadBaseView(TemplateView):
 
         # Perform the search
         api = OCLapi(self.request, debug=True, facets=True)
-        search_response = api.get(
-            owner_type, owner_id, 'sources', source_id, 'mappings',
-            params=searcher.search_params)
+        if (source_version):
+            search_response = api.get(
+                owner_type, owner_id, 'sources', source_id, source_version, 'mappings',
+                params=searcher.search_params)
+        else:
+            search_response = api.get(
+                owner_type, owner_id, 'sources', source_id, 'mappings',
+                params=searcher.search_params)
         if search_response.status_code == 404:
             raise Http404
         elif search_response.status_code != 200:
@@ -117,6 +130,7 @@ class SourceReadBaseView(TemplateView):
             has_facets=False, search_params=search_params)
 
         return searcher
+
 
 
 class SourceDetailsView(UserOrOrgMixin, SourceReadBaseView):
@@ -197,12 +211,14 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         self.get_args()
 
         # Load the source details
-        source = self.get_source_details(self.owner_type, self.owner_id, self.source_id)
+        source = self.get_source_details(
+            self.owner_type, self.owner_id, self.source_id,
+            source_version=self.source_version_id)
 
         # Load the concepts in this source, applying search parameters
         searcher = self.get_source_concepts(
             self.owner_type, self.owner_id, self.source_id,
-            search_params=self.request.GET)
+            source_version=self.source_version_id, search_params=self.request.GET)
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
@@ -212,6 +228,11 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
             search_params={'limit': '10'})
 
         # Set the context
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'Concepts'
+        context['source'] = source
+        context['source_version'] = source_version
+        context['source_versions'] = source_version_searcher.search_results
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
@@ -219,10 +240,6 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         context['search_facets'] = searcher.search_filter_list
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
-        context['url_params'] = self.request.GET
-        context['selected_tab'] = 'Concepts'
-        context['source'] = source
-        context['source_versions'] = source_version_searcher.search_results
 
         return context
 
@@ -244,12 +261,14 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         self.get_args()
 
         # Load the source details
-        source = self.get_source_details(self.owner_type, self.owner_id, self.source_id)
+        source = self.get_source_details(
+            self.owner_type, self.owner_id, self.source_id,
+            source_version=self.source_version_id)
 
         # Load the mappings in this source, applying search parameters
         searcher = self.get_source_mappings(
             self.owner_type, self.owner_id, self.source_id,
-            search_params=self.request.GET)
+            source_version=self.source_version_id, search_params=self.request.GET)
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
@@ -259,6 +278,11 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
             search_params={'limit': '10'})
 
         # Set the context
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'Mappings'
+        context['source'] = source
+        context['source_version'] = source_version
+        context['source_versions'] = source_version_searcher.search_results
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
@@ -266,10 +290,6 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         context['search_facets'] = searcher.search_filter_list
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
-        context['url_params'] = self.request.GET
-        context['selected_tab'] = 'Mappings'
-        context['source'] = source
-        context['source_versions'] = source_version_searcher.search_results
 
         return context
 
@@ -296,7 +316,7 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
         # Load the source versions
         params = self.request.GET.copy()
         params['verbose'] = 'true'
-        params['limit'] = 10
+        params['limit'] = '10'
         searcher = self.get_source_versions(
             self.owner_type, self.owner_id, self.source_id,
             search_params=params)
