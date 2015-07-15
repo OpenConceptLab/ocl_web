@@ -20,26 +20,34 @@ class UserOrOrgMixin(object):
 
     def get_args(self):
         """
-        Helper method to set attributes that determine if resource is owned by user or org.
+        Helper method to determine resource ownership (user/org) and resource identifiers.
 
         Method will set the following based on the passed kwargs:
-        :param self.from_user: set to true/false depending on source type
-        :param self.from_org: set to true/false depending on source type
-        :param self.org_id: set to org id if source is from org
-        :param self.user_id: set to username if source is from user
+        :param self.from_user: sets to true/false depending on source type
+        :param self.from_org: sets to true/false depending on source type
+        :param self.user_id: sets to username if source is from user
+        :param self.org_id: sets to org id if source is from org
+        :param self.owner_type: sets to "users" or "orgs", good for calling API
+        :param self.owner_id: sets to user id or org id, good for calling API
+        :param self.source_id: sets to source ID if view URL has source part
+        :param self.source_version_id: sets to source version ID if view URL contains it
+        :param self.concept_id: sets to concept ID if view URL has concept part
+        :param self.concept_version_id: sets to concept version if view URL has concept version part
 
-        :param self.owner_type: set to "users" or "orgs", good for calling API
-        :param self.owner_id: set to user id or org id, good for calling API
-
-        :param self.source_id: set to source ID if view URL has source part.
-        :param self.concept_id: set to concept ID if view URL has concept part.
-        :param self.version_id: set to concept version if view URL has concept version part.
+        TODO(paynejd@gmail.com): Collections are not handled here
         """
         self.from_user = False
         self.from_org = False
-        self.user_id = self.org_id = None
-        self.owner_type = self.owner_id = None
+        self.user_id = None
+        self.org_id = None
+        self.owner_type = None
+        self.owner_id = None
+        self.source_id = None
+        self.source_version_id = None
+        self.concept_id = None
+        self.concept_version_id = None
 
+        # Determine the owner type and set the owner ID
         self.org_id = self.kwargs.get('org')
         if self.org_id is None:
             self.user_id = self.kwargs.get('user')
@@ -51,10 +59,13 @@ class UserOrOrgMixin(object):
             self.owner_type = 'orgs'
             self.owner_id = self.org_id
 
+        # Set the source, concept, and their versions
         self.source_id = self.kwargs.get('source')
+        self.source_version_id = self.kwargs.get('source_version')
         self.concept_id = self.kwargs.get('concept')
-        self.collection_id = self.kwargs.get('collection')
-        self.version_id = self.kwargs.get('version')
+        self.concept_version_id = self.kwargs.get('concept_version')
+        #self.collection_id = self.kwargs.get('collection')
+        #self.version_id = self.kwargs.get('version')
 
     def args_string(self):
         """
@@ -62,17 +73,21 @@ class UserOrOrgMixin(object):
         """
         output_string = ''
         if self.org_id:
-            output_string += 'org: %s  ' % self.org_id
+            output_string += 'org_id: %s  ' % self.org_id
         if self.user_id:
-            output_string += 'user: %s  ' % self.user_id
+            output_string += 'user_id: %s  ' % self.user_id
         if self.owner_type:
             output_string += 'owner_type: %s  ' % self.owner_type
         if self.owner_id:
             output_string += 'owner_id: %s  ' % self.owner_id
         if self.source_id:
-            output_string += 'source: %s  ' % self.source_id
+            output_string += 'source_id: %s  ' % self.source_id
+        if self.source_version_id:
+            output_string += 'source_version_id: %s  ' % self.source_version_id
         if self.concept_id:
-            output_string += 'concept: %s  ' % self.concept_id
+            output_string += 'concept_id: %s  ' % self.concept_id
+        if self.version_id:
+            output_string += 'concept_version_id: %s  ' % self.version_id
         return output_string
 
 
