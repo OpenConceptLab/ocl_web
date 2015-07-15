@@ -198,7 +198,7 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         source_versions = self.get_source_versions(
             self.owner_type, self.owner_id, self.source_id)
 
-        # Set the context for the child concepts
+        # Set the context
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
@@ -244,7 +244,7 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         source_versions = self.get_source_versions(
             self.owner_type, self.owner_id, self.source_id)
 
-        # Set the context for the child concepts
+        # Set the context
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
@@ -285,8 +285,7 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
         source_versions = self.get_source_versions(
             self.owner_type, self.owner_id, self.source_id)
 
-        # Set the context for the child concepts
-        context['results'] = searcher.search_results
+        # Set the context
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Versions'
         context['source'] = source
