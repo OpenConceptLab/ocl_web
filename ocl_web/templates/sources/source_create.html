@@ -15,7 +15,8 @@
 {% else %}
     {% user_label ocl_user %}
 {% endif %}
-/ <span class="glyphicon glyphicon-list" style="color:#e5e5e5;"></span>&nbsp;&nbsp;{% trans 'Add Source' %}
+&nbsp;/&nbsp;
+<span class="glyphicon glyphicon-list" style="color:#e5e5e5;"></span>&nbsp;&nbsp;{% trans 'New Source' %}
 </h3>
 
 <div class="container">
@@ -25,12 +26,12 @@
       <form class="form-horizontal" id="source_create_form" method="post" action=".">
         {% csrf_token %}
 
-        <div class="form-group required"><label class="col-md-2 control-label">Source</label>
+        <div class="form-group required"><label class="col-md-2 control-label">Source Owner</label>
           <div class="col-md-4">
             {% if org %}
-              {% trans "Create a source for this organization" %} : {{ org.id }}
+                {% org_label org %}
             {% else %}
-              {% trans "Create a source for this user" %} : {{ ocl_user.username }}
+                {% user_label ocl_user %}
             {% endif %}
           </div>
         </div>

@@ -33,7 +33,7 @@ class ConceptNewView(LoginRequiredMixin, FormView):
     template_name = "concepts/concept_new.html"
 
     def get_initial(self):
-        """ Load some useful data, not really for form display but internal use """
+        """ Load some useful data into the context """
         self.get_args()
 
         data = {
