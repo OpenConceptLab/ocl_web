@@ -19,32 +19,36 @@
     <div class="col-md-8">
         <ul>
     		{% for source_version in source_versions %}
-            <li class="list-group-item">
-                <div class="search-result-col-icon pull-left" style="padding-top:0;padding-right:14px;margin-bottom:20px;"><span class="glyphicon glyphicon-asterisk search-result-icon"></span></div>
-                {% if not source_version.is_processing %}
-                <div class="pull-right">
-                    <button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
-                    <button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
-                </div>
-                {% endif %}
-                <h4>
-                    <span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} / </span><span class="resource-label-id-code">{{ source_version.id }}</span></span></span>
-                    {% if source_version.released %}
-                    	<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">Released</span></span>
-                    {% endif %}
-                    {% if source_version.is_processing %}
-                    	<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">Processing</span></span>
-                    {% endif %}
-                </h4>
-                <p>
-                    {% if source_version.description %}<span>{{ source_version.description }}<br /></span>{% endif %}
-                    <span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ source_version.created_on|smart_datetime }}</span>
-                </p>
-            </li>
+    			{% if source_version.owner_type == 'Organization' %}
+    				{% url 'source-version-concepts' org=source_version.owner source=source.id source_version=source_version.id as source_version_url %}
+    			{% else %}
+    				{% url 'source-version-concepts' user=source_version.owner source=source.id source_version=source_version.id as source_version_url %}
+    			{% endif %}
+
+	            <li class="list-group-item">
+	                <div class="search-result-col-icon pull-left" style="padding-top:0;padding-right:14px;margin-bottom:20px;"><span class="glyphicon glyphicon-asterisk search-result-icon"></span></div>
+	                {% if not source_version.is_processing %}
+	                <div class="pull-right">
+	                    <button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
+	                    <button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
+	                </div>
+	                {% endif %}
+	                <h4>
+	                	<a href="{{ source_version_url }}"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} [ </span><span class="resource-label-id-code">{{ source_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
+	                    {% if source_version.released %}
+	                    	<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">Released</span></span>
+	                    {% endif %}
+	                    {% if source_version.is_processing %}
+	                    	<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">Processing</span></span>
+	                    {% endif %}
+	                </h4>
+	                <p>
+	                    {% if source_version.description %}<span>{{ source_version.description }}<br /></span>{% endif %}
+	                    <span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ source_version.created_on|smart_datetime }}</span>
+	                </p>
+	            </li>
             {% empty %}
-            <li class="list-group-item">
-            	<h3><small>No source versions.</small></h3>
-			</li>
+	            <li class="list-group-item"><h3><small>No source versions.</small></h3></li>
             {% endfor %}
         </ul>
 	</div>

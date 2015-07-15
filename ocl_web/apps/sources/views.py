@@ -30,7 +30,7 @@ class SourceReadBaseView(TemplateView):
         """
         Load source details from the API and return as dictionary.
         """
-        # TODO(paynejd@gmail.com): Load details from source version, if applicable
+        # TODO(paynejd@gmail.com): Load details from source version, if applicable (or remove?)
         # TODO(paynejd@gmail.com): Validate the input parameters
         api = OCLapi(self.request, debug=True)
         search_response = api.get(owner_type, owner_id, 'sources', source_id)
@@ -78,7 +78,7 @@ class SourceReadBaseView(TemplateView):
 
         # Perform the search
         api = OCLapi(self.request, debug=True, facets=True)
-        if (source_version):
+        if source_version:
             search_response = api.get(
                 owner_type, owner_id, 'sources', source_id, source_version, 'concepts',
                 params=searcher.search_params)
@@ -110,7 +110,7 @@ class SourceReadBaseView(TemplateView):
 
         # Perform the search
         api = OCLapi(self.request, debug=True, facets=True)
-        if (source_version):
+        if source_version:
             search_response = api.get(
                 owner_type, owner_id, 'sources', source_id, source_version, 'mappings',
                 params=searcher.search_params)
