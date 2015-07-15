@@ -285,6 +285,12 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
         source_versions = self.get_source_versions(
             self.owner_type, self.owner_id, self.source_id)
 
+        # Set "is_processing" attribute if "_ocl_processing" is true, because Django
+        # does not support attributes that begin with underscore
+        for source_version in source_versions:
+            if '_ocl_processing' in source_version and source_version['_ocl_processing']:
+                source_version['is_processing'] = 'True'
+
         # Set the context
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Versions'
