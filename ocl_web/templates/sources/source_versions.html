@@ -9,11 +9,9 @@
 <div class="row">
 	<div class="col-md-8">
         {% simple_pager current_page 'source-version' url=pagination_url %}
-        <div class="input-group checkbox">
-			<label><input type="checkbox" name="source-version-filter" value="released" /> Released</label>
-		</div>
-        <div class="input-group checkbox">
-			<label><input type="checkbox" name="source-version-filter" value="is_processing" /> Processing</label>
+        <div class="form-group">
+			<label class="checkbox-inline text-muted" style="margin-left:40px;padding-right:10px;"><input type="checkbox" name="source-version-filter" value="released" disabled /> Released</label>
+			<label class="checkbox-inline text-muted"><input type="checkbox" name="source-version-filter" value="is_processing" disabled /> Processing</label>
         </div>
 	</div>
 </div>

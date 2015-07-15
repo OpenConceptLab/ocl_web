@@ -438,8 +438,13 @@ class OCLSearch(object):
         print 'parsing:', request_get
         if isinstance(request_get, QueryDict):
             params = request_get.copy()
-        else:
+        elif isinstance(request_get, basestring):
             params = QueryDict(request_get, mutable=True)
+        elif isinstance(request_get, dict):
+            params = QueryDict('', mutable=True)
+            params.update(request_get)
+        else:
+            raise TypeError('Expected QueryDict, dict, or str, but ' + str(request_get) + ' passed')
 
         # Determine the search type - gets the latest occurence of type
         if 'type' in params:
