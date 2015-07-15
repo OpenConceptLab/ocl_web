@@ -71,7 +71,7 @@
 
 		<div class="row">
 			<div class="col-md-12" style="padding-top:20px;padding-bottom:20px;">
-                {% simple_pager current_page 'concept' url=pagination_url %}
+                {% simple_pager current_page 'mapping' url=pagination_url %}
 		        <div class="input-group">
 		            <input type="text" name="q" class="form-control" placeholder="Search mappings within source" value="{{ search_query }}">
 		            <span class="input-group-btn">
@@ -81,21 +81,19 @@
 			</div>
 		</div>
 
-		{% comment %}
 		{% if_can_change source %}
-		{# TODO: Only allow if viewing "head" #}
+		{# TODO: Only allow if viewing "head" -- for now mapping is always added to head #}
 			<div class="row">
 				<div class="col-md-12">
 					{% if source.owner_type == 'Organization' %}
-						{% url 'mapping-create-for-org' source.owner source.id as add_concept_url %}
+						{% url 'mapping-create-for-org' org=source.owner source=source.id as add_concept_url %}
 					{% else %}
-						{% url 'mapping-create-for-user' source.owner source.id as add_concept_url %}
+						{% url 'mapping-create-for-user' user=source.owner source=source.id as add_concept_url %}
 					{% endif %}
 					<div class="pull-right"><a class="btn btn-link" href="{{ add_concept_url }}"><span class="glyphicon glyphicon-plus"></span>{% trans 'Add Mapping' %}</a></div>
 				</div>
 			</div>
 		{% endif_can_change %}
-		{% endcomment %}
 
 <!-- Search results -->
 

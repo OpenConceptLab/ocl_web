@@ -318,7 +318,9 @@ class OrganizationAboutView(OrganizationReadBaseView):
 
 
 class OrganizationNewView(LoginRequiredMixin, FormView):
-    """View to create new organization"""
+    """
+    View to create new organization
+    """
 
     form_class = OrganizationNewForm
     template_name = "orgs/org_new.html"

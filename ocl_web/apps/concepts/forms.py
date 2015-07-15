@@ -21,6 +21,17 @@ class ConceptRetireForm(forms.Form):
         required=False)
 
 
+class ConceptNewForm(forms.Form):
+    """
+        Concept new form
+    """
+    required_css_class = 'required'
+    concept_id = forms.CharField(
+        label=_('Concept ID'), 
+        max_length=256, 
+        required=True)
+
+
 class ConceptCreateForm(forms.Form):
     """
         Concept create form

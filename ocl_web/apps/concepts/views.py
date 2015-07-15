@@ -1,6 +1,7 @@
-"""OCL Concept Views
 """
-# TODO: Split tabs into separate pages
+OCL Concept Views
+"""
+
 import requests
 import logging
 
@@ -13,13 +14,69 @@ from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.template.response import TemplateResponse
 
-from braces.views import (CsrfExemptMixin, JsonRequestResponseMixin)
+from braces.views import (LoginRequiredMixin, CsrfExemptMixin, JsonRequestResponseMixin)
 
-from .forms import (ConceptCreateForm, ConceptEditForm, ConceptRetireForm)
+from .forms import (ConceptNewForm, ConceptCreateForm, ConceptEditForm, ConceptRetireForm)
 from libs.ocl import OCLapi
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
+
+
+
+class ConceptNewView(LoginRequiredMixin, FormView):
+    """
+    View to create new concept
+    """
+
+    form_class = ConceptNewForm
+    template_name = "concepts/concept_new.html"
+
+    def get_initial(self):
+        """ Load some useful data, not really for form display but internal use """
+        self.get_args()
+
+        data = {
+            'request': self.request,
+            'from_user': self.from_user,
+            'from_org': self.from_org,
+            'user_id': self.user_id,
+            'org_id': self.org_id,
+            'owner_type': self.owner_type,
+            'owner_id': self.owner_id,
+            'source_id': self.source_id
+        }
+        return data
+
+    def form_valid(self, form, *args, **kwargs):
+        """
+        Validates the form data and submits if valid
+        """
+        # TODO(paynejd@gmail.com): Rename this method - it validates and submits form
+
+        #org_id = form.cleaned_data.pop('short_name')
+
+        # api = OCLapi(self.request, debug=True)
+
+        # data = {
+        #     'id': org_id,
+        # }
+        # data.update(form.cleaned_data)
+        # print form.cleaned_data
+        # print data
+        # result = api.create_org(data)
+
+        # # TODO:  Catch exceptions that will be raised by
+        # # Ocl lib.
+        # if result.ok:
+        #     messages.add_message(self.request, messages.INFO, _('Concept Added'))
+        #     return redirect(reverse('org-details', kwargs={'org': org_id}))
+
+        # # TODO:  Add error messages from API to form.
+        # else:
+        #     return super(ConceptNewView, self).form_invalid(self, *args, **kwargs)
+
+
 
 
 class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,

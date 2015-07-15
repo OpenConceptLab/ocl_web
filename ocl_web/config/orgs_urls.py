@@ -118,16 +118,16 @@ urlpatterns = patterns(
     #    SourceVersionView.as_view(), name='source-version-cl'),
 
     # /orgs/:org/sources/:source/versions/:source-version/ - JSON ONLY - Angular
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/(?P<version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-        SourceVersionView.as_view(), name='source-version-ud'),
+    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/(?P<version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+    #    SourceVersionView.as_view(), name='source-version-ud'),
 
     # /orgs/:org/sources/:source/extras/ - JSON ONLY - Angular
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/extras/$',
-        ExtraJsonView.as_view(), name='source-extra'),
+    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/extras/$',
+    #    ExtraJsonView.as_view(), name='source-extra'),
 
     # /orgs/:org/sources/:source/extras/:extra/ - JSON ONLY - Angular
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/extras/(?P<extra>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-        ExtraJsonView.as_view(), name='source-extra-add'),
+    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/extras/(?P<extra>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+    #    ExtraJsonView.as_view(), name='source-extra-add'),
 
 
     ## COLLECTIONS
@@ -143,8 +143,13 @@ urlpatterns = patterns(
 
     ## CONCEPTS
 
-    # New concept: /orgs/:org/sources/:source/create/
+    # /orgs/:org/sources/:source/create/ - create new concept
     # TODO(paynejd@gmail.com): Change this to: /orgs/:org/sources/:source/concept/new/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/new/$',
+        ConceptNewView.as_view(), name='concept-new-for-org'),
+
+    # New concept: /orgs/:org/sources/:source/create/
+    # TODO(paynejd@gmail.com): Retire this - replaced by above
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/create/$',
         ConceptCreateJsonView.as_view(), name='concept-create-for-org'),
 

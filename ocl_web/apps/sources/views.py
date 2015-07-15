@@ -439,7 +439,7 @@ class SourceDetailView(UserOrOrgMixin, SourceReadBaseView):
 
 class SourceCreateView(UserOrOrgMixin, FormView):
     """
-    Create new source, either for an org or a user.
+    View to Create new source
     """
 
     form_class = SourceCreateForm
@@ -450,11 +450,13 @@ class SourceCreateView(UserOrOrgMixin, FormView):
         self.get_args()
 
         data = {
-            'org_id': self.org_id,
-            'user_id': self.user_id,
-            'from_org': self.from_org,
-            'from_user': self.from_user,
             'request': self.request,
+            'from_user': self.from_user,
+            'from_org': self.from_org,
+            'user_id': self.user_id,
+            'org_id': self.org_id,
+            'owner_type': self.owner_type,
+            'owner_id': self.owner_id
         }
         return data
 
