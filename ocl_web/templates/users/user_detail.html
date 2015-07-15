@@ -67,7 +67,7 @@
             </div>
             <div class="list-group-item" style="overflow-x: scroll;">
               {% for org in orgs %}
-                <h4><a href="{% url 'org-details' org=org.id %}" style="text-decoration: none;">
+                <h4><a href="{% url 'org-home' org=org.id %}" style="text-decoration: none;">
                   <span class="resource-label small organization">
                     <span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-home"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ org.id }}</span>
                     </span><span class="resource-label-name">{{ org.name }}</span>
