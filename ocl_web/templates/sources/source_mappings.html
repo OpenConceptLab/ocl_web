@@ -73,18 +73,20 @@
 			</div>
 		</div>
 
-		{% if_can_change source %}
-		<div class="row">
-			<div class="col-md-12">
-				{% if source.owner_type == 'Organization' %}
-					{% url 'concept-create-for-org' source.owner source.id as add_concept_url %}
-				{% else %}
-					{% url 'concept-create-for-user' source.owner source.id as add_concept_url %}
-				{% endif %}
-				<div class="pull-right"><a class="btn btn-link" href="{{ add_concept_url }}"><span class="glyphicon glyphicon-plus"></span>{% trans 'Add Concept' %}</a></div>
+		{% comment %}
+			{% if_can_change source %}
+			<div class="row">
+				<div class="col-md-12">
+					{% if source.owner_type == 'Organization' %}
+						{% url 'mapping-create-for-org' source.owner source.id as add_concept_url %}
+					{% else %}
+						{% url 'mapping-create-for-user' source.owner source.id as add_concept_url %}
+					{% endif %}
+					<div class="pull-right"><a class="btn btn-link" href="{{ add_concept_url }}"><span class="glyphicon glyphicon-plus"></span>{% trans 'Add Mapping' %}</a></div>
+				</div>
 			</div>
-		</div>
-		{% endif_can_change %}
+			{% endif_can_change %}
+		{% endcomment %}
 
 <!-- Source mappings search results -->
 
