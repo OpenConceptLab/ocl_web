@@ -35,9 +35,11 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     def get_initial(self):
         """ Load some useful data into the context """
 
+        data = super(ConceptNewView, self).get_initial()
+
         # Set owner type and identifiers using UserOrOrgMixin.get_args()
         self.get_args()
-        data = {
+        data.update({
             'request': self.request,
             'from_user': self.from_user,
             'from_org': self.from_org,
@@ -46,7 +48,7 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             'owner_type': self.owner_type,
             'owner_id': self.owner_id,
             'source_id': self.source_id
-        }
+        })
 
         # Load the source
         api = OCLapi(self.request, debug=True)
