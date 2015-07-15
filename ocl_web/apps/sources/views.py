@@ -261,7 +261,38 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
 
 
 
+class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
+    """
+    Source Versions view.
+    """
+    template_name = "sources/source_versions.html"
 
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the source versions.
+        """
+
+        # Setup the context and args
+        context = super(SourceVersionsView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the source details
+        source = self.get_source_details(self.owner_type, self.owner_id, self.source_id)
+
+        # Load the source versions
+        # TODO(paynejd@gmail.com): Source version approach will not allow viewing
+        # of source versions on pages beyond the first
+        source_versions = self.get_source_versions(
+            self.owner_type, self.owner_id, self.source_id)
+
+        # Set the context for the child concepts
+        context['results'] = searcher.search_results
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'Versions'
+        context['source'] = source
+        context['source_versions'] = source_versions
+
+        return context
 
 
 

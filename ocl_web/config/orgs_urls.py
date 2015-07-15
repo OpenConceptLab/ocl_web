@@ -14,7 +14,7 @@ from apps.orgs.views import (
     OrganizationMemberAddView, OrganizationMemberRemoveView)
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
-    SourceDetailView, SourceCreateView, SourceEditView, SourceVersionView)
+    SourceDetailView, SourceCreateView, SourceEditView, SourceVersionView, SourceVersionsView)
 from apps.mappings.views import (MappingDetailsView)
 from apps.concepts.views import (
     ConceptDetailView, ConceptCreateJsonView, ConceptRetireView,
@@ -100,10 +100,15 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/$',
         SourceMappingsView.as_view(), name='source-mappings'),
 
+    # /orgs/:org/sources/:source/versions/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/$',
+        SourceVersionsView.as_view(), name='source-versions'),
+
 
     # /orgs/:org/sources/:source/versions/ - JSON ONLY - Angular
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/$',
-        SourceVersionView.as_view(), name='source-version-cl'),
+    # TODO(paynejd@gmail.com): Overwritten and probably means creating/editing/viewing source versions will fail with angular
+    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/$',
+    #    SourceVersionView.as_view(), name='source-version-cl'),
 
     # /orgs/:org/sources/:source/versions/:source-version/ - JSON ONLY - Angular
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/(?P<version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301

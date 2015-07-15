@@ -1,0 +1,18 @@
+{% extends "sources/source_base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+
+{% block tab-content %}
+<div class="container">
+	<h3><small>Source versions will go here.</small></h3>
+</div>
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Source</h4><pre>{{ source|pprint }}</pre>
+<h4>Source Versions</h4><pre>{{ source_versions|pprint }}</pre>
+{% endblock resource-debug %}
