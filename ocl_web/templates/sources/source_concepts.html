@@ -50,11 +50,16 @@
 				<div class="btn-group pull-right"><span>Sort by:&nbsp;</span></div>
 				<div class="btn-group">
 				  	<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-				    	<span class="text-muted">Source Version:</span> <strong>Latest</strong> <span class="caret"></span>
+				    	<span class="text-muted">Source Version:</span> <strong>{% if source_version %}{{ source_version }}{% else %}head{% endif %}</strong> <span class="caret"></span>
 				  	</button>
 				  	<ul class="dropdown-menu" role="menu">
-				  	{% for source_version in source_versions %}
-				  		<li><a href="#">{% if source_version.released %}<strong>{% endif %}{{ source_version.id }}{% if source_version.released %} <span class="text-muted">(Released)</span></strong>{% endif %}</a></li>
+				  	{% for source_version_i in source_versions %}
+				  		{% if source.owner_type == 'Organization' %}
+				  			{% url 'source-version-concepts' org=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
+				  		{% else %}
+				  			{% url 'source-version-concepts' org=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
+				  		{% endif %}
+				  		<li {% if source_version == source_version_i.id %}class="active"{% endif %}><a href="{{ source_version_i_url }}">{% if source_version_i.released %}<strong>{% endif %}{{ source_version_i.id }}{% if source_version_i.released %}</strong> <span class="text-muted">(Released)</span>{% endif %}</a></li>
 				    {% endfor %}
 				  	</ul>
 				</div>
