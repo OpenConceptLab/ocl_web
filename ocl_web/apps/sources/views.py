@@ -178,11 +178,10 @@ class SourceAboutView(UserOrOrgMixin, SourceReadBaseView):
         # Load the source details
         source = self.get_source_details(self.owner_type, self.owner_id, self.source_id)
 
-        # Set about text for the source
-        if isinstance(source['extras'], dict):
-            about = source['extras'].get('about', 'No about entry.')
-        else:
-            about = 'No about entry.'
+        # Set about text
+        about = None
+        if 'extras' in source and isinstance(source['extras'], dict) and 'about' in source['extras']:
+            about = source['extras'].get('about')
         context['about'] = about
 
         # Set the context

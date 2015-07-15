@@ -301,12 +301,11 @@ class OrganizationAboutView(OrganizationReadBaseView):
         org_id = self.kwargs.get('org')
         org = self.get_org_details(org_id)
 
-        # Set about text for the organization
-        if 'extras' in org and isinstance(org['extras'], dict):
-            about = org['extras'].get('about', 'No about entry.')
-        else:
-            # TODO: If user has editing privileges, prompt them to create about entry
-            about = 'No about entry.'
+        # Set about text
+        about = None
+        if 'extras' in org and isinstance(org['extras'], dict) and 'about' in org['extras']:
+            about = org['extras'].get('about')
+        context['about'] = about
 
         # Set the context
         context['url_params'] = self.request.GET
