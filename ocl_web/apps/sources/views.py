@@ -437,7 +437,7 @@ class SourceDetailView(UserOrOrgMixin, SourceReadBaseView):
         return context
 
 
-class SourceCreateView(UserOrOrgMixin, FormView):
+class SourceCreateView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     """
     View to Create new source
     """

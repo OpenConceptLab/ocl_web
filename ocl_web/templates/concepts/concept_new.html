@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load ocl_tags %}
+
+{% block title %}{% trans "New Concept" %} - Open Concept Lab{% endblock %}
+
+{% block content %}
+<h3>
+{% source_owner_label source %} / {% source_label source %}
+&nbsp;/&nbsp;
+<span class="glyphicon glyphicon-list" style="color:#e5e5e5;"></span>&nbsp;&nbsp;{% trans 'New Concept' %}
+</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <form class="form" name="concept_form" autcomplete="off">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+
+                {% buttons layout="horizontal" %}
+                    <button type="submit" class="btn btn-primary">{% trans "Create Concept" %}</button>
+                    <button type="submit" class="btn btn-warning">{% trans "Cancel" %}</button>
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -24,7 +24,7 @@ logger = logging.getLogger('oclweb')
 
 
 
-class ConceptNewView(LoginRequiredMixin, FormView):
+class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     """
     View to create new concept
     """

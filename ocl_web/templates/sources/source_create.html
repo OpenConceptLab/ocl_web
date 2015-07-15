@@ -4,11 +4,10 @@
 {% load ocl_tags %}
 
 
-{% block title %}{% trans "New Source" %}{% endblock %}
+{% block title %}{% trans "New Source" %} - Open Concept Lab{% endblock %}
 
 
 {% block content %}
-
 <h3>
 {% if org %}
     {% org_label org %}
@@ -26,24 +25,18 @@
       <form class="form-horizontal" id="source_create_form" method="post" action=".">
         {% csrf_token %}
 
-        <div class="form-group required"><label class="col-md-2 control-label">Source Owner</label>
+        <div class="form-group required"><label class="col-md-2 control-label">Owner</label>
           <div class="col-md-4">
-            {% if org %}
-                {% org_label org %}
-            {% else %}
-                {% user_label ocl_user %}
-            {% endif %}
+            {% if org %}{% org_label org %}{% else %}{% user_label ocl_user %}{% endif %}
           </div>
         </div>
 
         {% bootstrap_form form layout="horizontal" %}
 
         {% buttons layout="horizontal" %}
-        <button type="submit" class="btn btn-primary">
-          {% trans "Create Source" %}
-        </button>
+        <button type="submit" class="btn btn-primary">{% trans "Create Source" %}</button>
+        <button type="submit" class="btn btn-warning">{% trans "Cancel" %}</button>
         {% endbuttons %}
-
       </form>
 
     </div>

@@ -2,6 +2,7 @@ Tasks
 ============
 - Other
 - - Remove url files from all the subdirectories -- only the url files in the config file are used
+- - Should not allow users to browse to "new" pages unless logged in (e.g. http://dev.openconceptlab.com/orgs/new/)
 - Org
 - - Org new/edit does not allow you to set values for all fields or edit extras
 - - Org delete is not enabled in the web application (trash can icon still points to edit)

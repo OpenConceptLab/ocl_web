@@ -351,7 +351,7 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
 
         # TODO:  Add error messages from API to form.
         else:
-            return super(OrganizationCreateView, self).form_invalid(self, *args, **kwargs)
+            return super(OrganizationNewView, self).form_invalid(self, *args, **kwargs)
 
 
 

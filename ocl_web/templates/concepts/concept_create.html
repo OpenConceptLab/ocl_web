@@ -3,12 +3,10 @@
 {% load bootstrap3 %}
 {% load ocl_tags %}
 
-{% block title %}{% trans "Add Concept" %}{% endblock %}
+{% block title %}{% trans "Add Concept" %} - Open Concept Lab{% endblock %}
 
 {% block content %}
-<h3>
-    {% source_owner_label source %} / {% source_label source %} / Add Concept
-</h3>
+<h3>{% source_owner_label source %} / {% source_label source %} / Add Concept</h3>
 
 <div class="container" ng-app="ConceptApp" ng-controller="ConceptController">
     <div class="row">
@@ -17,7 +15,8 @@
             {% include 'includes/ng_alerts_incl.html' %}
 
             <form class="form" name="concept_form" ng-submit="concept_form.$valid && addItem(item)" autcomplete="off">
-                {% csrf_token %} {# {% bootstrap_form form %} #}
+                {% csrf_token %}
+                {# {% bootstrap_form form %} #}
 
                 <div class="form-group required">
                     <label class="control-label" for="id_concept_id">Concept ID</label>
