@@ -11,7 +11,7 @@ from django.views.generic import (TemplateView, View)
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.core.paginator import Paginator
-from braces.views import JsonRequestResponseMixin
+from braces.views import (JsonRequestResponseMixin, LoginRequiredMixin)
 
 from libs.ocl import OCLapi, OCLSearch
 from .forms import (SourceCreateForm, SourceEditForm)
