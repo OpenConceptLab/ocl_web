@@ -231,7 +231,7 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Concepts'
         context['source'] = source
-        context['source_version'] = self.source_version
+        context['source_version'] = self.source_version_id
         context['source_versions'] = source_version_searcher.search_results
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
@@ -281,7 +281,7 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Mappings'
         context['source'] = source
-        context['source_version'] = self.source_version
+        context['source_version'] = self.source_version_id
         context['source_versions'] = source_version_searcher.search_results
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
