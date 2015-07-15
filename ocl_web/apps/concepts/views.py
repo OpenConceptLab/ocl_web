@@ -50,12 +50,25 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             'source_id': self.source_id
         })
 
-        # Load the source
+        return data
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the context data for creating a new concept.
+        """
+
+        # Setup the context and args
+        context = super(ConceptNewView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the source that the new concept will belong to
         api = OCLapi(self.request, debug=True)
         source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
-        data['source'] = source
 
-        return data
+        # Set the context
+        context['source'] = source
+
+        return context
 
     def form_valid(self, form, *args, **kwargs):
         """
