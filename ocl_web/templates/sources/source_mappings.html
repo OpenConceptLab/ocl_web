@@ -115,34 +115,36 @@
 				{# external mapping: no link #}
 			{% endif %}
 
-			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
-			<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-link search-result-icon"></span></div>
-			<div class="col-md-10 search-result-col-content">
-				<h4>
-					<!-- from_concept -->
-					<a href="{{ from_concept_url }}" style="text-decoration: none;">
-						<span class="resource-label small concept">
-							<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.from_source_owner }} / {{ result.from_source_name }} / </span><span class="resource-label-id-code">{{ result.from_concept_code }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.from_concept_name }}{% if result.retired %}</s>{% endif %}</span>
-						</span>
-					</a>
+			<div class="row row-search-result"> 
+				<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
+				<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-link search-result-icon"></span></div>
+				<div class="col-md-10 search-result-col-content">
+					<h4>
+						<!-- from_concept -->
+						<a href="{{ from_concept_url }}" style="text-decoration: none;">
+							<span class="resource-label small concept">
+								<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.from_source_owner }} / {{ result.from_source_name }} / </span><span class="resource-label-id-code">{{ result.from_concept_code }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.from_concept_name }}{% if result.retired %}</s>{% endif %}</span>
+							</span>
+						</a>
 
-					<!-- map_type -->
-					<a href="{{ mapping_url }}" style="text-decoration: none;">
-						<span class="resource-label small map-type">
-							<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-link"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span></span><span class="resource-label-name">{{ result.map_type }}{% if result.retired %}</s>{% endif %}</span>
-						</span>
-					</a>
+						<!-- map_type -->
+						<a href="{{ mapping_url }}" style="text-decoration: none;">
+							<span class="resource-label small map-type">
+								<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-link"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span></span><span class="resource-label-name">{{ result.map_type }}{% if result.retired %}</s>{% endif %}</span>
+							</span>
+						</a>
 
-					<!-- to_concept -->
-					{% if to_concept_url %}<a href="{{ to_concept_url }}" style="text-decoration: none;">{% endif %}
-						<span class="resource-label small concept">
-							<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.to_source_owner }} / {{ result.to_source_name }} / </span><span class="resource-label-id-code">{{ result.to_concept_code }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.to_concept_name }}{% if result.retired %}</s>{% endif %}</span>
-						</span>
-					{% if to_concept_url %}</a>{% endif %}
-				</h4>
+						<!-- to_concept -->
+						{% if to_concept_url %}<a href="{{ to_concept_url }}" style="text-decoration: none;">{% endif %}
+							<span class="resource-label small concept">
+								<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.to_source_owner }} / {{ result.to_source_name }} / </span><span class="resource-label-id-code">{{ result.to_concept_code }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.to_concept_name }}{% if result.retired %}</s>{% endif %}</span>
+							</span>
+						{% if to_concept_url %}</a>{% endif %}
+					</h4>
 
-				<p><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span></p>
-				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+					<p><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span></p>
+					{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+				</div>
 			</div>
 		{% endfor %}
 
