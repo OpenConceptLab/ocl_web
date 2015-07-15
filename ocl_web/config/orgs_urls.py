@@ -193,7 +193,7 @@ urlpatterns = patterns(
 
     ## MAPPINGS
 
-    # /orgs/:org/sources/:source/mappings/
+    # /orgs/:org/sources/:source/mappings/:mapping/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         MappingDetailsView.as_view(), name='mapping-details'),
 

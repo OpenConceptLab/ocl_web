@@ -44,8 +44,8 @@
 			<div class="col-md-12">
 				<div class="btn-group pull-right">
 				  	<select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
-				  		{% for o in search_sort_options %}
-				    	<option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
+				  		{% for sort_option in search_sort_options %}
+				    	<option {% if search_sort == o %}selected{% endif %}>{{ sort_option }}</option>
 				    	{% endfor %}
 				  	</select>
 				</div>
@@ -93,6 +93,7 @@
 <!-- Source mappings search results -->
 
         {% for result in results %}
+
 			{# from_concept URL #}
 			{% if result.from_source_owner_type == 'Organization' %}
 				{% url 'concept-detail' org=result.from_source_owner source=result.from_source_name concept=result.from_concept_code as from_concept_url %}
@@ -102,18 +103,18 @@
 
 			{# mapping URL #}
 			{% if result.owner_type == 'Organization' %}
-				{% url 'mapping-detail' org=result.owner source=result.source mapping=result.id as mapping_url %}
+				{% url 'mapping-details' org=result.owner source=result.source mapping=result.id as mapping_url %}
 			{% else %}
-				{% url 'mapping-detail' user=result.owner source=result.source mapping=result.id as mapping_url %}
+				{% url 'mapping-details' user=result.owner source=result.source mapping=result.id as mapping_url %}
 			{% endif %}
 
 	    	{# to_concept URL #}
 			{% if result.to_concept_url %}
 				{# internal mapping: link to concept #}
-				{% if source.owner_type == 'Organization' %}
-					{% url 'concept-detail' org=result.to_concept_owner source=result.to_source_name concept=result.to_concept_code as to_concept_url %}
+				{% if result.to_source_owner_type == 'Organization' %}
+					{% url 'concept-detail' org=result.to_source_owner source=result.to_source_name concept=result.to_concept_code as to_concept_url %}
 				{% else %}
-					{% url 'concept-detail' user=result.to_concept_owner source=result.to_source_name concept=result.to_concept_code as to_concept_url %}
+					{% url 'concept-detail' user=result.to_source_owner source=result.to_source_name concept=result.to_concept_code as to_concept_url %}
 				{% endif %}
 			{% else %}
 				{# external mapping: no link #}

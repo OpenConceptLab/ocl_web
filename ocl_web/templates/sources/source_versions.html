@@ -29,7 +29,7 @@
                 </h4>
                 <p>
                     {% if source_version.description %}<span>{{ source_version.description }}<br /></span>{% endif %}
-                    <span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ source_version.created_on|date:'yyyy-MM-dd HH:mm:ss' }}</span>
+                    <span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ source_version.created_on|smart_datetime }}</span>
                 </p>
             </li>
             {% empty %}
