@@ -62,11 +62,11 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
         """
 
         if self.from_org:
-            return reverse("source-detail",
+            return reverse("source-home",
                            kwargs={"org": self.org_id,
                                    'source': self.kwargs.get('source')})
         else:
-            return reverse("source-detail",
+            return reverse("source-home",
                            kwargs={"user": self.user_id,
                                    'source': self.kwargs.get('source')})
 
@@ -225,11 +225,11 @@ class ConceptCreateView(UserOrOrgMixin, FormView):
 
     def get_success_url(self):
         if self.from_org:
-            return reverse("source-detail",
+            return reverse("source-home",
                            kwargs={"org": self.org_id,
                                    'source': self.kwargs.get('source')})
         else:
-            return reverse("source-detail",
+            return reverse("source-home",
                            kwargs={"user": self.user_id,
                                    'source': self.kwargs.get('source')})
 

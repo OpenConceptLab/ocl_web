@@ -29,6 +29,7 @@ urlpatterns = patterns(
         SourceCreateView.as_view(), name='source-create-for-user'),
 
     # /users/:user/sources/:source/
+    # TODO: This is still the old model -- look at orgs to update to the new model
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/$',
         SourceDetailView.as_view(), name='source-detail'),
 

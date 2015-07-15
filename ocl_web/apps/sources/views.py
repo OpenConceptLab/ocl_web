@@ -511,11 +511,11 @@ class SourceCreateView(UserOrOrgMixin, FormView):
         messages.add_message(self.request, messages.INFO, _('Source created'))
 
         if self.from_org:
-            return HttpResponseRedirect(reverse("source-detail",
+            return HttpResponseRedirect(reverse("source-home",
                                                 kwargs={"org": self.org_id,
                                                         'source': short_code}))
         else:
-            return HttpResponseRedirect(reverse("source-detail",
+            return HttpResponseRedirect(reverse("source-home",
                                                 kwargs={"user": self.user_id,
                                                         'source': short_code}))
 
@@ -609,11 +609,11 @@ class SourceEditView(UserOrOrgMixin, FormView):
         messages.add_message(self.request, messages.INFO, _('Source updated'))
 
         if self.from_org:
-            return HttpResponseRedirect(reverse('source-detail',
+            return HttpResponseRedirect(reverse('source-details',
                                                 kwargs={'org': self.org_id,
                                                         'source': self.source_id}))
         else:
-            return HttpResponseRedirect(reverse('source-detail',
+            return HttpResponseRedirect(reverse('source-details',
                                                 kwargs={'user': self.user_id,
                                                         'source': self.source_id}))
 

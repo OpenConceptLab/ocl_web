@@ -50,7 +50,7 @@
               <small><p class="text-right"><a href="{% url 'source-create-for-user' ocl_user.username %}">Add Source</a></small></p>
             </div>
             {% for source in sources %}
-              <a class="list-group-item" href="{% url 'source-detail' user=source.owner source=source.short_code %}">{{ source.name }}</a>
+              <a class="list-group-item" href="{% url 'source-home' user=source.owner source=source.short_code %}">{{ source.name }}</a>
             {% empty %}
             <span class="list-group-item">No Sources.</span>
             {% endfor %}

@@ -10,10 +10,10 @@
 	</div>
 	<div class="col-md-9">
 		<h4>
-			<a href="{% url 'org-details' org=concept.owner %}" class="label label-warning">
+			<a href="{% url 'org-home' org=concept.owner %}" class="label label-warning">
 				<span class="glyphicon glyphicon-{% if concept.ownerType == 'Organization' %}home{% elif concept.ownerType == 'User' %}user{% endif %}"></span>&nbsp;&nbsp;{{ concept.owner }}</a>
 			/
-			<a href="{% url 'source-detail' org=concept.owner source=concept.source %}" class="label label-success">
+			<a href="{% url 'source-home' org=concept.owner source=concept.source %}" class="label label-success">
 				<span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ concept.source }}</a>
 			/
 			<span class="label label-primary"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ concept.id }}</span>
