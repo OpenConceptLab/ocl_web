@@ -36,23 +36,23 @@ class SourceCreateForm(forms.Form):
     public_access = forms.ChoiceField(
         label=_('Public Access'), required=False, initial='View',
         choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
-    external_id = forms.CharField(
-        label=_('External ID'),
-        required=False,
-        widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
     supported_locales = forms.CharField(
         max_length=30,
         label=_('Supported Locales'),
         required=True,
         widget=forms.TextInput(attrs={'placeholder': "e.g. en,fr,es"}))
     default_locale = forms.ChoiceField(
-        choices=[(d['code'], d['name']) for d in _get_locale_list()],
-        label=_('Locale'),
+        label=_('Default Locale'),
+        choices=[(d['code'], d['name']+' ('+d['code']+')') for d in _get_locale_list()],
         required=True)
     description = forms.CharField(
         max_length=512,
         label=_('Description'),
         required=False)
+    external_id = forms.CharField(
+        label=_('External ID'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
 
     # TODO(paynejd@gmail.com): Is this mis-named or not used?
     def clean_concept_id(self):

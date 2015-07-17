@@ -17,7 +17,7 @@
         <div class="col-lg-12">
             <form class="form" name="concept_form" autcomplete="off">
                 {% csrf_token %}
-                {% bootstrap_form form %}
+                {% bootstrap_form form layout="horizontal" %}
 
                 {% buttons layout="horizontal" %}
                     <button type="submit" class="btn btn-primary">{% trans "Create Concept" %}</button>

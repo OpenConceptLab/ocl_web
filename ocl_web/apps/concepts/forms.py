@@ -34,7 +34,7 @@ class ConceptNewForm(forms.Form):
         label=_('Concept ID'),
         max_length=256,
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': "Concept ID (e.g. A10.1)"}))
+        widget=forms.TextInput(attrs={'placeholder': "e.g. A15.0"}))
 
     # TODO: Populate this dynamically
     concept_class = forms.ChoiceField(
@@ -49,6 +49,8 @@ class ConceptNewForm(forms.Form):
         initial='None',
         required=True)
 
+    # TODO: Put locale, name, and name_type on the same row
+
     # TODO: Populate this dynamically
     locale = forms.ChoiceField(
         label=_('Name Locale'),
@@ -58,13 +60,18 @@ class ConceptNewForm(forms.Form):
     name = forms.CharField(
         label=_('Name'),
         max_length=256,
-        required=True)
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': "e.g. Tuberculosis of lung, confirmed by sputum microscopy with or without culture"}))
 
     # TODO: Populate this dynamically
     name_type = forms.CharField(
         label=_('Name Type'),
         max_length=256,
-        required=True)
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': "e.g. FULLY_SPECIFIED"}))
+
+    # TODO: Put locale, description, and description_type on the same row
+
     description = forms.CharField(
         label=_('Description'),
         max_length=1024,
@@ -73,8 +80,11 @@ class ConceptNewForm(forms.Form):
         label=_('Description Type'),
         max_length=128,
         required=False)
+
+    # TODO: The first name is always the preferred name
     #preferred_locale = forms.BooleanField(
     #    label=_('Preferred Locale'), required=False, initial=False)
+
     external_id = forms.CharField(
         label=_('Concept External ID'),
         required=False,

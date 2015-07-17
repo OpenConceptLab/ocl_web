@@ -15,9 +15,8 @@
     {% csrf_token %}
     {% bootstrap_form form %}
     {% buttons %}
-    <button type="submit" class="btn btn-primary">
-    	{% trans "Create Organization" %}
-  	</button>
+	    <button type="submit" class="btn btn-primary">{% trans "Create Organization" %}</button>
+	    <button type="submit" class="btn btn-warning">{% trans "Cancel" %}</button>
   	{% endbuttons %}
 </form>
 
