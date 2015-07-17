@@ -10,16 +10,16 @@ class OrganizationNewForm(forms.Form):
         required=True,
         help_text='Your new organization will live at: ' +
                   'https://OpenConceptLab.org/orgs/<span id="org-name">[OrganizationName]',
-        widget=forms.TextInput(attrs={'placeholder': "Short Name (e.g. WHO)"}))
+        widget=forms.TextInput(attrs={'placeholder': "e.g. WHO"}))
     full_name = forms.CharField(
         label=_('Organization Full Name'),
         max_length=256,
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': "Full Name (e.g. World Health Organization)"}))
+        widget=forms.TextInput(attrs={'placeholder': "e.g. World Health Organization"}))
     website = forms.URLField(
         label=_('Website'),
         required=False,
-        widget=forms.URLInput(attrs={'placeholder': "Website (e.g. http://www.who.int/)"}))
+        widget=forms.URLInput(attrs={'placeholder': "http://www.who.int/"}))
     company = forms.CharField(
         label=_('Company Name'),
         required=False,
@@ -27,7 +27,7 @@ class OrganizationNewForm(forms.Form):
     location = forms.CharField(
         label=_('Location'),
         required=False,
-        widget=forms.TextInput(attrs={'placeholder': "Location (e.g. Geneva, Switzerland)"}))
+        widget=forms.TextInput(attrs={'placeholder': "e.g. Geneva, Switzerland"}))
 
 
 class OrganizationEditForm(OrganizationNewForm):

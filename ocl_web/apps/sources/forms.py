@@ -21,20 +21,24 @@ class SourceCreateForm(forms.Form):
         max_length=128,
         required=True,
         help_text=_('Your new source will live at: https://OpenConceptLab.org/[:OwnerType]/[:Owner]/sources/<span id="source-name">[:SourceName]</span>'),
-        widget=forms.TextInput(attrs={'placeholder': "Short Name (e.g. ICD-10)"}))
+        widget=forms.TextInput(attrs={'placeholder': "e.g. ICD-10"}))
     full_name = forms.CharField(
         label=_('Source Full Name'),
         max_length=256,
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': "Full Name (e.g. International Classification for Diseases v10)"}))
+        widget=forms.TextInput(attrs={'placeholder': "e.g. International Classification for Diseases v10"}))
     website = forms.URLField(
         label=_('Website'),
         required=False,
-        widget=forms.TextInput(attrs={'placeholder': "Website (e.g. http://apps.who.int/classifications/icd10/)"}))
+        widget=forms.TextInput(attrs={'placeholder': "e.g. http://apps.who.int/classifications/icd10/"}))
     source_type = forms.ChoiceField(
-        choices=[(v, v) for v in _get_source_type_list()], label=_('Source Type'), required=False)
+        choices=[(v, v) for v in _get_source_type_list()],
+        label=_('Source Type'),
+        required=False)
     public_access = forms.ChoiceField(
-        label=_('Public Access'), required=False, initial='View',
+        label=_('Public Access'),
+        required=False,
+        initial='View',
         choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
     supported_locales = forms.CharField(
         max_length=30,
