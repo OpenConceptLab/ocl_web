@@ -17,27 +17,44 @@ class SourceCreateForm(forms.Form):
     required_css_class = 'required'
 
     short_name = forms.CharField(
-        label=_('Source Short Name'), max_length=100, required=True,
-        help_text=_('Short Name (e.g. ICD-10), Your new source will live at: https://OpenConceptLab.org/[OwnerType]/[Owner]/sources/<span id="source-name">[SourceName]</span>'))
+        label=_('Source Short Name'),
+        max_length=128,
+        required=True,
+        help_text=_('Your new source will live at: https://OpenConceptLab.org/[:OwnerType]/[:Owner]/sources/<span id="source-name">[:SourceName]</span>'),
+        widget=forms.TextInput(attrs={'placeholder': "Short Name (e.g. ICD-10)"}))
     full_name = forms.CharField(
-        label=_('Source Full Name'), max_length=300, required=True,
-        help_text=_('Full Name (e.g. International Classification for Diseases v10)'))
+        label=_('Source Full Name'),
+        max_length=256,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': "Full Name (e.g. International Classification for Diseases v10)"}))
     website = forms.URLField(
-        label=_('Website'), required=False,
-        help_text=_('Website (e.g. http://apps.who.int/classifications/icd10)'))
+        label=_('Website'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': "Website (e.g. http://apps.who.int/classifications/icd10/)"}))
     source_type = forms.ChoiceField(
         choices=[(v, v) for v in _get_source_type_list()], label=_('Source Type'), required=False)
     public_access = forms.ChoiceField(
         label=_('Public Access'), required=False, initial='View',
         choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
     external_id = forms.CharField(
-        label=_('External ID'), max_length=48, required=False)
+        label=_('External ID'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
+    supported_locales = forms.CharField(
+        max_length=30,
+        label=_('Supported Locales'),
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': "e.g. en,fr,es"}))
     default_locale = forms.ChoiceField(
-        choices=[(d['code'], d['name']) for d in _get_locale_list()], label=_('Locale'), required=True)
-    supported_locales = forms.CharField(max_length=30, label=_('Supported Locales'), required=True)
+        choices=[(d['code'], d['name']) for d in _get_locale_list()],
+        label=_('Locale'),
+        required=True)
+    description = forms.CharField(
+        max_length=512,
+        label=_('Description'),
+        required=False)
 
-    description = forms.CharField(max_length=80, label=_('Description'), required=False)
-
+    # TODO(paynejd@gmail.com): Is this mis-named or not used?
     def clean_concept_id(self):
         """ concept ID must be unique """
         concept_id = self.cleaned_data['concept_id']

@@ -7,7 +7,7 @@ from django import forms
 from django.forms.formsets import formset_factory
 
 from libs.ocl import OCLapi
-from apps.core.views import _get_locale_list
+from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list)
 
 
 class ConceptRetireForm(forms.Form):
@@ -23,13 +23,59 @@ class ConceptRetireForm(forms.Form):
 
 class ConceptNewForm(forms.Form):
     """
-        Concept new form
+    Concept new form
     """
+    # TODO(paynejd@gmail.com): Populate all dropdowns dynamically
+
     required_css_class = 'required'
+
+    # TODO: Validate concept ID is unique
     concept_id = forms.CharField(
-        label=_('Concept ID'), 
-        max_length=256, 
+        label=_('Concept ID'),
+        max_length=256,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': "Concept ID (e.g. A10.1)"}))
+
+    # TODO: Populate this dynamically
+    concept_class = forms.ChoiceField(
+        choices=[(v, v) for v in _get_concept_class_list()],
+        label=_('Concept Class'),
         required=True)
+
+    # TODO: Populate this dynamically
+    datatype = forms.CharField(
+        choices=[(v, v) for v in _get_datatype_list()],
+        label=_('Datatype'),
+        required=False)
+
+    # TODO: Populate this dynamically
+    locale = forms.ChoiceField(
+        label=_('Name Locale'),
+        required=True,
+        choices=[(d['code'], d['name']) for d in _get_locale_list()])
+
+    name = forms.CharField(label=_('Name'), max_length=256, required=True)
+
+    # TODO: Populate this dynamically
+    name_type = forms.CharField(
+        label=_('Name Type'),
+        max_length=256,
+        required=True)
+    description = forms.CharField(
+        label=_('Description'),
+        max_length=1024,
+        required=False)
+    description_type = forms.CharField(
+        label=_('Description Type'),
+        max_length=128,
+        required=False)
+    #preferred_locale = forms.BooleanField(
+    #    label=_('Preferred Locale'), required=False, initial=False)
+    external_id = forms.CharField(
+        label=_('Concept External ID'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
+
 
 
 class ConceptCreateForm(forms.Form):
