@@ -43,10 +43,11 @@ class ConceptNewForm(forms.Form):
         required=True)
 
     # TODO: Populate this dynamically
-    datatype = forms.CharField(
+    datatype = forms.ChoiceField(
         choices=[(v, v) for v in _get_datatype_list()],
         label=_('Datatype'),
-        required=False)
+        initial='None',
+        required=True)
 
     # TODO: Populate this dynamically
     locale = forms.ChoiceField(
@@ -54,7 +55,10 @@ class ConceptNewForm(forms.Form):
         required=True,
         choices=[(d['code'], d['name']) for d in _get_locale_list()])
 
-    name = forms.CharField(label=_('Name'), max_length=256, required=True)
+    name = forms.CharField(
+        label=_('Name'),
+        max_length=256,
+        required=True)
 
     # TODO: Populate this dynamically
     name_type = forms.CharField(
