@@ -19,11 +19,11 @@ class OrganizationNewForm(forms.Form):
     website = forms.URLField(
         label=_('Website'),
         required=False,
-        widget=forms.URLInput(attrs={'placeholder': "http://www.who.int/"}))
+        widget=forms.URLInput(attrs={'placeholder': "e.g. http://www.who.int/"}))
     company = forms.CharField(
         label=_('Company Name'),
         required=False,
-        widget=forms.TextInput(attrs={'placeholder': "Company Name"}))
+        widget=forms.TextInput(attrs={'placeholder': "e.g. World Health Organization"}))
     location = forms.CharField(
         label=_('Location'),
         required=False,
