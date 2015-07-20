@@ -183,7 +183,7 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
 
         # Process mappings
         # TODO(paynejd@gmail.com): Do necessary processing of mappings here
-        all_mappings = concept['mappings'].copy()
+        all_mappings = list(concept['mappings'])
         mappings = {
             'direct_mappings': [],
             'inverse_mappings': [],
