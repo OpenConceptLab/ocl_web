@@ -28,7 +28,6 @@
 <!-- Search Filters -->
 
 		<div role="form">
-
 			{% for facet in search_facets %}
 			<div class="filter-group">
 				<div class="filter-group-header">{{ facet.search_filter_name }}</div>
@@ -41,8 +40,7 @@
 				</div>
 			</div>
 			{% endfor %}
-
-		</div> <!-- end div:role=form -->
+		</div>
 
 <!-- End left column -->
 
@@ -67,22 +65,28 @@
 	{% endif %}
 
 
-<!-- Search Results Summary and Sorting -->
+<!-- Search Results, Actions, Sorting and Paging -->
 
 		<div class="row" style="margin-bottom:10px;">
 			<div class="col-md-12">
 
 {% if results %}
 
+			<!-- Sorting -->
+
 				<div class="btn-group pull-right">
-					  <select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
+					<select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
 					  	{% for o in search_sort_options %}
 					    <option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
 					    {% endfor %}
-					  </select>
+					</select>
 				</div>
 
+			<!-- Paging -->
+
                 {% simple_pager page search_type_name url=pagination_url %}
+
+			<!-- Actions -->
 
 			{% comment %}
 			<!-- Jon commented until there are actions that we can perform on resources -->
@@ -97,10 +101,12 @@
 			{% endcomment %}
 
 {% else %}
-				<h4>We found 0 {{ search_type_name }}{{ 0|pluralize }}.</h4>
+				<h3><small>We found 0 {{ search_type_name }}{{ 0|pluralize }}.</small></h3>
 {% endif %}
 			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
+
+{# TODO: This form element appears misplaced! #}
 </form>
 
 
@@ -244,16 +250,16 @@
 			<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-home search-result-icon"></span></div>
 			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="{% url 'org-details' org=result.id %}#members" title="Members in organization"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.members }}</a>
+					<a href="{% url 'org-home' org=result.id %}#members" title="Members in organization"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.members }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<!--a href="{% url 'org-details' org=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
+					<!--a href="{% url 'org-home' org=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;-->
-					<a href="{% url 'org-details' org=result.id %}#sources" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources }}</a>
+					<a href="{% url 'org-home' org=result.id %}#sources" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="{% url 'org-details' org=result.id %}#collections" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections }}</a>
+					<a href="{% url 'org-home' org=result.id %}#collections" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections }}</a>
 				</div>
 
-				<h4><a href="{% url 'org-details' org=result.id %}" style="text-decoration: none;">
+				<h4><a href="{% url 'org-home' org=result.id %}" style="text-decoration: none;">
 					<span class="resource-label small organization">
 						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-home"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ result.id }}</span>
 						</span><span class="resource-label-name">{{ result.name }}</span>
