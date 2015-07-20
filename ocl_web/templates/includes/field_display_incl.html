@@ -1,9 +1,9 @@
 {# include tag to display field label and data for detail display #}
 <div class="row">
-    <div class="col-md-3" style="text-align:right;font-weight:bold;color:#999;">
+    <div class="col-md-3 field-label-key">
         {{ field_label }}
     </div>
-    <div class="col-md-9">
+    <div class="col-md-9 field-label-value">
         {% if is_url and url_value and field_value %}
             <a href="{{ url_value }}" target="_blank">{{ field_value }}</a>
         {% else %}

@@ -1,3 +1,12 @@
+.field-label-key {
+  text-align:right;
+  font-weight:300;
+  color:#aaa;
+}
+.field-label-value {
+  
+}
+
 /* line 5, ../sass/project.scss */
 .alert-debug {
   color: black;

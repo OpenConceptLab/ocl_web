@@ -20,7 +20,6 @@
 				{% field_label 'Concept Class' concept.concept_class %}
 				{% field_label 'Datatype' concept.datatype %}
 				{% field_label 'Retired' concept.retired %}
-				<hr />
 				{% field_label 'External ID' concept.external_id %}
 				<hr />
 				{% field_label 'Created by' concept.created_by %}
@@ -30,22 +29,36 @@
             </div>
 
 			<div class="panel-heading"><h3 class="panel-title">Names &amp; Synonyms</h3></div>
-            <div class="panel-body">
-            	{% for name in concept.names %}
-            		{% field_label name.name name %}
-            	{% empty %}
-            		<h3><small>None</small></h3>
-            	{% endfor %}
-            </div>
-
+        	{% for name in concept.names %}
+				<div class="panel-body">
+					{{ name.name }}
+					{% if name.name_type %}<span class="small text-muted">&nbsp;&nbsp;<span class="label label-default">{{ name.name_type}}</span></span>{% endidf %}
+					{% if name.locale %}<span class="small text-muted">&nbsp;&nbsp;<em>[{{ name.locale }}]</em></span>{% endif %}
+	                {% if name.locale_preferred %}<span class="glyphicon glyphicon-flag"></span>{% endif %}
+					<button type="button" class="btn btn-link pull-right"><span class="glyphicon glyphicon-link"></span></button>
+					<button type="button" class="btn btn-link pull-right"><span class="glyphicon glyphicon-pencil"></span></button>
+					<button type="button" class="btn btn-link pull-right"><span class="glyphicon glyphicon-trash"></span></button>
+        			{% if request.GET.debug %}<pre>{{ name }}</pre>{% endif %}
+        		</div>
+        	{% empty %}
+				<div class="panel-body"><h3><small>None</small></h3></div>
+        	{% endfor %}
+    
 			<div class="panel-heading"><h3 class="panel-title">Descriptions</h3></div>
-            <div class="panel-body">
-            	{% for description in concept.descriptions %}
-            		{% field_label description.description description %}
-            	{% empty %}
-            		<h3><small>None</small></h3>
-            	{% endfor %}
-            </div>
+        	{% for description in concept.descriptions %}
+	            <div class="panel-body">
+	            	{{ description.description }}
+					{% if description.description_type %}<span class="small text-muted">&nbsp;&nbsp;<span class="label label-default">{{ description.description_type}}</span></span>{% endidf %}
+					{% if description.locale %}<span class="small text-muted">&nbsp;&nbsp;<em>[{{ description.locale }}]</em></span>{% endif %}
+	                {% if description.locale_preferred %}<span class="glyphicon glyphicon-flag"></span>{% endif %}
+					<button type="button" class="btn btn-link pull-right"><span class="glyphicon glyphicon-link"></span></button>
+					<button type="button" class="btn btn-link pull-right"><span class="glyphicon glyphicon-pencil"></span></button>
+					<button type="button" class="btn btn-link pull-right"><span class="glyphicon glyphicon-trash"></span></button>
+        			{% if request.GET.debug %}<pre>{{ description }}</pre>{% endif %}
+	            </div>
+        	{% empty %}
+        		<h3><small>None</small></h3>
+        	{% endfor %}
 
 			<div class="panel-heading"><h3 class="panel-title">Extras</h3></div>
             <div class="panel-body">
