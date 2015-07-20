@@ -183,9 +183,11 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
 
         # Process mappings
         # TODO(paynejd@gmail.com): Do necessary processing of mappings here
+        if self.
         all_mappings = list(concept['mappings'])
         mappings = {
-            'direct_mappings': [],
+            'direct_internal_mappings': [],
+            'direct_external_mappings': [],
             'inverse_mappings': [],
             'linked_answers': [],
             'linked_questions': [],
@@ -195,7 +197,7 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
         }
         for mapping in concept['mappings']:
             # this concept == from_concept
-            if (self.owner_type == mapping['from_source_owner_type'] and
+            if (self.proper_owner_type == mapping['from_source_owner_type'] and
                     self.owner_id == mapping['from_source_owner'] and
                     self.source_id == mapping['from_source_name'] and
                     self.concept_id == mapping['from_concept_code']):
@@ -203,11 +205,13 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
                     mappings['linked_answers'].append(mapping)
                 elif mapping.map_type == 'CONCEPT-SET':
                     mappings['set_members'].append(mapping)
+                elif mapping.to_concept_url:
+                    mappings['direct_internal_mappings'].append(mapping)
                 else:
-                    mappings['direct_mappings'].append(mapping)
+                    mappings['direct_external_mappings'].append(mapping)
 
             # this concept == to_concept (internal mapping)
-            elif (self.owner_type == mapping['to_source_owner_type'] and
+            elif (self.proper_owner_type == mapping['to_source_owner_type'] and
                     self.owner_id == mapping['to_source_owner'] and
                     self.source_id == mapping['to_source_name'] and
                     self.concept_id == mapping['to_concept_code']):

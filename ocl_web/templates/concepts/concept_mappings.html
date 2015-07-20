@@ -21,7 +21,7 @@
 			<div class="panel-body">
 	        	{% for mapping in mapping_list %}
 	        		<div class="row">
-	        			<div class="col-md-12">
+	        			<div class="col-md-9">
 	        				<pre>{{ mapping|pprint }}</pre>
 			            </div>
 			            <div class="col-md-3" style="text-align:right;">
@@ -32,6 +32,7 @@
 	        			{% if request.GET.debug %}<pre>{{ name|pprint }}</pre>{% endif %}
 	        		</div>
 	        	{% endfor %}
+	        </div>
         	{% empty %}
 				<h3><small>None</small></h3>
         	{% endfor %}

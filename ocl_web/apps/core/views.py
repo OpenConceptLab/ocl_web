@@ -46,6 +46,7 @@ class UserOrOrgMixin(object):
         self.source_version_id = None
         self.concept_id = None
         self.concept_version_id = None
+        self.proper_owner_type = None
 
         # Determine the owner type and set the owner ID
         self.org_id = self.kwargs.get('org')
@@ -54,10 +55,12 @@ class UserOrOrgMixin(object):
             self.from_user = True
             self.owner_type = 'users'
             self.owner_id = self.user_id
+            self.proper_owner_type = 'User'
         else:
             self.from_org = True
             self.owner_type = 'orgs'
             self.owner_id = self.org_id
+            self.proper_owner_type = 'Organization'
 
         # Set the source, concept, and their versions
         self.source_id = self.kwargs.get('source')
