@@ -6,63 +6,33 @@
 
 {% block tab-content %}
 <div class="container" style="margin-top: 20px;">
-<div class="row">
-
-	<div class="col-md-8">
-		<div class="panel panel-default">
-
-			<!-- Direct Mappings -->
-			<!-- Inverse Mappings -->
-			<!-- Q/A : Linked Answers and Linked Questions -->
-			<!-- Concept Sets -->
-
-			{% for mapping_category, mapping_list in mappings.items %}
-			<div class="panel-heading"><h3 class="panel-title">{{ mapping_category }}</h3></div>
-			<div class="panel-body">
-	        	{% for mapping in mapping_list %}
-	        		<div class="row">
-	        			<div class="col-md-9">
-	        				<pre>{{ mapping|pprint }}</pre>
-			            </div>
-			            <div class="col-md-3" style="text-align:right;">
-							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-link"></span></button>
-							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
-							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
-						</div>
-	        			{% if request.GET.debug %}<pre>{{ mapping|pprint }}</pre>{% endif %}
-	        		</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Mappings</h3></div>
+				<div class="panel-body">
+				{% for mapping_category, mapping_list in mappings.items %}
+		        	{% for mapping in mapping_list %}
+		        		<div class="row">
+		        			<div class="col-md-2">{{ mapping_category }}</div>
+		        			<div class="col-md-7">
+		        				<pre>{{ mapping|pprint }}</pre>
+				            </div>
+				            <div class="col-md-3" style="text-align:right;">
+								<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-link"></span></button>
+								<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
+								<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
+							</div>
+		        		</div>
+		        		<div class="row"><div class="col-md-12">{% if request.GET.debug %}<pre>{{ mapping|pprint }}</pre>{% endif %}</div></div>
+		        	{% endfor %}
+	        	{% empty %}
+					<h3><small>None</small></h3>
 	        	{% endfor %}
+	    		</div>
 	        </div>
-        	{% empty %}
-				<h3><small>None</small></h3>
-        	{% endfor %}
-    		</div>
-
-			{% comment %}
-			<div class="panel-heading"><h3 class="panel-title">Mappings</h3></div>
-			<div class="panel-body">
-        	{% for mapping in all_mappings %}
-        		<div class="row">
-        			<div class="col-md-12">
-        				<pre>{{ mapping|pprint }}</pre>
-		            </div>
-		            <div class="col-md-3" style="text-align:right;">
-						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-link"></span></button>
-						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
-						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
-					</div>
-        			{% if request.GET.debug %}<pre>{{ mapping|pprint }}</pre>{% endif %}
-        		</div>
-        	{% empty %}
-				<h3><small>None</small></h3>
-        	{% endfor %}
-    		</div>
-    		{% endcomment %}
-
-        </div>
+		</div>
 	</div>
-
-</div>
 </div>
 {% endblock tab-content %}
 
