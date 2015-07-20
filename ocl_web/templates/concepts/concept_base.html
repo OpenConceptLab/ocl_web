@@ -55,8 +55,7 @@
 {% endif %}
 <div class="container">
     <ul class="nav nav-tabs">
-        <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ concept_details_url }}">Details</a>
-		</li>
+        <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ concept_details_url }}">Details</a></li>
         <li role="presentation" {% if selected_tab == "Mappings" %}class="active"{% endif %}><a href="{{ concept_mappings_url }}">Mappings</a></li>
         <li role="presentation" {% if selected_tab == "History" %}class="active"{% endif %}><a href="{{ concept_history_url }}">History</a></li>
     </ul>

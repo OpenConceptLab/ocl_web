@@ -157,8 +157,8 @@ urlpatterns = patterns(
 
     # New concept: /orgs/:org/sources/:source/create/ - RETIRE
     # TODO(paynejd@gmail.com): Retire this - replaced by above
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/create/$',
-        ConceptCreateJsonView.as_view(), name='concept-create-for-org'),
+    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/create/$',
+    #    ConceptCreateJsonView.as_view(), name='concept-create-for-org'),
 
     # /orgs/:org/sources/:source/concepts/:concept/ - points to concept details
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
@@ -182,15 +182,15 @@ urlpatterns = patterns(
 
     # /orgs/:org/sources/:source/concepts/:concept/:concept-version/details/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/details/$',    # pylint: disable=C0301
-        ConceptDetailsView.as_view(), name='concept-details'),
+        ConceptDetailsView.as_view(), name='concept-version-details'),
 
     # /orgs/:org/sources/:source/concepts/:concept/:concept-version/mappings/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/mappings/$',    # pylint: disable=C0301
-        ConceptMappingsView.as_view(), name='concept-mappings'),
+        ConceptMappingsView.as_view(), name='concept-version-mappings'),
 
     # /orgs/:org/sources/:source/concepts/:concept/:concept-version/history/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/history/$',    # pylint: disable=C0301
-        ConceptHistoryView.as_view(), name='concept-history'),
+        ConceptHistoryView.as_view(), name='concept-version-history'),
 
 
 

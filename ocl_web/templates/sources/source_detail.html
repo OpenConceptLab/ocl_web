@@ -114,11 +114,10 @@
 					{% if_can_change source %}
 					<div class="pull-right">
 						<a class="btn btn-link" 
-
 						{% if source.owner_type == 'Organization' %}
-						href="{% url 'concept-create-for-org' source.owner source.id %}"
+						href="{% url 'concept-new-for-org' source.owner source.id %}"
 						{% else %}
-						href="{% url 'concept-create-for-user' source.owner source.id %}"
+						href="{% url 'concept-new-for-user' source.owner source.id %}"
 						{% endif %}
 						><span class="glyphicon glyphicon-plus"></span>
 						{% trans 'Add Concept' %}</a>
