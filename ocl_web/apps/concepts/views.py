@@ -191,7 +191,7 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
             'linked_answers': [],
             'linked_questions': [],
             'set_members': [],
-            'set_owners': [],
+            'set_parents': [],
             'errata': [],
         }
         for mapping in concept['mappings']:
