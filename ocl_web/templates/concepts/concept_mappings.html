@@ -17,37 +17,37 @@
 		        			<div class="col-md-2">{{ mapping_category }}</div>
 		        			<div class="col-md-7">
 		        				{% if mapping_category == 'linked_answers' %}
-		        					<span class="label label-default small">THIS CONCEPT</span> ::
-		        					<span class="label label-warning small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-cancel small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
+		        					<span class="label label-warning small">THIS CONCEPT</span> ::
+		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
+		        					<span class="label label-primary small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
 		        				{% elif mapping_category == 'set_members' %}
-		        					<span class="label label-default small">THIS CONCEPT</span> ::
-		        					<span class="label label-warning small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-cancel small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
+		        					<span class="label label-warning small">THIS CONCEPT</span> ::
+		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
+		        					<span class="label label-primary small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
 		        				{% elif mapping_category == 'direct_internal_mappings' %}
-		        					<span class="label label-default small">THIS CONCEPT</span> ::
-		        					<span class="label label-warning small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-cancel small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
+		        					<span class="label label-warning small">THIS CONCEPT</span> ::
+		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
+		        					<span class="label label-primary small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
 		        				{% elif mapping_category == 'direct_external_mappings' %}
-		        					<span class="label label-default small">THIS CONCEPT</span> ::
-		        					<span class="label label-warning small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-cancel small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
+		        					<span class="label label-warning small">THIS CONCEPT</span> ::
+		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
+		        					<span class="label label-primary small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
 		        				{% elif mapping_category == 'linked_questions' %}
-		        					<span class="label label-cancel small">{{ mapping.from_concept_url }}</span> ::
-		        					<span class="label label-warning small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-default small">THIS CONCEPT</span>
+		        					<span class="label label-warning small">{{ mapping.from_concept_url }}</span> ::
+		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
+		        					<span class="label label-primary small">THIS CONCEPT</span>
 		        				{% elif mapping_category == 'set_parents' %}
-		        					<span class="label label-cancel small">{{ mapping.from_concept_url }}</span> ::
-		        					<span class="label label-warning small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-default small">THIS CONCEPT</span>
+		        					<span class="label label-warning small">{{ mapping.from_concept_url }}</span> ::
+		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
+		        					<span class="label label-primary small">THIS CONCEPT</span>
 		        				{% elif mapping_category == 'inverse_mappings' %}
-		        					<span class="label label-cancel small">{{ mapping.from_concept_url }}</span> ::
-		        					<span class="label label-warning small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-default small">THIS CONCEPT</span>
+		        					<span class="label label-warning small">{{ mapping.from_concept_url }}</span> ::
+		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
+		        					<span class="label label-primary small">THIS CONCEPT</span>
 		        				{% elif mapping_category == 'errata' %}
-		        					<span class="label label-cancel small">{{ mapping.from_concept_url }}</span> ::
-		        					<span class="label label-warning small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-cancel small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
+		        					<span class="label label-warning small">{{ mapping.from_concept_url }}</span> ::
+		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
+		        					<span class="label label-primary small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
 		        				{% endif %}
 				            </div>
 				            <div class="col-md-3" style="text-align:right;">
@@ -58,7 +58,7 @@
 		        		</div>
 		        		{% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ mapping|pprint }}</pre></div></div>{% endif %}
 		        	{% endfor %}
-		        	<hr />
+		        	{% if mapping_list %}<hr />{% endif %}
 	        	{% empty %}
 					<h3><small>None</small></h3>
 	        	{% endfor %}
