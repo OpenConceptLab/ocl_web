@@ -200,11 +200,11 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
                     self.owner_id == mapping['from_source_owner'] and
                     self.source_id == mapping['from_source_name'] and
                     self.concept_id == mapping['from_concept_code']):
-                if mapping.map_type == 'Q-AND-A':
+                if mapping['map_type'] == 'Q-AND-A':
                     mappings['linked_answers'].append(mapping)
-                elif mapping.map_type == 'CONCEPT-SET':
+                elif mapping['map_type'] == 'CONCEPT-SET':
                     mappings['set_members'].append(mapping)
-                elif mapping.to_concept_url:
+                elif mapping['to_concept_url']:
                     mappings['direct_internal_mappings'].append(mapping)
                 else:
                     mappings['direct_external_mappings'].append(mapping)
@@ -214,9 +214,9 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
                     self.owner_id == mapping['to_source_owner'] and
                     self.source_id == mapping['to_source_name'] and
                     self.concept_id == mapping['to_concept_code']):
-                if mapping.map_type == 'Q-AND-A':
+                if mapping['map_type'] == 'Q-AND-A':
                     mappings['linked_questions'].append(mapping)
-                elif mapping.map_type == 'CONCEPT-SET':
+                elif mapping['map_type'] == 'CONCEPT-SET':
                     mappings['set_parents'].append(mapping)
                 else:
                     mappings['inverse_mappings'].append(mapping)
