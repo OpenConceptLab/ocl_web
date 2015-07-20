@@ -16,9 +16,29 @@
 			<!-- Q/A : Linked Answers and Linked Questions -->
 			<!-- Concept Sets -->
 
+			{% for mapping_category, mapping_list in mappings.items %}
+			<div class="panel-heading"><h3 class="panel-title">{{ mapping_category }}</h3></div>
+			<div class="panel-body">
+        	{% for mapping in mapping_list %}
+        		<div class="row">
+        			<div class="col-md-12">
+        				<pre>{{ mapping|pprint }}</pre>
+		            </div>
+		            <div class="col-md-3" style="text-align:right;">
+						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-link"></span></button>
+						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
+						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
+					</div>
+        			{% if request.GET.debug %}<pre>{{ name|pprint }}</pre>{% endif %}
+        		</div>
+        	{% empty %}
+				<h3><small>None</small></h3>
+        	{% endfor %}
+    		</div>
+
 			<div class="panel-heading"><h3 class="panel-title">Mappings</h3></div>
 			<div class="panel-body">
-        	{% for mapping in mappings %}
+        	{% for mapping in all_mappings %}
         		<div class="row">
         			<div class="col-md-12">
         				<pre>{{ mapping|pprint }}</pre>
