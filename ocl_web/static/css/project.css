@@ -279,19 +279,24 @@ form div.input-group {
 }
 
 
-.org-header
-{
+.org-header {
   background-color:rgb(252,252,252);
   padding-top:20px;
   padding-bottom:20px;
   border-bottom:1px solid #e5e5e5;
   margin-bottom:20px;
 }
-.source-header 
-{
+.source-header {
   background-color:rgb(252,252,252);
   padding-top:20px;
   padding-bottom:0;
+  border-bottom:1px solid #e5e5e5;
+  margin-bottom:20px;
+}
+.concept-header {
+  background-color:rgb(252,252,252);
+  padding-top:20px;
+  padding-bottom:20px;
   border-bottom:1px solid #e5e5e5;
   margin-bottom:20px;
 }

@@ -14,13 +14,25 @@
 
 			<div class="panel-heading"><h3 class="panel-title">Concept Details</h3></div>
             <div class="panel-body">
+				{% field_label 'ID' concept.id %}
+				{% field_label 'Default Display Name' concept.display_name %}
+				{% field_label 'Display Name Locale' concept.display_locale %}
+				{% field_label 'Concept Class' concept.concept_class %}
+				{% field_label 'Datatype' concept.datatype %}
+				{% field_label 'Retired' concept.retired %}
+				<hr />
 				{% field_label 'External ID' concept.external_id %}
+				<hr />
+				{% field_label 'Created by' concept.created_by %}
+				{% field_label 'Created on' concept.created_on|smart_date %}
+				{% field_label 'Updated by' concept.created_by %}
+				{% field_label 'Updated on' concept.created_on|smart_date %}
             </div>
 
 			<div class="panel-heading"><h3 class="panel-title">Names &amp; Synonyms</h3></div>
             <div class="panel-body">
-            	{% for k, v in concept.names.items %}
-            		{% field_label k v %}
+            	{% for name in concept.names %}
+            		{% field_label name.name name %}
             	{% empty %}
             		<h3><small>None</small></h3>
             	{% endfor %}
@@ -28,8 +40,8 @@
 
 			<div class="panel-heading"><h3 class="panel-title">Descriptions</h3></div>
             <div class="panel-body">
-            	{% for k, v in concept.descriptions.items %}
-            		{% field_label k v %}
+            	{% for description in concept.descriptions %}
+            		{% field_label description.description description %}
             	{% empty %}
             		<h3><small>None</small></h3>
             	{% endfor %}
