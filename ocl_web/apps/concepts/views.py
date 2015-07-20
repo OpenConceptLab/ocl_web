@@ -473,14 +473,14 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
 
     def get_success_url(self):
         if self.from_org:
-            return reverse('concept-detail',
-                           kwargs={"org": self.org_id,
+            return reverse('concept-details',
+                           kwargs={'org': self.org_id,
                                    'source': self.source_id,
                                    'concept': self.concept_id})
 
         else:
-            return reverse('concept-detail',
-                           kwargs={"user": self.user_id,
+            return reverse('concept-details',
+                           kwargs={'user': self.user_id,
                                    'source': self.source_id,
                                    'concept': self.concept_id})
 

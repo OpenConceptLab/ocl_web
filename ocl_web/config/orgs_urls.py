@@ -250,6 +250,10 @@ urlpatterns = patterns(
 
     # /orgs/:org/sources/:source/mappings/:mapping/ - ??
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        MappingDetailsView.as_view(), name='mapping-home'),
+
+    # /orgs/:org/sources/:source/mappings/:mapping/ - ??
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         MappingDetailsView.as_view(), name='mapping-details'),
 
     # TODO(paynejd@gmail.com): Below Mapping URLs are not implemented correctly
@@ -286,6 +290,7 @@ urlpatterns = patterns(
 
     # IMPORTANT: we have to move this to the end because the version value - RETIRE
     # can be misinterpreted as /names/ /descriptions/ etc et. Not great URL design
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-        ConceptDetailView.as_view(), name='concept-detail'),
+    # TODO(paynejd@gmail.com): This is blocked by items above -- make sure everything works!
+    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+    #    ConceptDetailView.as_view(), name='concept-details'),
 )

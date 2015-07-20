@@ -119,16 +119,16 @@
 			<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-tag search-result-icon"></span></div>
 			<div class="col-md-10 search-result-col-content">
 				<!--div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
+					<a href="{% url 'concept-home' org=result.owner source=result.source concept=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;?</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}#collections" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;?</a>
+					<a href="{% url 'concept-home' org=result.owner source=result.source concept=result.id %}#collections" title="Collections containing this concept"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;?</a>
 				</div-->
 
 				<h4>
 					{% if result.owner_type == 'Organization' %}
-					    <a href="{% url 'concept-detail' org=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
+					    <a href="{% url 'concept-home' org=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
 					 {% else %}
-					    <a href="{% url 'concept-detail' user=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
+					    <a href="{% url 'concept-home' user=result.owner source=result.source concept=result.id %}" style="text-decoration: none;">
 			    	{% endif %}
 					<span class="resource-label small concept">
 						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span><span class="resource-label-id-code">{{ result.id }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.display_name }}{% if result.retired %}</s>{% endif %}</span>
@@ -157,9 +157,9 @@
 				<h4>
 					<!-- from_concept -->
 					{% if result.from_source_owner_type == 'Organization' %}
-					    <a href="{% url 'concept-detail' org=result.owner source=result.from_source_name concept=result.from_concept_code %}" style="text-decoration: none;">
+					    <a href="{% url 'concept-home' org=result.owner source=result.from_source_name concept=result.from_concept_code %}" style="text-decoration: none;">
 					 {% else %}
-					    <a href="{% url 'concept-detail' org=result.owner source=result.from_source_anme concept=result.from_concept_code %}" style="text-decoration: none;">
+					    <a href="{% url 'concept-home' org=result.owner source=result.from_source_anme concept=result.from_concept_code %}" style="text-decoration: none;">
 			    	{% endif %}
 						<span class="resource-label small concept">
 							<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.from_source_owner }} / {{ result.from_source_name }} / </span><span class="resource-label-id-code">{{ result.from_concept_code }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.from_concept_name }}{% if result.retired %}</s>{% endif %}</span>

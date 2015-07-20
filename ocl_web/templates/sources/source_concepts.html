@@ -100,9 +100,9 @@
         {% for result in results %}
 
 			{% if source.owner_type == 'Organization' %}
-				{% url 'concept-detail' org=result.owner source=result.source concept=result.id as concept_url %}
+				{% url 'concept-home' org=result.owner source=result.source concept=result.id as concept_url %}
 			{% else %}
-				{% url 'concept-detail' user=result.owner source=result.source concept=result.id as concept_url %}
+				{% url 'concept-home' user=result.owner source=result.source concept=result.id as concept_url %}
 			{% endif %}
 
 			<div class="row row-search-result">
