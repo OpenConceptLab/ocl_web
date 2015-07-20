@@ -329,7 +329,6 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
         """
         Validates the form data and submits if valid
         """
-        # TODO(paynejd@gmail.com): Rename this method - it validates and submits form
 
         org_id = form.cleaned_data.pop('short_name')
 
@@ -343,8 +342,7 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
         print data
         result = api.create_org(data)
 
-        # TODO:  Catch exceptions that will be raised by
-        # Ocl lib.
+        # TODO:  Catch exceptions that will be raised by Ocl lib.
         if result.ok:
             messages.add_message(self.request, messages.INFO, _('Organization Added'))
             return redirect(reverse('org-details', kwargs={'org': org_id}))

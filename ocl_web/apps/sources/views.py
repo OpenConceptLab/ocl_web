@@ -124,10 +124,9 @@ class SourceReadBaseView(TemplateView):
             search_response.raise_for_status()
 
         # Process the results
-        # TODO(paynejd@gmail.com): Change has_facets to True after API fixed
         searcher.process_search_results(
             search_type='mappings', search_response=search_response,
-            has_facets=False, search_params=search_params)
+            has_facets=True, search_params=search_params)
 
         return searcher
 

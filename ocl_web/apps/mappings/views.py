@@ -1,5 +1,5 @@
 """
-Views for OCL Sources and Source Versions.
+Views for OCL Mappings.
 """
 #import requests
 import logging
