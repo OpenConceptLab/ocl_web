@@ -1,0 +1,51 @@
+{% extends "concepts/concept_base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+
+{% block tab-content %}
+<div class="container" style="margin-top: 20px;">
+<div class="row">
+
+	<div class="col-md-8">
+		<div class="panel panel-default">
+
+			<!-- Direct Mappings -->
+			<!-- Inverse Mappings -->
+			<!-- Q/A : Linked Answers and Linked Questions -->
+			<!-- Concept Sets -->
+
+			<div class="panel-heading"><h3 class="panel-title">Mappings</h3></div>
+			<div class="panel-body">
+        	{% for mapping in mappings %}
+        		<div class="row">
+        			<div class="col-md-12">
+        				<pre>{{ mapping|pprint }}</pre>
+		            </div>
+		            <div class="col-md-3" style="text-align:right;">
+						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-link"></span></button>
+						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
+						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
+					</div>
+        			{% if request.GET.debug %}<pre>{{ name|pprint }}</pre>{% endif %}
+        		</div>
+        	{% empty %}
+				<h3><small>None</small></h3>
+        	{% endfor %}
+    		</div>
+
+        </div>
+	</div>
+
+</div>
+</div>
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Concept</h4><pre>{{ concept|pprint }}</pre>
+<h4>Source</h4><pre>{{ source|pprint }}</pre>
+<h4>Mappings</h4><pre>{{ mappings|pprint }}</pre>
+{% endblock resource-debug %}

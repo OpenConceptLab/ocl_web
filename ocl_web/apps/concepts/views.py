@@ -182,8 +182,37 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
             source_version_id=self.source_version_id)
 
         # Process mappings
-        mappings = concept['mappings'].copy()
         # TODO(paynejd@gmail.com): Do necessary processing of mappings here
+        mappings = concept['mappings']
+        # mappings = {
+        #     'direct_mappings': [],
+        #     'inverse_mappings': [],
+        #     'linked_answers': [],
+        #     'linked_questions': [],
+        #     'set_members': []
+        # }
+        # for mapping in concept['mappings']:
+        #     # from_concept == this concept
+        #     if (self.owner_type == mapping.from_source_owner_type and
+        #             self.owner_id == mapping.from_source_owner and
+        #             self.source_id == mapping.from_source_name and
+        #             self.concept_id == mapping.from_concept_code):
+        #         if mapping.map_type == 'Q-AND-A':
+        #             mappings['linked_answers'].append(mapping)
+        #         elif mapping.map_type == 'CONCEPT-SET':
+        #             mappings['set_members'].append(mapping)
+        #         else:
+        #             mappings['direct_mappings'].append(mapping)
+        #     elif (self.owner_type == mapping.to_source_owner_type and
+        #             self.owner_id == mapping.to_source_owner and
+        #             self.source_id == mapping.to_source_name and
+        #             self.concept_id == mapping.to_concept_code):
+        #         if mapping.map_type == 'Q-AND-A':
+        #             mappings['linked_questions'].append(mapping)
+        #         elif mapping.map_type == 'CONCEPT-SET':
+        #             mappings['set_members'].append(mapping)
+        #         else:
+        #             mappings['direct_mappings'].append(mapping)
 
         # Set the context
         context['url_params'] = self.request.GET
