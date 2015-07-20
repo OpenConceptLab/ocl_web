@@ -1,0 +1,61 @@
+{% extends "concepts/concept_base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+
+{% block tab-content %}
+<div class="container" style="margin-top: 20px;">
+<div class="row">
+
+	<!-- Concept attributes -->
+	<div class="col-md-8">
+		<div class="panel panel-default">
+
+			<div class="panel-heading"><h3 class="panel-title">Concept Details</h3></div>
+            <div class="panel-body">
+				{% field_label 'External ID' concept.external_id %}
+            </div>
+
+			<div class="panel-heading"><h3 class="panel-title">Names &amp; Synonyms</h3></div>
+            <div class="panel-body">
+            	{% for k, v in concept.names.items %}
+            		{% field_label k v %}
+            	{% empty %}
+            		<h3><small>None</small></h3>
+            	{% endfor %}
+            </div>
+
+			<div class="panel-heading"><h3 class="panel-title">Descriptions</h3></div>
+            <div class="panel-body">
+            	{% for k, v in concept.descriptions.items %}
+            		{% field_label k v %}
+            	{% empty %}
+            		<h3><small>None</small></h3>
+            	{% endfor %}
+            </div>
+
+			<div class="panel-heading"><h3 class="panel-title">Extras</h3></div>
+            <div class="panel-body">
+            	{% if concept.extras and concept.extras.items %}
+            		{% for k, v in concept.extras.items %}
+            			{% field_label k v %}
+            		{% endfor %}
+            	{% else %}
+            		<h3><small>None</small></h3>
+            	{% endif %}
+            </div>
+
+        </div>
+	</div>
+
+</div>
+</div>
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Concept</h4><pre>{{ concept|pprint }}</pre>
+<h4>Source</h4><pre>{{ source|pprint }}</pre>
+{% endblock resource-debug %}

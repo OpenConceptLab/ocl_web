@@ -23,6 +23,7 @@ class OCLapi(object):
         :logging: This class outputs debug level information to the "oclapi" logger.
     """
     # resource types
+    # TODO(paynejd@gmail.com): These are duplicated in OCLSearch class
     USER_TYPE = 0
     ORG_TYPE = 1
     SOURCE_TYPE = 2
@@ -30,6 +31,7 @@ class OCLapi(object):
     COLLECTION_TYPE = 4
     MAPPING_TYPE = 5
     SOURCE_VERSION_TYPE = 6
+    CONCEPT_VERSION_TYPE = 7
 
     logger = logging.getLogger('oclapi')
 

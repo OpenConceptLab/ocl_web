@@ -26,7 +26,7 @@ class SourceReadBaseView(TemplateView):
     Base class for Source Read views.
     """
 
-    def get_source_details(self, owner_type, owner_id, source_id, source_version=None):
+    def get_source_details(self, owner_type, owner_id, source_id, source_version_id=None):
         """
         Load source details from the API and return as dictionary.
         """
@@ -61,13 +61,13 @@ class SourceReadBaseView(TemplateView):
 
         # Process the results
         searcher.process_search_results(
-            search_type='source_versions', search_response=search_response,
+            search_type='source version', search_response=search_response,
             has_facets=False, search_params=search_params)
 
         return searcher
 
     def get_source_concepts(self, owner_type, owner_id, source_id,
-                            source_version=None, search_params=None):
+                            source_version_id=None, search_params=None):
         """
         Load source concepts from the API and return OCLSearch instance with results.
         """
@@ -78,9 +78,9 @@ class SourceReadBaseView(TemplateView):
 
         # Perform the search
         api = OCLapi(self.request, debug=True, facets=True)
-        if source_version:
+        if source_version_id:
             search_response = api.get(
-                owner_type, owner_id, 'sources', source_id, source_version, 'concepts',
+                owner_type, owner_id, 'sources', source_id, source_version_id, 'concepts',
                 params=searcher.search_params)
         else:
             search_response = api.get(
@@ -99,7 +99,7 @@ class SourceReadBaseView(TemplateView):
         return searcher
 
     def get_source_mappings(self, owner_type, owner_id, source_id,
-                            source_version=None, search_params=None):
+                            source_version_id=None, search_params=None):
         """
         Load source mappings from the API and return OCLSearch instance with results.
         """
@@ -110,9 +110,9 @@ class SourceReadBaseView(TemplateView):
 
         # Perform the search
         api = OCLapi(self.request, debug=True, facets=True)
-        if source_version:
+        if source_version_id:
             search_response = api.get(
-                owner_type, owner_id, 'sources', source_id, source_version, 'mappings',
+                owner_type, owner_id, 'sources', source_id, source_version_id, 'mappings',
                 params=searcher.search_params)
         else:
             search_response = api.get(
@@ -179,9 +179,9 @@ class SourceAboutView(UserOrOrgMixin, SourceReadBaseView):
 
         # Set about text
         about = None
-        if 'extras' in source and isinstance(source['extras'], dict) and 'about' in source['extras']:
+        if ('extras' in source and isinstance(source['extras'], dict) and
+                'about' in source['extras']):
             about = source['extras'].get('about')
-        context['about'] = about
 
         # Set the context
         context['url_params'] = self.request.GET
@@ -211,12 +211,12 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         # Load the source details
         source = self.get_source_details(
             self.owner_type, self.owner_id, self.source_id,
-            source_version=self.source_version_id)
+            source_version_id=self.source_version_id)
 
         # Load the concepts in this source, applying search parameters
         searcher = self.get_source_concepts(
             self.owner_type, self.owner_id, self.source_id,
-            source_version=self.source_version_id, search_params=self.request.GET)
+            source_version_id=self.source_version_id, search_params=self.request.GET)
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
@@ -261,12 +261,12 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         # Load the source details
         source = self.get_source_details(
             self.owner_type, self.owner_id, self.source_id,
-            source_version=self.source_version_id)
+            source_version_id=self.source_version_id)
 
         # Load the mappings in this source, applying search parameters
-        searcher = self.get_source_mappings(
+        search_query = self.get_source_mappings(
             self.owner_type, self.owner_id, self.source_id,
-            source_version=self.source_version_id, search_params=self.request.GET)
+            source_version_id=self.source_version_id, search_params=self.request.GET)
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 

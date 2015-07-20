@@ -32,26 +32,27 @@ class OrganizationReadBaseView(TemplateView):
         """
         Get the org details
         """
-        api_org = OCLapi(self.request, debug=True)
-        search_result_org = api_org.get('orgs', org_id)
-        if search_result_org.status_code != 200:
-            if search_result_org.status_code == 404:
+        api = OCLapi(self.request, debug=True)
+        search_result = api.get('orgs', org_id)
+        if search_result.status_code != 200:
+            if search_result.status_code == 404:
                 raise Http404
             else:
-                search_result_org.raise_for_status()
-        return search_result_org.json()
+                search_result.raise_for_status()
+        return search_result.json()
 
     def get_org_members(self, org_id):
         """
         Load members of this org
         """
-        # TODO: Access issue, error if user is not super user??
+        # TODO(paynejd@gmail.com): Access issue, error if user is not super user??
         members = []
-        api_members = OCLapi(self.request, debug=True)
-        members_search_results = api_members.get('orgs', org_id, 'members')
-        if members_search_results.status_code == 200:
-            members = members_search_results.json()
-        elif members_search_results.status_code != 404:
+        api = OCLapi(self.request, debug=True)
+        search_results = api.get('orgs', org_id, 'members')
+        if search_results.status_code == 200:
+            members = search_results.json()
+        elif search_results.status_code != 404:
+            # TODO(paynejd@gmail.com): Confirm whether to pass or raise an exception here
             #raise Exception(r.json())
             pass
         return members

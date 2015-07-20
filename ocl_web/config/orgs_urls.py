@@ -2,7 +2,8 @@
 """
 URL Configuration for "/orgs/..." and all its children.
 
-Regex expression not split across lines -- pyline warnings supressed using "# pylint: disable=C0301"
+Regex expression not split across lines -- pylint warnings for long lines supressed
+with "# pylint: disable=C0301"
 """
 
 from __future__ import unicode_literals
@@ -14,14 +15,21 @@ from apps.orgs.views import (
     OrganizationMemberAddView, OrganizationMemberRemoveView)
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
-    SourceDetailView, SourceCreateView, SourceEditView, SourceVersionView, SourceVersionsView)
+    SourceCreateView, SourceEditView, SourceVersionsView)
 from apps.mappings.views import (MappingDetailsView)
 from apps.concepts.views import (
+    ConceptDetailsView, ConceptMappingsView, ConceptHistoryView,
     ConceptDetailView, ConceptCreateJsonView, ConceptRetireView, ConceptNewView,
     ConceptDescView, ConceptNameView, ConceptVersionListView, ConceptMappingView)
 from apps.core.views import ExtraJsonView
+
+# TODO(paynejd@gmail.com): Collections not implemented yet
 #from apps.collections.views import (
 #    CollectionDetailView, CollectionCreateView, CollectionEditView)
+
+# TODO(paynejd@gmail.com): OLD -- remove after tested
+#from apps.sources.views import (SourceDetailView, SourceVersionView)
+
 
 
 urlpatterns = patterns(
@@ -96,7 +104,7 @@ urlpatterns = patterns(
         SourceConceptsView.as_view(), name='source-concepts'),
 
     # /orgs/:org/sources/:source/:version/concepts/
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/concepts/$',
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/concepts/$',    # pylint: disable=C0301
         SourceConceptsView.as_view(), name='source-version-concepts'),
 
     # /orgs/:org/sources/:source/mappings/
@@ -104,7 +112,7 @@ urlpatterns = patterns(
         SourceMappingsView.as_view(), name='source-mappings'),
 
     # /orgs/:org/sources/:source/:version/mappings/
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/mappings/$',
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/mappings/$',    # pylint: disable=C0301
         SourceMappingsView.as_view(), name='source-version-mappings'),
 
     # /orgs/:org/sources/:source/versions/
@@ -113,7 +121,7 @@ urlpatterns = patterns(
 
 
     # /orgs/:org/sources/:source/versions/ - JSON ONLY - Angular
-    # TODO(paynejd@gmail.com): Overwritten and probably means creating/editing/viewing source versions will fail with angular
+    # TODO(paynejd@gmail.com): Overwritten- old source versions will fail now
     #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/$',
     #    SourceVersionView.as_view(), name='source-version-cl'),
 
@@ -143,105 +151,140 @@ urlpatterns = patterns(
 
     ## CONCEPTS
 
-    # /orgs/:org/sources/:source/create/ - create new concept
-    # TODO(paynejd@gmail.com): Change this to: /orgs/:org/sources/:source/concept/new/
+    # /orgs/:org/sources/:source/concepts/new/ - create new concept
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/new/$',
         ConceptNewView.as_view(), name='concept-new-for-org'),
 
-    # New concept: /orgs/:org/sources/:source/create/
+    # New concept: /orgs/:org/sources/:source/create/ - RETIRE
     # TODO(paynejd@gmail.com): Retire this - replaced by above
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/create/$',
         ConceptCreateJsonView.as_view(), name='concept-create-for-org'),
 
-    # /orgs/:org/sources/:source/concepts/:concept/
+    # /orgs/:org/sources/:source/concepts/:concept/ - points to concept details
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-        ConceptDetailView.as_view(), name='concept-detail'),
+        ConceptDetailsView.as_view(), name='concept-home'),
 
-    # /orgs/:org/sources/:source/concepts/:concept/edit/
+    # /orgs/:org/sources/:source/concepts/:concept/details/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/details/$',    # pylint: disable=C0301
+        ConceptDetailsView.as_view(), name='concept-details'),
+
+    # /orgs/:org/sources/:source/concepts/:concept/mappings/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/mappings/$',    # pylint: disable=C0301
+        ConceptMappingsView.as_view(), name='concept-mappings'),
+
+    # /orgs/:org/sources/:source/concepts/:concept/history/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/history/$',    # pylint: disable=C0301
+        ConceptHistoryView.as_view(), name='concept-history'),
+
+    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/ - points to concept details
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        ConceptDetailsView.as_view(), name='concept-version-home'),
+
+    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/details/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/details/$',    # pylint: disable=C0301
+        ConceptDetailsView.as_view(), name='concept-details'),
+
+    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/mappings/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/mappings/$',    # pylint: disable=C0301
+        ConceptMappingsView.as_view(), name='concept-mappings'),
+
+    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/history/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/history/$',    # pylint: disable=C0301
+        ConceptHistoryView.as_view(), name='concept-history'),
+
+
+
+
+    # /orgs/:org/sources/:source/concepts/:concept/edit/ - MODIFY
+    # TODO(paynejd@gmail.com): This page is going to need to be completely rewritten - point to different view
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
         ConceptCreateJsonView.as_view(), name='concept-edit'),
 
-    # /orgs/:org/sources/:source/concepts/:concept/retire/
+    # /orgs/:org/sources/:source/concepts/:concept/retire/ - UNKNOWN
+    # TODO(paynejd@gmail.com): Confirm that this is actually used
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/retire/$',    # pylint: disable=C0301
         ConceptRetireView.as_view(), name='concept-retire'),
 
-    # /orgs/:org/sources/:source/concepts/:concept/versions/
+    # /orgs/:org/sources/:source/concepts/:concept/versions/ - RETIRE
+    # TODO(paynejd@gmail.com): Retire this - replaced by 'history' tab above
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/versions/$',    # pylint: disable=C0301
         ConceptVersionListView.as_view(), name='concept-version-list'),
 
-    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/versions/
-    # TODO(paynejd@gmail.com): This looks screwy
+    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/versions/ - RETIRE
+    # TODO(paynejd@gmail.com): This looks screwy - I think that this was not actually implemented
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/versions/$',    # pylint: disable=C0301
         ConceptVersionListView.as_view(), name='concept-version-list'),
 
 
+
+
     ## CONCEPT NAMES
 
-    # /orgs/:org/sources/:source/concepts/:concept/names/
+    # /orgs/:org/sources/:source/concepts/:concept/names/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/$',    # pylint: disable=C0301
         ConceptNameView.as_view(), name='concept-name-cl'),
 
-    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/names/
+    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/names/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/names/$',    # pylint: disable=C0301
         ConceptNameView.as_view(), name='concept-name-cl'),
 
-    # /orgs/:org/sources/:source/concepts/:concept/names/:concept-name/
+    # /orgs/:org/sources/:source/concepts/:concept/names/:concept-name/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/(?P<name>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ConceptNameView.as_view(), name='concept-name-ud'),
 
 
     ## CONCEPT DESCRIPTIONS
 
-    # /orgs/:org/sources/:source/concepts/:concept/descriptions/
+    # /orgs/:org/sources/:source/concepts/:concept/descriptions/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/$',    # pylint: disable=C0301
         ConceptDescView.as_view(), name='concept-desc-cl'),
-    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/descriptions/
+    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/descriptions/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/descriptions/$',    # pylint: disable=C0301
         ConceptDescView.as_view(), name='concept-desc-cl'),
-    # /orgs/:org/sources/:source/concepts/:concept/descriptions/:description/
+    # /orgs/:org/sources/:source/concepts/:concept/descriptions/:description/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/(?P<description>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ConceptDescView.as_view(), name='concept-desc-ud'),
 
 
     ## MAPPINGS
 
-    # /orgs/:org/sources/:source/mappings/:mapping/
+    # /orgs/:org/sources/:source/mappings/:mapping/ - ??
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         MappingDetailsView.as_view(), name='mapping-details'),
 
     # TODO(paynejd@gmail.com): Below Mapping URLs are not implemented correctly
 
-    # /orgs/:org/sources/:source/concepts/:concept/mappings/
+    # /orgs/:org/sources/:source/concepts/:concept/mappings/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/mappings/$',    # pylint: disable=C0301
         ConceptMappingView.as_view(), name='concept-mapping-cl'),
 
-    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/mappings/
+    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/mappings/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/mappings/$',    # pylint: disable=C0301
         ConceptMappingView.as_view(), name='concept-mapping-cl'),
 
-    # /orgs/:org/sources/:source/concepts/:concept/mappings/:mapping/
+    # /orgs/:org/sources/:source/concepts/:concept/mappings/:mapping/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ConceptMappingView.as_view(), name='concept-mapping-ud'),
 
-    # /orgs/:org/sources/:source/mappings/:mapping/
+    # /orgs/:org/sources/:source/mappings/:mapping/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ConceptMappingView.as_view(), name='mapping-ud'),
 
 
     ## CONCEPT EXTRAS
 
-    # /orgs/:org/sources/:source/concepts/:concept/extras/
+    # /orgs/:org/sources/:source/concepts/:concept/extras/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/extras/$',    # pylint: disable=C0301
         ExtraJsonView.as_view(), name='concept-extra'),
-    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/extras/
+    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/extras/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/extras/$',    # pylint: disable=C0301
         ExtraJsonView.as_view(), name='concept-extra'),
-    # /orgs/:org/sources/:source/concepts/:concept/extras/:extra/
+    # /orgs/:org/sources/:source/concepts/:concept/extras/:extra/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/extras/(?P<extra>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ExtraJsonView.as_view(), name='concept-extra-add'),
 
 
-    # IMPORTANT: we have to move this to the end because the version value
+    # IMPORTANT: we have to move this to the end because the version value - RETIRE
     # can be misinterpreted as /names/ /descriptions/ etc et. Not great URL design
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ConceptDetailView.as_view(), name='concept-detail'),

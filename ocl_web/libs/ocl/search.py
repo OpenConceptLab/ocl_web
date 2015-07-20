@@ -213,6 +213,7 @@ class OCLSearch(object):
     COLLECTION_TYPE = 4
     MAPPING_TYPE = 5
     SOURCE_VERSION_TYPE = 6
+    CONCEPT_VERSION_TYPE = 7
 
     # Default values
     DEFAULT_NUM_PER_PAGE = 25

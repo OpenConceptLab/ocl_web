@@ -6,21 +6,232 @@ import requests
 import logging
 
 from django.views.generic import TemplateView
-from django.views.generic.edit import View
-from django.views.generic.edit import FormView
-from django.http import HttpResponseRedirect
+from django.views.generic.edit import (View, FormView)
+from django.http import (HttpResponseRedirect, Http404)
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.template.response import TemplateResponse
+from django.core.paginator import Paginator
 
 from braces.views import (LoginRequiredMixin, CsrfExemptMixin, JsonRequestResponseMixin)
 
 from .forms import (ConceptNewForm, ConceptCreateForm, ConceptEditForm, ConceptRetireForm)
-from libs.ocl import OCLapi
+from libs.ocl import OCLapi, OCLSearch
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
+
+
+
+class ConceptReadBaseView(TemplateView):
+    """
+    Base class for Concept Read views.
+    """
+
+    def get_source_details(self, owner_type, owner_id, source_id, source_version_id=None):
+        """
+        Load source details from the API and return as dictionary.
+        """
+        # TODO(paynejd@gmail.com): Load details from source version, if applicable (or remove?)
+        # TODO(paynejd@gmail.com): Validate the input parameters
+        api = OCLapi(self.request, debug=True)
+        search_response = api.get(owner_type, owner_id, 'sources', source_id)
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
+        return search_response.json()
+
+    def get_concept_details(self, owner_type, owner_id, source_id, concept_id,
+                            source_version_id=None, concept_version_id=None,
+                            include_mappings=False, include_inverse_mappings=False):
+        """
+        Get the concept details.
+        """
+
+        # Setup request parameters
+        params = {}
+        if include_mappings:
+            params['includeMappings'] = 'true'
+            params['verbose'] = 'true'
+        if include_inverse_mappings:
+            params['includeInverseMappings'] = 'true'
+            params['verbose'] = 'true'
+
+        # TODO(paynejd@gmail.com): Validate input parameters
+        api = OCLapi(self.request, debug=True)
+        if source_version_id and concept_version_id:
+            raise ValueError(
+                'Must specify only a source version or a concept version. Both were specified.')
+        elif source_version_id:
+            search_response = api.get(
+                owner_type, owner_id, 'sources', source_id, source_version_id,
+                'concepts', concept_id,
+                params=params)
+        elif concept_version_id:
+            search_response = api.get(
+                owner_type, owner_id, 'sources', source_id,
+                'concepts', concept_id, concept_version_id,
+                params=params)
+        else:
+            search_response = api.get(
+                owner_type, owner_id, 'sources', source_id,
+                'concepts', concept_id,
+                params=params)
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
+        return search_response.json()
+
+    def get_concept_history(self, owner_type, owner_id, source_id, concept_id,
+                            source_version_id=None, concept_version_id=None,
+                            search_params=None):
+        """
+        Get the concept version history.
+        """
+        # TODO(paynejd@gmail.com): Validate input parameters
+        # TODO(paynejd@gmail.com): source_version_id and concept_version_id not currently used
+
+        # Create the searcher
+        searcher = OCLSearch(search_type=OCLapi.CONCEPT_VERSION_TYPE, params=search_params)
+
+        # Perform the search
+        api = OCLapi(self.request, debug=True, facets=False)
+        search_response = api.get(
+            owner_type, owner_id, 'sources', source_id,
+            'concepts', concept_id, 'versions')
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
+
+        # Process the results
+        searcher.process_search_results(
+            search_type='concept version', search_response=search_response,
+            has_facets=False, search_params=search_params)
+
+        return searcher
+
+
+
+class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
+    """
+    Concept details view.
+    """
+    template_name = "concepts/concept_details.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the concept details.
+        """
+
+        # Setup the context and args
+        context = super(ConceptDetailsView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the concept details
+        concept = self.get_concept_details(
+            self.owner_type, self.owner_id, self.source_id, self.concept_id,
+            source_version_id=self.source_version_id, concept_version_id=self.concept_version_id)
+
+        # Load the source that contains this concept
+        # TODO(paynejd@gmail.com): This is only loaded because of the funky implementation of the
+        # owner and source label tags --- REMOVE IN THE FUTURE
+        source = self.get_source_details(
+            self.owner_type, self.owner_id, self.source_id,
+            source_version_id=self.source_version_id)
+
+        # Set the context
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'Details'
+        context['concept'] = concept
+        context['source'] = source
+
+        return context
+
+
+
+class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
+    """
+    Concept mappings view.
+    """
+    template_name = "concepts/concept_mappings.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the concept details.
+        """
+
+        # Setup the context and args
+        context = super(ConceptMappingsView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the concept details
+        concept = self.get_concept_details(
+            self.owner_type, self.owner_id, self.source_id, self.concept_id,
+            source_version_id=self.source_version_id, concept_version_id=self.concept_version_id,
+            include_mappings=True, include_inverse_mappings=True)
+
+        # Load the source that contains this concept
+        # TODO(paynejd@gmail.com): This is only loaded because of the funky implementation of the
+        # owner and source label tags --- REMOVE IN THE FUTURE
+        source = self.get_source_details(
+            self.owner_type, self.owner_id, self.source_id,
+            source_version_id=self.source_version_id)
+
+        # Process mappings
+        mappings = concept['mappings'].copy()
+        # TODO(paynejd@gmail.com): Do necessary processing of mappings here
+
+        # Set the context
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'Mappings'
+        context['concept'] = concept
+        context['source'] = source
+        context['mappings'] = mappings
+
+        return context
+
+
+
+class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
+    """
+    Concept history view.
+    """
+    template_name = "concepts/concept_history.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the concept details and its version history.
+        """
+
+        # Setup the context and args
+        context = super(ConceptHistoryView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the concept details
+        concept = self.get_concept_details(
+            self.owner_type, self.owner_id, self.source_id, self.concept_id,
+            source_version_id=self.source_version_id, concept_version_id=self.concept_version_id)
+
+        # Load the concept version history
+        searcher = self.get_concept_history(
+            self.owner_type, self.owner_id, self.source_id, self.concept_id,
+            source_version_id=self.source_version_id, concept_version_id=self.concept_version_id)
+        search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        search_results_current_page = search_results_paginator.page(searcher.current_page)
+
+        # Set the context
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'History'
+        context['concept'] = concept
+        context['concept_versions'] = searcher.search_results
+        context['current_page'] = search_results_current_page
+        context['pagination_url'] = self.request.get_full_path()
+
+        return context
 
 
 
@@ -489,9 +700,6 @@ class ConceptDetailView(UserOrOrgMixin, TemplateView):
         """ Get all input parameters for view.
         """
         self.get_args()
-        # moved to get_args
-        # self.source_id = self.kwargs.get('source')
-        # self.concept_id = self.kwargs.get('concept')
 
         api = OCLapi(self.request, debug=True)
 
@@ -500,20 +708,6 @@ class ConceptDetailView(UserOrOrgMixin, TemplateView):
         self.concept = api.get_json(self.owner_type, self.owner_id, 'sources',
                                     self.source_id, 'concepts', self.concept_id)
         return
-
-        # TODO(paynejd@gmail.com): Unreachable code -- remove?
-        #if self.from_org:
-        #    self.source = api.get_json(
-        #        'orgs', self.org_id, 'sources', self.source_id)
-        #    self.concept = api.get_json(
-        #        'orgs', self.org_id, 'sources', self.source_id,
-        #        'concepts', self.concept_id)
-        #else:
-        #    self.source = api.get(
-        #        'users', self.user_id, 'sources', self.source_id).json()
-        #    self.concept = api.get(
-        #        'users', self.user_id, 'sources', self.source_id,
-        #        'concepts', self.concept_id).json()
 
     def get_context_data(self, *args, **kwargs):
         """ Supply related data for the add form
@@ -814,6 +1008,9 @@ class ConceptMappingView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         return self.render_json_response(result.json())
 
     def post(self, request, *args, **kwargs):
+        """
+        Post a new mapping
+        """
 
         self.get_all_args()
         data = {}
