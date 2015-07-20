@@ -264,7 +264,7 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
             source_version_id=self.source_version_id)
 
         # Load the mappings in this source, applying search parameters
-        search_query = self.get_source_mappings(
+        searcher = self.get_source_mappings(
             self.owner_type, self.owner_id, self.source_id,
             source_version_id=self.source_version_id, search_params=self.request.GET)
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
