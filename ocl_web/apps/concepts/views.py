@@ -183,7 +183,6 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
 
         # Process mappings
         # TODO(paynejd@gmail.com): Do necessary processing of mappings here
-        if self.
         all_mappings = list(concept['mappings'])
         mappings = {
             'direct_internal_mappings': [],

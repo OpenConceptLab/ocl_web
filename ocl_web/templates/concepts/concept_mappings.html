@@ -29,7 +29,7 @@
 							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
 							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
 						</div>
-	        			{% if request.GET.debug %}<pre>{{ name|pprint }}</pre>{% endif %}
+	        			{% if request.GET.debug %}<pre>{{ mapping|pprint }}</pre>{% endif %}
 	        		</div>
 	        	{% endfor %}
 	        </div>
@@ -38,6 +38,7 @@
         	{% endfor %}
     		</div>
 
+			{% comment %}
 			<div class="panel-heading"><h3 class="panel-title">Mappings</h3></div>
 			<div class="panel-body">
         	{% for mapping in all_mappings %}
@@ -50,12 +51,13 @@
 						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
 						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
 					</div>
-        			{% if request.GET.debug %}<pre>{{ name|pprint }}</pre>{% endif %}
+        			{% if request.GET.debug %}<pre>{{ mapping|pprint }}</pre>{% endif %}
         		</div>
         	{% empty %}
 				<h3><small>None</small></h3>
         	{% endfor %}
     		</div>
+    		{% endcomment %}
 
         </div>
 	</div>
