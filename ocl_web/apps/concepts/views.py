@@ -195,10 +195,10 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
         }
         for mapping in concept['mappings']:
             # this concept == from_concept
-            if (self.owner_type == mapping.from_source_owner_type and
-                    self.owner_id == mapping.from_source_owner and
-                    self.source_id == mapping.from_source_name and
-                    self.concept_id == mapping.from_concept_code):
+            if (self.owner_type == mapping['from_source_owner_type'] and
+                    self.owner_id == mapping['from_source_owner'] and
+                    self.source_id == mapping['from_source_name'] and
+                    self.concept_id == mapping['from_concept_code']):
                 if mapping.map_type == 'Q-AND-A':
                     mappings['linked_answers'].append(mapping)
                 elif mapping.map_type == 'CONCEPT-SET':
@@ -207,10 +207,10 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
                     mappings['direct_mappings'].append(mapping)
 
             # this concept == to_concept (internal mapping)
-            elif (self.owner_type == mapping.to_source_owner_type and
-                    self.owner_id == mapping.to_source_owner and
-                    self.source_id == mapping.to_source_name and
-                    self.concept_id == mapping.to_concept_code):
+            elif (self.owner_type == mapping['to_source_owner_type'] and
+                    self.owner_id == mapping['to_source_owner'] and
+                    self.source_id == mapping['to_source_name'] and
+                    self.concept_id == mapping['to_concept_code']):
                 if mapping.map_type == 'Q-AND-A':
                     mappings['linked_questions'].append(mapping)
                 elif mapping.map_type == 'CONCEPT-SET':
