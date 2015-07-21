@@ -4,7 +4,7 @@
 	{% url 'concept-home' user=mapping.to_source_owner source=mapping.to_source_name concept=mapping.to_concept_code as concept_url %}
 {% endif %}
 <a href="{{ concept_url }}" style="text-decoration:none;">
-	<span class="resource-label {% if size=='small' %}small{% elif size=='large' %}large{% endif %} mapping">
+	<span class="resource-label {% if label_size=='small' %}small{% elif label_size=='large' %}large{% endif %} mapping">
 		<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ mapping.to_source_owner }} / {{ mapping.to_source_name }} / </span><span class="resource-label-id-code">{{ mapping.to_concept_code }}</span></span><span class="resource-label-name">{% if mapping.to_concept_name %}{{ mapping.to_concept_name }}{% else %}<span class="text-muted small"><em>No concept name</em></span></span>{% if not mapping.to_concept_url %}&nbsp;&nbsp;&nbsp;<span class="text-muted small">EXTERNAL</span>{% endif %}
 	</span>
 </a>
