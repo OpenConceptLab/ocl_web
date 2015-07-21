@@ -20,26 +20,39 @@
 			<div class="col-md-12">
 				<div class="resource-header-icon"><span class="glyphicon glyphicon-tag"></span></div>
 				<div class="resource-header-label">
+
+					<!-- mapping label -->
 					<h3>
-						{% source_owner_label source %} / {% source_label source %} / {% mapping_label mapping %}
+						{% source_owner_label source %} / {% source_label source %} / {% mapping_label mapping size="large" %}
 						{% if_can_change source %}
 							<a href="{{ mapping_edit_url }}" class="small text-muted" title="Edit Mapping"><span class="glyphicon glyphicon-cog"></span></a>
 						{% endif_can_change source %}
 					</h3>
-					<p>
-						<span {% if mapping.retired %}class="retired"{% endif %}>{{ mapping.display_name }}</span>
-						{% if mapping.display_locale %}&nbsp;&nbsp;<span class="small text-muted"><em>[{{ mapping.display_locale }}]</em></span>{% endif %}&nbsp;&nbsp;<span id="element-info" data-toggle="tooltip" data-placement="right" title="Preferred name in selected language"><span class="glyphicon glyphicon-info-sign"></span></span><br />
-						<span class="text-muted small">
-							<span class="glyphicon glyphicon-calendar"></span> Created on {{ mapping.created_on|smart_date }}
-							&nbsp;&nbsp;
-							<span class="glyphicon glyphicon-calendar"></span> Last updated {{ mapping.updated_on|smart_date}}
-						</span>
+
+					<!-- from_concept label -->
+					<div style="padding: 10px 0 5px 20px;">
+						<div class="small text-muted" style="width:50px;float:left;">From:</div>
+						{% mapping_from_concept_label mapping size='small' %}
+					</div>
+
+					<!-- to_concept label -->
+					<div style="padding: 5px 0 10px 20px;">
+						<div class="small text-muted" style="width:50px;float:left;">To:</div>
+						{% mapping_to_concept_label mapping size='small' %}
+					</div>
+
+					<!-- mapping metadata -->
+					<p class="text-muted small">
+						<span class="glyphicon glyphicon-calendar"></span> Created on {{ mapping.created_on|smart_date }}
+						&nbsp;&nbsp;
+						<span class="glyphicon glyphicon-calendar"></span> Last updated {{ mapping.updated_on|smart_date}}
 					</p>
+
 				</div> <!-- /resource-header-label -->
 			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
 	</div> <!-- /container -->
-</header>
+</header> <!-- /resource-header-mapping -->
 {% endblock resource-header %}
 
 

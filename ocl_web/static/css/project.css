@@ -173,12 +173,12 @@ form div.input-group {
   line-height: 16pt;
 }
 .resource-label.large { 
-  font-size: 16pt;
-  line-height: 26pt;
+  font-size: 18px;
+  line-height: 1;
 }
 .resource-label .resource-label-id {
   display: inline;
-  padding: .2em .6em .3em .6em;
+  padding: .3em .6em .3em .6em;
   color: #666;
   background-color: #eee;
   font-weight: 200;

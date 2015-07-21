@@ -38,17 +38,17 @@ def smart_date(iso8601_dt):
 
 
 @register.inclusion_tag('includes/org_label_incl.html')
-def org_label(org):
-    return {'org': org}
+def org_label(org, size=None):
+    return {'org':org, 'size':size}
 
 
 @register.inclusion_tag('includes/user_label_incl.html')
-def user_label(user):
-    return {'user': user}
+def user_label(user, size=None):
+    return {'user':user, 'size':size}
 
 
 @register.inclusion_tag('includes/source_owner_label_incl.html')
-def source_owner_label(source):
+def source_owner_label(source, size=None):
     """
     Display a label for a source owner, which can be either a
     user or an organization.
@@ -60,25 +60,32 @@ def source_owner_label(source):
     return {
         'from_org': from_org,
         'source': source,
+        'size': size
     }
 
-
 @register.inclusion_tag('includes/source_label_incl.html')
-def source_label(source):
+def source_label(source, size=None):
     """ Source label """
-    return {'source': source}
+    return {'source':source, 'size':size}
 
 
 @register.inclusion_tag('includes/concept_label_incl.html')
-def concept_label(concept):
+def concept_label(concept, size=None):
     """ Concept label """
-    return {'concept': concept}
+    return {'concept':concept, 'size':size}
 
 
 @register.inclusion_tag('includes/mapping_label_incl.html')
-def mapping_label(mapping):
-    return {'mapping': mapping}
+def mapping_label(mapping, size=None):
+    return {'mapping':mapping, 'size':size}
 
+@register.inclusion_tag('includes/mapping_from_concept_label_incl.html')
+def mapping_from_concept_label(mapping, size=None):
+    return {'mapping':mapping, 'size':size}
+
+@register.inclusion_tag('includes/mapping_to_concept_label_incl.html')
+def mapping_to_concept_label(mapping, size=None):
+    return {'mapping':mapping, 'size':size}
 
 @register.inclusion_tag('includes/field_display_incl.html')
 def field_label(label, value, url=False, truncate=True, vertical=False, small=False):
