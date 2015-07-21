@@ -73,6 +73,25 @@ urlpatterns = patterns(
         ConceptVersionListView.as_view(), name='concept-version-list'),
 
 
+    ## MAPPINGS
+
+    # /orgs/:org/sources/:source/mappings/new/ - create new mapping
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/new/$',    # pylint: disable=C0301
+        MappingNewView.as_view(), name='mapping-new'),
+
+    # /orgs/:org/sources/:source/mappings/:mapping/ - mapping home points to details
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        MappingDetailsView.as_view(), name='mapping-home'),
+
+    # /orgs/:org/sources/:source/mappings/:mapping/details/ - mapping details
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/details/$',    # pylint: disable=C0301
+        MappingDetailsView.as_view(), name='mapping-details'),
+
+    # /orgs/:org/sources/:source/mappings/:mapping/edit/ - edit mapping
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
+        MappingEditView.as_view(), name='mapping-edit'),
+
+
     ## CONCEPT NAMES
 
     # /users/:user/sources/:source/concepts/:concept/names/

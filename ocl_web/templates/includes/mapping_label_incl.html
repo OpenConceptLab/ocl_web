@@ -1,4 +1,4 @@
-{% if concept.owner_type == 'Organization' %}
+{% if mapping.owner_type == 'Organization' %}
 <a href="{% url 'mapping-home' org=mapping.owner source=mapping.source mapping=mapping.id %}" class="label label-primary {% if mapping.retired %}label-retired{% endif %}">
 {% else %}
 <a href="{% url 'mapping-home' user=mapping.owner source=mapping.source mapping=mapping.id %}" class="label label-primary {% if mapping.retired %}label-retired{% endif %}">
