@@ -266,8 +266,8 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
         searcher = self.get_concept_history(
             self.owner_type, self.owner_id, self.source_id, self.concept_id,
             source_version_id=self.source_version_id, concept_version_id=self.concept_version_id)
-        search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
-        search_results_current_page = search_results_paginator.page(searcher.current_page)
+        #search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        #search_results_current_page = search_results_paginator.page(searcher.current_page)
 
         # Set the context
         context['url_params'] = self.request.GET
@@ -275,8 +275,8 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
         context['concept'] = concept
         context['source'] = source
         context['concept_versions'] = searcher.search_results
-        context['current_page'] = search_results_current_page
-        context['pagination_url'] = self.request.get_full_path()
+        #context['current_page'] = search_results_current_page
+        #context['pagination_url'] = self.request.get_full_path()
 
         return context
 
