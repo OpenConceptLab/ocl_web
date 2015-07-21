@@ -14,12 +14,11 @@
 				<div class="panel-heading"><h3 class="panel-title">Mapping Details</h3></div>
 				<div class="panel-body">
 					{% field_label 'ID' mapping.id %}
-					{% field_label 'Default Display Name' mapping.display_name %}
-					{% field_label 'Display Name Locale' mapping.display_locale vertical="true" small="true" %}
-					{% field_label 'Concept Class' mapping.concept_class vertical="true" small="true" %}
-					{% field_label 'Datatype' mapping.datatype vertical="true" small="true" %}
-					{% field_label 'Retired' mapping.retired vertical="true" small="true" %}
-					{% if mapping.external_id %}<hr />{% field_label 'External ID' mapping.external_id %}{% endif %}
+					{% field_label 'Retired' mapping.retired %}
+					{% if mapping.external_id %}
+						<hr />
+						{% field_label 'External ID' mapping.external_id %}
+					{% endif %}
 					<hr />
 					{% field_label 'Updated by' mapping.updated_by %}
 					{% field_label 'Updated on' mapping.updated_at|smart_datetime %}
