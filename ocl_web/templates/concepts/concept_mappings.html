@@ -14,7 +14,7 @@
 				{% for mapping_category, mapping_list in mappings.items %}
 					{% for mapping in mapping_list %}
 						<div class="row">
-							<div class="col-md-2"><span class="text-muted small">{{ mapping_category }}</span></div>
+							<div class="col-md-2">{% if forloop.counter == 1 %}<span class="text-muted small">{{ mapping_category }}</span>{% endif %}</div>
 							<div class="col-md-8">
 
 								<!-- from_concept -->
@@ -55,7 +55,7 @@
 						</div>
 						{% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ mapping|pprint }}</pre></div></div>{% endif %}
 					{% endfor %}
-					{% if mapping_list %}<hr />{% endif %}
+					{% if not forloop.last %}<hr />{% endif %}
 				{% empty %}
 					<h3><small>None</small></h3>
 				{% endfor %}

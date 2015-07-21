@@ -34,7 +34,7 @@
 						</div>
 					</div>
 					{% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ concept_version|pprint }}</pre></div></div>{% endif %}
-					<hr />
+					{% if not forloop.last %}<hr />{% endif %}
 				{% empty %}
 					<h3><small>None</small></h3>
 				{% endfor %}
