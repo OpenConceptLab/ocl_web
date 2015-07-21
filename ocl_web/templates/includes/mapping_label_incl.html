@@ -3,8 +3,8 @@
 {% else %}
 	{% url 'mapping-home' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_url %}
 {% endif %}
-<a href="{{ mapping_url }}" class="label label-primary {% if mapping.retired %}label-retired{% endif %}">
-	<span class="resource-label {% if label_size == 'small' %}small{% elif label_size == 'large' %}large{% endif %} mapping">
-		<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-link"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ mapping.id }}</span></span><span class="resource-label-name {% if mapping.retired %}retired{% endif %}">{{ mapping.map_type }}</span>
+<a href="{{ mapping_url }}" style="text-decoration:none;">
+	<span class="resource-label {% if label_size == 'small' %}small{% elif label_size == 'large' %}large{% endif %} mapping {% if mapping.retired %}label-retired{% endif %}">
+		<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-link"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ mapping.id }}</span></span><span class="resource-label-name">{{ mapping.map_type }}</span>
 	</span>
 </a>
