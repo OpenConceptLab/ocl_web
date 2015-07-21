@@ -1,0 +1,62 @@
+{% extends "concepts/concept_base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+
+{% block tab-content %}
+<div class="container" style="margin-top: 20px;">
+	<div class="row">
+		<div class="col-md-8">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Concept Version History</h3></div>
+				<div class="panel-body">
+
+				{% for concept_version in concept_versions %}
+					{% if concept.owner_type == 'Organization' %}
+						{% url 'concept-version-details' org=concept.owner source=concept.source concept=concept.id concept_version=concept_version.version as concept_version_url %}
+					{% else %}
+						{% url 'concept-version-details' user=concept.owner source=concept.source concept=concept.id concept_version=concept_version.version as concept_version_url %}
+					{% endif %}
+
+					<div class="row">
+						<div class="col-md-9">
+							{% if concept_version.update_comment %}{{ concept_version.update_comment }}{% else %}<span class="text-muted small"><em>No update comment</em></span>{% endif %}<br />
+							<span class="text-muted small">
+								<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Updated by {{ concept_version.version_created_by }}
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Updated on {{ concept_version.version_created_on|smart_datetime }}
+							</span>
+						</div>
+						<div class="col-md-3" style="text-align:right;">
+							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-link"></span></button>
+							<a href="{{ concept_version_url }}"><span class="glyphicon glyphicon-search"></span></a>
+						</div>
+					</div>
+					{% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ concept_version|pprint }}</pre></div></div>{% endif %}
+				{% empty %}
+					<h3><small>None</small></h3>
+				{% endfor %}
+
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+				<div class="panel-body">
+					All changes to concepts are automatically saved here in the <strong>Concept Version History</strong>.
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Concept</h4><pre>{{ concept|pprint }}</pre>
+<h4>Source</h4><pre>{{ source|pprint }}</pre>
+<h4>Concept Version History</h4><pre>{{ concept_versions|pprint }}</pre>
+{% endblock resource-debug %}

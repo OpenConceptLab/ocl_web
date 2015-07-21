@@ -45,7 +45,7 @@ class ConceptReadBaseView(TemplateView):
 
     def get_concept_details(self, owner_type, owner_id, source_id, concept_id,
                             source_version_id=None, concept_version_id=None,
-                            include_mappings=False, include_inverse_mappings=False):
+                            include_mappings=False, include_Inverse Mapping=False):
         """
         Get the concept details.
         """
@@ -55,7 +55,7 @@ class ConceptReadBaseView(TemplateView):
         if include_mappings:
             params['includeMappings'] = 'true'
             params['verbose'] = 'true'
-        if include_inverse_mappings:
+        if include_Inverse Mapping:
             params['includeInverseMappings'] = 'true'
             params['verbose'] = 'true'
 
@@ -172,7 +172,7 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
         concept = self.get_concept_details(
             self.owner_type, self.owner_id, self.source_id, self.concept_id,
             source_version_id=self.source_version_id, concept_version_id=self.concept_version_id,
-            include_mappings=True, include_inverse_mappings=True)
+            include_mappings=True, include_Inverse Mapping=True)
 
         # Load the source that contains this concept
         # TODO(paynejd@gmail.com): This is only loaded because of the funky implementation of the
@@ -183,16 +183,15 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
 
         # Process mappings
         # TODO(paynejd@gmail.com): Do necessary processing of mappings here
-        all_mappings = list(concept['mappings'])
         mappings = {
-            'direct_internal_mappings': [],
-            'direct_external_mappings': [],
-            'inverse_mappings': [],
-            'linked_answers': [],
-            'linked_questions': [],
-            'set_members': [],
-            'set_parents': [],
-            'errata': [],
+            'Direct Internal Mapping': [],
+            'Direct External Mapping': [],
+            'Inverse Mapping': [],
+            'Linked Answer': [],
+            'Linked Question': [],
+            'Set Member': [],
+            'Set Parent': [],
+            'Other': [],
         }
         for mapping in concept['mappings']:
             # this concept == from_concept
@@ -201,13 +200,13 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
                     self.source_id == mapping['from_source_name'] and
                     self.concept_id == mapping['from_concept_code']):
                 if mapping['map_type'] == 'Q-AND-A':
-                    mappings['linked_answers'].append(mapping)
+                    mappings['Linked Answer'].append(mapping)
                 elif mapping['map_type'] == 'CONCEPT-SET':
-                    mappings['set_members'].append(mapping)
+                    mappings['Set Member'].append(mapping)
                 elif mapping['to_concept_url']:
-                    mappings['direct_internal_mappings'].append(mapping)
+                    mappings['Direct Internal Mapping'].append(mapping)
                 else:
-                    mappings['direct_external_mappings'].append(mapping)
+                    mappings['Direct External Mapping'].append(mapping)
 
             # this concept == to_concept (internal mapping)
             elif (self.proper_owner_type == mapping['to_source_owner_type'] and
@@ -215,22 +214,21 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
                     self.source_id == mapping['to_source_name'] and
                     self.concept_id == mapping['to_concept_code']):
                 if mapping['map_type'] == 'Q-AND-A':
-                    mappings['linked_questions'].append(mapping)
+                    mappings['Linked Question'].append(mapping)
                 elif mapping['map_type'] == 'CONCEPT-SET':
-                    mappings['set_parents'].append(mapping)
+                    mappings['Set Parent'].append(mapping)
                 else:
-                    mappings['inverse_mappings'].append(mapping)
+                    mappings['Inverse Mapping'].append(mapping)
 
-            # this concept != from_concept or to_concept!
+            # this concept != from_concept or to_concept! something's wrong
             else:
-                mappings['errata'].append(mapping)
+                mappings['Other'].append(mapping)
 
         # Set the context
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Mappings'
         context['concept'] = concept
         context['source'] = source
-        context['all_mappings'] = all_mappings
         context['mappings'] = mappings
 
         return context
@@ -257,6 +255,13 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
             self.owner_type, self.owner_id, self.source_id, self.concept_id,
             source_version_id=self.source_version_id, concept_version_id=self.concept_version_id)
 
+        # Load the source that contains this concept
+        # TODO(paynejd@gmail.com): This is only loaded because of the funky implementation of the
+        # owner and source label tags --- REMOVE IN THE FUTURE
+        source = self.get_source_details(
+            self.owner_type, self.owner_id, self.source_id,
+            source_version_id=self.source_version_id)
+
         # Load the concept version history
         searcher = self.get_concept_history(
             self.owner_type, self.owner_id, self.source_id, self.concept_id,
@@ -268,6 +273,7 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'History'
         context['concept'] = concept
+        context['source'] = source
         context['concept_versions'] = searcher.search_results
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
