@@ -6,86 +6,99 @@
 
 {% block tab-content %}
 <div class="container" style="margin-top: 20px;">
-<div class="row">
+	<div class="row">
 
-	<!-- Concept attributes -->
-	<div class="col-md-8">
-		<div class="panel panel-default">
+		<!-- Tip -->
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+				<div class="panel-body">
+					{% field_label 'ID' concept.id vertical=true %}
+					{% field_label 'Default Display Name' concept.display_name vertical=true %}
+					{% field_label 'Display Name Locale' concept.display_locale vertical=true %}
+					{% field_label 'Concept Class' concept.concept_class vertical=true %}
+					{% field_label 'Datatype' concept.datatype vertical=true %}
+					{% field_label 'Retired' concept.retired vertical=true %}
+					{% field_label 'External ID' concept.external_id vertical=true %}
+					<hr />
+					{% field_label 'Updated by' concept.version_created_by vertical=true %}
+					{% field_label 'Updated on' concept.version_created_on|smart_datetime vertical=true %}
+					{% field_label 'Created on' concept.created_on|smart_datetime vertical=true %}
+				</div>
+			</div>
+		</div>
 
-			<div class="panel-heading"><h3 class="panel-title">Concept Details</h3></div>
-            <div class="panel-body">
-				{% field_label 'ID' concept.id %}
-				{% field_label 'Default Display Name' concept.display_name %}
-				{% field_label 'Display Name Locale' concept.display_locale %}
-				{% field_label 'Concept Class' concept.concept_class %}
-				{% field_label 'Datatype' concept.datatype %}
-				{% field_label 'Retired' concept.retired %}
-				{% field_label 'External ID' concept.external_id %}
-				<hr />
-				{% field_label 'Updated by' concept.version_created_by %}
-				{% field_label 'Updated on' concept.version_created_on|smart_datetime %}
-				{% field_label 'Created on' concept.created_on|smart_datetime %}
-            </div>
 
-			<div class="panel-heading"><h3 class="panel-title">Names &amp; Synonyms</h3></div>
-			<div class="panel-body">
-        	{% for name in concept.names %}
-        		<div class="row">
-        			<div class="col-md-9">
-						{{ name.name }}
-						{% if name.name_type %}<span class="small text-muted">&nbsp;&nbsp;<span class="label label-default">{{ name.name_type}}</span></span>{% endif %}
-						{% if name.locale %}<span class="small text-muted">&nbsp;&nbsp;<em>[{{ name.locale }}]</em></span>{% endif %}
-		                {% if name.locale_preferred %}<span class="glyphicon glyphicon-flag"></span>{% endif %}
-		            </div>
-		            <div class="col-md-3" style="text-align:right;">
-						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-link"></span></button>
-						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
-						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
+		<!-- Concept attributes -->
+		<div class="col-md-8">
+			<div class="panel panel-default">
+
+				<!-- Concept names -->
+				<div class="panel-heading"><h3 class="panel-title">Names &amp; Synonyms</h3></div>
+				<div class="panel-body">
+				{% for name in concept.names %}
+					<div class="row">
+						<div class="col-md-9">
+							{{ name.name }}
+							{% if name.name_type %}<span class="small text-muted">&nbsp;&nbsp;<span class="label label-default">{{ name.name_type}}</span></span>{% endif %}
+							{% if name.locale %}<span class="small text-muted">&nbsp;&nbsp;<em>[{{ name.locale }}]</em></span>{% endif %}
+							{% if name.locale_preferred %}<span class="glyphicon glyphicon-flag"></span>{% endif %}
+						</div>
+						<div class="col-md-3" style="text-align:right;">
+							<button type="button" class="btn btn-link" title="Permalink"><span class="glyphicon glyphicon-link"></span></button>
+							{% comment Disabling until page is editable %}
+							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
+							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
+							{% endcomment %}
+						</div>
+						{% if request.GET.debug %}<pre>{{ name }}</pre>{% endif %}
 					</div>
-        			{% if request.GET.debug %}<pre>{{ name }}</pre>{% endif %}
-        		</div>
-        	{% empty %}
-				<h3><small>None</small></h3>
-        	{% endfor %}
-    		</div>
-    
-			<div class="panel-heading"><h3 class="panel-title">Descriptions</h3></div>
-            <div class="panel-body">
-        	{% for description in concept.descriptions %}
-        		<div class="row">
-        			<div class="col-md-9">
-		            	{{ description.description }}
-						{% if description.description_type %}<span class="small text-muted">&nbsp;&nbsp;<span class="label label-default">{{ description.description_type}}</span></span>{% endif %}
-						{% if description.locale %}<span class="small text-muted">&nbsp;&nbsp;<em>[{{ description.locale }}]</em></span>{% endif %}
-		                {% if description.locale_preferred %}<span class="glyphicon glyphicon-flag"></span>{% endif %}
-		            </div>
-		            <div class="col-md-3" style="text-align:right;">
-						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-link"></span></button>
-						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
-						<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
+				{% empty %}
+					<h3><small>None</small></h3>
+				{% endfor %}
+				</div>
+		
+				<!-- Concept descriptions -->
+				<div class="panel-heading"><h3 class="panel-title">Descriptions</h3></div>
+				<div class="panel-body">
+				{% for description in concept.descriptions %}
+					<div class="row">
+						<div class="col-md-9">
+							{{ description.description }}
+							{% if description.description_type %}<span class="small text-muted">&nbsp;&nbsp;<span class="label label-default">{{ description.description_type}}</span></span>{% endif %}
+							{% if description.locale %}<span class="small text-muted">&nbsp;&nbsp;<em>[{{ description.locale }}]</em></span>{% endif %}
+							{% if description.locale_preferred %}<span class="glyphicon glyphicon-flag"></span>{% endif %}
+						</div>
+						<div class="col-md-3" style="text-align:right;">
+							<button type="button" class="btn btn-link" title="Permalink"><span class="glyphicon glyphicon-link"></span></button>
+							{% comment Disabling until page is editable %}
+							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
+							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
+							{% endcomment %}
+						</div>
+						{% if request.GET.debug %}<pre>{{ description }}</pre>{% endif %}
 					</div>
-        			{% if request.GET.debug %}<pre>{{ description }}</pre>{% endif %}
-        		</div>
-        	{% empty %}
-        		<h3><small>None</small></h3>
-        	{% endfor %}
-            </div>
+				{% empty %}
+					<h3><small>None</small></h3>
+				{% endfor %}
+				</div>
 
-			<div class="panel-heading"><h3 class="panel-title">Extras</h3></div>
-            <div class="panel-body">
-            	{% if concept.extras and concept.extras.items %}
-            		{% for k, v in concept.extras.items %}
-            			{% field_label k v %}
-            		{% endfor %}
-            	{% else %}
-            		<h3><small>None</small></h3>
-            	{% endif %}
-            </div>
+				<!-- Concept Extras -->
+				<div class="panel-heading"><h3 class="panel-title">Extras</h3></div>
+				<div class="panel-body">
+					{% if concept.extras and concept.extras.items %}
+						{% for k, v in concept.extras.items %}
+							{% field_label k v %}
+						{% endfor %}
+					{% else %}
+						<h3><small>None</small></h3>
+					{% endif %}
+				</div>
 
-        </div>
+			</div>
+		</div>
+
 	</div>
-
-</div>
 </div>
 {% endblock tab-content %}
 

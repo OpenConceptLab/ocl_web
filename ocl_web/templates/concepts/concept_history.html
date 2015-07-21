@@ -29,11 +29,12 @@
 							</span>
 						</div>
 						<div class="col-md-3" style="text-align:right;">
-							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-link"></span></button>
+							<button type="button" class="btn btn-link" title="Permalink"><span class="glyphicon glyphicon-link"></span></button>
 							<a href="{{ concept_version_url }}"><span class="glyphicon glyphicon-search"></span></a>
 						</div>
 					</div>
 					{% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ concept_version|pprint }}</pre></div></div>{% endif %}
+					<hr />
 				{% empty %}
 					<h3><small>None</small></h3>
 				{% endfor %}

@@ -77,15 +77,19 @@ def concept_label(concept):
 
 
 @register.inclusion_tag('includes/field_display_incl.html')
-def field_label(label, value, url=False, truncate=True):
+def field_label(label, value, url=False, truncate=True, vertical=False):
     """
         Display a simple read only field value to user, like:
 
         field label text: field value
 
         See the include template for details.
+        :param url: If true, displays as an anchor tag
+        :param truncate: If true (default), display text is truncated
+        :param vertical: Default is a horizontal display using bootstrap grid divs. 
+            Set vertical to true to display in a vertical layout instead.
     """
-    TRUNCATE_LENGTH = 97
+    TRUNCATE_LENGTH = 97      # 100 minus 3 for the ellipses
     url_string = ''
     if url:
         url_string = value

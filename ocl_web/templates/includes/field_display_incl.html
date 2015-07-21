@@ -1,4 +1,16 @@
 {# include tag to display field label and data for detail display #}
+{% if vertical %}
+<div>
+    <label class="field-label-key">{{ field_label }}</label><br />
+    <span class="field-label-value">
+    {% if is_url and url_value and field_value %}
+        <a href="{{ url_value }}" target="_blank">{{ field_value }}</a>
+    {% else %}
+        {{ field_value|default:"" }}
+    {% endif %}
+    </span>
+</div>
+{% else %}
 <div class="row">
     <div class="col-md-3 field-label-key">
         {{ field_label }}
@@ -11,3 +23,4 @@
         {% endif %}
     </div>
 </div>
+{% endif %}

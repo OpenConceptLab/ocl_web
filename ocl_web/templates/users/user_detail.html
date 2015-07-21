@@ -7,88 +7,84 @@
 
 {% block content %}
 <div class="container">
-  <div class="row">
+	<div class="row">
 
-    <!-- User details -->
-    <div class="col-sm-3">
-      <div>{% avatar object size=200 %}</div>
-      <h2>{{ ocl_user.name }}<br /><small>{{ object.username }}</small></h2>
-      <hr />
-      <div><strong>Company:</strong> {{ ocl_user.company|default:"N/A" }}</div>
-      <div><strong>Location:</strong> {{ ocl_user.location|default:"N/A"  }}</div>
-      {% if ocl_user.website %}
-      <div><strong>Website:</strong> {{ ocl_user.website }}</div>
-      {% endif %}
-      <div><strong>Email:</strong> {{ ocl_user.email }}</div>
-      <div><strong>Joined:</strong> {{ ocl_user.created_on|smart_date }}</div>
-{% if api_token %}
-      <hr /><div><strong>API Token:</strong> <span class="small">{{ api_token }}</span></div>
-{% endif %}
-    </div>
+		<!-- User details -->
+		<div class="col-sm-3">
+			<div>{% avatar object size=200 %}</div>
+			<h2>{{ ocl_user.name }}<br /><small>{{ object.username }}</small></h2>
+			<hr />
+			<div><strong>Company:</strong> {{ ocl_user.company|default:"N/A" }}</div>
+			<div><strong>Location:</strong> {{ ocl_user.location|default:"N/A"  }}</div>
+			{% if ocl_user.website %}<div><strong>Website:</strong> {{ ocl_user.website }}</div>{% endif %}
+			<div><strong>Email:</strong> {{ ocl_user.email }}</div>
+			<div><strong>Joined:</strong> {{ ocl_user.created_on|smart_date }}</div>
+			{% if api_token %}<hr /><div><strong>API Token:</strong> <span class="small">{{ api_token }}</span></div>{% endif %}
+		</div>
 
-    <div class="col-sm-9">
+		<div class="col-sm-9">
 
-      <!-- Action buttons -->
-      {% if object == request.user %}
-      <div class="row">
-        <div class="pull-right">
-          <a class="btn btn-primary" href="{% url 'users:update' ocl_user.username %}">Edit Profile</a>
-          <a class="btn" href="{% url 'account_email' %}">E-Mail</a>
-          <a class="btn" href="{% url 'avatar_change' %}">Avatar</a>
-        </div>
-      </div>
-      {% endif %}
-      <!-- End Action buttons -->
+			<!-- Action buttons -->
+			{% if object == request.user %}
+			<div class="row">
+				<div class="pull-right">
+					<a class="btn btn-primary" href="{% url 'users:update' ocl_user.username %}">Edit Profile</a>
+					<a class="btn" href="{% url 'account_email' %}">E-Mail</a>
+					<a class="btn" href="{% url 'avatar_change' %}">Avatar</a>
+				</div>
+			</div>
+			{% endif %}
+			<!-- End Action buttons -->
 
-      <div class="row"><p>&nbsp;</p></div>
+			<div class="row"><p>&nbsp;</p></div>
 
-      <!-- Source List -->
-      <div class="row">
-        <div class="col-sm-6">
-          <div class="list-group">
-            <div class="list-group-item"><h4>Sources</h4>
-              <small><p class="text-right"><a href="{% url 'source-create-for-user' ocl_user.username %}">New Source for User</a></small></p>
-            </div>
-            {% for source in sources %}
-              <a class="list-group-item" href="{% url 'source-home' user=source.owner source=source.short_code %}">{{ source.name }}</a>
-            {% empty %}
-            <span class="list-group-item">
-              <h3><small>No Sources</small></h3>
-            </span>
-            {% endfor %}
-          </div>
-        </div>
+			<!-- Source List -->
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="list-group">
+						<div class="list-group-item"><h4>Sources</h4>
+							<small><p class="text-right"><a href="{% url 'source-create-for-user' ocl_user.username %}">New Source for User</a></small></p>
+						</div>
+						{% for source in sources %}
+							<a class="list-group-item" href="{% url 'source-home' user=source.owner source=source.short_code %}">{{ source.name }}</a>
+						{% empty %}
+						<span class="list-group-item">
+							<h3><small>No Sources</small></h3>
+						</span>
+						{% endfor %}
+					</div>
+				</div>
 
-        <!-- Organization Membership List -->
-        <div class="col-sm-6">
-          <div class="list-group">
-            <div class="list-group-item"><h4>Organization Membership</h4>
-              <small><p class="text-right"><a href="{% url 'org-new' %}">Create New Organization</a></small></p>
-            </div>
-            <div class="list-group-item" style="overflow-x: scroll;">
-              {% for org in orgs %}
-                <h4><a href="{% url 'org-home' org=org.id %}" style="text-decoration: none;">
-                  <span class="resource-label small organization">
-                    <span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-home"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ org.id }}</span>
-                    </span><span class="resource-label-name">{{ org.name }}</span>
-                  </span>
-                </a></h4>
-              {% empty %}
-                <h3><small>No Organizations</small></h3>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-      </div>
+				<!-- Organization Membership List -->
+				<div class="col-sm-6">
+					<div class="list-group">
+						<div class="list-group-item"><h4>Organization Membership</h4>
+							<small><p class="text-right"><a href="{% url 'org-new' %}">Create New Organization</a></small></p>
+						</div>
+						<div class="list-group-item" style="overflow-x: scroll;">
+							{% for org in orgs %}
+								<h4><a href="{% url 'org-home' org=org.id %}" style="text-decoration: none;">
+									<span class="resource-label small organization">
+										<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-home"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ org.id }}</span>
+										</span><span class="resource-label-name">{{ org.name }}</span>
+									</span>
+								</a></h4>
+							{% empty %}
+								<h3><small>No Organizations</small></h3>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
 
 {% if request.GET.debug %}
-      <div class="row">
-        <pre>{{ ocl_user|pprint }}</pre>
-      </div>
+			<div class="row">
+				<pre>{{ ocl_user|pprint }}</pre>
+			</div>
 {% endif %}
 
-    </div>
-  </div>
+		</div>
+	</div>
 
 </div>
 {% endblock content %}
