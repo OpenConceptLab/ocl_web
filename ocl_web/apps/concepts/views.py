@@ -45,7 +45,7 @@ class ConceptReadBaseView(TemplateView):
 
     def get_concept_details(self, owner_type, owner_id, source_id, concept_id,
                             source_version_id=None, concept_version_id=None,
-                            include_mappings=False, include_Inverse Mapping=False):
+                            include_mappings=False, include_inverse_mappings=False):
         """
         Get the concept details.
         """
@@ -55,7 +55,7 @@ class ConceptReadBaseView(TemplateView):
         if include_mappings:
             params['includeMappings'] = 'true'
             params['verbose'] = 'true'
-        if include_Inverse Mapping:
+        if include_inverse_mappings:
             params['includeInverseMappings'] = 'true'
             params['verbose'] = 'true'
 
@@ -172,7 +172,7 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
         concept = self.get_concept_details(
             self.owner_type, self.owner_id, self.source_id, self.concept_id,
             source_version_id=self.source_version_id, concept_version_id=self.concept_version_id,
-            include_mappings=True, include_Inverse Mapping=True)
+            include_mappings=True, include_inverse_mappings=True)
 
         # Load the source that contains this concept
         # TODO(paynejd@gmail.com): This is only loaded because of the funky implementation of the
