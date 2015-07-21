@@ -12,58 +12,49 @@
 				<div class="panel-heading"><h3 class="panel-title">Mappings</h3></div>
 				<div class="panel-body">
 				{% for mapping_category, mapping_list in mappings.items %}
-		        	{% for mapping in mapping_list %}
-		        		<div class="row">
-		        			<div class="col-md-2">{{ mapping_category }}</div>
-		        			<div class="col-md-7">
-		        				{% if mapping_category == 'Linked Answer' %}
-		        					<span class="label label-warning small">THIS CONCEPT</span> ::
-		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-primary small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
-		        				{% elif mapping_category == 'Set Member' %}
-		        					<span class="label label-warning small">THIS CONCEPT</span> ::
-		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-primary small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
-		        				{% elif mapping_category == 'Direct Internal Mapping' %}
-		        					<span class="label label-warning small">THIS CONCEPT</span> ::
-		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-primary small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
-		        				{% elif mapping_category == 'Direct External Mapping' %}
-		        					<span class="label label-warning small">THIS CONCEPT</span> ::
-		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-primary small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
-		        				{% elif mapping_category == 'Linked Question' %}
-		        					<span class="label label-warning small">{{ mapping.from_concept_url }}</span> ::
-		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-primary small">THIS CONCEPT</span>
-		        				{% elif mapping_category == 'Set Parent' %}
-		        					<span class="label label-warning small">{{ mapping.from_concept_url }}</span> ::
-		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-primary small">THIS CONCEPT</span>
-		        				{% elif mapping_category == 'Inverse Mappings' %}
-		        					<span class="label label-warning small">{{ mapping.from_concept_url }}</span> ::
-		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-primary small">THIS CONCEPT</span>
-		        				{% elif mapping_category == 'Other' %}
-		        					<span class="label label-warning small">{{ mapping.from_concept_url }}</span> ::
-		        					<span class="label label-default small">{{ mapping.map_type }}</span> ::
-		        					<span class="label label-primary small">{{ mapping.to_source_url }} {{ mapping.to_concept_code }}</span>
-		        				{% endif %}
-				            </div>
-				            <div class="col-md-3" style="text-align:right;">
+					{% for mapping in mapping_list %}
+						<div class="row">
+							<div class="col-md-2">{{ mapping_category }}</div>
+							<div class="col-md-7">
+
+								<!-- from_concept -->
+								{% if mapping.is_direct_mapping %}
+									<span class="label label-primary small">THIS CONCEPT</span>
+								{% else %}
+									{% if mapping.from_url %}<a href="{{ mapping.from_url }}">{% endif %}
+									<span class="label label-warning small">{{ mapping.from_concept_url }}</span>
+									{% if mapping.from_url %}</a>{% endif %}
+								{% endif %}
+								<span class="text-muted small">::</span>
+
+								<!-- map_type -->
+								<a href="{{ mapping.mapping_url }}" style="text-decoration:none;"><span class="label label-default small">{{ mapping.map_type }}</span></a>
+								<span class="text-muted small">::</span>
+
+								<!-- to_concept -->
+								{% if mapping.is_inverse_mapping %}
+									<span class="label label-primary small">THIS CONCEPT</span>
+								{% else %}
+									{% if mapping.to_url %}<a href="{{ mapping.to_url }}">{% endif %}
+									<span class="label label-warning small">{{ mapping.to_concept_url }}</span>
+									{% if mapping.to_url %}</a>{% endif %}
+								{% endif %}
+
+							</div>
+							<div class="col-md-3" style="text-align:right;">
 								<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-link"></span></button>
 								<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
 								<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
 							</div>
-		        		</div>
-		        		{% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ mapping|pprint }}</pre></div></div>{% endif %}
-		        	{% endfor %}
-		        	{% if mapping_list %}<hr />{% endif %}
-	        	{% empty %}
+						</div>
+						{% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ mapping|pprint }}</pre></div></div>{% endif %}
+					{% endfor %}
+					{% if mapping_list %}<hr />{% endif %}
+				{% empty %}
 					<h3><small>None</small></h3>
-	        	{% endfor %}
-	    		</div>
-	        </div>
+				{% endfor %}
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

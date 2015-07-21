@@ -181,8 +181,8 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
             self.owner_type, self.owner_id, self.source_id,
             source_version_id=self.source_version_id)
 
-        # Process mappings
-        # TODO(paynejd@gmail.com): Do necessary processing of mappings here
+        # Process mappings relative to current concept
+        # TODO(paynejd@gmail.com): Move processing code to concept/mapping class objects
         mappings = {
             'Direct Internal Mapping': [],
             'Direct External Mapping': [],
@@ -194,18 +194,63 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
             'Other': [],
         }
         for mapping in concept['mappings']:
+            mapping['is_direct_mapping'] = False
+            mapping['is_inverse_mapping'] = False
+            mapping['is_internal_mapping'] = False
+            mapping['is_external_mapping'] = False
+            mapping['mapping_category'] = None
+            mapping['to_url'] = None
+            mapping['from_url'] = None
+            mapping['mapping_url'] = None
+
+            # TODO: Set the mapping_url
+            mapping_url_args = {}
+            if mapping['owner_type'] == 'Organization':
+                mapping_url_args['org'] = mapping['owner']
+            else:
+                mapping_url_args['user'] = mapping['owner']
+            mapping_url_args['source'] = mapping['source']
+            mapping_url_args['mapping'] = mapping['id']
+            mapping['mapping_url'] = reverse('mapping-home', kwargs=mapping_url_args)
+
             # this concept == from_concept
             if (self.proper_owner_type == mapping['from_source_owner_type'] and
                     self.owner_id == mapping['from_source_owner'] and
                     self.source_id == mapping['from_source_name'] and
                     self.concept_id == mapping['from_concept_code']):
+
+                # Setup the arguments to reverse to_concept URL - URL reversed in next block
+                to_concept_url_args = {}
+                if mapping['to_source_owner_type'] == 'Organization':
+                    to_concept_url_args['org'] = mapping['to_source_owner']
+                else:
+                    to_concept_url_args['user'] = mapping['to_source_owner']
+                to_concept_url_args['source'] = mapping['to_source_name']
+
+                # Set mapping attributes relative to the current concept
+                mapping['is_direct_mapping'] = True
+                if mapping['to_concept_url']:
+                    mapping['is_internal_mapping'] = True
+                    to_concept_url_args['concept'] = mapping['to_concept_code']
+                    mapping['to_url'] = reverse('concept-home', kwargs=to_concept_url_args)
+                else:
+                    mapping['is_external_mapping'] = True
+                    # TODO(paynejd@gmail.com): Consider still linking directly to external concept
+                    # and have the concept view redirect output to the "external source" view
+                    mapping['to_url'] = reverse('source-home', kwargs=to_concept_url_args)
+
+                # Determine the mapping category relative to current concept
                 if mapping['map_type'] == 'Q-AND-A':
+                    mapping['mapping_category'] = 'Linked Answer'
                     mappings['Linked Answer'].append(mapping)
                 elif mapping['map_type'] == 'CONCEPT-SET':
+                    mapping['mapping_category'] = 'Set Member'
                     mappings['Set Member'].append(mapping)
                 elif mapping['to_concept_url']:
+                    mapping['mapping_category'] = 'Direct Internal Mapping'
                     mappings['Direct Internal Mapping'].append(mapping)
                 else:
+                    mapping['mapping_category'] = 'Direct External Mapping'
                     mappings['Direct External Mapping'].append(mapping)
 
             # this concept == to_concept (internal mapping)
@@ -213,15 +258,35 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
                     self.owner_id == mapping['to_source_owner'] and
                     self.source_id == mapping['to_source_name'] and
                     self.concept_id == mapping['to_concept_code']):
+
+                # Setup the arguments to reverse from_concept URL - which must be in OCL
+                from_concept_url_args = {}
+                if mapping['from_source_owner_type'] == 'Organization':
+                    from_concept_url_args['org'] = mapping['from_source_owner']
+                else:
+                    from_concept_url_args['user'] = mapping['from_source_owner']
+                from_concept_url_args['source'] = mapping['from_source_name']
+                from_concept_url_args['concept'] = mapipng['from_concept_code']
+                mapping['from_url'] = reverse('concept-home', kwargs=from_concept_url_args)
+
+                # Set mapping attributes relative to the current concept
+                mapping['is_inverse_mapping'] = True
+                mapping['is_internal_mapping'] = True
+
+                # Determine the mapping category
                 if mapping['map_type'] == 'Q-AND-A':
+                    mapping['mapping_category'] = 'Linked Question'
                     mappings['Linked Question'].append(mapping)
                 elif mapping['map_type'] == 'CONCEPT-SET':
+                    mapping['mapping_category'] = 'Set Parent'
                     mappings['Set Parent'].append(mapping)
                 else:
+                    mapping['mapping_category'] = 'Inverse Mapping'
                     mappings['Inverse Mapping'].append(mapping)
 
             # this concept != from_concept or to_concept! something's wrong
             else:
+                mapping['mapping_category'] = 'Other'
                 mappings['Other'].append(mapping)
 
         # Set the context
