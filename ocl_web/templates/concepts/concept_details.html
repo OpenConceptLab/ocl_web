@@ -22,10 +22,9 @@
 				{% field_label 'Retired' concept.retired %}
 				{% field_label 'External ID' concept.external_id %}
 				<hr />
-				{% field_label 'Created by' concept.created_by %}
-				{% field_label 'Created on' concept.created_on|smart_date %}
-				{% field_label 'Updated by' concept.created_by %}
-				{% field_label 'Updated on' concept.created_on|smart_date %}
+				{% field_label 'Updated by' concept.version_created_by %}
+				{% field_label 'Updated on' concept.version_created_on|smart_datetime %}
+				{% field_label 'Created on' concept.created_on|smart_datetime %}
             </div>
 
 			<div class="panel-heading"><h3 class="panel-title">Names &amp; Synonyms</h3></div>
