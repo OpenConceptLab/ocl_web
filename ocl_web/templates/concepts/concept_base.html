@@ -45,13 +45,13 @@
 
 {% block resource-tabs %}
 {% if concept.owner_type == 'Organization' %}
-	{% url 'concept-details' org=concept.owner source=concept.source concept=concept_id as concept_details_url %}
-	{% url 'concept-mappings' org=concept.owner source=concept.source concept=concept_id as concept_mappings_url %}
-	{% url 'concept-history' org=concept.owner source=concept.source concept=concept_id as concept_history_url %}
+	{% url 'concept-details' org=concept.owner source=concept.source concept=concept.concept_id as concept_details_url %}
+	{% url 'concept-mappings' org=concept.owner source=concept.source concept=concept.concept_id as concept_mappings_url %}
+	{% url 'concept-history' org=concept.owner source=concept.source concept=concept.concept_id as concept_history_url %}
 {% else %}
-	{% url 'concept-details' user=concept.owner source=concept.source concept=concept_id as concept_details_url %}
-	{% url 'concept-mappings' user=concept.owner source=concept.source concept=concept_id as concept_mappings_url %}
-	{% url 'concept-history' user=concept.owner source=concept.source concept=concept_id as concept_history_url %}
+	{% url 'concept-details' user=concept.owner source=concept.source concept=concept.concept_id as concept_details_url %}
+	{% url 'concept-mappings' user=concept.owner source=concept.source concept=concept.concept_id as concept_mappings_url %}
+	{% url 'concept-history' user=concept.owner source=concept.source concept=concept.concept_id as concept_history_url %}
 {% endif %}
 <div class="container">
     <ul class="nav nav-tabs">
