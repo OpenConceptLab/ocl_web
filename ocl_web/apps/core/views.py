@@ -46,6 +46,7 @@ class UserOrOrgMixin(object):
         self.source_version_id = None
         self.concept_id = None
         self.concept_version_id = None
+        self.mapping_id = None
         self.proper_owner_type = None
 
         # Determine the owner type and set the owner ID
@@ -67,8 +68,8 @@ class UserOrOrgMixin(object):
         self.source_version_id = self.kwargs.get('source_version')
         self.concept_id = self.kwargs.get('concept')
         self.concept_version_id = self.kwargs.get('concept_version')
+        self.mapping_id = self.kwargs.get('mapping')
         #self.collection_id = self.kwargs.get('collection')
-        #self.version_id = self.kwargs.get('version')
 
     def args_string(self):
         """
