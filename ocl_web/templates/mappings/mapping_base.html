@@ -57,6 +57,7 @@
 
 
 {% block resource-tabs %}
+{% comment Removing because currently no need for tabs on mapping page %}
 {% if mapping.owner_type == 'Organization' %}
 	{% url 'mapping-details' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_details_url %}
 {% else %}
@@ -67,6 +68,7 @@
         <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ mapping_details_url }}">Details</a></li>
     </ul>
 </div>
+{% endcomment %}
 {% endblock resource-tabs %}
 
 
