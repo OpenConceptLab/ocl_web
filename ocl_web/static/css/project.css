@@ -1,3 +1,4 @@
+/* django template tag: field_label */
 .field-label-key {
   text-align:right;
   font-weight:300;
@@ -287,27 +288,32 @@ form div.input-group {
   line-height: 16pt;
 }
 
-
-.org-header {
+.resource-header {
+}
+.resource-header.resource-header-concept,
+.resource-header.resource-header-mapping,
+.resource-header.resource-header-source,
+.resource-header.resource-header-collection,
+.resource-header.resource-header-org
+{
   background-color:rgb(252,252,252);
   padding-top:20px;
   padding-bottom:20px;
   border-bottom:1px solid #e5e5e5;
   margin-bottom:20px;
 }
-.source-header {
-  background-color:rgb(252,252,252);
-  padding-top:20px;
-  padding-bottom:0;
-  border-bottom:1px solid #e5e5e5;
-  margin-bottom:20px;
+.resource-header .resource-header-label {
+  display:inline-block;
+  padding-left:20px
 }
-.concept-header {
-  background-color:rgb(252,252,252);
-  padding-top:20px;
-  padding-bottom:20px;
-  border-bottom:1px solid #e5e5e5;
-  margin-bottom:20px;
+.resource-header .resource-header-icon {
+  width:48px;
+  height:48px;
+  margin-left:0px;
+  margin-top:10px;
+  float:left;
+  font-size:32pt;
+  color:#e5e5e5;
 }
 
 .org-privacy {

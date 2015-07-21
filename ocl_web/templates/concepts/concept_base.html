@@ -8,21 +8,22 @@
 {% block content-no-container %}
 
 {% block resource-header %}
+{% if concept.owner_type == 'Organization' %}
+	{% url 'concept-edit' org=concept.owner source=concept.source concept=concept.id as concept_edit_url %}
+{% else %}
+	{% url 'concept-edit' user=concept.owner source=concept.source concept=concept.id as concept_edit_url %}
+{% endif %}
 
-<header class="concept-header">
+<header class="resource-header resource-header-concept">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-tag"></span></div>
-				<div style="display:inline-block;padding-left:20px">
+				<div class="resource-header-icon"><span class="glyphicon glyphicon-tag"></span></div>
+				<div class="resource-header-label">
 					<h3>
 						{% source_owner_label source %} / {% source_label source %} / {% concept_label concept %}
 						{% if_can_change source %}
-							{% if concept.owner_type == 'Organization' %}
-							<a href="{% url 'concept-edit' org=concept.owner source=concept.source concept=concept.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
-							{% else %}
-							<a href="{% url 'concept-edit' user=concept.owner source=concept.source concept=concept.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
-							{% endif %}
+							<a href="{{ concept_edit_url }}" class="small text-muted" title="Edit Concept"><span class="glyphicon glyphicon-cog"></span></a>
 						{% endif_can_change source %}
 					</h3>
 					<p>
@@ -35,7 +36,7 @@
 							<span class="glyphicon glyphicon-calendar"></span> Last updated {{ concept.updated_on|smart_date}}
 						</span>
 					</p>
-				</div>
+				</div> <!-- /resource-header-label -->
 			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
 	</div> <!-- /container -->

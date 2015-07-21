@@ -8,27 +8,29 @@
 {% block content-no-container %}
 
 {% block resource-header %}
-<header class="source-header">
+{% if source.owner_type == 'Organization' %}
+	{% url 'source-edit' org=source.owner source=source.id as source_edit_url %}
+{% else %}
+	{% url 'source-edit' user=source.owner source=source.id as source_edit_url %}
+{% endif %}
+
+<header class="resource-header resource-header-source">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-				<div style="width:48px;height:48px;margin-left:0px;margin-top:10px;float:left;font-size:32pt;color:#e5e5e5;"><span class="glyphicon glyphicon-th-list"></span></div>
-				<div style="display:inline-block;padding-left:20px">
+				<div class="resource-header-icon"><span class="glyphicon glyphicon-th-list"></span></div>
+				<div class="resource-header-label">
 					<h3>
 						{% source_owner_label source %} / {% source_label source %}
 						{% if_can_change source %}
-							{% if source.owner_type == 'Organization' %}
-							<a href="{% url 'source-edit' org=source.owner source=source.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
-							{% else %}
-							<a href="{% url 'source-edit' user=source.owner source=source.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
-							{% endif %}
+							<a href="{{ source_edit_url }}" class="small text-muted" title="Edit Source"><span class="glyphicon glyphicon-cog"></span></a>
 						{% endif_can_change source %}
 					</h3>
 					<p>
 						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ source.updated_on|smart_datetime }})</span>
 						<span class="org-privacy">{% if source.public_access == 'View' or org.public_access = 'Edit' %}public{% else %}private{% endif %}</span>
                 	</p>
-				</div>
+				</div> <!-- /resource-header-label -->
 			</div> <!-- /col-md-12 -->
 		</div> <!-- /row -->
 	</div> <!-- /container -->
