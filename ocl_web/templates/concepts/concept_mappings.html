@@ -7,21 +7,21 @@
 {% block tab-content %}
 <div class="container" style="margin-top: 20px;">
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-md-8">
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3 class="panel-title">Mappings</h3></div>
 				<div class="panel-body">
 				{% for mapping_category, mapping_list in mappings.items %}
 					{% for mapping in mapping_list %}
 						<div class="row">
-							<div class="col-md-2">{{ mapping_category }}</div>
-							<div class="col-md-7">
+							<div class="col-md-2"><span class="text-muted small">{{ mapping_category }}</span></div>
+							<div class="col-md-8">
 
 								<!-- from_concept -->
 								{% if mapping.is_direct_mapping %}
 									<span class="label label-primary small">THIS CONCEPT</span>
 								{% else %}
-									{% if mapping.from_url %}<a href="{{ mapping.from_url }}">{% endif %}
+									{% if mapping.from_url %}<a href="{{ mapping.from_url }}" style="text-decoration:none;">{% endif %}
 									<span class="label label-warning small">{{ mapping.from_concept_url }}</span>
 									{% if mapping.from_url %}</a>{% endif %}
 								{% endif %}
@@ -35,20 +35,22 @@
 								{% if mapping.is_inverse_mapping %}
 									<span class="label label-primary small">THIS CONCEPT</span>
 								{% elif mapping.is_internal_mapping %}
-									{% if mapping.to_url %}<a href="{{ mapping.to_url }}">{% endif %}
+									{% if mapping.to_url %}<a href="{{ mapping.to_url }}" style="text-decoration:none;">{% endif %}
 									<span class="label label-warning small">{{ mapping.to_concept_url }}&nbsp;&nbsp;-&nbsp;&nbsp;{{ mapping.to_concept_name }}</span>
 									{% if mapping.to_url %}</a>{% endif %}
 								{% elif mapping.is_external_mapping %}
-									{% if mapping.to_url %}<a href="{{ mapping.to_url }}">{% endif %}
+									{% if mapping.to_url %}<a href="{{ mapping.to_url }}" style="text-decoration:none;">{% endif %}
 									<span class="label label-warning small">{{ mapping.to_source_url }}&nbsp;&nbsp;-&nbsp;&nbsp;{{ mapping.to_concept_code }} {{ mapping.to_concept_name }}</span>
 									{% if mapping.to_url %}</a>{% endif %}
 								{% endif %}
 
 							</div>
-							<div class="col-md-3" style="text-align:right;">
-								<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-link"></span></button>
+							<div class="col-md-2" style="text-align:right;">
+								<button type="button" class="btn btn-link" title="Perma-link"><span class="glyphicon glyphicon-link"></span></button>
+								{% comment Disabling until editing is supported %}
 								<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
 								<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
+								{% endcomment %}
 							</div>
 						</div>
 						{% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ mapping|pprint }}</pre></div></div>{% endif %}
@@ -57,6 +59,17 @@
 				{% empty %}
 					<h3><small>None</small></h3>
 				{% endfor %}
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+				<div class="panel-body">
+					<p>The <strong>Concept Mappings</strong> tab displays all direct and inverse mappings stored in this source.</p>
+					<ul><li><em>Direct Mappings</em> originate from this concept and may point to concepts that are <em>internal</em> to OCL (e.g. CIEL) or external (e.g. SNOMED-CT).</li>
+						<li><em>Inverse Mappings</em> originate from another concept in OCL and point to this concept.</li>
+					</ul>
 				</div>
 			</div>
 		</div>
