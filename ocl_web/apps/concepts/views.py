@@ -255,9 +255,9 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
 
             # this concept == to_concept (internal mapping)
             elif (self.proper_owner_type == mapping['to_source_owner_type'] and
-                    self.owner_id == mapping['to_source_owner'] and
-                    self.source_id == mapping['to_source_name'] and
-                    self.concept_id == mapping['to_concept_code']):
+                  self.owner_id == mapping['to_source_owner'] and
+                  self.source_id == mapping['to_source_name'] and
+                  self.concept_id == mapping['to_concept_code']):
 
                 # Setup the arguments to reverse from_concept URL - which must be in OCL
                 from_concept_url_args = {}
@@ -266,7 +266,7 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
                 else:
                     from_concept_url_args['user'] = mapping['from_source_owner']
                 from_concept_url_args['source'] = mapping['from_source_name']
-                from_concept_url_args['concept'] = mapipng['from_concept_code']
+                from_concept_url_args['concept'] = mapping['from_concept_code']
                 mapping['from_url'] = reverse('concept-home', kwargs=from_concept_url_args)
 
                 # Set mapping attributes relative to the current concept
