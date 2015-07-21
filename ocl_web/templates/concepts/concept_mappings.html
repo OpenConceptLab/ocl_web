@@ -34,9 +34,13 @@
 								<!-- to_concept -->
 								{% if mapping.is_inverse_mapping %}
 									<span class="label label-primary small">THIS CONCEPT</span>
-								{% else %}
+								{% elseif mapping.is_internal_mapping %}
 									{% if mapping.to_url %}<a href="{{ mapping.to_url }}">{% endif %}
-									<span class="label label-warning small">{{ mapping.to_concept_url }}</span>
+									<span class="label label-warning small">{{ mapping.to_concept_url }}&nbsp;&nbsp;-&nbsp;&nbsp;{{ mapping.to_concept_name }}</span>
+									{% if mapping.to_url %}</a>{% endif %}
+								{% elseif mapping.is_external_mapping %}
+									{% if mapping.to_url %}<a href="{{ mapping.to_url }}">{% endif %}
+									<span class="label label-warning small">{{ mapping.to_source_url }}&nbsp;&nbsp;-&nbsp;&nbsp;{{ mapping.to_concept_code }} {{ mapping.to_concept_name }}</span>
 									{% if mapping.to_url %}</a>{% endif %}
 								{% endif %}
 
