@@ -27,6 +27,20 @@ class MappingReadBaseView(TemplateView):
     Base class for Mapping Read views.
     """
 
+    def get_source_details(self, owner_type, owner_id, source_id, source_version_id=None):
+        """
+        Load source details from the API and return as dictionary.
+        """
+        # TODO(paynejd@gmail.com): Load details from source version, if applicable (or remove?)
+        # TODO(paynejd@gmail.com): Validate the input parameters
+        api = OCLapi(self.request, debug=True)
+        search_response = api.get(owner_type, owner_id, 'sources', source_id)
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
+        return search_response.json()
+
     def get_mapping_details(self, owner_type, owner_id, source_id, mapping_id):
         """
         Load mapping details from the API and return as dictionary.
@@ -62,10 +76,18 @@ class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
         mapping = self.get_mapping_details(
             self.owner_type, self.owner_id, self.source_id, self.mapping_id)
 
+        # Load the source that contains this mapping
+        # TODO(paynejd@gmail.com): This is only loaded because of the funky implementation of the
+        # owner and source label tags --- REMOVE IN THE FUTURE
+        source = self.get_source_details(
+            self.owner_type, self.owner_id, self.source_id,
+            source_version_id=self.source_version_id)
+
         # Set the context
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Details'
         context['mapping'] = mapping
+        context['source'] = source
 
         return context
 
