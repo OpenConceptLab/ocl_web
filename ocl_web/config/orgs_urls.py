@@ -16,10 +16,11 @@ from apps.orgs.views import (
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
     SourceCreateView, SourceEditView, SourceVersionsView)
-from apps.mappings.views import (MappingDetailsView)
+from apps.mappings.views import (
+    MappingDetailsView, MappingNewView, MappingEditView)
 from apps.concepts.views import (
     ConceptDetailsView, ConceptMappingsView, ConceptHistoryView,
-    ConceptDetailView, ConceptCreateJsonView, ConceptRetireView, ConceptNewView,
+    ConceptCreateJsonView, ConceptRetireView, ConceptNewView,
     ConceptDescView, ConceptNameView, ConceptVersionListView, ConceptMappingView)
 from apps.core.views import ExtraJsonView
 
@@ -28,6 +29,7 @@ from apps.core.views import ExtraJsonView
 #    CollectionDetailView, CollectionCreateView, CollectionEditView)
 
 # TODO(paynejd@gmail.com): OLD -- remove after tested
+#from apps.concepts.views import (ConceptDetailView)
 #from apps.sources.views import (SourceDetailView, SourceVersionView)
 
 

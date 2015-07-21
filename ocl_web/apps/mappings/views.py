@@ -71,5 +71,28 @@ class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
 
 
 
-# TODO: class MappingEditView(UserOrOrgMixin, MappingReadBaseView):
-# TODO: class MappingNewView(UserOrOrgMixin, MappingReadBaseView):
+class MappingEditView(UserOrOrgMixin, MappingReadBaseView):
+    """
+    Mapping Edit view.
+    """
+    template_name = "mappings/mapping_details.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the mapping details.
+        """
+        return
+
+
+
+class MappingNewView(UserOrOrgMixin, MappingReadBaseView):
+    """
+    Mapping New view.
+    """
+    template_name = "mappings/mapping_details.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the mapping details.
+        """
+        return
