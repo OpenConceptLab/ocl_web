@@ -15,7 +15,7 @@ from django.views.generic import TemplateView
 #from django.core.paginator import Paginator
 #from braces.views import JsonRequestResponseMixin
 
-from libs.ocl import OCLapi, OCLSearch
+from libs.ocl import OCLapi     #, OCLSearch
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
@@ -45,7 +45,7 @@ class MappingReadBaseView(TemplateView):
 
 class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
     """
-    Source Details view.
+    Mapping Details view.
     """
     template_name = "mappings/mapping_details.html"
 
@@ -68,3 +68,8 @@ class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
         context['mapping'] = mapping
 
         return context
+
+
+
+# TODO: class MappingEditView(UserOrOrgMixin, MappingReadBaseView):
+# TODO: class MappingNewView(UserOrOrgMixin, MappingReadBaseView):

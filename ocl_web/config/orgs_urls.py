@@ -248,15 +248,25 @@ urlpatterns = patterns(
 
     ## MAPPINGS
 
-    # /orgs/:org/sources/:source/mappings/:mapping/ - ??
+    # /orgs/:org/sources/:source/mappings/new/ - create new mapping
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/new/$',    # pylint: disable=C0301
+        MappingNewView.as_view(), name='mapping-new'),
+
+    # /orgs/:org/sources/:source/mappings/:mapping/ - mapping home points to details
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         MappingDetailsView.as_view(), name='mapping-home'),
 
-    # /orgs/:org/sources/:source/mappings/:mapping/ - ??
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+    # /orgs/:org/sources/:source/mappings/:mapping/details/ - mapping details
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/details/$',    # pylint: disable=C0301
         MappingDetailsView.as_view(), name='mapping-details'),
 
-    # TODO(paynejd@gmail.com): Below Mapping URLs are not implemented correctly
+    # /orgs/:org/sources/:source/mappings/:mapping/edit/ - edit mapping
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
+        MappingEditView.as_view(), name='mapping-edit'),
+
+
+
+    # TODO(paynejd@gmail.com): Below Mapping URLs are for JSON Angular and are now invalid
 
     # /orgs/:org/sources/:source/concepts/:concept/mappings/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/mappings/$',    # pylint: disable=C0301

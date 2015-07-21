@@ -56,7 +56,7 @@ def source_owner_label(source):
 
     :param source: is the OCL source object.
     """
-    from_org = source.get('owner_type') == 'organization'
+    from_org = source.get('owner_type').lower() == 'organization'
     return {
         'from_org': from_org,
         'source': source,
@@ -65,15 +65,19 @@ def source_owner_label(source):
 
 @register.inclusion_tag('includes/source_label_incl.html')
 def source_label(source):
-    """
-
-    """
+    """ Source label """
     return {'source': source}
 
 
 @register.inclusion_tag('includes/concept_label_incl.html')
 def concept_label(concept):
+    """ Concept label """
     return {'concept': concept}
+
+
+@register.inclusion_tag('includes/mapping_label_incl.html')
+def mapping_label(mapping):
+    return {'mapping': mapping}
 
 
 @register.inclusion_tag('includes/field_display_incl.html')
