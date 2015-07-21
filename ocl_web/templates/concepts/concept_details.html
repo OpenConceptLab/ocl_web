@@ -13,17 +13,20 @@
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
 				<div class="panel-body">
-					{% field_label 'ID' concept.id vertical=true %}
-					{% field_label 'Default Display Name' concept.display_name vertical=true %}
-					{% field_label 'Display Name Locale' concept.display_locale vertical=true %}
-					{% field_label 'Concept Class' concept.concept_class vertical=true %}
-					{% field_label 'Datatype' concept.datatype vertical=true %}
-					{% field_label 'Retired' concept.retired vertical=true %}
-					{% field_label 'External ID' concept.external_id vertical=true %}
+					{% field_label 'ID' concept.id vertical="true" %}
+					{% field_label 'Default Display Name' concept.display_name vertical="true" %}
+					{% field_label 'Display Name Locale' concept.display_locale vertical="true" %}
+					{% field_label 'Concept Class' concept.concept_class vertical="true" %}
+					{% field_label 'Datatype' concept.datatype vertical="true" %}
+					{% field_label 'Retired' concept.retired vertical="true" %}
+					{% if concept.external_id %}
 					<hr />
-					{% field_label 'Updated by' concept.version_created_by vertical=true %}
-					{% field_label 'Updated on' concept.version_created_on|smart_datetime vertical=true %}
-					{% field_label 'Created on' concept.created_on|smart_datetime vertical=true %}
+					{% field_label 'External ID' concept.external_id vertical="true" small="true" %}
+					{% endif %}
+					<hr />
+					{% field_label 'Updated by' concept.version_created_by vertical="true" %}
+					{% field_label 'Updated on' concept.version_created_on|smart_datetime vertical="true" %}
+					{% field_label 'Created on' concept.created_on|smart_datetime vertical="true" %}
 				</div>
 			</div>
 		</div>
