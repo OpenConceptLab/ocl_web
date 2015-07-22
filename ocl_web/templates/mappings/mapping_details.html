@@ -14,6 +14,9 @@
 				<div class="panel-heading"><h3 class="panel-title">Mapping Details</h3></div>
 				<div class="panel-body">
 					{% field_label 'ID' mapping.id %}
+					{% field_label 'Map Type' mapping.map_type %}
+					<div class="row"><div class="col-md-3">From Concept:</div><div class="col-md-9">{% mapping_from_concept_label mapping label_size="small" %}</div></div>
+					<div class="row"><div class="col-md-3">To Concept:</div><div class="col-md-9">{% mapping_to_concept_label mapping label_size="small" %}</div></div>
 					{% field_label 'Retired' mapping.retired %}
 					{% if mapping.external_id %}
 						<hr />
