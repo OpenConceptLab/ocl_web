@@ -213,11 +213,8 @@ form div.input-group {
   background-color: #428bca;
   color: White;
 }
-.resource-label.map-type .resource-label-name {
+.resource-label.maptype .resource-label-name {
   background-color: #aaa;
-  font-weight:bold;
-  font-size: 87%;
-  font-variant: small-caps;
   color: White;
 }
 .resource-label.source .resource-label-name {
@@ -294,7 +291,8 @@ form div.input-group {
 .resource-header.resource-header-mapping,
 .resource-header.resource-header-source,
 .resource-header.resource-header-collection,
-.resource-header.resource-header-org
+.resource-header.resource-header-org,
+.resource-header.resource-header-maptype
 {
   background-color:rgb(252,252,252);
   padding-top:20px;

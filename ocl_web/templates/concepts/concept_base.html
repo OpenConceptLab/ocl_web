@@ -28,7 +28,7 @@
 					</h3>
 					<p>
 						<span {% if concept.retired %}class="retired"{% endif %}>{{ concept.display_name }}</span>
-						{% if concept.display_locale %}&nbsp;&nbsp;<span class="small text-muted"><em>[{{ concept.display_locale }}]</em></span>{% endif %}&nbsp;&nbsp;<span id="element-info" data-toggle="tooltip" data-placement="right" title="Preferred name in selected language"><span class="glyphicon glyphicon-info-sign"></span></span><br />
+						{% if concept.display_locale %}&nbsp;&nbsp;<span class="small text-muted"><em>[{{ concept.display_locale }}]</em></span>{% endif %}<br />
 						<em>Class:</em> {{ concept.concept_class }}, <em>Datatype:</em> {{ concept.datatype }}<br />
 						<span class="text-muted small">
 							<span class="glyphicon glyphicon-calendar"></span> Created on {{ concept.created_on|smart_date }}

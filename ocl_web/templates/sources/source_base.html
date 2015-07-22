@@ -27,6 +27,7 @@
 						{% endif_can_change source %}
 					</h3>
 					<p>
+						<em>Source Type:</em> {{ source.source_type }}<br />
 						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ source.updated_on|smart_datetime }})</span>
 						<span class="org-privacy">{% if source.public_access == 'View' or org.public_access = 'Edit' %}public{% else %}private{% endif %}</span>
                 	</p>
