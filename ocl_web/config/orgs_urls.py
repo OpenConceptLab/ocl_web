@@ -34,6 +34,12 @@ from apps.core.views import ExtraJsonView
 
 
 
+# TODO: Concepts/mappings & their sub-resources need to be setup to work with source versions
+# It may make sense to split this up into separate files to make it simpler to manage --
+# then both the org and user URL configs can include the same sub-resource URL config files
+
+
+
 urlpatterns = patterns(
     '',
 
@@ -68,6 +74,7 @@ urlpatterns = patterns(
     #    OrganizationCollectionsView.as_view(), name='org-collections'),
 
 
+
     ## ORGANIZATION MEMBERS
 
     # /orgs/:org/members/add/
@@ -77,6 +84,7 @@ urlpatterns = patterns(
     # /orgs/:org/members/remove/:username/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/members/remove/(?P<username>[a-zA-Z0-9\-\.]+)/$',
         OrganizationMemberRemoveView.as_view(), name='org-member-remove'),
+
 
 
     ## SOURCES CORE
@@ -122,6 +130,8 @@ urlpatterns = patterns(
         SourceVersionsView.as_view(), name='source-versions'),
 
 
+
+
     # /orgs/:org/sources/:source/versions/ - JSON ONLY - Angular
     # TODO(paynejd@gmail.com): Overwritten- old source versions will fail now
     #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/$',
@@ -149,6 +159,8 @@ urlpatterns = patterns(
     #    CollectionCreateView.as_view(), name='collection-create-for-org'),
     #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<source>[a-zA-Z0-9\-\.]+)/edit/$',
     #    SourceEditView.as_view(), name='collection-edit'),
+
+
 
 
     ## CONCEPTS
@@ -220,7 +232,7 @@ urlpatterns = patterns(
 
 
 
-    ## CONCEPT NAMES
+    ## CONCEPT NAMES - old json angular URLs
 
     # /orgs/:org/sources/:source/concepts/:concept/names/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/$',    # pylint: disable=C0301
@@ -235,7 +247,30 @@ urlpatterns = patterns(
         ConceptNameView.as_view(), name='concept-name-ud'),
 
 
-    ## CONCEPT DESCRIPTIONS
+
+
+    # PERMALINKS FOR CONCEPT SUB-RESOURCES
+
+    # /orgs/:org/sources/:source/concepts/:concept/names/:concept-name/ - PERMALINK
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/(?P<name>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        ConceptDetailsView.as_view(), name='concept-name'),
+
+    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/names/ - PERMALINK
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/names/(?P<name>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        ConceptDetailsView.as_view(), name='concept-version-name'),
+
+    # /orgs/:org/sources/:source/concepts/:concept/names/:concept-name/ - PERMALINK
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/(?P<description>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        ConceptDetailsView.as_view(), name='concept-description'),
+
+    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/names/ - PERMALINK
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/descriptions/(?P<description>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        ConceptDetailsView.as_view(), name='concept-version-description'),
+
+
+
+
+    ## CONCEPT DESCRIPTIONS - old json angular URLs
 
     # /orgs/:org/sources/:source/concepts/:concept/descriptions/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/$',    # pylint: disable=C0301
@@ -246,6 +281,8 @@ urlpatterns = patterns(
     # /orgs/:org/sources/:source/concepts/:concept/descriptions/:description/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/(?P<description>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ConceptDescView.as_view(), name='concept-desc-ud'),
+
+
 
 
     ## MAPPINGS
@@ -268,6 +305,7 @@ urlpatterns = patterns(
 
 
 
+
     # TODO(paynejd@gmail.com): Below Mapping URLs are for JSON Angular and are now invalid
 
     # /orgs/:org/sources/:source/concepts/:concept/mappings/ - JSON ANGULAR
@@ -287,7 +325,7 @@ urlpatterns = patterns(
         ConceptMappingView.as_view(), name='mapping-ud'),
 
 
-    ## CONCEPT EXTRAS
+    ## CONCEPT EXTRAS - old json angular URLs
 
     # /orgs/:org/sources/:source/concepts/:concept/extras/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/extras/$',    # pylint: disable=C0301

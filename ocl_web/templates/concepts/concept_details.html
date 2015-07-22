@@ -40,6 +40,13 @@
 				<div class="panel-heading"><h3 class="panel-title">Names &amp; Synonyms</h3></div>
 				<div class="panel-body">
 				{% for name in concept.names %}
+					{# TODO: Move URL generation for concept names to the view #}
+					{% if concept.owner_type == 'Organization' %}
+						{% url 'concept-name' org=concept.owner source=concept.source concept=concept.id name=name.uuid as concept_name_permalink %}
+					{% else %}
+						{% url 'concept-name' user=concept.owner source=concept.source concept=concept.id name=name.uuid as concept_name_permalink %}
+					{% endif %}
+
 					<div class="row">
 						<div class="col-md-9">
 							{{ name.name }}
@@ -48,7 +55,7 @@
 							{% if name.locale_preferred %}<span class="glyphicon glyphicon-flag"></span>{% endif %}
 						</div>
 						<div class="col-md-3" style="text-align:right;">
-							<button type="button" class="btn btn-link" title="Permalink"><span class="glyphicon glyphicon-link"></span></button>
+							<a href="{{ concept_name_permalink }}" class="btn btn-link" title="Permalink"><span class="glyphicon glyphicon-link"></span></a>
 							{% comment Disabling until page is editable %}
 							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
 							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
@@ -65,6 +72,13 @@
 				<div class="panel-heading"><h3 class="panel-title">Descriptions</h3></div>
 				<div class="panel-body">
 				{% for description in concept.descriptions %}
+					{# TODO: Move URL generation for concept names to the view #}
+					{% if concept.owner_type == 'Organization' %}
+						{% url 'concept-name' org=concept.owner source=concept.source concept=concept.id description=description.uuid as concept_description_permalink %}
+					{% else %}
+						{% url 'concept-name' user=concept.owner source=concept.source concept=concept.id description=description.uuid as concept_description_permalink %}
+					{% endif %}
+
 					<div class="row">
 						<div class="col-md-9">
 							{{ description.description }}
@@ -73,7 +87,7 @@
 							{% if description.locale_preferred %}<span class="glyphicon glyphicon-flag"></span>{% endif %}
 						</div>
 						<div class="col-md-3" style="text-align:right;">
-							<button type="button" class="btn btn-link" title="Permalink"><span class="glyphicon glyphicon-link"></span></button>
+							<a href="{{ concept_description_permalink }}" class="btn btn-link" title="Permalink"><span class="glyphicon glyphicon-link"></span></a>
 							{% comment Disabling until page is editable %}
 							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
 							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
