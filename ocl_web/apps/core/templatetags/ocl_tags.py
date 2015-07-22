@@ -76,8 +76,12 @@ def concept_label(concept, label_size=None):
 
 
 @register.inclusion_tag('includes/mapping_label_incl.html')
-def mapping_label(mapping, label_size=None):
-    return {'mapping':mapping, 'label_size':label_size}
+def mapping_label(mapping, label_size=None, display_breadcrumb=False):
+    return {
+        'mapping': mapping,
+        'label_size': label_size,
+        'display_breadcrumb': display_breadcrumb
+    }
 
 @register.inclusion_tag('includes/mapping_from_concept_label_incl.html')
 def mapping_from_concept_label(mapping, label_size=None):

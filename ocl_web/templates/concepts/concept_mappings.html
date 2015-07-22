@@ -17,6 +17,29 @@
 							<div class="col-md-2">{% if forloop.counter == 1 %}<span class="text-muted small">{{ mapping_category }}</span>{% endif %}</div>
 							<div class="col-md-8">
 
+								{% mapping_label mapping label_size="large" display_breadcrumb="true" %}
+
+								<!-- from_concept label -->
+								<div style="padding: 15px 0 5px 20px;">
+									<div class="small text-muted" style="width:50px;float:left;">From:</div>
+									{% if mapping.is_direct_mapping %}
+										<span class="label label-primary small">THIS CONCEPT</span>
+									{% else %}
+										{% mapping_from_concept_label mapping label_size="small" %}
+									{% endif %}
+								</div>
+
+								<!-- to_concept label -->
+								<div style="padding: 5px 0 20px 20px;">
+									<div class="small text-muted" style="width:50px;float:left;">To:</div>
+									{% if mapping.is_inverse_mapping %}
+										<span class="label label-primary small">THIS CONCEPT</span>
+									{% else %}
+										{% mapping_to_concept_label mapping label_size="small" %}
+									{% endif %}
+								</div>
+
+								{% comment %}
 								<!-- from_concept -->
 								{% if mapping.is_direct_mapping %}
 									<span class="label label-primary small">THIS CONCEPT</span>
@@ -43,6 +66,7 @@
 									<span class="label label-warning small">{{ mapping.to_source_url }}&nbsp;&nbsp;-&nbsp;&nbsp;{{ mapping.to_concept_code }} {{ mapping.to_concept_name }}</span>
 									{% if mapping.to_url %}</a>{% endif %}
 								{% endif %}
+								{% endcomment %}
 
 							</div>
 							<div class="col-md-2" style="text-align:right;">
