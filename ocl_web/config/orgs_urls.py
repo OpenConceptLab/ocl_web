@@ -246,30 +246,6 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/(?P<name>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ConceptNameView.as_view(), name='concept-name-ud'),
 
-
-
-
-    # PERMALINKS FOR CONCEPT SUB-RESOURCES
-
-    # /orgs/:org/sources/:source/concepts/:concept/names/:concept-name/ - PERMALINK
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/(?P<name>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-        ConceptDetailsView.as_view(), name='concept-name'),
-
-    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/names/ - PERMALINK
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/names/(?P<name>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-        ConceptDetailsView.as_view(), name='concept-version-name'),
-
-    # /orgs/:org/sources/:source/concepts/:concept/names/:concept-name/ - PERMALINK
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/(?P<description>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-        ConceptDetailsView.as_view(), name='concept-description'),
-
-    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/names/ - PERMALINK
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/descriptions/(?P<description>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-        ConceptDetailsView.as_view(), name='concept-version-description'),
-
-
-
-
     ## CONCEPT DESCRIPTIONS - old json angular URLs
 
     # /orgs/:org/sources/:source/concepts/:concept/descriptions/ - JSON ANGULAR
@@ -281,6 +257,29 @@ urlpatterns = patterns(
     # /orgs/:org/sources/:source/concepts/:concept/descriptions/:description/ - JSON ANGULAR
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/(?P<description>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ConceptDescView.as_view(), name='concept-desc-ud'),
+
+
+    
+
+
+    # PERMALINKS FOR CONCEPT SUB-RESOURCES
+
+    # /orgs/:org/sources/:source/concepts/:concept/names/:name/ - PERMALINK
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/(?P<name>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        ConceptDetailsView.as_view(), name='concept-name'),
+
+    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/names/:name/ - PERMALINK
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/names/(?P<name>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        ConceptDetailsView.as_view(), name='concept-version-name'),
+
+    # /orgs/:org/sources/:source/concepts/:concept/descriptions/:description/ - PERMALINK
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/(?P<description>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        ConceptDetailsView.as_view(), name='concept-description'),
+
+    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/descriptions/:description/ - PERMALINK
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/descriptions/(?P<description>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        ConceptDetailsView.as_view(), name='concept-version-description'),
+
 
 
 

@@ -74,9 +74,9 @@
 				{% for description in concept.descriptions %}
 					{# TODO: Move URL generation for concept names to the view #}
 					{% if concept.owner_type == 'Organization' %}
-						{% url 'concept-name' org=concept.owner source=concept.source concept=concept.id description=description.uuid as concept_description_permalink %}
+						{% url 'concept-description' org=concept.owner source=concept.source concept=concept.id description=description.uuid as concept_description_permalink %}
 					{% else %}
-						{% url 'concept-name' user=concept.owner source=concept.source concept=concept.id description=description.uuid as concept_description_permalink %}
+						{% url 'concept-description' user=concept.owner source=concept.source concept=concept.id description=description.uuid as concept_description_permalink %}
 					{% endif %}
 
 					<div class="row">
