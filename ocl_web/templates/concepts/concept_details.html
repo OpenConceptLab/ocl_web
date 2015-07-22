@@ -47,12 +47,13 @@
 						{% url 'concept-name' user=concept.owner source=concept.source concept=concept.id name=name.uuid as concept_name_permalink %}
 					{% endif %}
 
-					<div class="row">
+					<div class="row" style="padding-bottom:10px;">
 						<div class="col-md-9">
 							{{ name.name }}
 							{% if name.name_type %}<span class="small text-muted">&nbsp;&nbsp;<span class="label label-default">{{ name.name_type}}</span></span>{% endif %}
 							{% if name.locale %}<span class="small text-muted">&nbsp;&nbsp;<em>[{{ name.locale }}]</em></span>{% endif %}
 							{% if name.locale_preferred %}<span class="glyphicon glyphicon-flag"></span>{% endif %}
+							{% if name.external_id %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;External ID: {{ name.external_id }}{% endif %}
 						</div>
 						<div class="col-md-3" style="text-align:right;">
 							<a href="{{ concept_name_permalink }}" class="btn btn-link" title="Permalink"><span class="glyphicon glyphicon-link"></span></a>
@@ -79,12 +80,13 @@
 						{% url 'concept-description' user=concept.owner source=concept.source concept=concept.id description=description.uuid as concept_description_permalink %}
 					{% endif %}
 
-					<div class="row">
+					<div class="row" style="padding-bottom:10px;">
 						<div class="col-md-9">
 							{{ description.description }}
 							{% if description.description_type %}<span class="small text-muted">&nbsp;&nbsp;<span class="label label-default">{{ description.description_type}}</span></span>{% endif %}
 							{% if description.locale %}<span class="small text-muted">&nbsp;&nbsp;<em>[{{ description.locale }}]</em></span>{% endif %}
 							{% if description.locale_preferred %}<span class="glyphicon glyphicon-flag"></span>{% endif %}
+							{% if description.external_id %}<br /><span class="text-muted small"><span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;External ID: {{ description.external_id }}{% endif %}
 						</div>
 						<div class="col-md-3" style="text-align:right;">
 							<a href="{{ concept_description_permalink }}" class="btn btn-link" title="Permalink"><span class="glyphicon glyphicon-link"></span></a>
@@ -93,7 +95,7 @@
 							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
 							{% endcomment %}
 						</div>
-						{% if request.GET.debug %}<pre>{{ description }}</pre>{% endif %}
+						{% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ description }}</pre></div></div>{% endif %}
 					</div>
 				{% empty %}
 					<h3><small>None</small></h3>
