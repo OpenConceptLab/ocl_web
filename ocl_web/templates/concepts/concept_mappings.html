@@ -15,7 +15,7 @@
 					{% for mapping in mapping_list %}
 						<div class="row">
 							<div class="col-md-2">{% if forloop.counter == 1 %}<span class="text-muted small">{{ mapping_category }}</span>{% endif %}</div>
-							<div class="col-md-8">
+							<div class="col-md-10">
 
 								{% mapping_label mapping label_size="small" display_breadcrumb="true" %}
 
@@ -39,13 +39,13 @@
 									{% endif %}
 								</div>
 							</div>
+							{% comment Disabling until editing is supported %}
 							<div class="col-md-2" style="text-align:right;">
 								<button type="button" class="btn btn-link" title="Permalink"><span class="glyphicon glyphicon-link"></span></button>
-								{% comment Disabling until editing is supported %}
 								<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
 								<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
-								{% endcomment %}
 							</div>
+							{% endcomment %}
 						</div>
 						{% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ mapping|pprint }}</pre></div></div>{% endif %}
 					{% endfor %}
