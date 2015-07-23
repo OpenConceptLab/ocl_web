@@ -7,16 +7,19 @@
 {% block tab-content %}
 <div class="container" style="margin-top: 20px;">
 <div class="row">
+
 	<div class="col-md-8">
-        {% simple_pager current_page 'source-version' url=pagination_url %}
-        <div class="form-group">
-			<label class="checkbox-inline text-muted" style="margin-left:40px;padding-right:10px;"><input type="checkbox" name="source-version-filter" value="released" disabled /> Released</label>
-			<label class="checkbox-inline text-muted"><input type="checkbox" name="source-version-filter" value="is_processing" disabled /> Processing</label>
-        </div>
-	</div>
-</div>
-<div class="row">
-    <div class="col-md-8">
+
+		<!-- Source version search bar -->
+		<div>
+	        {% simple_pager current_page 'source-version' url=pagination_url %}
+	        <div class="form-group">
+				<label class="checkbox-inline text-muted" style="margin-left:40px;padding-right:10px;"><input type="checkbox" name="source-version-filter" value="released" disabled /> Released</label>
+				<label class="checkbox-inline text-muted"><input type="checkbox" name="source-version-filter" value="is_processing" disabled /> Processing</label>
+	        </div>
+    	</div>
+
+		<!-- Source version search results -->
         <ul>
     		{% for source_version in source_versions %}
     			{% if source_version.owner_type == 'Organization' %}
@@ -52,7 +55,19 @@
             {% endfor %}
         </ul>
 	</div>
-</div>
+
+	<!-- Tip -->
+	<div class="col-md-4">
+		<div class="panel panel-default">
+			<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+			<div class="panel-body">
+				<p>Create a new <strong>Source Version</strong> to save the state of its concepts and
+				mappings at a specific point in time.</p>
+				<p>A <strong>Released</strong> source version indicates to your users that a particular source
+				version is prepared for public consumption.</p>
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock tab-content %}
 
