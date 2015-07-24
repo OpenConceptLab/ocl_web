@@ -20,12 +20,11 @@
 				{% field_label 'Description' source.description %}
 				{% field_label 'Source Type' source.source_type %}
 				{% field_label 'Website' source.website url=True %}
-				{% field_label 'External ID' source.external_id %}
-				{% field_label 'Source URL' source.url %}
 				{% field_label 'Public Access' source.public_access %}
 				<hr />
 				{% field_label 'Default Locale' source.default_locale %}
 				{% field_label 'Supported Locales' source.default_locale %}
+				{% if source.external_id %}<hr />{% field_label 'External ID' source.external_id %}{% endif %}
 				<hr />
 				{% field_label 'Created by' source.created_by %}
 				{% field_label 'Created on' source.created_on|smart_date %}
