@@ -252,11 +252,15 @@
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="{% url 'org-home' org=result.id %}#members" title="Members in organization"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.members }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<!--a href="{% url 'org-home' org=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;-->
+					{% comment %}
+					<a href="{% url 'org-home' org=result.id %}#stars" title="Stars"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					{% endcomment %}
 					<a href="{% url 'org-home' org=result.id %}#sources" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources }}</a>
+					{% comment %}
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="{% url 'org-home' org=result.id %}#collections" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections }}</a>
+					{% endcomment %}
 				</div>
 
 				<h4><a href="{% url 'org-home' org=result.id %}" style="text-decoration: none;">
@@ -288,11 +292,15 @@
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="{% url 'users:detail' result.username %}#orgs" title="Organizations"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.orgs }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<!--a href="{% url 'users:detail' result.username %}#followers" title="Followers"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;-->
+					{% comment %}
+					<a href="{% url 'users:detail' result.username %}#followers" title="Followers"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					{% endcomment %}
 					<a href="{% url 'users:detail' result.username %}#sources" title="Public sources owned by user"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources }}</a>
+					{% comment %}
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="{% url 'users:detail' result.username %}#collections" title="Public collections owned by user"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections }}</a>
+					{% endcomment %}
 				</div>
 
 				<h4><a href="{% url 'users:detail' result.username %}" style="text-decoration: none;">
