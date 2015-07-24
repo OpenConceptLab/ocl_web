@@ -21,7 +21,7 @@
 	        {% simple_pager current_page 'source-version' url=pagination_url %}
 
 			<div style="margin-left:40px;padding-right:10px;padding-top:5px;">
-				<a href="{{ source_version_new_url }}">{% boostrap_icon "plus" %} New Source Version</a>&nbsp;&nbsp;&nbsp;
+				<a href="{{ source_version_new_url }}"><span class="glyphicon glyphicon-plus"></span> New Source Version</a>&nbsp;&nbsp;&nbsp;
 				<label class="checkbox-inline text-muted"><input type="checkbox" name="source-version-filter" value="released" disabled /> Released</label>
 				<label class="checkbox-inline text-muted"><input type="checkbox" name="source-version-filter" value="is_processing" disabled /> Processing</label>
 			</div>
@@ -37,15 +37,15 @@
     			{% endif %}
 
 	            <li class="list-group-item">
-	                <div class="search-result-col-icon pull-left" style="padding-top:0;padding-right:14px;margin-bottom:20px;"><span class="search-result-icon">{% bootstrap_icon "asterisk" %}</span></div>
+	                <div class="search-result-col-icon pull-left" style="padding-top:0;padding-right:14px;margin-bottom:20px;"><span class="search-result-icon"><span class="glyphicon glyphicon-asterisk"></span></span></div>
 	                {% if not source_version.is_processing %}
 	                <div class="pull-right">
-	                    <button type="button" class="btn btn-link">{% bootstrap_icon "pencil" %}</button>
-	                    <button type="button" class="btn btn-link">{% bootstrap_icon "trash" %}</button>
+	                    <button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
+	                    <button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
 	                </div>
 	                {% endif %}
 	                <h4>
-	                	<a href="{{ source_version_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon">{% bootstrap_icon "asterisk" %}</span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} [ </span><span class="resource-label-id-code">{{ source_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
+	                	<a href="{{ source_version_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} [ </span><span class="resource-label-id-code">{{ source_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
 	                    {% if source_version.released %}
 	                    	<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">Released</span></span>
 	                    {% endif %}
@@ -55,7 +55,7 @@
 	                </h4>
 	                <p>
 	                    {% if source_version.description %}<span>{{ source_version.description }}<br /></span>{% endif %}
-	                    <span class="text-muted small">{% bootstrap_icon "calendar" %}&nbsp;&nbsp;Created on {{ source_version.created_on|smart_datetime }}</span>
+	                    <span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ source_version.created_on|smart_datetime }}</span>
 	                </p>
 	            </li>
             {% empty %}
