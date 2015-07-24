@@ -340,6 +340,21 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
 
 
 
+class SourceVersionsNewView(UserOrOrgMixin, SourceReadBaseView):
+    """
+    OCL Source detailed view.
+    """
+
+    template_name = "sources/source_version_new.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Get context data for the new source version
+        """
+        return
+
+
+
 class SourceDetailView(UserOrOrgMixin, SourceReadBaseView):
     """
     OCL Source detailed view.

@@ -15,7 +15,7 @@ from apps.orgs.views import (
     OrganizationMemberAddView, OrganizationMemberRemoveView)
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
-    SourceCreateView, SourceEditView, SourceVersionsView)
+    SourceCreateView, SourceEditView, SourceVersionsView, SourceVersionsNewView)
 from apps.mappings.views import (
     MappingDetailsView, MappingNewView, MappingEditView)
 from apps.concepts.views import (
@@ -129,6 +129,9 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/$',
         SourceVersionsView.as_view(), name='source-versions'),
 
+    # /orgs/:org/sources/:source/versions/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/new/$',
+        SourceVersionsNewView.as_view(), name='source-versions-new'),
 
 
 
@@ -259,7 +262,7 @@ urlpatterns = patterns(
         ConceptDescView.as_view(), name='concept-desc-ud'),
 
 
-    
+
 
 
     # PERMALINKS FOR CONCEPT SUB-RESOURCES
