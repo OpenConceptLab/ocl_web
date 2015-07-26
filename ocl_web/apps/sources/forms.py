@@ -112,12 +112,18 @@ class SourceVersionsNewForm(forms.Form):
 
 
 
-# class SourceVersionAddForm(forms.Form):
-#     """
-#         TODO: Removed. Not used. Now json/angular.
-#         Add a source version form
-#     """
-#     required_css_class = 'required'
-#     id = forms.CharField(max_length=30, label=_('ID'), required=True)
-#     description = forms.CharField(max_length=80, label=_('Description'), required=False)
-#     released = forms.BooleanField(required=False, label=_('Released'))
+class SourceVersionsEditForm(forms.Form):
+    """
+    Form to edit a source version
+    """
+    required_css_class = 'required'
+
+
+
+class SourceVersionsRetireForm(forms.Form):
+    """
+    Form to retire a source version
+    """
+    required_css_class = 'required'
+
+

@@ -33,11 +33,11 @@
 	    			{% if source_version.owner_type == 'Organization' %}
 	    				{% url 'source-version-concepts' org=source_version.owner source=source.id source_version=source_version.id as source_version_concepts_url %}
 	    				{% url 'source-version-edit' org=source_version.owner source=source.id source_version=source_version.id as source_version_edit_url %}
-	    				{% url 'source-version-delete' org=source_version.owner source=source.id source_version=source_version.id as source_version_delete_url %}
+	    				{% url 'source-version-retire' org=source_version.owner source=source.id source_version=source_version.id as source_version_retire_url %}
 	    			{% else %}
 	    				{% url 'source-version-concepts' user=source_version.owner source=source.id source_version=source_version.id as source_version_concepts_url %}
 	    				{% url 'source-version-edit' user=source_version.owner source=source.id source_version=source_version.id as source_version_edit_url %}
-	    				{% url 'source-version-delete' user=source_version.owner source=source.id source_version=source_version.id as source_version_delete_url %}
+	    				{% url 'source-version-retire' user=source_version.owner source=source.id source_version=source_version.id as source_version_retire_url %}
 	    			{% endif %}
 
 		            <li class="list-group-item">
@@ -45,7 +45,7 @@
 		                {% if not source_version.is_processing %}
 		                <div class="pull-right">
 		                    <a href="{{ source_version_edit_url }}" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
-		                    <a href="{{ source_version_delete_url }}" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
+		                    <a href="{{ source_version_retire_url }}" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
 		                </div>
 		                {% endif %}
 		                <h4>

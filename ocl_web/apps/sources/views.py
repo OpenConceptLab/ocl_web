@@ -14,7 +14,9 @@ from django.core.paginator import Paginator
 from braces.views import (JsonRequestResponseMixin, LoginRequiredMixin)
 
 from libs.ocl import OCLapi, OCLSearch
-from .forms import (SourceCreateForm, SourceEditForm, SourceVersionsNewForm)
+from .forms import (
+    SourceCreateForm, SourceEditForm,
+    SourceVersionsNewForm, SourceVersionsEditForm, SourceVersionsRetireForm)
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
@@ -443,12 +445,12 @@ class SourceVersionsEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
 
 
-class SourceVersionsDeleteView(LoginRequiredMixin, UserOrOrgMixin, FormView):
+class SourceVersionsRetireView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     """
-    View to delete source version
+    View to retire source version
     """
 
-    form_class = SourceVersionsDeleteForm
+    form_class = SourceVersionsRetireForm
     template_name = "sources/source_versions_delete.html"
 
     def get_initial(self):
