@@ -20,8 +20,8 @@
 		<div class="col-lg-8">
 		  	<form class="form-horizontal" id="source_create_form" method="post" action=".">
 				{% csrf_token %}
-				{% bootstrap_form form layout="horizontal" %}
-				{% buttons layout="horizontal" %}
+				{% bootstrap_form form %}
+				{% buttons %}
 				<button type="submit" class="btn btn-primary">{% trans "Create Source Version" %}</button>
 				<button type="submit" class="btn btn-warning">{% trans "Cancel" %}</button>
 				{% endbuttons %}
