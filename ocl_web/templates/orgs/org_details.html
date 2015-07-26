@@ -36,13 +36,14 @@
     	</div>
 
         <!-- Org members -->
+        {# TODO: Change this to a django form to add/remove org members #}
         <div class="col-md-4">
 			<div class="panel panel-default" ng-app="ConceptApp" ng-controller="MemberRemoveController">
 				<div class="panel-heading"><h3 class="panel-title">Members</h3></div>
 				<div class="panel-body">
 					{% include 'includes/ng_alerts_incl.html' %}
 					{% if_can_change org %}
-						<a href="{% url 'org-member-add' org.id %}">Add Member</a>
+						<a href="{% url 'org-member-add' org.id %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add Member" %}</a>
 						{% for member in members %}
 							<h4>{% user_label member %}<button type="button" class="btn btn-link" data-org='{{org.id}}' ng-click="removeMember('{{org.id}}', '{{member.username}}')" ><span class="glyphicon glyphicon-trash"></span></button></h4>
 					

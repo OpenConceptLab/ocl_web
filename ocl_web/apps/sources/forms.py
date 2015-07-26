@@ -100,10 +100,15 @@ class SourceVersionsNewForm(forms.Form):
         label=_('ID'),
         max_length=128,
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': "e.g. 'v1.1' or '2015-06-10-beta'"}))
+        widget=forms.TextInput(
+            attrs={'style':'width:480px;',
+                   'placeholder': "Name this source version (e.g. 'v1.1' or '2015-06-10-beta')"}))
     description = forms.CharField(
         label=_('Description'),
-        required=True)
+        required=True,
+        widget=forms.Textarea(attrs={'style':'width:480px;',
+                                     'rows':5,
+                                     'placeholder':'Describe this source version'}))
 
 
 
