@@ -118,12 +118,21 @@ class SourceVersionsEditForm(forms.Form):
     """
     required_css_class = 'required'
 
+    def __init__(self, *args, **kwargs):
+        """ Dirty trick to delete one field for edit form. django 1.6 lets you do this
+            officially.
+        """
+        super(SourceEditForm, self).__init__(*args, **kwargs)
+        self.fields.pop('id')
+
 
 
 class SourceVersionsRetireForm(forms.Form):
-    """
-    Form to retire a source version
+    """ 
+    Form to retire a source version - empty form
     """
     required_css_class = 'required'
+
+
 
 

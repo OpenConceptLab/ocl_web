@@ -351,7 +351,10 @@ class SourceVersionsNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     template_name = "sources/source_versions_new.html"
 
     def get_initial(self):
-        """ Load initial form data """
+        """
+        Load initial form data
+        """
+        context = super(SourceVersionsNewView, self).get_initial()
         self.get_args()
 
         # Load the most recent source version
@@ -450,8 +453,8 @@ class SourceVersionsRetireView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     View to retire source version
     """
 
-    form_class = SourceVersionsRetireForm
-    template_name = "sources/source_versions_delete.html"
+    form_class = SourceVersionsEditForm
+    template_name = "sources/source_versions_retire.html"
 
     def get_initial(self):
         """ Load initial form data """
