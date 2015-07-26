@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load ocl_tags %}
+
+
+{% block title %}{% trans "New Source Version" %} - Open Concept Lab{% endblock %}
+
+
+{% block content %}
+<h3>
+	{% source_owner_label source %} / {% source_label source %}
+	&nbsp;/&nbsp;<span class="glyphicon glyphicon-asterisk" style="color:#e5e5e5;"></span>&nbsp;&nbsp;{% trans 'New Source Version' %}
+</h3>
+
+<div class="container">
+	<div class="row">
+
+		<!-- New Source Version Form -->
+		<div class="col-lg-8">
+		  	<form class="form-horizontal" id="source_create_form" method="post" action=".">
+				{% csrf_token %}
+				{% bootstrap_form form layout="horizontal" %}
+				{% buttons layout="horizontal" %}
+				<button type="submit" class="btn btn-primary">{% trans "Create Source Version" %}</button>
+				<button type="submit" class="btn btn-warning">{% trans "Cancel" %}</button>
+				{% endbuttons %}
+		  	</form>
+		</div>
+
+		<!-- Tip -->
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+				<div class="panel-body">
+					<p>Create a new <strong>Source Version</strong> to save the state of a source's concepts and
+					mappings at a specific point in time.</p>
+					<p>A <strong>Released</strong> source version indicates to your users that a particular source
+					version is prepared for public consumption.</p>
+				</div>
+			</div>
+		</div>
+	</div> <!-- /row -->
+</div> <!-- /container -->
+{% endblock %}

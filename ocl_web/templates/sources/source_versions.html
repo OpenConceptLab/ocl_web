@@ -18,7 +18,7 @@
 
 		<!-- Source version search bar -->
         <div class="form-group">
-	        {% simple_pager current_page 'source-version' url=pagination_url %}
+	        {% simple_pager current_page 'source version' url=pagination_url %}
 
 			<div style="margin-left:40px;padding-right:10px;padding-top:5px;">
 				<a href="{{ source_version_new_url }}"><span class="glyphicon glyphicon-plus"></span> {% trans "New Source Version" %}</a>&nbsp;&nbsp;&nbsp;
@@ -69,10 +69,13 @@
 		<div class="panel panel-default">
 			<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
 			<div class="panel-body">
-				<p>Create a new <strong>Source Version</strong> to save the state of a source's concepts and
-				mappings at a specific point in time.</p>
-				<p>A <strong>Released</strong> source version indicates to your users that a particular source
-				version is prepared for public consumption.</p>
+				<h3>Version Naming Suggestions</h3>
+				<p>It is recommended that version names begin with the letter "v". For example: "v2.0" or "v1.0.3".</p>
+				<p>If the tag isn’t meant for public consumption, it is common practice to indicate "alpha" or "beta" following the version name (e.g. "v0.9-beta.2").</p>
+				<h3>Releasing</h3>
+				<p>To release a source version, first create it using this form. After it is done processing, you may tag it as "released". Note that initial processing of a form version may take several hours if there are a many resources to process.</a></p>
+				<h3>Semantic Versioning</h3>
+				<p>If you’re new to versioning releases, we highly recommend reading about <a href="http://semver.org/" target="_blank">semantic versioning.</a></p>
 			</div>
 		</div>
 	</div>

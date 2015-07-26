@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    Forms for sources.
+Forms for sources.
 """
 from django.utils.translation import ugettext as _
 from django import forms
@@ -8,6 +8,7 @@ from django import forms
 from libs.ocl import OCLapi
 
 from apps.core.views import _get_source_type_list, _get_locale_list
+
 
 
 class SourceCreateForm(forms.Form):
@@ -20,17 +21,20 @@ class SourceCreateForm(forms.Form):
         label=_('Source Short Name'),
         max_length=128,
         required=True,
-        help_text=_('Your new source will live at: https://OpenConceptLab.org/[:OwnerType]/[:Owner]/sources/<span id="source-name">[:SourceName]</span>'),
+        help_text=_('Your new source will live at: https://OpenConceptLab.org/[:OwnerType]/'
+                    '[:Owner]/sources/<span id="source-name">[:SourceName]</span>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. ICD-10"}))
     full_name = forms.CharField(
         label=_('Source Full Name'),
         max_length=256,
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': "e.g. International Classification for Diseases v10"}))
+        widget=forms.TextInput(
+            attrs={'placeholder': "e.g. International Classification for Diseases v10"}))
     website = forms.URLField(
         label=_('Website'),
         required=False,
-        widget=forms.TextInput(attrs={'placeholder': "e.g. http://apps.who.int/classifications/icd10/"}))
+        widget=forms.TextInput(
+            attrs={'placeholder': "e.g. http://apps.who.int/classifications/icd10/"}))
     source_type = forms.ChoiceField(
         choices=[(v, v) for v in _get_source_type_list()],
         label=_('Source Type'),
@@ -71,7 +75,11 @@ class SourceCreateForm(forms.Form):
         return concept_id
 
 
+
 class SourceEditForm(SourceCreateForm):
+    """
+    Form to edit a source
+    """
 
     def __init__(self, *args, **kwargs):
         """ Dirty trick to delete one field for edit form. django 1.6 lets you do this
@@ -81,13 +89,30 @@ class SourceEditForm(SourceCreateForm):
         self.fields.pop('short_name')
 
 
-class SourceVersionAddForm(forms.Form):
+
+class SourceVersionsNewForm(forms.Form):
     """
-        TODO: Removed. Not used. Now json/angular.
-        Add a source version form
+    Form to create a new source version
     """
     required_css_class = 'required'
 
-    id = forms.CharField(max_length=30, label=_('ID'), required=True)
-    description = forms.CharField(max_length=80, label=_('Description'), required=False)
-    released = forms.BooleanField(required=False, label=_('Released'))
+    id = forms.CharField(
+        label=_('ID'),
+        max_length=128,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': "e.g. 'v1.1' or '2015-06-10-beta'"}))
+    description = forms.CharField(
+        label=_('Description'),
+        required=True)
+
+
+
+# class SourceVersionAddForm(forms.Form):
+#     """
+#         TODO: Removed. Not used. Now json/angular.
+#         Add a source version form
+#     """
+#     required_css_class = 'required'
+#     id = forms.CharField(max_length=30, label=_('ID'), required=True)
+#     description = forms.CharField(max_length=80, label=_('Description'), required=False)
+#     released = forms.BooleanField(required=False, label=_('Released'))

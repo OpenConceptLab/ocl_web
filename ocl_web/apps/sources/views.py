@@ -14,7 +14,7 @@ from django.core.paginator import Paginator
 from braces.views import (JsonRequestResponseMixin, LoginRequiredMixin)
 
 from libs.ocl import OCLapi, OCLSearch
-from .forms import (SourceCreateForm, SourceEditForm)
+from .forms import (SourceCreateForm, SourceEditForm, SourceVersionsNewForm)
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
@@ -340,18 +340,99 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
 
 
 
-class SourceVersionsNewView(UserOrOrgMixin, SourceReadBaseView):
+class SourceVersionsNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     """
-    OCL Source detailed view.
+    View to Create new source version
     """
 
-    template_name = "sources/source_version_new.html"
+    form_class = SourceVersionsNewForm
+    template_name = "sources/source_versions_new.html"
+
+    def get_initial(self):
+        """ Load initial form data """
+        self.get_args()
+
+        # Load the most recent source version
+        api = OCLapi(self.request, debug=True)
+        source_version = None
+        if self.from_org:
+            source_version = api.get('orgs', self.org_id, 'sources', self.source_id,
+                                     'versions', params={'limit':1}).json()
+        else:
+            source_version = api.get('users', self.user_id, 'sources', self.source_id,
+                                     'versions', params={'limit':1}).json()
+
+        data = {
+            'request': self.request,
+            'from_user': self.from_user,
+            'from_org': self.from_org,
+            'user_id': self.user_id,
+            'org_id': self.org_id,
+            'owner_type': self.owner_type,
+            'owner_id': self.owner_id,
+            'source_id': self.source_id,
+            'previous_version': source_version.id,
+            'released': False
+        }
+        return data
 
     def get_context_data(self, *args, **kwargs):
         """
-        Get context data for the new source version
+        Load context data needed for the view
         """
-        return
+        context = super(SourceVersionsNewView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the source
+        api = OCLapi(self.request, debug=True)
+        source = None
+        if self.from_org:
+            source = api.get('orgs', self.org_id, 'sources', self.source_id).json()
+        else:
+            source = api.get('users', self.user_id, 'sources', self.source_id).json()
+
+        # Set the context
+        context['source'] = source
+
+        return context
+
+    def form_valid(self, form):
+        """
+        Submits the form to the API
+        """
+
+        print form.cleaned_data
+        self.get_args()
+
+        # Submit the new source version
+        data = form.cleaned_data
+        api = OCLapi(self.request, debug=True)
+        if self.from_org:
+            result = api.create_source_version_by_org(self.org_id, self.source_id, data)
+        else:
+            result = api.create_source_version_by_user(self.user_id, self.source_id, data)
+        if not result.status_code == requests.codes.created:
+            error_msg = result.json().get('detail', 'Error')
+            messages.add_message(self.request, messages.ERROR, error_msg)
+            return HttpResponseRedirect(self.request.path)
+
+        messages.add_message(self.request, messages.INFO, _('Source version created!'))
+
+        if self.from_org:
+            return HttpResponseRedirect(reverse('source-versions',
+                                                kwargs={'org': self.org_id,
+                                                        'source': self.source_id}))
+        else:
+            return HttpResponseRedirect(reverse('source-versions',
+                                                kwargs={'user': self.user_id,
+                                                        'source': self.source_id}))
+
+
+
+
+
+
+
 
 
 
