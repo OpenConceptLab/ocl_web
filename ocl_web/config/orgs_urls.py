@@ -16,7 +16,7 @@ from apps.orgs.views import (
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
     SourceCreateView, SourceEditView, SourceVersionsView,
-    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsDeleteView)
+    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView)
 from apps.mappings.views import (
     MappingDetailsView, MappingNewView, MappingEditView)
 from apps.concepts.views import (
@@ -140,7 +140,7 @@ urlpatterns = patterns(
 
     # /orgs/:org/sources/:source/versions/retire/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/retire/$',
-        SourceVersionsDeleteView.as_view(), name='source-versions-retire'),
+        SourceVersionsRetireView.as_view(), name='source-versions-retire'),
 
 
 
