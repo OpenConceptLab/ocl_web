@@ -136,11 +136,11 @@ urlpatterns = patterns(
 
     # /orgs/:org/sources/:source/versions/edit/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/edit/$',
-        SourceVersionsEditView.as_view(), name='source-versions-edit'),
+        SourceVersionsEditView.as_view(), name='source-version-edit'),
 
     # /orgs/:org/sources/:source/versions/retire/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/retire/$',
-        SourceVersionsRetireView.as_view(), name='source-versions-retire'),
+        SourceVersionsRetireView.as_view(), name='source-version-retire'),
 
 
 

@@ -50,13 +50,13 @@
 		                    <a href="{{ source_version_edit_url }}" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
 		                    <a href="{{ source_version_retire_url }}" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
 		                </div>
-
 		                {% endif %}
+
 		                <h4>
 		                	<a href="{{ source_version_concepts_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} [ </span><span class="resource-label-id-code">{{ source_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
-		                    
+
 		                    {% if source_version.released %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">{% trans "Released" %}</span></span>{% endif %}
-		                    
+
 		                    {% if source_version.is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>{% endif %}
 		                </h4>
 
