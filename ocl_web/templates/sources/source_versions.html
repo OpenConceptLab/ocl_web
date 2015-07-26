@@ -12,74 +12,74 @@
 {% endif %}
 
 <div class="container" style="margin-top: 20px;">
-<div class="row">
+	<div class="row">
 
-	<div class="col-md-8">
+		<div class="col-md-8">
 
-		<!-- Source version search bar -->
-        <div class="form-group">
-	        {% simple_pager current_page 'source version' url=pagination_url %}
+			<!-- Source version search bar -->
+	        <div class="form-group">
+		        {% simple_pager current_page 'source version' url=pagination_url %}
 
-			<div style="margin-left:40px;padding-right:10px;padding-top:5px;">
-				<a href="{{ source_version_new_url }}"><span class="glyphicon glyphicon-plus"></span> {% trans "New Source Version" %}</a>&nbsp;&nbsp;&nbsp;
-				<label class="checkbox-inline text-muted"><input type="checkbox" name="source-version-filter" value="released" disabled /> {% trans "Released" %}</label>
-				<label class="checkbox-inline text-muted"><input type="checkbox" name="source-version-filter" value="is_processing" disabled /> {% trans "Processing" %}</label>
-			</div>
-    	</div>
+				<div style="margin-left:40px;padding-right:10px;padding-top:5px;">
+					<a href="{{ source_version_new_url }}"><span class="glyphicon glyphicon-plus"></span> {% trans "New Source Version" %}</a>&nbsp;&nbsp;&nbsp;
+					<label class="checkbox-inline text-muted"><input type="checkbox" name="source-version-filter" value="released" disabled /> {% trans "Released" %}</label>
+					<label class="checkbox-inline text-muted"><input type="checkbox" name="source-version-filter" value="is_processing" disabled /> {% trans "Processing" %}</label>
+				</div>
+	    	</div>
 
-		<!-- Source version search results -->
-        <ul>
-    		{% for source_version in source_versions %}
-    			{% if source_version.owner_type == 'Organization' %}
-    				{% url 'source-version-concepts' org=source_version.owner source=source.id source_version=source_version.id as source_version_url %}
-    			{% else %}
-    				{% url 'source-version-concepts' user=source_version.owner source=source.id source_version=source_version.id as source_version_url %}
-    			{% endif %}
+			<!-- Source version search results -->
+	        <ul>
+	    		{% for source_version in source_versions %}
+	    			{% if source_version.owner_type == 'Organization' %}
+	    				{% url 'source-version-concepts' org=source_version.owner source=source.id source_version=source_version.id as source_version_url %}
+	    			{% else %}
+	    				{% url 'source-version-concepts' user=source_version.owner source=source.id source_version=source_version.id as source_version_url %}
+	    			{% endif %}
 
-	            <li class="list-group-item">
-	                <div class="search-result-col-icon pull-left" style="padding-top:0;padding-right:14px;margin-bottom:20px;"><span class="search-result-icon"><span class="glyphicon glyphicon-asterisk"></span></span></div>
-	                {% if not source_version.is_processing %}
-	                <div class="pull-right">
-	                    <button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
-	                    <button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
-	                </div>
-	                {% endif %}
-	                <h4>
-	                	<a href="{{ source_version_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} [ </span><span class="resource-label-id-code">{{ source_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
-	                    {% if source_version.released %}
-	                    	<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">{% trans "Released" %}</span></span>
-	                    {% endif %}
-	                    {% if source_version.is_processing %}
-	                    	<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>
-	                    {% endif %}
-	                </h4>
-	                <p>
-	                    {% if source_version.description %}<span>{{ source_version.description }}<br /></span>{% endif %}
-	                    <span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ source_version.created_on|smart_datetime }}</span>
-	                </p>
-	            </li>
-            {% empty %}
-	            <li class="list-group-item"><h3><small>No source versions.</small></h3></li>
-            {% endfor %}
-        </ul>
-	</div>
+		            <li class="list-group-item">
+		                <div class="search-result-col-icon pull-left" style="padding-top:0;padding-right:14px;margin-bottom:20px;"><span class="search-result-icon"><span class="glyphicon glyphicon-asterisk"></span></span></div>
+		                {% if not source_version.is_processing %}
+		                <div class="pull-right">
+		                    <button type="button" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
+		                    <button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
+		                </div>
+		                {% endif %}
+		                <h4>
+		                	<a href="{{ source_version_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} [ </span><span class="resource-label-id-code">{{ source_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
+		                    {% if source_version.released %}
+		                    	<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">{% trans "Released" %}</span></span>
+		                    {% endif %}
+		                    {% if source_version.is_processing %}
+		                    	<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>
+		                    {% endif %}
+		                </h4>
+		                <p>
+		                    {% if source_version.description %}<span>{{ source_version.description }}<br /></span>{% endif %}
+		                    <span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ source_version.created_on|smart_datetime }}</span>
+		                </p>
+		            </li>
+	            {% empty %}
+		            <li class="list-group-item"><h3><small>No source versions.</small></h3></li>
+	            {% endfor %}
+	        </ul>
+		</div>
 
-	<!-- Tip -->
-	<div class="col-md-4">
-		<div class="panel panel-default">
-			<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
-			<div class="panel-body">
-				<h3>Version Naming Suggestions</h3>
-				<p>It is recommended that version names begin with the letter "v". For example: "v2.0" or "v1.0.3".</p>
-				<p>If the tag isn’t meant for public consumption, it is common practice to indicate "alpha" or "beta" following the version name (e.g. "v0.9-beta.2").</p>
-				<h3>Releasing</h3>
-				<p>To release a source version, first create it using this form. After it is done processing, you may tag it as "released". Note that initial processing of a form version may take several hours if there are a many resources to process.</a></p>
-				<h3>Semantic Versioning</h3>
-				<p>If you’re new to versioning releases, we highly recommend reading about <a href="http://semver.org/" target="_blank">semantic versioning.</a></p>
+
+		<!-- Tip -->
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+				<div class="panel-body">
+					<p class="small">Create a new <strong>Source Version</strong> to save the state of a source's concepts and
+					mappings at a specific point in time.</p>
+					<p class="small">A <strong>Released</strong> source version indicates to your users that a particular source
+					version is prepared for public consumption.</p>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
+
+	</div> <!-- /row -->
+</div> <!-- /container -->
 {% endblock tab-content %}
 
 

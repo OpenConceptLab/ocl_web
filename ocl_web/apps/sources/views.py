@@ -371,7 +371,7 @@ class SourceVersionsNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             'owner_type': self.owner_type,
             'owner_id': self.owner_id,
             'source_id': self.source_id,
-            'previous_version': source_version.id,
+            'previous_version': source_version['id'],
             'released': False
         }
         return data
