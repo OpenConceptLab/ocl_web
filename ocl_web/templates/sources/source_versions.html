@@ -6,9 +6,9 @@
 
 {% block tab-content %}
 {% if source.owner_type == 'Organization' %}
-	{% url 'source-versions-new' org=source.owner source=source.id as source_version_new_url %}
+	{% url 'source-version-new' org=source.owner source=source.id as source_version_new_url %}
 {% else %}
-	{% url 'source-versions-new' user=source.owner source=source.id as source_version_new_url %}
+	{% url 'source-version-new' user=source.owner source=source.id as source_version_new_url %}
 {% endif %}
 
 <div class="container" style="margin-top: 20px;">
