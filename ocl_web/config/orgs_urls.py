@@ -15,7 +15,8 @@ from apps.orgs.views import (
     OrganizationMemberAddView, OrganizationMemberRemoveView)
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
-    SourceCreateView, SourceEditView, SourceVersionsView, SourceVersionsNewView)
+    SourceCreateView, SourceEditView, SourceVersionsView,
+    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsDeleteView)
 from apps.mappings.views import (
     MappingDetailsView, MappingNewView, MappingEditView)
 from apps.concepts.views import (
@@ -129,9 +130,18 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/$',
         SourceVersionsView.as_view(), name='source-versions'),
 
-    # /orgs/:org/sources/:source/versions/
+    # /orgs/:org/sources/:source/versions/new/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/new/$',
         SourceVersionsNewView.as_view(), name='source-versions-new'),
+
+    # /orgs/:org/sources/:source/versions/edit/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/edit/$',
+        SourceVersionsEditView.as_view(), name='source-versions-edit'),
+
+    # /orgs/:org/sources/:source/versions/delete/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/delete/$',
+        SourceVersionsDeleteView.as_view(), name='source-versions-delete'),
+
 
 
 

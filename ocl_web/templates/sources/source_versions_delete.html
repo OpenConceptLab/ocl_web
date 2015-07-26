@@ -4,14 +4,13 @@
 {% load ocl_tags %}
 
 
-{% block title %}{% trans "New Source Version" %} - Open Concept Lab{% endblock %}
+{% block title %}{% trans "Delete Source Version" %} - Open Concept Lab{% endblock %}
 
 
 {% block content %}
 {% if source.owner_type == "Organization" %}
-	{% url 'source_versions' org=source.owner source=source.short_code as source_version_url %}
+	{% url '' as source_version_url %}
 {% else %}
-	{% url 'source_versions' user=source.owner source=source.short_code as source_version_url %}
 {% endif %}
 
 <h3>

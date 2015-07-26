@@ -429,6 +429,32 @@ class SourceVersionsNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
 
 
+class SourceVersionsEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
+    """
+    View to edit source version
+    """
+
+    form_class = SourceVersionsEditForm
+    template_name = "sources/source_versions_edit.html"
+
+    def get_initial(self):
+        """ Load initial form data """
+        pass
+
+
+
+class SourceVersionsDeleteView(LoginRequiredMixin, UserOrOrgMixin, FormView):
+    """
+    View to delete source version
+    """
+
+    form_class = SourceVersionsDeleteForm
+    template_name = "sources/source_versions_delete.html"
+
+    def get_initial(self):
+        """ Load initial form data """
+        pass
+
 
 
 
