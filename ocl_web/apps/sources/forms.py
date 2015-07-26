@@ -102,7 +102,7 @@ class SourceVersionsNewForm(forms.Form):
         required=True,
         widget=forms.TextInput(
             attrs={'style':'width:480px;',
-                   'placeholder': "Name this source version (e.g. 'v1.1' or '2015-06-10-beta')"}))
+                   'placeholder': "Name this source version"}))
     description = forms.CharField(
         label=_('Description'),
         required=True,

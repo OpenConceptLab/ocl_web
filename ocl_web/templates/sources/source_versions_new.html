@@ -9,9 +9,9 @@
 
 {% block content %}
 {% if source.owner_type == "Organization" %}
-	{% url 'source_versions' org=source.owner source=source.short_code as source_version_url %}
+	{% url 'source-versions' org=source.owner source=source.short_code as source_version_url %}
 {% else %}
-	{% url 'source_versions' user=source.owner source=source.short_code as source_version_url %}
+	{% url 'source-versions' user=source.owner source=source.short_code as source_version_url %}
 {% endif %}
 
 <h3>
