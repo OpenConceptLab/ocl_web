@@ -109,7 +109,9 @@ class SourceVersionsNewForm(forms.Form):
         widget=forms.Textarea(attrs={'style':'width:480px;',
                                      'rows':5,
                                      'placeholder':'Describe this source version'}))
-
+    previous_version = forms.CharField(
+        required=True,
+        widget=forms.HiddenInput())
 
 
 class SourceVersionsEditForm(forms.Form):
