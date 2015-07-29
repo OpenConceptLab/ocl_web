@@ -45,8 +45,7 @@ import string
 import re
 from os.path import join, abspath, dirname
 
-from fabric.api import local, run, cd, task, put
-from fabric.api import settings, require
+from fabric.api import local, run, cd, task, put, settings, require
 from fabric.context_managers import prefix
 from fabric.operations import sudo, prompt
 from fabric.state import env
