@@ -11,7 +11,7 @@ from apps.core.views import _get_source_type_list, _get_locale_list
 
 
 
-class SourceCreateForm(forms.Form):
+class SourceNewForm(forms.Form):
     """
         source create form
     """
@@ -76,7 +76,7 @@ class SourceCreateForm(forms.Form):
 
 
 
-class SourceEditForm(SourceCreateForm):
+class SourceEditForm(SourceNewForm):
     """
     Form to edit a source
     """

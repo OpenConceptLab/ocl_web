@@ -97,7 +97,7 @@ class MappingEditView(UserOrOrgMixin, MappingReadBaseView):
     """
     Mapping Edit view.
     """
-    template_name = "mappings/mapping_details.html"
+    template_name = "mappings/mapping_edit.html"
 
     def get_context_data(self, *args, **kwargs):
         """
@@ -111,7 +111,21 @@ class MappingNewView(UserOrOrgMixin, MappingReadBaseView):
     """
     Mapping New view.
     """
-    template_name = "mappings/mapping_details.html"
+    template_name = "mappings/mapping_new.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the mapping details.
+        """
+        return
+
+
+class MappingRetireView(UserOrOrgMixin, MappingReadBaseView):
+    """
+    Mapping retire view
+    """
+
+    template_name = "mappings/mapping_retire.html"
 
     def get_context_data(self, *args, **kwargs):
         """

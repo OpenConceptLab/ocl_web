@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url, include
-from .views import SourceDetailView, SourceCreateView
+from .views import SourceDetailView, SourceNewView
 
 # TODO(paynejd@gmail.com): I believe this is file retired...
 
@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     url(r'^detail/(?P<org>[a-zA-Z0-9\-\.]+)/(?P<source>[a-zA-Z0-9\-\.]+)/$',
     	SourceDetailView.as_view(), name='source-detail'),
     url(r'^create/(?P<org>[a-zA-Z0-9\-\.]+)/$',
-    	SourceCreateView.as_view(), name='source-create-for-org'),
+    	SourceNewView.as_view(), name='source-create-for-org'),
 
     # RETIRED
 	#url(r'^$', SourceListView.as_view(), name='source-list'),

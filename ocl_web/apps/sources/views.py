@@ -15,7 +15,7 @@ from braces.views import (JsonRequestResponseMixin, LoginRequiredMixin)
 
 from libs.ocl import OCLapi, OCLSearch
 from .forms import (
-    SourceCreateForm, SourceEditForm,
+    SourceNewForm, SourceEditForm,
     SourceVersionsNewForm, SourceVersionsEditForm, SourceVersionsRetireForm)
 from apps.core.views import UserOrOrgMixin
 
@@ -563,12 +563,12 @@ class SourceDetailView(UserOrOrgMixin, SourceReadBaseView):
         return context
 
 
-class SourceCreateView(LoginRequiredMixin, UserOrOrgMixin, FormView):
+class SourceNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     """
-    View to Create new source
+    View to create new source
     """
 
-    form_class = SourceCreateForm
+    form_class = SourceNewForm
     template_name = "sources/source_create.html"
 
     def get_initial(self):
@@ -590,7 +590,7 @@ class SourceCreateView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         """
         Return org details
         """
-        context = super(SourceCreateView, self).get_context_data(*args, **kwargs)
+        context = super(SourceNewView, self).get_context_data(*args, **kwargs)
 
         self.get_args()
 
