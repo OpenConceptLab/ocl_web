@@ -50,7 +50,7 @@
 						</div>
 						<div class="list-group-item" style="overflow-x: scroll;">
 							{% for source in sources %}
-								<h4><a href="{% url 'source-home' user=source.owner source=source.short_code %}">
+								<h4><a href="{% url 'source-home' user=source.owner source=source.short_code %}" style="text-decoration: none;">
 									<span class="resource-label small source">
 										<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-th-list"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source.owner }} / </span><span class="resource-label-id-code">{{ source.short_code }}</span></span><span class="resource-label-name">{{ source.name }}</span>
 									</span>
