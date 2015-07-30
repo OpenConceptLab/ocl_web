@@ -14,12 +14,13 @@
 			<div>{% avatar object size=200 %}</div>
 			<h2>{{ ocl_user.name }}<br /><small>{{ object.username }}</small></h2>
 			<hr />
-			<div><strong>Company:</strong> {{ ocl_user.company|default:"N/A" }}</div>
-			<div><strong>Location:</strong> {{ ocl_user.location|default:"N/A"  }}</div>
-			{% if ocl_user.website %}<div><strong>Website:</strong> {{ ocl_user.website }}</div>{% endif %}
-			<div><strong>Email:</strong> {{ ocl_user.email }}</div>
-			<div><strong>Joined:</strong> {{ ocl_user.created_on|smart_date }}</div>
-			{% if api_token %}<hr /><div><strong>API Token:</strong> <span class="small">{{ api_token }}</span></div>{% endif %}
+			<p><strong>Company:</strong><br />{{ ocl_user.company|default:"N/A" }}</p>
+			<p><strong>Location:</strong><br />{{ ocl_user.location|default:"N/A"  }}</p>
+			{% if ocl_user.website %}<p><strong>Website:</strong><br />{{ ocl_user.website }}</p>{% endif %}
+			<p><strong>Email:</strong><br />{{ ocl_user.email }}</p>
+			<p><strong>Preferred Locale(s):</strong><br />{{ ocl_user.preferred_locale }}</p>
+			<p><strong>Joined:</strong><br />{{ ocl_user.created_on|smart_date }}</p>
+			{% if api_token %}<hr /><p><strong>API Token:</strong><br /><span class="small">{{ api_token }}</span></p>{% endif %}
 		</div>
 
 		<div class="col-sm-9">
