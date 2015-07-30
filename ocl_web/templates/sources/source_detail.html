@@ -108,23 +108,24 @@
 			</div>
 	</form>
 
+
+	<!-- New concept link -->
+
+			{% if_can_change source %}
 			<div class="row">
 				<div class="col-md-12">
-
-					{% if_can_change source %}
-					<div class="pull-right">
-						<a class="btn btn-link" 
 						{% if source.owner_type == 'Organization' %}
-						href="{% url 'concept-new-for-org' source.owner source.id %}"
+							{% url 'concept-new' org=source.owner source=source.id as concept_new_url %}
 						{% else %}
-						href="{% url 'concept-new-for-user' source.owner source.id %}"
+							{% url 'concept-new' user=source.owner source=source.id as concept_new_url %}
 						{% endif %}
-						><span class="glyphicon glyphicon-plus"></span>
-						{% trans 'Add Concept' %}</a>
+					<div class="pull-right">
+						<a class="btn btn-link" href="{{ concept_new_url }}"><span class="glyphicon glyphicon-plus"></span>{% trans 'Add Concept' %}</a>
 					</div>
-					{% endif_can_change %}
 				</div>
 			</div>
+			{% endif_can_change %}
+
 
 	<!-- Display source search results -->
 

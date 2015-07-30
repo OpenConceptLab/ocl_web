@@ -36,7 +36,7 @@ urlpatterns = patterns(
 
     # /users/:user/sources/new/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/new/$',
-        SourceNewView.as_view(), name='source-create-for-user'),
+        SourceNewView.as_view(), name='source-new'),
 
     # /users/:user/sources/:source/ - points to "source-details"
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/$',
@@ -102,7 +102,7 @@ urlpatterns = patterns(
 
     # /users/:user/sources/:source/concepts/new/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/new/$',
-        ConceptNewView.as_view(), name='concept-new-for-user'),
+        ConceptNewView.as_view(), name='concept-new'),
 
     # /users/:user/sources/:source/concepts/:concept/ - points to "concept-details"
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
@@ -232,18 +232,18 @@ urlpatterns = patterns(
 
     # URL pattern for the UserListView
     url(r'^$',
-        view=UserListView.as_view(), name='list'),
+        UserListView.as_view(), name='list'),
 
     # URL pattern for the UserRedirectView
     url(r'^~redirect/$',
-        view=UserRedirectView.as_view(), name='redirect'),
+        UserRedirectView.as_view(), name='redirect'),
 
     # URL pattern for the UserDetailView
     url(r'^(?P<username>[\w@\.\+\-_]+)/$',
-        view=UserDetailView.as_view(), name='detail'),
+        UserDetailView.as_view(), name='detail'),
 
     # URL pattern for the UserUpdateView
     url(regex=r'^update/(?P<username>[\w@\.\+\-_]+)/$',
-        view=UserUpdateView.as_view(), name='update')
+        UserUpdateView.as_view(), name='update')
 
 )

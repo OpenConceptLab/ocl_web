@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     url(r'^detail/(?P<org>[a-zA-Z0-9\-\.]+)/(?P<source>[a-zA-Z0-9\-\.]+)/$',
     	SourceDetailView.as_view(), name='source-detail'),
     url(r'^create/(?P<org>[a-zA-Z0-9\-\.]+)/$',
-    	SourceNewView.as_view(), name='source-create-for-org'),
+    	SourceNewView.as_view(), name='source-new'),
 
     # RETIRED
 	#url(r'^$', SourceListView.as_view(), name='source-list'),

@@ -121,7 +121,7 @@
 				        <span class="pull-right">
 				        	{% if user.is_authenticated %}
 				        	{# TBD: probably a more complete tag to check for access #}
-							<a href="{% url "source-create-for-org" org.id %}" class="btn"><span class="glyphicon glyphicon-plus"></span>Add Source</a>
+							<a href="{% url "source-new" org=org.id %}" class="btn"><span class="glyphicon glyphicon-plus"></span>&nbsp;Add Organization Source</a>
 							{% endif %}
 						</span>
 

@@ -90,7 +90,7 @@ urlpatterns = patterns(
 
     # /orgs/:org/sources/new/ - create new source
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/new/$',
-        SourceNewView.as_view(), name='source-create-for-org'),
+        SourceNewView.as_view(), name='source-new'),
 
     # /orgs/:org/sources/:source/ - points to "source-details"
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/$',
@@ -156,7 +156,7 @@ urlpatterns = patterns(
 
     # /orgs/:org/sources/:source/concepts/new/ - create new concept
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/new/$',
-        ConceptNewView.as_view(), name='concept-new-for-org'),
+        ConceptNewView.as_view(), name='concept-new'),
 
     # /orgs/:org/sources/:source/concepts/:concept/ - points to "concept-details"
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
