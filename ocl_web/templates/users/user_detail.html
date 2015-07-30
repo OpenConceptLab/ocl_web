@@ -42,24 +42,34 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="list-group">
-						<div class="list-group-item"><h4>Sources</h4>
-							<small><p class="text-right"><a href="{% url 'source-create-for-user' ocl_user.username %}">New Source for User</a></small></p>
+						<div class="list-group-item">
+							<h4>Sources</h4>
+							{% if object == request.user %}
+								<small><p class="text-right"><a href="{% url 'source-new' user=ocl_user.username %}">New User Source</a></small></p>
+							{% endif %}
 						</div>
-						{% for source in sources %}
-							<a class="list-group-item" href="{% url 'source-home' user=source.owner source=source.short_code %}">{{ source.name }}</a>
-						{% empty %}
-						<span class="list-group-item">
-							<h3><small>No Sources</small></h3>
-						</span>
-						{% endfor %}
+						<div class="list-group-item" style="overflow-x: scroll;">
+							{% for source in sources %}
+								<h4><a href="{% url 'source-home' user=source.owner source=source.short_code %}">
+									<span class="resource-label small source">
+										<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-th-list"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source.owner }} / </span><span class="resource-label-id-code">{{ source.short_code }}</span></span><span class="resource-label-name">{{ source.name }}</span>
+									</span>
+								</a></h4>
+							{% empty %}
+								<h3><small>No Sources</small></h3>
+							{% endfor %}
+						</div>
 					</div>
 				</div>
 
 				<!-- Organization Membership List -->
 				<div class="col-sm-6">
 					<div class="list-group">
-						<div class="list-group-item"><h4>Organization Membership</h4>
-							<small><p class="text-right"><a href="{% url 'org-new' %}">Create New Organization</a></small></p>
+						<div class="list-group-item">
+							<h4>Organization Membership</h4>
+							{% if object == request.user %}
+								<small><p class="text-right"><a href="{% url 'org-new' %}">Create New Organization</a></small></p>
+							{% endif %}
 						</div>
 						<div class="list-group-item" style="overflow-x: scroll;">
 							{% for org in orgs %}
