@@ -19,7 +19,7 @@ class CollectionCreateForm(forms.Form):
         label=_('Collection Short Name'), 
         max_length=128, 
         required=True,
-        help_text=_('Short Name (e.g. ICD-10), Your new collection will live at: https://OpenConceptLab.org/[OwnerType]/[Owner]/collections/<span id="collection-name">[CollectionName]</span>'))
+        help_text=_('Short Name (e.g. ICD-10), Your new collection will live at: https://OpenConceptLab.com/[OwnerType]/[Owner]/collections/<span id="collection-name">[CollectionName]</span>'))
     full_name = forms.CharField(
         label=_('Collection Full Name'),
         required=True,

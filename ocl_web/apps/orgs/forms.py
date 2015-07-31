@@ -9,7 +9,7 @@ class OrganizationNewForm(forms.Form):
         max_length="128",
         required=True,
         help_text='Your new organization will live at: ' +
-                  'https://OpenConceptLab.org/orgs/<span id="org-name">[OrganizationName]',
+                  'https://OpenConceptLab.com/orgs/<span id="org-name">[OrganizationName]',
         widget=forms.TextInput(attrs={'placeholder': "e.g. WHO"}))
     full_name = forms.CharField(
         label=_('Organization Full Name'),

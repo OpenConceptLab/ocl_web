@@ -74,7 +74,7 @@ def dev():
 
     Put in this task all the environment specific variables and settings.
     """
-    env.hosts = ['dev.openconceptlab.org', ]
+    env.hosts = ['dev.openconceptlab.com', ]
     env.user = 'deploy'
     env.web_domain = 'dev.openconceptlab.com'
     env.api_domain = 'api.dev.openconceptlab.com'
@@ -96,7 +96,7 @@ def staging():
     """
     Put as the first task on the command line to select staging environment.
     """
-    env.hosts = ['staging.openconceptlab.org', ]
+    env.hosts = ['staging.openconceptlab.com', ]
     env.user = 'deploy'
     env.web_domain = 'staging.openconceptlab.com'
     env.api_domain = 'api.staging.openconceptlab.com'
@@ -115,11 +115,11 @@ def production():
     """
     Put as the first task on the command line to select production environment.
     """
-    env.hosts = ['www.openconceptlab.org', ]
+    env.hosts = ['www.openconceptlab.com', ]
     env.user = 'deploy'
     env.site_spec = 'prod'
-    env.web_domain = 'www.openconceptlab.org'
-    env.api_domain = 'api.openconceptlab.org'
+    env.web_domain = 'www.openconceptlab.com'
+    env.api_domain = 'api.openconceptlab.com'
     env.OCL_API_TOKEN = 'dummy'
     env.OCL_ANON_API_TOKEN = 'dummy'
     env.random_string = _random_string(32)

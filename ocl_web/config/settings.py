@@ -414,7 +414,7 @@ class Production(Common):
 
     ########## EMAIL
     DEFAULT_FROM_EMAIL = values.Value(
-            'ocl_web <ocl_web-noreply@openconceptlab.org>')
+            'ocl_web <ocl_web_noreply@openconceptlab.com>')
 #    EMAIL_HOST = values.Value('smtp.sendgrid.com')
 #    EMAIL_HOST_PASSWORD = values.SecretValue(environ_prefix="", environ_name="SENDGRID_PASSWORD")
 #    EMAIL_HOST_USER = values.SecretValue(environ_prefix="", environ_name="SENDGRID_USERNAME")
