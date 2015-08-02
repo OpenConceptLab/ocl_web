@@ -7,7 +7,7 @@
 {% block content %}
 
 <h3>
-    {% source_owner_label source %} / {% source_label source %} / {% concept_label concept %} / {% trans 'Update Concept' %}
+    {% resource_owner_label concept %} / {% source_label source %} / {% concept_label concept %} / {% trans 'Update Concept' %}
     {# TODO: Only show if admin or owner #}
     {% if not concept.retired %}
     <a href="{% url 'concept-retire'  org=source.owner source=source.id concept=concept.id %}" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>

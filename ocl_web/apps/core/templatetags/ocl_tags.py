@@ -10,18 +10,20 @@ import dateutil.parser
 from django import template
 from django.template.base import (Node, NodeList)
 
-
 from libs.ocl import OCLapi
 
 
 register = template.Library()
 
 
+
+## Custom Date Filters
+
 @register.filter
 def smart_datetime(iso8601_dt):
     """
-        Return a friendly date time display.
-        Currently just localized, but eventually "two days ago", etc.
+    Return a friendly date time display.
+    Currently just localized, but eventually "two days ago", etc.
     """
     dt = dateutil.parser.parse(iso8601_dt)
     return dt.strftime('%c')
@@ -30,42 +32,57 @@ def smart_datetime(iso8601_dt):
 @register.filter
 def smart_date(iso8601_dt):
     """
-        Return a friendly date display.
-        Currently just localized, but eventually "two days ago", etc.
+    Return a friendly date display.
+    Currently just localized, but eventually "two days ago", etc.
     """
     dt = dateutil.parser.parse(iso8601_dt)
     return dt.strftime('%x')
 
 
+
+## Custom Tags
+
 @register.inclusion_tag('includes/org_label_incl.html')
 def org_label(org, label_size=None):
+    """
+    Independent org label, no breadcrumb
+    [:org-icon :org-id]
+    """
     return {'org':org, 'label_size':label_size}
 
 
 @register.inclusion_tag('includes/user_label_incl.html')
 def user_label(user, label_size=None):
+    """
+    Independent user label, no breadcrumb
+    [:user-icon :username]
+    """
     return {'user':user, 'label_size':label_size}
 
 
-@register.inclusion_tag('includes/source_owner_label_incl.html')
-def source_owner_label(source, label_size=None):
+@register.inclusion_tag('includes/resource_owner_label_incl.html')
+def resource_owner_label(resource, label_size=None):
     """
-    Display a label for a source owner, which can be either a
-    user or an organization.
-    Note that this tag displays the *owner* of the source, not the source.
+    Display a independent label for the owner (a user or organization) of a resource,
+    based on the "owner_type" and "source". Ex:
+    
+        [:owner-type-icon :owner-id]
 
-    :param source: is the OCL source object.
+    :param resource: OCL resource with owner_type and owner attributes
+    :param label_size: Currently ignored
     """
     from_org = source.get('owner_type').lower() == 'organization'
     return {
-        'from_org': from_org,
-        'source': source,
+        'resource_owner_type': source.owner_type,
+        'resource_owner': source.owner,
         'label_size': label_size
     }
 
 @register.inclusion_tag('includes/source_label_incl.html')
 def source_label(source, label_size=None):
-    """ Source label """
+    """
+    Source label
+    """
     return {'source':source, 'label_size':label_size}
 
 

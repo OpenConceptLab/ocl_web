@@ -6,15 +6,14 @@
 {% block title %}{% trans "Add Collection" %}{% endblock %}
 {% block content %}
 
-	<h3>
-
+<h3>
 {% if org %}
     {% org_label org %}
 {% else %}
     {% user_label ocl_user %}
 {% endif %}
 / <span class="glyphicon glyphicon-list" style="color:#e5e5e5;"></span>&nbsp;&nbsp;{% trans 'Add Collection' %}
-	</h3>
+</h3>
 
 
 

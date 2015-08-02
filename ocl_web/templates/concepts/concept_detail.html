@@ -16,7 +16,7 @@
 				<div style="display:inline-block;padding-left:20px">
 
 					<h3>
-						{% source_owner_label source %} / {% source_label source %} / {% concept_label concept %}
+						{% resource_owner_label concept %} / {% source_label source %} / {% concept_label concept %}
 						{% if source.owner_type == 'Organization' %}
 						<a href="{% url 'concept-edit' org=source.owner source=source.id concept=concept.id %}" class="small text-muted"><span class="glyphicon glyphicon-cog"></span></a>
 						{% else %}

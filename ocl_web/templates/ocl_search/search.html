@@ -206,7 +206,7 @@
 				</h4>
 
 				<p>
-					{% if result.source_type %}<em>Class:</em> {{ result.concept_class }}<br />{% endif %}
+					<em>Source Type:</em> {{ result.source_type|default:"None" }}<br />
 					{% if result.description %}{{ result.description }}<br />{% endif %}
 					{% if result.updated_on %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
 				</p>

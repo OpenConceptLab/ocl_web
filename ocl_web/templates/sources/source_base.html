@@ -21,7 +21,7 @@
 				<div class="resource-header-icon"><span class="glyphicon glyphicon-th-list"></span></div>
 				<div class="resource-header-label">
 					<h3>
-						{% source_owner_label source %} / {% source_label source %}
+						{% resource_owner_label source %} / {% source_label source %}
 						{% if_can_change source %}
 							<a href="{{ source_edit_url }}" class="small text-muted" title="Edit Source"><span class="glyphicon glyphicon-cog"></span></a>
 						{% endif_can_change source %}

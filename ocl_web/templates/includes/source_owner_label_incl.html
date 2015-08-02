@@ -1,5 +1,0 @@
-{% if source.owner_type == 'Organization' %}
-<a href="{% url 'org-home' org=source.owner %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ source.owner }}</a>
-{% else %}
-<a href="{% url 'users:detail' username=source.owner %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ source.owner }}</a>
-{% endif %}

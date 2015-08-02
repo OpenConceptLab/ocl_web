@@ -137,7 +137,7 @@
                         </span>
                     </a></h4>
                     <p>
-                        <em>Source type:</em> {{ result.source_type }}<br />
+                        <em>Source Type:</em> {{ result.source_type|default:"None" }}<br />
                         {% if result.description %}{{ result.description }}<br />{% endif %}
                         {% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
                     </p>
