@@ -67,6 +67,7 @@ class Common(Configuration):
         'allauth',  # registration
         'allauth.account',  # registration
         'allauth.socialaccount',  # registration
+        'django.contrib.humanize', # user-friendly django template tags
     )
     ########## END APP CONFIGURATION
 

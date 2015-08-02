@@ -44,7 +44,7 @@
 				<div class="col-sm-6">
 					<div class="list-group">
 						<div class="list-group-item">
-							<h4>Sources</h4>
+							<h4>User Sources</h4>
 							{% if object == request.user %}
 								<small><p class="text-right"><a href="{% url 'source-new' user=ocl_user.username %}">New User Source</a></small></p>
 							{% endif %}
