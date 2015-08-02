@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load ocl_tags %}
 {% load bootstrap3 %}
+{% load humanize %}
 
 
 {% block tab-content %}
@@ -18,7 +19,7 @@
                 <div class="filter-group-body">
                     {% for facet_key, facet_option in facet.options.iteritems %}
                         {% if facet_option.option_num > 0 %}
-                            <div class="checkbox"><label><input type="checkbox" name="{{ facet.search_filter_name }}" value="{{ facet_option.option_value }}" {% if facet_option.selected %}checked{% endif %}>{{ facet_option.option_name }}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ facet_option.option_num }}</span></label></div>
+                            <div class="checkbox"><label><input type="checkbox" name="{{ facet.search_filter_name }}" value="{{ facet_option.option_value }}" {% if facet_option.selected %}checked{% endif %}>{{ facet_option.option_name }}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ facet_option.option_num|intcomma }}</span></label></div>
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -48,8 +49,8 @@
                         <span>Sort by:&nbsp;</span>
                     </div>
 
+                    {% comment %}
                     <div class="form-group">
-                        {% comment %}
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
                                 <span class="text-muted">Filter:</span> <strong>None</strong> <span class="caret"></span>
@@ -61,8 +62,8 @@
                                 <li><a href="#">Collections</a></li>
                             </ul>
                         </div> {# filter #}
-                        {% endcomment %}
                     </div>
+                    {% endcomment %}
 
                 </div> <!-- /col-md-12 -->
             </div> <!-- /row -->
@@ -70,7 +71,7 @@
             <div class="row" style="margin-bottom:20px;">
                 <div class="col-md-12">
 
-                    {% simple_pager source_page 'Source' url=source_pagination_url %}
+                    {% simple_pager source_page 'source' url=source_pagination_url %}
 
                     <div class="form-group">
                         <div class="input-group input-group-sm">
@@ -111,32 +112,43 @@
 
         <!-- Display sources that belong to this org -->
         {% for result in sources %}
-        <div class="row row-search-result">
-            <div class="col-md-1 search-result-col-icon">
-                <span class="glyphicon glyphicon-th-list search-result-icon"></span>
-            </div>
-            <div class="col-md-11 search-result-col-content">
-                <div class="pull-right small text-muted" style="padding-top:12px;">
-                    <a href="{% url 'source-home' org=result.owner source=result.short_code %}#concepts" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts }}</a>
+            {% if result.owner_type == 'Organization' %}
+                {% url 'source-home' org=result.owner source=result.short_code as result_home_url %}
+                {% url 'source-concepts' org=result.owner source=result.short_code as result_concepts_url %}
+                {% comment %}{% url 'source-mappings' org=result.owner source=result.short_code as result_mappings_url %}{% endcomment %}
+            {% else %}
+                {% url 'source-home' user=result.owner source=result.short_code as result_home_url %}
+                {% url 'source-concepts' user=result.owner source=result.short_code as result_concepts_url %}
+                {% comment %}{% url 'source-mappings' user=result.owner source=result.short_code as result_mappings_url %}{% endcomment %}
+            {% endif %}
+
+            <div class="row row-search-result">
+                <div class="col-md-1 search-result-col-icon">
+                    <span class="glyphicon glyphicon-th-list search-result-icon"></span>
                 </div>
-                <h4><a href="{% url 'source-home' org=result.owner source=result.short_code %}" style="text-decoration: none;">
-                    <span class="resource-label small source">
-                        <span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-th-list"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / </span><span class="resource-label-id-code">{{ result.short_code }}</span>
-                        </span><span class="resource-label-name">{{ result.name }}</span>
-                    </span>
-                </a></h4>
-                <p>
-                    <em>Source type:</em> {{ result.source_type }}<br />
-                    {% if result.description %}{{ result.description }}<br />{% endif %}
-                    {% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
-                </p>
-                {% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+                <div class="col-md-11 search-result-col-content">
+                    <div class="pull-right small text-muted" style="padding-top:12px;">
+                        <a href="{{ result_concepts_url }}" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>
+                    </div>
+                    <h4><a href="{{ result_home_url }}" style="text-decoration: none;">
+                        <span class="resource-label small source">
+                            <span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-th-list"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / </span><span class="resource-label-id-code">{{ result.short_code }}</span>
+                            </span><span class="resource-label-name">{{ result.name }}</span>
+                        </span>
+                    </a></h4>
+                    <p>
+                        <em>Source type:</em> {{ result.source_type }}<br />
+                        {% if result.description %}{{ result.description }}<br />{% endif %}
+                        {% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
+                    </p>
+                    {% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+                </div>
             </div>
-        </div>
         {% endfor %}
 
         <!-- Pagination -->
         {% comment %}
+        {# TODO: Turn this back on! #}
         {% if sources %}
         <div class="row" style="text-align:center;">
             {% bootstrap_pagination source_page url=source_pagination_url %}

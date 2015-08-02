@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load ocl_tags %}
 {% load bootstrap3 %}
+{% load humanize %}
 
 
 {% block tab-content %}
@@ -21,7 +22,7 @@
 			<div class="filter-group-body">
 				{% for facet_key, facet_option in facet.options.iteritems %}
 					{% if facet_option.option_num > 0 %}
-						<div class="checkbox"><label><input type="checkbox" name="{{ facet.search_filter_name }}" value="{{ facet_option.option_value }}" {% if facet_option.selected %}checked{% endif %}>{{ facet_option.option_name }}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ facet_option.option_num }}</span></label></div>
+						<div class="checkbox"><label><input type="checkbox" name="{{ facet.search_filter_name }}" value="{{ facet_option.option_value }}" {% if facet_option.selected %}checked{% endif %}>{{ facet_option.option_name }}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ facet_option.option_num|intcomma }}</span></label></div>
 					{% endif %}
 				{% endfor %}
 			</div>
