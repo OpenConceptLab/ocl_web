@@ -108,8 +108,8 @@ form div.input-group {
 .search-result-col-content {
 }
 .search-result-col-content .label-container {
-  padding-top:12px;
-  padding-bottom:8px;
+  padding-top:10px;
+  padding-bottom:6px;
 }
 .row-pagination {
   text-align:center;
@@ -187,6 +187,7 @@ form div.input-group {
 .resource-label {
   font-size: 13pt;
   line-height: 22pt;
+  text-decoration: none;
 }
 .resource-label.small { 
   font-size: 10pt;

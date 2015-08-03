@@ -20,8 +20,7 @@
 		<div class="list-group">
 			<a href="{% url 'search' %}?type=concepts{{ other_resource_search_params }}" class="list-group-item {% if search_type == 'concepts' %}active{% endif %}"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Concepts <span class="badge">{{ resource_count.concepts|intcomma }}</span></a>
 			<a href="{% url 'search' %}?type=mappings{{ other_resource_search_params }}" class="list-group-item {% if search_type == 'mappings' %}active{% endif %}"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;Mappings <span class="badge">{{ resource_count.mappings|intcomma }}</span></a>
-			<a href="{% url 'search' %}?type=sources{{ other_resource_search_params }}" class="list-group-item {% if search_type == 'sources' %}active{% endif %}"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Sources <span class="badge">{{ resource_count.sources|intcomma }}</span></a>{% comment %}
-			<a href="{% url 'search' %}?type=collections{{ other_resource_search_params }}" class="list-group-item {% if search_type == 'collections' %}active{% endif %}"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Collections <span class="badge">{{ resource_count.collections|intcomma }}</span></a>{% endcomment %}
+			<a href="{% url 'search' %}?type=sources{{ other_resource_search_params }}" class="list-group-item {% if search_type == 'sources' %}active{% endif %}"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;Sources <span class="badge">{{ resource_count.sources|intcomma }}</span></a>
 			<a href="{% url 'search' %}?type=orgs{{ other_resource_search_params }}" class="list-group-item {% if search_type == 'orgs' %}active{% endif %}"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Organizations <span class="badge">{{ resource_count.orgs|intcomma }}</span></a>
 			<a href="{% url 'search' %}?type=users{{ other_resource_search_params }}" class="list-group-item {% if search_type == 'users' %}active{% endif %}"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Users <span class="badge">{{ resource_count.users|intcomma }}</span></a>
 		</div>
@@ -125,7 +124,8 @@
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-tag search-result-icon"></span></div>
 			<div class="col-md-10 search-result-col-content">
-				<div class="label-container">{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+				<div class="label-container">
+					{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
 				</div>
 				<p>
 					<!--span class="caption">{{ result.display_name }} <small><em>[{{ result.display_locale }}]</em></small></span><br /-->
@@ -192,7 +192,7 @@
 					{% comment %}&nbsp;&nbsp;&nbsp;&nbpsp;<a href="{{ result_mappings_url }}" title="Active mappings in source"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>{% endcomment %}
 				</div>
 				<div class="label-container">
-					{% generic_resource_label resource_type='source' resource_id=result.short_code resource_name=source.name resource_url=result_home_url owner_type=result.owner_type owner_id=result.owner label_size='small' display_breadcrumb=True %}
+					{% generic_resource_label resource_type='source' resource_id=result.short_code resource_name=result.name resource_url=result_home_url owner_type=result.owner_type owner_id=result.owner label_size='small' display_breadcrumb=True %}
 				</div>
 				<p>
 					<em>Source Type:</em> {{ result.source_type|default:"None" }}<br />
@@ -202,31 +202,9 @@
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 
-	{% comment %}
-	{% elif search_type == 'collections' %}
-			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
-			<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-tags search-result-icon"></span></div>
-			<div class="col-md-10 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="{% url 'collection-detail' org=result.owner collection=result.id %}#concepts" title="Concepts in collection"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>
-				</div>
-
-				<h4><a href="{% url 'collection-detail' org=result.owner collection=result.id %}" style="text-decoration: none;">
-					<span class="resource-label small collection">
-						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tags"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / </span><span class="resource-label-id-code">{{ result.short_code }}</span>
-						</span><span class="resource-label-name">{{ result.name }}</span>
-					</span>
-				</a></h4>
-
-				<p>
-					{% if result.description %}{{ result.description }}<br />{% endif %}
-					{% if result.updated_on %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
-				</p>
-				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
-			</div>
-	{% endcomment %}
-
 	{% elif search_type == 'orgs' %}
+			{% url 'org-home' org=result.id as result_url %}
+
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-home search-result-icon"></span></div>
 			<div class="col-md-10 search-result-col-content">
@@ -235,14 +213,9 @@
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="{% url 'org-home' org=result.id %}#sources" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources|intcomma }}</a>
 				</div>
-
-				<h4><a href="{% url 'org-home' org=result.id %}" style="text-decoration: none;">
-					<span class="resource-label small organization">
-						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-home"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ result.id }}</span>
-						</span><span class="resource-label-name">{{ result.name }}</span>
-					</span>
-				</a></h4>
-
+				<div class="label-container">
+					{% generic_resource_label resource_type='org' resource_id=result.id resource_name=result.name resource_url=result_url label_size='small' display_breadcrumb=True %}
+				</div>
 				<p>
 					{% if result.description %}<p>{{ result.description|truncatechars:180 }}</p>{% endif %}
 					<span class="text-muted small">
@@ -255,6 +228,8 @@
 			</div>
 
 	{% elif search_type == 'users' %}
+			{% url 'users:detail' result.username as result_url %}
+
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="col-md-1 search-result-col-icon">
 				<span class="glyphicon glyphicon-user search-result-icon"></span>
@@ -265,14 +240,9 @@
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="{% url 'users:detail' result.username %}#sources" title="Public sources owned by user"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources|intcomma }}</a>
 				</div>
-
-				<h4><a href="{% url 'users:detail' result.username %}" style="text-decoration: none;">
-					<span class="resource-label small user">
-						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-user"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ result.username }}</span>
-						</span><span class="resource-label-name">{{ result.name }}</span>
-					</span>
-				</a></h4>
-
+				<div class="label-container">
+					{% generic_resource_label resource_type='user' resource_id=result.username resource_name=result.name resource_url=result_url label_size='small' display_breadcrumb=True %}
+				</div>
 				<p>
 					<span class="text-muted small">
 						{% if result.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ result.location }}
