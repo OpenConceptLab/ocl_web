@@ -79,10 +79,10 @@ def resource_owner_label(resource, label_size=None):
     :param resource: OCL resource with owner_type and owner attributes
     :param label_size: Currently ignored
     """
-    from_org = source.get('owner_type').lower() == 'organization'
+    from_org = resource.get('owner_type').lower() == 'organization'
     return {
-        'resource_owner_type': source.owner_type,
-        'resource_owner': source.owner,
+        'resource_owner_type': resource.owner_type,
+        'resource_owner': resource.owner,
         'label_size': label_size
     }
 
