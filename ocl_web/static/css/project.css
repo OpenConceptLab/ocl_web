@@ -187,6 +187,11 @@ form div.input-group {
 .resource-label {
   font-size: 13pt;
   line-height: 22pt;
+}
+a.resource-label {
+  text-decoration: none;
+}
+a.resource-label:hover {
   text-decoration: none;
 }
 .resource-label.small { 
