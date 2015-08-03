@@ -221,6 +221,18 @@ form div.input-group {
   vertical-align: baseline;
   border-radius: 0 .25em .25em 0;
 }
+.resource-label.no-breadcrumb .resource-label-name {
+  display: inline;
+  padding: .3em .6em .3em .6em;
+  color: White;
+  background-color: #428bca;
+  font-weight: 300;
+  letter-spacing:-0.1pt;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25 .25em .25em .25;
+}
 .resource-label.concept .resource-label-name {
   background-color: #428bca;
 }
@@ -243,9 +255,11 @@ form div.input-group {
   text-decoration: line-through;
   text-decoration-color: Black;
   -moz-text-decoration-color: Black;
-  color: #c33
+  color: #c33;
   background-color: #ccc;
 }
+
+.resource-label.concept 
 
 
 /* Old Resource Labels -- REMOVE AFTER EVERYTHING IS SWITCHED OVER! */

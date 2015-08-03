@@ -18,5 +18,5 @@
 		<span class="resource-label-name{% if resource_retired %} retired{% endif %}">{{ resource_name }}</span>
 	</a>
 {% else %}
-	<a href="{{ resource_url }}" class="resource-label {{ resource_type }} {{ css_size_class }} resource-label-no-breadcrumb{% if resource_retired %} retired{% endif %}">{% if display_icon %}<span class="glyphicon glyphicon-{{ resource_icon }}"></span>&nbsp;&nbsp;{% endif %}{{ resource_id }}</span></a>
+	<a href="{{ resource_url }}" class="resource-label {{ resource_type }} {{ css_size_class }} no-breadcrumb">{% if display_icon %}<span class="resource-label-name{% if resource_retired %} retired{% endif %}"><span class="glyphicon glyphicon-{{ resource_icon }}"></span>&nbsp;&nbsp;{% endif %}{{ resource_id }}</span></a>
 {% endif %}
