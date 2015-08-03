@@ -156,23 +156,21 @@
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-link search-result-icon"></span></div>
 			<div class="col-md-10 search-result-col-content">
-
-				<!-- map_type label -->
 				<div class="label-container">
+					<!-- map_type label -->
 					{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=mapping_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+	
+					<!-- from_concept label -->
+					{# TODO: we do not know if this concept is retired #}
+					<div class="text-muted small" style="padding: 8px 0 8px 20px;">
+						From:&nbsp;&nbsp;{% mapping_from_concept_label result label_size="small" %}
+					</div>
+	
+					<!-- to_concept label -->
+					<div class="small text-muted" style="padding: 0 0 8px 20px;">
+						To:&nbsp;&nbsp;{% mapping_to_concept_label result label_size="small" %}
+					</div>
 				</div>
-
-				<!-- from_concept label -->
-				{# TODO: we do not know if this concept is retired #}
-				<div class="label-container text-muted small" style="padding-left: 20px;">
-					From:&nbsp;&nbsp;{% mapping_from_concept_label result label_size="small" %}
-				</div>
-
-				<!-- to_concept label -->
-				<div class="label-container small text-muted" style="padding-left: 20px;">
-					To:&nbsp;&nbsp;{% mapping_to_concept_label result label_size="small" %}
-				</div>
-
 				<p>
 					<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>
 				</p>
