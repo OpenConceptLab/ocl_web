@@ -125,13 +125,8 @@
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-tag search-result-icon"></span></div>
 			<div class="col-md-10 search-result-col-content">
-				<h4>
-					<a href="{{ result_url }}" style="text-decoration: none;">
-					<span class="resource-label small concept">
-						<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span><span class="resource-label-id-code">{{ result.id }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.display_name }}{% if result.retired %}</s>{% endif %}</span>
-					</span>
-				</a></h4>
-
+				<h4>{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+				</h4>
 				<p>
 					<!--span class="caption">{{ result.display_name }} <small><em>[{{ result.display_locale }}]</em></small></span><br /-->
 					<em>Class:</em> {{ result.concept_class }}, <em>Datatype:</em> {{ result.datatype }}
