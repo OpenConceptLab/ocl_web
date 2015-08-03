@@ -8,30 +8,70 @@
 <h2>Resource Tags with Breadcrumbs</h2>
 <h3>Concepts</h3>
 <h4>Concept from Head</h4>
-<p>
+<div>
 	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' owner_type='Organization' owner_id='CIEL' source_id='CIEL' label_size='small' display_breadcrumb=True %}
-</p>
+</div>
 <h4>Concept from Specific Source Version</h4>
-<p>
+<div>
 	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' owner_type='Organization' owner_id='CIEL' source_id='CIEL' source_version_id='2015-05-10' label_size='small' display_breadcrumb=True %}
-</p>
+</div>
 <h4>Concept Version</h4>
-<p>
+<div>
 	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' owner_type='Organization' owner_id='CIEL' source_id='CIEL' resource_version_id='3993jfdkkdfd9-9d3jf9' label_size='small' display_breadcrumb=True %}
-</p>
+</div>
 <h4>Retired Concept from Head</h4>
-<p>
+<div>
 	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' resource_retired=True owner_type='Organization' owner_id='CIEL' source_id='CIEL' label_size='small' display_breadcrumb=True %}
-</p>
+</div>
+
+
+
+<h3>Mappings</h3>
+<h4>Mapping</h4>
+<div>
+	{% generic_resource_label resource_type='mapping' resource_id='9jdifj93k939r9' resource_name='SAME-AS' resource_url='/dkd/dkd/' owner_type='Organization' owner_id='CIEL' source_id='CIEL' label_size='small' display_breadcrumb=True %}
+</div>
+
+
+
+<h3>Sources</h3>
+<h4>User Source</h4>
+<div>
+	{% generic_resource_label resource_type='source' resource_id='MySource' resource_name='My Really Good Source' resource_url='/dkd/dkd/' owner_type='User' owner_id='paynejd' label_size='small' display_breadcrumb=True %}
+</div>
+<h4>Org Source</h4>
+<div>
+	{% generic_resource_label resource_type='source' resource_id='ICD-10' resource_name='International Classification of Diseases v10' resource_url='/dkd/dkd/' owner_type='Organization' owner_id='WHO' label_size='small' display_breadcrumb=True %}
+</div>
+<h4>Org Source Version</h4>
+<div>
+	{% generic_resource_label resource_type='source' resource_id='ICD-10' resource_name='International Classification of Diseases v10' resource_version_id='v10.2.2' resource_url='/dkd/dkd/' owner_type='Organization' owner_id='WHO' label_size='small' display_breadcrumb=True %}
+</div>
+
+
+
+<h3>Orgs</h3>
+<div>
+	{% generic_resource_label resource_type='org' resource_id='WHO' resource_name='World Health Organization' resource_url='/dkd/dkd/' label_size='small' display_breadcrumb=True %}
+</div>
+
+
+
+<h3>Users</h3>
+<div>
+	{% generic_resource_label resource_type='user' resource_id='paynejd' resource_name='Jonathan Payne' resource_url='/dkd/dkd/' label_size='small' display_breadcrumb=True %}
+</div>
+
+
 
 <h2>Resource Tags with no Breadcrumbs</h2>
 <h3>Concept</h3>
-<p>
+<div>
 	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' label_size='small' %}
-</p>
+</div>
 <h3>Retired Concept</h3>
-<p>
+<div>
 	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
-</p>
+</div>
 
 {% endblock %}
