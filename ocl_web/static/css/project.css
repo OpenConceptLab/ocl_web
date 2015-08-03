@@ -256,7 +256,7 @@ a.resource-label:hover {
 .resource-label.concept .resource-label-name {
   background-color: #428bca;
 }
-.resource-label.maptype .resource-label-name {
+.resource-label.mapping .resource-label-name {
   background-color: #aaa;
 }
 .resource-label.source .resource-label-name {
@@ -344,8 +344,7 @@ a.resource-label:hover {
 .resource-header.resource-header-mapping,
 .resource-header.resource-header-source,
 .resource-header.resource-header-collection,
-.resource-header.resource-header-org,
-.resource-header.resource-header-maptype
+.resource-header.resource-header-org
 {
   background-color:rgb(252,252,252);
   padding-top:20px;
