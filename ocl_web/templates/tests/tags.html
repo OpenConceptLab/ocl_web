@@ -65,77 +65,87 @@
 
 
 <h2>Resource Tags with no Breadcrumbs</h2>
-<h4>Concept with Name</h4>
-<div>
-	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' label_size='small' %}
+<div class="row">
+	<div class="col-md-2">Resource</div>
+	<div class="col-md-3">With Name</div>
+	<div class="col-md-3">Retired With Name</div>
+	<div class="col-md-2">No Name</div>
+	<div class="col-md-2">Retired No Name</div>
 </div>
-<h4>Retired Concept with Name</h4>
-<div>
-	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
+<div class="row">
+	<div class="col-md-2">Concept</div>
+	<div class="col-md-3">
+		{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' label_size='small' %}
+	</div>
+	<div class="col-md-3">
+		{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
+	</div>
+	<div class="col-md-2">
+		{% generic_resource_label resource_type='concept' resource_id=32 resource_url='/dkd/dkd/' label_size='small' %}
+	</div>
+	<div class="col-md-2">
+		{% generic_resource_label resource_type='concept' resource_id=32 resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
+	</div>
 </div>
-<h4>Concept no Name</h4>
-<div>
-	{% generic_resource_label resource_type='concept' resource_id=32 resource_url='/dkd/dkd/' label_size='small' %}
+<div class="row">
+	<div class="col-md-2">Mapping</div>
+	<div class="col-md-3">
+		{% generic_resource_label resource_type='mapping' resource_id='d9jf93jkf9fje' resource_name='SAME-AS' resource_url='/dkd/dkd/' label_size='small' %}
+	</div>
+	<div class="col-md-3">
+		{% generic_resource_label resource_type='mapping' resource_id='d9jf93jkf9fje' resource_name='SAME-AS' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
+	</div>
+	<div class="col-md-2">
+		{% generic_resource_label resource_type='mapping' resource_id='d9jf93jkf9fje' resource_url='/dkd/dkd/' label_size='small' %}
+	</div>
+	<div class="col-md-2">
+		{% generic_resource_label resource_type='mapping' resource_id='d9jf93jkf9fje' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
+	</div>
 </div>
-<h4>Retired Concept no Name</h4>
-<div>
-	{% generic_resource_label resource_type='concept' resource_id=32 resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
+<div class="row">
+	<div class="col-md-2">Source</div>
+	<div class="col-md-3">
+		{% generic_resource_label resource_type='source' resource_id='ICD-10' resource_name='International Classification of Diseases v10' resource_url='/dkd/dkd/' label_size='small' %}
+	</div>
+	<div class="col-md-3">
+		{% generic_resource_label resource_type='source' resource_id='ICD-9' resource_name='International Classification of Diseases v9' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
+	</div>
+	<div class="col-md-2">
+		{% generic_resource_label resource_type='source' resource_id='ICD-10' resource_url='/dkd/dkd/' label_size='small' %}
+	</div>
+	<div class="col-md-2">
+		{% generic_resource_label resource_type='source' resource_id='ICD-9' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
+	</div>
 </div>
-
-
-<h4>Mapping with Name</h4>
-<div>
-	{% generic_resource_label resource_type='mapping' resource_id='d9jf93jkf9fje' resource_name='SAME-AS' resource_url='/dkd/dkd/' label_size='small' %}
+<div class="row">
+	<div class="col-md-2">Org</div>
+	<div class="col-md-3">
+		{% generic_resource_label resource_type='org' resource_id='WHO' resource_name='World Health Organization' resource_url='/dkd/dkd/' label_size='small' %}
+	</div>
+	<div class="col-md-3">
+		{% generic_resource_label resource_type='org' resource_id='WHO' resource_name='World Health Organization' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
+	</div>
+	<div class="col-md-2">
+		{% generic_resource_label resource_type='org' resource_id='WHO' resource_url='/dkd/dkd/' label_size='small' %}
+	</div>
+	<div class="col-md-2">
+		{% generic_resource_label resource_type='org' resource_id='WHO' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
+	</div>
 </div>
-<h4>Retired Mapping with Name</h4>
-<div>
-	{% generic_resource_label resource_type='mapping' resource_id='d9jf93jkf9fje' resource_name='SAME-AS' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
-</div>
-<h4>Mapping no Name</h4>
-<div>
-	{% generic_resource_label resource_type='mapping' resource_id='d9jf93jkf9fje' resource_url='/dkd/dkd/' label_size='small' %}
-</div>
-<h4>Retired Mapping no Name</h4>
-<div>
-	{% generic_resource_label resource_type='mapping' resource_id='d9jf93jkf9fje' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
-</div>
-
-
-
-<h4>Source with Name</h4>
-<div>
-	{% generic_resource_label resource_type='source' resource_id='ICD-10' resource_name='International Classification of Diseases v10' resource_url='/dkd/dkd/' label_size='small' %}
-</div>
-<h4>Retired Source with Name</h4>
-<div>
-	{% generic_resource_label resource_type='source' resource_id='ICD-9' resource_name='International Classification of Diseases v9' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
-</div>
-<h4>Source no Name</h4>
-<div>
-	{% generic_resource_label resource_type='source' resource_id='ICD-10' resource_url='/dkd/dkd/' label_size='small' %}
-</div>
-<h4>Retired Source no Name</h4>
-<div>
-	{% generic_resource_label resource_type='source' resource_id='ICD-9' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
-</div>
-
-
-
-<h4>Org with Name</h4>
-<div>
-	{% generic_resource_label resource_type='org' resource_id='WHO' resource_name='World Health Organization' resource_url='/dkd/dkd/' label_size='small' %}
-</div>
-<h4>Retired Org with Name</h4>
-<div>
-	{% generic_resource_label resource_type='org' resource_id='WHO' resource_name='World Health Organization' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
-</div>
-<h4>Org no Name</h4>
-<div>
-	{% generic_resource_label resource_type='org' resource_id='WHO' resource_url='/dkd/dkd/' label_size='small' %}
-</div>
-<h4>Retired Org no Name</h4>
-<div>
-	{% generic_resource_label resource_type='org' resource_id='WHO' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
+<div class="row">
+	<div class="col-md-2">User</div>
+	<div class="col-md-3">
+		{% generic_resource_label resource_type='user' resource_id='paynejd' resource_name='Jonathan Payne' resource_url='/dkd/dkd/' label_size='small' %}
+	</div>
+	<div class="col-md-3">
+		{% generic_resource_label resource_type='user' resource_id='paynejd' resource_name='Jonathan Payne' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
+	</div>
+	<div class="col-md-2">
+		{% generic_resource_label resource_type='user' resource_id='paynejd' resource_url='/dkd/dkd/' label_size='small' %}
+	</div>
+	<div class="col-md-2">
+		{% generic_resource_label resource_type='user' resource_id='paynejd' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
+	</div>
 </div>
 
 
