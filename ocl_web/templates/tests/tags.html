@@ -4,10 +4,16 @@
 {% block title %}OCL Tests - Tags{% endblock title %}
 
 {% block content %}
+<style>
+.row { padding-top: 16px; }
+.col-md-10 .div { padding-top:12px; }
+</style>
+
+
 <h1>OCL Tests - Resource Tags</h2>
 <h2>Resource Tags with Breadcrumbs</h2>
 
-<div class="row" style="padding-top:16px;">
+<div class="row">
 	<div class="col-md-2"><strong>Concepts</strong></div>
 	<div class="col-md-10">
 		<div>Concept from Head:
@@ -25,7 +31,7 @@
 	</div>
 </div>
 
-<div class="row" style="padding-top:16px;">
+<div class="row">
 	<div class="col-md-2"><strong>Mappings</strong></div>
 	<div class="col-md-10">
 		<div>Mapping:
@@ -34,7 +40,7 @@
 	</div>
 </div>
 
-<div class="row" style="padding-top:16px;">
+<div class="row">
 	<div class="col-md-2"><strong>Sources</strong></div>
 	<div class="col-md-10">
 		<div>User Source:
@@ -49,16 +55,16 @@
 	</div>
 </div>
 
-<div class="row" style="padding-top:16px;">
+<div class="row">
 	<div class="col-md-2"><strong>Organizations</strong></div>
 	<div class="col-md-10">
 		<div>Orgs:
 			{% generic_resource_label resource_type='org' resource_id='WHO' resource_name='World Health Organization' resource_url='/dkd/dkd/' label_size='small' display_breadcrumb=True %}
 		</div>
-	<div>
+	</div>
 </div>
 
-<div class="row" style="padding-top:16px;">
+<div class="row">
 	<div class="col-md-2"><strong>Users</strong></div>
 	<div class="col-md-10">
 		<div>Users:
@@ -77,7 +83,7 @@
 	<div class="col-md-2"><strong>No Name</strong></div>
 	<div class="col-md-2"><strong>Retired No Name</strong></div>
 </div>
-<div class="row" style="padding-top:16px;">
+<div class="row">
 	<div class="col-md-2"><strong>Concept</strong></div>
 	<div class="col-md-3">
 		{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' label_size='small' %}
@@ -92,7 +98,7 @@
 		{% generic_resource_label resource_type='concept' resource_id=32 resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
 	</div>
 </div>
-<div class="row" style="padding-top:16px;">
+<div class="row">
 	<div class="col-md-2"><strong>Mappings</strong></div>
 	<div class="col-md-3">
 		{% generic_resource_label resource_type='mapping' resource_id='d9jf93jkf9fje' resource_name='SAME-AS' resource_url='/dkd/dkd/' label_size='small' %}
@@ -107,7 +113,7 @@
 		{% generic_resource_label resource_type='mapping' resource_id='d9jf93jkf9fje' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
 	</div>
 </div>
-<div class="row" style="padding-top:16px;">
+<div class="row">
 	<div class="col-md-2"><strong>Sources</strong></div>
 	<div class="col-md-3">
 		{% generic_resource_label resource_type='source' resource_id='ICD-10' resource_name='International Classification of Diseases v10' resource_url='/dkd/dkd/' label_size='small' %}
@@ -122,7 +128,7 @@
 		{% generic_resource_label resource_type='source' resource_id='ICD-9' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
 	</div>
 </div>
-<div class="row" style="padding-top:16px;">
+<div class="row">
 	<div class="col-md-2"><strong>Organizations</strong></div>
 	<div class="col-md-3">
 		{% generic_resource_label resource_type='org' resource_id='WHO' resource_name='World Health Organization' resource_url='/dkd/dkd/' label_size='small' %}
@@ -137,7 +143,7 @@
 		{% generic_resource_label resource_type='org' resource_id='WHO' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
 	</div>
 </div>
-<div class="row" style="padding-top:16px;">
+<div class="row">
 	<div class="col-md-2"><strong>Users</strong></div>
 	<div class="col-md-3">
 		{% generic_resource_label resource_type='user' resource_id='paynejd' resource_name='Jonathan Payne' resource_url='/dkd/dkd/' label_size='small' %}
