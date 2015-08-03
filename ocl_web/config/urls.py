@@ -14,6 +14,7 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 from apps.ocl_search.views import GlobalSearchView
+from apps.tests.views import TestTagsView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -44,7 +45,7 @@ urlpatterns = patterns(
     url(r'^avatar/', include('avatar.urls')),
 
     # Testing
-    url(r'^test/tags/$', TestTagsView.as_view(), name="test_tags")
+    url(r'^tests/tags/$', TestTagsView.as_view(), name="test-tags"),
 
     # Static Pages (some to be moved into Dynamic views later)
     url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name="home"),
