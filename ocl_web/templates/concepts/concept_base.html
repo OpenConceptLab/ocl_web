@@ -21,7 +21,7 @@
 				<div class="resource-header-icon"><span class="glyphicon glyphicon-tag"></span></div>
 				<div class="resource-header-label">
 					<h3>
-						{% resource_owner_label concept %} / {% source_label source %} / {% concept_label concept %}
+						{% resource_owner_label source %} / {% source_label source %} / {% concept_label concept %}
 						{% if_can_change source %}
 							<a href="{{ concept_edit_url }}" class="small text-muted" title="Edit Concept"><span class="glyphicon glyphicon-cog"></span></a>
 						{% endif_can_change source %}

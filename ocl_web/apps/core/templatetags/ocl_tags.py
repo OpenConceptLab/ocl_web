@@ -72,7 +72,7 @@ def user_label(user, label_size=None):
 def resource_owner_label(resource, label_size=None):
     """
     Display a independent label (no breadcrumb) for the owner (a user or organization) of
-    a resource, based on the "owner_type" and "source". Ex:
+    a resource, based on the "owner_type" and "owner". Ex:
     
         [:owner-type-icon :owner-id]
 
