@@ -151,6 +151,11 @@ form div.input-group {
 }
 
 
+
+
+
+/* Labels */
+
 .label .label-retired {
   text-decoration: line-through;
   text-decoration-color: Black;
@@ -163,6 +168,9 @@ form div.input-group {
   text-decoration-color: Black;
   color: #c66;
 }
+
+
+
 
 .resource-label {
   font-size: 13pt;
@@ -193,14 +201,18 @@ form div.input-group {
 .resource-label .resource-label-id .resource-label-id-breadcrumb {
   font-size: 87%;
 }
+.resource-label .resource-label-id .resource-label-id-breadcrumb .breadcrumb_part_focus {
+  font-weight: 600;
+  color: Black;
+}
 .resource-label .resource-label-id .resource-label-id-code {
   font-weight: 600;
   color: Black;
 }
 .resource-label .resource-label-name {
   display: inline;
-  padding: .2em .6em .3em .6em;
-  color: #fff;
+  padding: .3em .6em .3em .6em;
+  color: White;
   background-color: #428bca;
   font-weight: 300;
   letter-spacing:-0.1pt;
@@ -211,29 +223,32 @@ form div.input-group {
 }
 .resource-label.concept .resource-label-name {
   background-color: #428bca;
-  color: White;
 }
 .resource-label.maptype .resource-label-name {
   background-color: #aaa;
-  color: White;
 }
 .resource-label.source .resource-label-name {
   background-color: #5cb85c;
-  color: White;
 }
 .resource-label.collection .resource-label-name {
   background-color: #5cb85c;
-  color: White;
 }
 .resource-label.organization .resource-label-name {
   background-color: #f0ad4e;
-  color: White;
 }
 .resource-label.user .resource-label-name {
   background-color: #f0ad4e;
-  color: White;
+}
+.resource-label .resource-label-name.retired {
+  text-decoration: line-through;
+  text-decoration-color: Black;
+  -moz-text-decoration-color: Black;
+  color: #c33
+  background-color: #ccc;
 }
 
+
+/* Old Resource Labels -- REMOVE AFTER EVERYTHING IS SWITCHED OVER! */
 
 .concept-label {
 }
@@ -284,6 +299,10 @@ form div.input-group {
   font-size: 10pt;
   line-height: 16pt;
 }
+
+
+
+/* Resource Header */
 
 .resource-header {
 }
