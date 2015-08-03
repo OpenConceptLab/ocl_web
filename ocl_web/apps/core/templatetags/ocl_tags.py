@@ -228,15 +228,15 @@ def generic_resource_label(
     breadcrumb_parts = []
     if display_breadcrumb:
         # owner
-        breadcrumb_parts.append({'text':owner_id, 'display_as_version':false, 'focus':false})
+        breadcrumb_parts.append({'text':owner_id, 'display_as_version':False, 'focus':False})
         if source_id:
-            breadcrumb_parts.append({'text':source_id, 'display_as_version':false, 'focus':false})
+            breadcrumb_parts.append({'text':source_id, 'display_as_version':False, 'focus':False})
         if source_version_id:
-            breadcrumb_parts.append({'text':source_version_id, 'display_as_version':true, 'focus':false})
+            breadcrumb_parts.append({'text':source_version_id, 'display_as_version':True, 'focus':False})
         if resource_type in ('concept','mapping'):
-            breadcrumb_parts.append({'text':resource_id, 'display_as_version':false, 'focus':false})
+            breadcrumb_parts.append({'text':resource_id, 'display_as_version':False, 'focus':False})
             if resource_version_id:
-                breadcrumb_parts.append({'text':resource_version_id, 'display_as_version':true, 'focus':false})
+                breadcrumb_parts.append({'text':resource_version_id, 'display_as_version':True, 'focus':False})
 
     return {
         'resource_type':resource_type,
