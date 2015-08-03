@@ -1,7 +1,6 @@
 {% if source.owner_type == 'Organization' %}
-<a href="{% url 'source-home' org=source.owner source=source.id %}" class="label label-success">
+	{% url 'source-home' org=source.owner source=source.id as resource_url %}
 {% else %}
-<a href="{% url 'source-home' user=source.owner source=source.id %}" class="label label-success">
+	{% url 'source-home' user=source.owner source=source.id as resource_url %}
 {% endif %}
-<span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ source.id }}</a>
-
+<a href="{{ resource_url }}" class="label label-success"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ source.id }}</a>

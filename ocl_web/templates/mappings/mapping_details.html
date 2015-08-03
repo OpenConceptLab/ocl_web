@@ -8,7 +8,7 @@
 <div class="container" style="margin-top: 20px;">
 	<div class="row">
 
-		<!-- Mapipng Details -->
+		<!-- Mapping Details -->
 		<div class="col-md-8">
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3 class="panel-title">Mapping Details</h3></div>
@@ -17,17 +17,17 @@
 					{% field_label 'Retired' mapping.retired %}
 					{% field_label 'Map Type' mapping.map_type %}
 					<hr />
-					<div class="row" style="padding-top:5px;padding-bottom:5px;"><div class="col-md-3 field-label-key">From Concept:</div><div class="col-md-9">{% mapping_from_concept_label mapping label_size="small" %}</div></div>
-					<div class="row" style="padding-top:5px;padding-bottom:5px;"><div class="col-md-3 field-label-key">To Concept:</div><div class="col-md-9">{% mapping_to_concept_label mapping label_size="small" %}</div></div>
+					<div class="row" style="padding-top:5px;padding-bottom:5px;"><div class="col-md-3 field-label-key">From Concept</div><div class="col-md-9">{% mapping_from_concept_label mapping label_size="small" %}</div></div>
+					<div class="row" style="padding-top:5px;padding-bottom:5px;"><div class="col-md-3 field-label-key">To Concept</div><div class="col-md-9">{% mapping_to_concept_label mapping label_size="small" %}</div></div>
 					{% if mapping.external_id %}
 						<hr />
 						{% field_label 'External ID' mapping.external_id %}
 					{% endif %}
 					<hr />
-					{% field_label 'Updated by' mapping.updated_by %}
-					{% field_label 'Updated on' mapping.updated_at|smart_datetime %}
-					{% field_label 'Created by' mapping.created_by %}
-					{% field_label 'Created on' mapping.created_at|smart_datetime %}
+					{% field_label 'Updated By' mapping.updated_by %}
+					{% field_label 'Updated On' mapping.updated_at|smart_datetime %}
+					{% field_label 'Created By' mapping.created_by %}
+					{% field_label 'Created On' mapping.created_at|smart_datetime %}
                 	{% if mapping.extras and mapping.extras.items %}
                 		<hr />
                 		{% for k, v in mapping.extras.items %}
@@ -37,6 +37,13 @@
 				</div>
 			</div>
 		</div>
+
+{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' 
+   resource_retired=False owner_type='Organization' owner_id='CIEL' source_id='CIEL' source_version_id='2015-05-10'
+   label_size='small' display_breadcrumb=True %}
+
+{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear'
+   resource_url='/dkd/dkd/' label_size='small' %}
 
 	</div>
 </div>

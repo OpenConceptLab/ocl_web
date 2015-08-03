@@ -1,0 +1,22 @@
+{% if display_breadcrumb %}
+	{# breadcrumb label starts with gray background and changes to colored background for the name #}
+	<a href="{{ resource_url }}" class="resource-label {{ resource_type }} {{ css_size_class }}" style="text-decoration: none;">
+		<span class="resource-label-id">
+			{% if display_icon %}<span class="resource-label-id-icon"><span class="glyphicon glyphicon-{{ resource_icon }}"></span></span>&nbsp;&nbsp;{% endif %}
+			<span class="resource-label-id-breadcrumb">
+			{% for bc_part in breadcrumb_parts %}
+				{# bc_part attributes: display_as_version, text, focus #}
+				{% if bc_part.display_as_version %}
+					<span class="breadcrumb_part breadcrumb_part_version"> [ <span{% if bc_part.focus %} class="breadcrumb_part_focus"{% endif %}>{{ bc_part.text }}</span> ]</span>
+				{% else %}
+					{% if not forloop.first %} / {% endif %}
+					<span class="breadcrumb_part{% if bc_part.focus %} breadcrumb_part_focus{% endif %}">{{ bc_part.text }}</span>
+				{% endif %}
+			{% endfor %}
+			</span>
+		</span>
+		<span class="resource-label-name{% if resource_retired %} retired{% endif %}">{{ resource_name }}</span>
+	</a>
+{% else %}
+	<a href="{{ resource_url }}" class="resource-label {{ resource_type }} {{ css_size_class }} resource-label-no-breadcrumb{% if resource_retired %} retired{% endif %}">{% if display_icon %}<span class="glyphicon glyphicon-{{ resource_icon }}"></span>&nbsp;&nbsp;{% endif %}{{ resource_id }}</span></a>
+{% endif %}

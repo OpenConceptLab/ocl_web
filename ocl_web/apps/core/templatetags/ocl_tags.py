@@ -39,14 +39,21 @@ def smart_date(iso8601_dt):
     return dt.strftime('%x')
 
 
+# TODO: Retire this if not in use
+@register.filter(name='get')
+def get(d, k):
+    return d.get(k, None)
 
-## Custom Tags
+
+
+## Custom Tags: RESOURCE LABELS
 
 @register.inclusion_tag('includes/org_label_incl.html')
 def org_label(org, label_size=None):
     """
-    Independent org label, no breadcrumb
-    [:org-icon :org-id]
+    Independent org label, no breadcrumb. Ex:
+    
+        [:org-icon :org-id]
     """
     return {'org':org, 'label_size':label_size}
 
@@ -54,8 +61,9 @@ def org_label(org, label_size=None):
 @register.inclusion_tag('includes/user_label_incl.html')
 def user_label(user, label_size=None):
     """
-    Independent user label, no breadcrumb
-    [:user-icon :username]
+    Independent user label, no breadcrumb. Ex:
+    
+        [:user-icon :username]
     """
     return {'user':user, 'label_size':label_size}
 
@@ -63,8 +71,8 @@ def user_label(user, label_size=None):
 @register.inclusion_tag('includes/resource_owner_label_incl.html')
 def resource_owner_label(resource, label_size=None):
     """
-    Display a independent label for the owner (a user or organization) of a resource,
-    based on the "owner_type" and "source". Ex:
+    Display a independent label (no breadcrumb) for the owner (a user or organization) of
+    a resource, based on the "owner_type" and "source". Ex:
     
         [:owner-type-icon :owner-id]
 
@@ -81,32 +89,176 @@ def resource_owner_label(resource, label_size=None):
 @register.inclusion_tag('includes/source_label_incl.html')
 def source_label(source, label_size=None):
     """
-    Source label
+    Displays indepdent source label (no breadcrumb). Ex:
+
+        [:source-icon :source-short-name]
+
+    :param source: OCL source
+    :param label_size: Currently ignored
     """
-    return {'source':source, 'label_size':label_size}
+    return {
+        'source':source,
+        'label_size':label_size
+    }
+
+
+@register.inclusion_tag('includes/source_label_incl.html')
+def generic_source_label(owner_type=None, owner_id=None,
+                         source_id=None, source_name=None,
+                         display_breadcrumb=False,
+                         label_size=None):
+    """
+    TODO: generic_source_label template is not implemented yet
+
+    Displays source label with options. Example with no breadcrumb:
+
+        [:source-icon :source-short-name]
+
+    Example with breadcrumb:
+
+        [:source-icon :owner-id / :source-id :source-name]
+
+    :param owner_type: (required) "Organization" or "User"
+    :param owner_id: (optional) ID of the resource owner
+    :param source_id: (required) ID of the source
+    :param source_name: (optional) Name of the source
+    :param display_breadcrumb: (optional) Whether to display source breadcrumb
+    :param label_size: (optional) Currently ignored
+    """
+    return {
+        'owner_type':owner_type,
+        'owner_id':owner_id,
+        'source_id':source_id,
+        'source_name':source_name,
+        'display_breadcrumb': display_breadcrumb,
+        'label_size':label_size
+    }
 
 
 @register.inclusion_tag('includes/concept_label_incl.html')
 def concept_label(concept, label_size=None):
-    """ Concept label """
-    return {'concept':concept, 'label_size':label_size}
+    """
+    Displays independent concept label (no breadcrumb). Ex:
+
+        [:concept-icon :concept-id]
+
+    :param concept: (required) OCL concept
+    :param label_size: (ignored) Currently ignored
+    """
+    return {
+        'concept':concept,
+        'label_size':label_size
+    }
 
 
 @register.inclusion_tag('includes/mapping_label_incl.html')
 def mapping_label(mapping, label_size=None, display_breadcrumb=False):
+    """
+    Displays mapping label. Ex with no breadcrumb:
+
+        [:mapping-icon :mapping-id :map-type]
+
+    Example with breadcrumb:
+
+        [:mapping-icon :owner / :source / :mapping-id :map-type]
+
+    :param mapping: (required) OCL mapping
+    :param label_size: (ignored) Currently ignored
+    :param display_breadcrumb: (optional) Whether to display source breadcrumb
+    """
     return {
         'mapping': mapping,
         'label_size': label_size,
         'display_breadcrumb': display_breadcrumb
     }
 
+
 @register.inclusion_tag('includes/mapping_from_concept_label_incl.html')
 def mapping_from_concept_label(mapping, label_size=None):
     return {'mapping':mapping, 'label_size':label_size}
 
+
 @register.inclusion_tag('includes/mapping_to_concept_label_incl.html')
 def mapping_to_concept_label(mapping, label_size=None):
     return {'mapping':mapping, 'label_size':label_size}
+
+
+@register.inclusion_tag('includes/generic_resource_label_incl.html')
+def generic_resource_label(
+        resource_type='', resource_id=None, resource_name=None, resource_version_id=None,
+        resource_url=None, resource_retired=False,
+        owner_type=None, owner_id=None,
+        source_id=None, source_version_id=None,
+        label_size='', display_icon=True, display_breadcrumb=False):
+    """
+    If display_breadcrumb == false:
+        [:resource-icon :resource-id]
+    Else:
+        [:resource-icon :resource-id :resource-name]
+        [:resource-icon :resource-id :resource-name]
+        [:resource-icon :resource-id :resource-name]
+    """
+
+    # TODO: Set the URL
+
+    # Validate resource type and set the icon type
+    resource_type = resource_type.lower()
+    default_resource_icon = 'question-sign'
+    resource_icons = {
+        'concept': 'tag',
+        'mapping': 'link',
+        'source': 'th-list',
+        'collection': 'tags',
+        'org': 'home',
+        'user': 'user',
+        'source-version': 'asterisk'
+    }
+    if resource_type in resource_icons:
+        resource_icon = resource_icons[resource_type]
+    else:
+        resource_icon = default_resource_icon
+
+    # Determine label size
+    css_size_class = ''
+    if label_size.lower() == 'small':
+        css_size_class = 'small'
+    elif label_size.lower() == 'large':
+        css_size_class = 'large'
+
+    # Setup the breadcrumb
+    breadcrumb_parts = []
+    if display_breadcrumb:
+        # owner
+        breadcrumb_parts.append({'text':owner_id, 'display_as_version':false, 'focus':false})
+        if source_id:
+            breadcrumb_parts.append({'text':source_id, 'display_as_version':false, 'focus':false})
+        if source_version_id:
+            breadcrumb_parts.append({'text':source_version_id, 'display_as_version':true, 'focus':false})
+        if resource_type in ('concept','mapping'):
+            breadcrumb_parts.append({'text':resource_id, 'display_as_version':false, 'focus':false})
+            if resource_version_id:
+                breadcrumb_parts.append({'text':resource_version_id, 'display_as_version':true, 'focus':false})
+
+    return {
+        'resource_type':resource_type,
+        'resource_id':resource_id,
+        'resource_name':resource_name,
+        'resource_url':resource_url,
+        'resource_icon':resource_icon,
+        'owner_type':owner_type,
+        'owner_id':owner_id,
+        'source_id':source_id,
+        'source_version_id':source_version_id,
+        'label_size':label_size,
+        'css_size_class':css_size_class,
+        'display_icon':display_icon,
+        'display_breadcrumb':display_breadcrumb,
+        'breadcrumb_parts':breadcrumb_parts,
+    }
+
+
+
+## Custom Tags: FIELD LABEL
 
 @register.inclusion_tag('includes/field_display_incl.html')
 def field_label(label, value, url=False, truncate=True, vertical=False, small=False):
@@ -138,6 +290,9 @@ def field_label(label, value, url=False, truncate=True, vertical=False, small=Fa
     }
 
 
+
+## Custom Tags: PAGINATION
+
 @register.inclusion_tag('includes/simple_pager_incl.html')
 def simple_pager(page, name, url=None):
     """
@@ -166,6 +321,9 @@ def simple_pager(page, name, url=None):
         'url': url,
     }
 
+
+
+## Custom Tags: PERMISSION CHECKING
 
 class IfCanChangeNode(Node):
 
@@ -238,8 +396,3 @@ def do_if_can_change(parser, token):
         nodelist_false = NodeList()
 
     return IfCanChangeNode(nodelist_true, nodelist_false, obj_var)
-
-
-@register.filter(name='get')
-def get(d, k):
-    return d.get(k, None)
