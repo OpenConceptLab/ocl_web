@@ -125,8 +125,8 @@
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-tag search-result-icon"></span></div>
 			<div class="col-md-10 search-result-col-content">
-				<h4>{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
-				</h4>
+				<div class="label-container">{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+				</div>
 				<p>
 					<!--span class="caption">{{ result.display_name }} <small><em>[{{ result.display_locale }}]</em></small></span><br /-->
 					<em>Class:</em> {{ result.concept_class }}, <em>Datatype:</em> {{ result.datatype }}
@@ -191,15 +191,9 @@
 					<a href="{{ result_concepts_url }}" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>
 					{% comment %}&nbsp;&nbsp;&nbsp;&nbpsp;<a href="{{ result_mappings_url }}" title="Active mappings in source"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>{% endcomment %}
 				</div>
-
-				<h4>
-					<a href="{{ result_home_url }}" style="text-decoration: none;">
-						<span class="resource-label small source">
-							<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-th-list"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / </span><span class="resource-label-id-code">{{ result.short_code }}</span></span><span class="resource-label-name">{{ result.name }}</span>
-						</span>
-					</a>
-				</h4>
-
+				<div class="label-container">
+					{% generic_resource_label resource_type='source' resource_id=result.short_code resource_name=source.name resource_url=result_home_url owner_type=result.owner_type owner_id=result.owner label_size='small' display_breadcrumb=True %}
+				</div>
 				<p>
 					<em>Source Type:</em> {{ result.source_type|default:"None" }}<br />
 					{% if result.description %}{{ result.description }}<br />{% endif %}
