@@ -153,15 +153,8 @@ form div.input-group {
 
 
 
-
-/* Labels */
-
-.label .label-retired {
-  text-decoration: line-through;
-  text-decoration-color: Black;
-  color: #c66;
-  background-color: #ccc;
-}
+/* GENERIC RETIRED LABEL */
+/* TODO: Verify that this is still used after switching to generic resource label */
 
 .retired {
   text-decoration: line-through;
@@ -171,6 +164,9 @@ form div.input-group {
 
 
 
+
+/* RESOURCE LABELS */
+/* TODO: Source and Concept versions */
 
 .resource-label {
   font-size: 13pt;
@@ -222,6 +218,8 @@ form div.input-group {
   border-radius: 0 .25em .25em 0;
 }
 .resource-label.no-breadcrumb .resource-label-name {
+  /* Should be the same as ".resource-label .resource-label-name" except
+  apply border-radius on all 4 corners */
   display: inline;
   padding: .3em .6em .3em .6em;
   color: White;
@@ -231,7 +229,7 @@ form div.input-group {
   text-align: center;
   white-space: nowrap;
   vertical-align: baseline;
-  border-radius: .25 .25em .25em .25;
+  border-radius: .25em .25em .25em .25em;
 }
 .resource-label.concept .resource-label-name {
   background-color: #428bca;
@@ -259,11 +257,10 @@ form div.input-group {
   background-color: #ccc;
 }
 
-.resource-label.concept 
 
 
 /* Old Resource Labels -- REMOVE AFTER EVERYTHING IS SWITCHED OVER! */
-
+/*
 .concept-label {
 }
 .concept-label .concept-label-id {
@@ -313,6 +310,7 @@ form div.input-group {
   font-size: 10pt;
   line-height: 16pt;
 }
+*/
 
 
 
@@ -347,9 +345,7 @@ form div.input-group {
   color:#e5e5e5;
 }
 
-.org-privacy {
-/*  position: absolute; */
-/* Just a fixed font/color tag? */
+.resource-privacy {
   font-size: 8pt;
   font-weight: normal;
   text-transform: uppercase;
@@ -357,6 +353,10 @@ form div.input-group {
   margin-left: 10px;
   margin-top: 10px;
 }
+
+
+
+/* OTHER */
 
 .ocl-nav-menu li a {
   font-size: 10pt;

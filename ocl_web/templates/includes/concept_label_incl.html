@@ -1,6 +1,6 @@
 {% if concept.owner_type == 'Organization' %}
-<a href="{% url 'concept-home' org=concept.owner source=concept.source concept=concept.id %}" class="label label-primary {% if concept.retired %}label-retired{% endif %}">
+<a href="{% url 'concept-home' org=concept.owner source=concept.source concept=concept.id %}" class="label label-primary{% if concept.retired %} retired{% endif %}">
 {% else %}
-<a href="{% url 'concept-home' user=concept.owner source=concept.source concept=concept.id %}" class="label label-primary {% if concept.retired %}label-retired{% endif %}">
+<a href="{% url 'concept-home' user=concept.owner source=concept.source concept=concept.id %}" class="label label-primary{% if concept.retired %} retired{% endif %}">
 {% endif %}
 <span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{% if concept.retired %}<s>&nbsp;&nbsp;{% endif %}{{ concept.id }}{% if concept.retired %}&nbsp;&nbsp;</s>{% endif %}</a>
