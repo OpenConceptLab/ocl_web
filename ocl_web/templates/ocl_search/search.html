@@ -147,25 +147,32 @@
 			{% else %}
 				{% url 'mapping-home' user=result.owner source=result.source mapping=result.id as mapping_url %}
 			{% endif %}
+			{% if mapping.to_source_owner_type == 'Organization' %}
+				{% url 'concept-home' org=result.to_source_owner source=result.to_source_name concept=result.to_concept_code as to_concept_url %}
+			{% else %}
+				{% url 'concept-home' user=result.to_source_owner source=result.to_source_name concept=result.to_concept_code as to_concept_url %}
+			{% endif %}
 
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-link search-result-icon"></span></div>
 			<div class="col-md-10 search-result-col-content">
 				<div class="label-container">
-					<!-- from_concept -->
-					{# TODO: we do not know if this concept is retired #}
-					{% generic_resource_label resource_type='concept' resource_id=result.from_concept_code resource_name=result.from_concept_name resource_url=from_concept_url owner_type=result.from_source_owner_type owner_id=result.from_source_owner source_id=result.from_source_name label_size='small' display_breadcrumb=True %}
-
-					<!-- map_type -->
+					<!-- map_type label -->
 					{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=mapping_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
 
-					<!-- to_concept -->
-					{# TODO: need to handle differently for internal/external mapping -- not updated yet #}
-					<a href="{% if result.to_concept_url %}{{ result.to_concept_url }}{% endif %}" style="text-decoration: none;">
-						<span class="resource-label small concept">
-							<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.to_source_owner }} / {{ result.to_source_name }} / </span><span class="resource-label-id-code">{{ result.to_concept_code }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.to_concept_name }}{% if result.retired %}</s>{% endif %}</span>
-						</span>
-					</a>
+					<!-- from_concept label -->
+					{# TODO: we do not know if this concept is retired #}
+					<div class="small text-muted" style="padding: 5px 0 20px 20px;">
+						From:&nbsp;&nbsp;{% mapping_from_concept_label mapping label_size="small" %}
+					</div>
+					{% comment %}
+					{% generic_resource_label resource_type='concept' resource_id=result.from_concept_code resource_name=result.from_concept_name resource_url=from_concept_url owner_type=result.from_source_owner_type owner_id=result.from_source_owner source_id=result.from_source_name label_size='small' display_breadcrumb=True %}
+					{% endcomment %}
+
+					<!-- to_concept label -->
+					<div class="small text-muted" style="padding: 5px 0 20px 20px;">
+						To:&nbsp;&nbsp;{% mapping_to_concept_label mapping label_size="small" %}
+					</div>
 				</div>
 				<p>
 					<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>

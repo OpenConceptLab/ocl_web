@@ -215,6 +215,7 @@ def generic_resource_label(
     default_resource_icon = 'question-sign'
     resource_icons = {
         'concept': 'tag',
+        'external-concept': 'tag',
         'mapping': 'link',
         'source': 'th-list',
         'collection': 'tags',
