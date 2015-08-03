@@ -184,21 +184,29 @@ def mapping_to_concept_label(mapping, label_size=None):
 
 @register.inclusion_tag('includes/generic_resource_label_incl.html')
 def generic_resource_label(
-        resource_type='', resource_id=None, resource_name=None, resource_version_id=None,
-        resource_url=None, resource_retired=False,
+        resource_type='', resource_id=None, resource_name=None,
+        resource_version_id=None, resource_url=None, resource_retired=False,
         owner_type=None, owner_id=None,
         source_id=None, source_version_id=None,
         label_size='', display_icon=True, display_breadcrumb=False):
     """
-    If display_breadcrumb == false:
-        [:resource-icon :resource-id]
-    Else:
-        [:resource-icon :resource-id :resource-name]
-        [:resource-icon :resource-id :resource-name]
-        [:resource-icon :resource-id :resource-name]
-    """
+    Generates an OCL resource label based on the passed information.
 
-    # TODO: Set the URL
+    `resource_*` fields describe the resource for which the label is being generated,
+    and are always applicable regardless of whether the breadcrumb is displayed.
+
+    `owner_type`, `owner_id`, `source_id`, and `source_version_id` are only used
+    to display breadcrumb information.
+
+    If display_breadcrumb == false:
+        ( :resource-icon :resource-id )
+    Else:
+        Org/User:          ( :resource-icon :resource-id | :resource-name )
+        Source:            ( :resource-icon :owner_id / :resource-id | :resource-name )
+        Source Version:    ( :resource-icon :owner_id / :resource-id [ :resource_version_id ] | :resource-name )
+        Concept/Mapping:   ( :resource-icon :owner_id / :source_id / :resource-id | :resource-name )
+        Versioned Concept: ( :resource-icon :owner_id / :source_id / :resource-id [ :resource_version_id ] | :resource-name )
+    """
 
     # Validate resource type and set the icon type
     resource_type = resource_type.lower()
@@ -227,16 +235,36 @@ def generic_resource_label(
     # Setup the breadcrumb
     breadcrumb_parts = []
     if display_breadcrumb:
-        # owner
-        breadcrumb_parts.append({'text':owner_id, 'display_as_version':False, 'focus':False})
+        if owner_id:
+            breadcrumb_parts.append({
+                'text': owner_id,
+                'display_as_version': False,
+                'focus': False
+            })
         if source_id:
-            breadcrumb_parts.append({'text':source_id, 'display_as_version':False, 'focus':False})
+            breadcrumb_parts.append({
+                'text': source_id,
+                'display_as_version': False,
+                'focus': False
+            })
         if source_version_id:
-            breadcrumb_parts.append({'text':source_version_id, 'display_as_version':True, 'focus':False})
-        if resource_type in ('concept','mapping'):
-            breadcrumb_parts.append({'text':resource_id, 'display_as_version':False, 'focus':False})
-            if resource_version_id:
-                breadcrumb_parts.append({'text':resource_version_id, 'display_as_version':True, 'focus':False})
+            breadcrumb_parts.append({
+                'text': source_version_id,
+                'display_as_version': True,
+                'focus': False
+            })
+        if resource_id:
+            breadcrumb_parts.append({
+                'text': resource_id,
+                'display_as_version': False,
+                'focus': False if resource_version_id else True
+            })
+        if resource_version_id:
+            breadcrumb_parts.append({
+                'text': resource_version_id,
+                'display_as_version': True,
+                'focus': True
+            })
 
     return {
         'resource_type':resource_type,
@@ -244,6 +272,7 @@ def generic_resource_label(
         'resource_name':resource_name,
         'resource_url':resource_url,
         'resource_icon':resource_icon,
+        'resource_retired':resource_retired,
         'owner_type':owner_type,
         'owner_id':owner_id,
         'source_id':source_id,
