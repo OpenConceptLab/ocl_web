@@ -199,13 +199,15 @@ def generic_resource_label(
     to display breadcrumb information.
 
     If display_breadcrumb == false:
-        ( :resource-icon :resource-id )
-    Else:
         Org/User:          ( :resource-icon :resource-id | :resource-name )
         Source:            ( :resource-icon :owner_id / :resource-id | :resource-name )
         Source Version:    ( :resource-icon :owner_id / :resource-id [ :resource_version_id ] | :resource-name )
         Concept/Mapping:   ( :resource-icon :owner_id / :source_id / :resource-id | :resource-name )
         Versioned Concept: ( :resource-icon :owner_id / :source_id / :resource-id [ :resource_version_id ] | :resource-name )
+    Elif resource_id and resource_name:
+        ( :resource-icon :resource-id | :resource_name )
+    Else:
+        ( :resource-icon :resource-id )
     """
 
     # Validate resource type and set the icon type
@@ -259,6 +261,18 @@ def generic_resource_label(
                 'display_as_version': False,
                 'focus': False if resource_version_id else True
             })
+        if resource_version_id:
+            breadcrumb_parts.append({
+                'text': resource_version_id,
+                'display_as_version': True,
+                'focus': True
+            })
+    elif resource_id and resource_name:
+        breadcrumb_parts.append({
+            'text': resource_id,
+            'display_as_version': False,
+            'focus': False if resource_version_id else True
+        })
         if resource_version_id:
             breadcrumb_parts.append({
                 'text': resource_version_id,
