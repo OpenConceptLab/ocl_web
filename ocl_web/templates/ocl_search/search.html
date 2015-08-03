@@ -157,7 +157,7 @@
 					{% generic_resource_label resource_type='concept' resource_id=result.from_concept_code resource_name=result.from_concept_name resource_url=from_concept_url owner_type=result.from_source_owner_type owner_id=result.from_source_owner source_id=result.from_source_name label_size='small' display_breadcrumb=True %}
 
 					<!-- map_type -->
-					{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=mapping_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner label_size='small' display_breadcrumb=True %}
+					{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=mapping_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
 
 					<!-- to_concept -->
 					{# TODO: need to handle differently for internal/external mapping -- not updated yet #}
