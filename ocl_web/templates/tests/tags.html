@@ -4,18 +4,33 @@
 {% block title %}OCL Tests - Tags{% endblock title %}
 
 {% block content %}
-<p>Concept - Full Tag<br />
-	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' resource_retired=False owner_type='Organization' owner_id='CIEL' source_id='CIEL' source_version_id='2015-05-10' label_size='small' display_breadcrumb=True %}
+<h1>OCL Tests - Resource Tags</h2>
+<h2>Resource Tags with Breadcrumbs</h2>
+<h3>Concepts</h3>
+<h4>Concept from Head</h4>
+<p>
+	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' owner_type='Organization' owner_id='CIEL' source_id='CIEL' label_size='small' display_breadcrumb=True %}
+</p>
+<h4>Concept from Specific Source Version</h4>
+<p>
+	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' owner_type='Organization' owner_id='CIEL' source_id='CIEL' source_version_id='2015-05-10' label_size='small' display_breadcrumb=True %}
+</p>
+<h4>Concept Version</h4>
+<p>
+	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' owner_type='Organization' owner_id='CIEL' source_id='CIEL' concept_version_id='3993jfdkkdfd9-9d3jf9' label_size='small' display_breadcrumb=True %}
+</p>
+<h4>Retired Concept from Head</h4>
+<p>
+	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' resource_retired=True owner_type='Organization' owner_id='CIEL' source_id='CIEL' label_size='small' display_breadcrumb=True %}
 </p>
 
-<p>Retired Concept - Full Tag<br />
-	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' resource_retired=True owner_type='Organization' owner_id='CIEL' source_id='CIEL' source_version_id='2015-05-10' label_size='small' display_breadcrumb=True %}
+<h2>Resource Tags with no Breadcrumbs</h2>
+<h3>Concept</h3>
+<p>
+	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' label_size='small' %}
 </p>
-
-<p>Concept - Small Tag<br />
-	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' label_size='small' %}</p>
-
-<p>Retired Concept - Small Tag<br />
+<h3>Retired Concept</h3>
+<p>
 	{% generic_resource_label resource_type='concept' resource_id=32 resource_name='Malarial Smear' resource_url='/dkd/dkd/' resource_retired=True label_size='small' %}
 </p>
 
