@@ -216,7 +216,10 @@ a.resource-label:hover {
 }
 .resource-label .resource-label-id .resource-label-id-icon {
 }
-.resource-label .resource-label-id .resource-label-id-breadcrumb {
+.resource-label .resource-label-id .resource-label-id-breadcrumb .breadcrumb_part {
+  font-size: 87%;
+}
+.resource-label .resource-label-id .resource-label-id-breadcrumb .breadcrumb_divider {
   font-size: 87%;
 }
 .resource-label .resource-label-id .resource-label-id-breadcrumb .breadcrumb_part_focus {
@@ -231,7 +234,7 @@ a.resource-label:hover {
   display: inline;
   padding: .3em .6em .3em .6em;
   color: White;
-  background-color: #428bca;
+  background-color: Orange;
   font-weight: 300;
   letter-spacing:-0.1pt;
   text-align: center;
@@ -240,17 +243,6 @@ a.resource-label:hover {
   border-radius: 0 .25em .25em 0;
 }
 .resource-label.no-breadcrumb .resource-label-name {
-  /* Should be the same as ".resource-label .resource-label-name" except
-  apply border-radius on all 4 corners */
-  display: inline;
-  padding: .3em .6em .3em .6em;
-  color: White;
-  background-color: #428bca;
-  font-weight: 300;
-  letter-spacing:-0.1pt;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: baseline;
   border-radius: .25em .25em .25em .25em;
 }
 .resource-label.concept .resource-label-name {

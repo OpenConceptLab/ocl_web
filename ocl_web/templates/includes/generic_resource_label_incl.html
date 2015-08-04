@@ -5,9 +5,9 @@
 		<span class="resource-label-id-breadcrumb">
 		{% for bc_part in breadcrumb_parts %}
 			{% if bc_part.display_as_version %}
-				<span class="breadcrumb_part breadcrumb_part_version"> [ <span{% if bc_part.focus %} class="breadcrumb_part_focus"{% endif %}>{{ bc_part.text }}</span> ]</span>
+				<span class="breadcrumb_part breadcrumb_part_version"><span class="breadcrumb_divider">  [ </span><span{% if bc_part.focus %} class="breadcrumb_part_focus"{% endif %}>{{ bc_part.text }}</span><span class="breadcrumb_divider">  ]</span></span>
 			{% else %}
-				{% if not forloop.first %} / {% endif %}<span class="breadcrumb_part{% if bc_part.focus %} breadcrumb_part_focus{% endif %}">{{ bc_part.text }}</span>
+				{% if not forloop.first %}<span class="breadcrumb_divider"> / </span>{% endif %}<span class="breadcrumb_part{% if bc_part.focus %} breadcrumb_part_focus{% endif %}">{{ bc_part.text }}</span>
 			{% endif %}
 		{% endfor %}
 		</span>
