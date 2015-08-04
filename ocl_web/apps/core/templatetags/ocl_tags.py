@@ -188,7 +188,7 @@ def generic_resource_label(
         resource_version_id=None, resource_url=None, resource_retired=False,
         owner_type=None, owner_id=None,
         source_id=None, source_version_id=None,
-        label_size='', display_icon=True, display_breadcrumb=False):
+        label_size='', display_icon=True, display_breadcrumb=False, empty_name_text=None):
     """
     Generates an OCL resource label based on the passed information.
 
@@ -297,6 +297,7 @@ def generic_resource_label(
         'display_icon':display_icon,
         'display_breadcrumb':display_breadcrumb,
         'breadcrumb_parts':breadcrumb_parts,
+        'empty_name_text':empty_name_text
     }
 
 
