@@ -216,7 +216,7 @@ a.resource-label:hover {
 }
 .resource-label .resource-label-id .resource-label-id-icon {
 }
-.resource-label .resource-label-id .resource-label-id-breadcrumb .breadcrumb_part {
+.resource-label .resource-label-id .resource-label-id-breadcrumb .breadcrumb_part:not(.breadcrumb_part_focus) {
   font-size: 87%;
 }
 .resource-label .resource-label-id .resource-label-id-breadcrumb .breadcrumb_divider {
