@@ -50,7 +50,7 @@
 								<small><p class="text-right"><a href="{% url 'source-new' user=ocl_user.username %}">{% trans "New User Source" %}</a></small></p>
 							{% endif %}
 						</div>
-						<div class="list-group-item" style="overflow-x: scroll;">
+						<div class="list-group-item" style="overflow-x: scroll; white-space: nowrap;">
 							{% for source in sources %}
 								{% url 'source-home' user=source.owner source=source.short_code as user_source_url %}
 								<div class="label-container">
@@ -72,7 +72,7 @@
 								<small><p class="text-right"><a href="{% url 'org-new' %}">Create New Organization</a></small></p>
 							{% endif %}
 						</div>
-						<div class="list-group-item" style="overflow-x: scroll;">
+						<div class="list-group-item" style="overflow-x: scroll; white-space: nowrap;">
 							{% for org in orgs %}
 								{% url 'org-home' org=org.id as user_org_url %}
 								<div class="label-container">
