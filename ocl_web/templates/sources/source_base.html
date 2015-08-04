@@ -20,12 +20,12 @@
 			<div class="col-md-12">
 				<div class="resource-header-icon"><span class="glyphicon glyphicon-th-list"></span></div>
 				<div class="resource-header-label">
-					<h3>
+					<div class="label-container">
 						{% resource_owner_label source %} / {% source_label source %}
 						{% if_can_change source %}
 							<a href="{{ source_edit_url }}" class="small text-muted" title="Edit Source"><span class="glyphicon glyphicon-cog"></span></a>
 						{% endif_can_change source %}
-					</h3>
+					</div>
 					<p>
 						<em>Source Type:</em> {{ source.source_type }}<br />
 						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ source.updated_on|smart_datetime }})</span>

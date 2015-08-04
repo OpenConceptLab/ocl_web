@@ -29,7 +29,7 @@
 					<div class="label-container">
 						{% resource_owner_label mapping label_size='large' %} / {% generic_resource_label resource_type='source' resource_id=mapping.source resource_url=source_url label_size='large' %} / {% generic_resource_label resource_type='mapping' resource_id=mapping.id resource_name=mapping.map_type resource_url=mapping_home_url label_size='large' %}
 						{% if_can_change source %}
-							<a href="{{ mapping_edit_url }}" class="text-muted" title="Edit Mapping"><span class="glyphicon glyphicon-cog"></span></a>
+							<a href="{{ mapping_edit_url }}" class="text-muted small" title="Edit Mapping"><span class="glyphicon glyphicon-cog"></span></a>
 						{% endif_can_change source %}
 					</div>
 
