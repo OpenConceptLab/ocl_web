@@ -3,8 +3,4 @@
 {% else %}
 	{% url 'concept-home' user=mapping.from_source_owner source=mapping.from_source_name concept=mapping.from_concept_code as concept_url %}
 {% endif %}
-<a href="{{ concept_url }}" style="text-decoration:none;">
-	<span class="resource-label {% if label_size == 'small' %}small{% elif label_size == 'large' %}large{% endif %} mapping">
-		<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ mapping.from_source_owner }} / {{ mapping.from_source_name }} / </span><span class="resource-label-id-code">{{ mapping.from_concept_code }}</span></span><span class="resource-label-name">{{ mapping.from_concept_name }}</span>
-	</span>
-</a>
+{% generic_resource_label resource_type='concept' resource_id=mapping.from_concept_code resource_name=mapping.from_concept_name resource_url=concept_url owner_type=mapping.from_source_owner_type owner_id=from_source_owner source_id=mapping.from_source_name label_size=label_size display_breadcrumb=True %}
