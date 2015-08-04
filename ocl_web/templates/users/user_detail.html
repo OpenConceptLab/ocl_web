@@ -75,7 +75,7 @@
 						<div class="list-group-item" style="overflow-x: scroll;">
 							{% for org in orgs %}
 								{% url 'org-home' org=org.id as user_org_url %}
-								<div class="label_container">
+								<div class="label-container">
 									{% generic_resource_label resource_type='org' resource_id=org.id resource_name=org.name resource_url=user_org_url label_size='small' display_breadcrumb=True %}
 								</div>
 							{% empty %}
