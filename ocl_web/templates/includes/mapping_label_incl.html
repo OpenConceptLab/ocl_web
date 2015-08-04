@@ -1,3 +1,4 @@
+{% load ocl_tags %}
 {% if mapping.owner_type == 'Organization' %}
 	{% url 'mapping-home' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_url %}
 {% else %}
