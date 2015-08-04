@@ -1,6 +1,7 @@
+{% load ocl_tags %}
 {% if concept.owner_type == 'Organization' %}
-<a href="{% url 'concept-home' org=concept.owner source=concept.source concept=concept.id %}" class="label label-primary{% if concept.retired %} retired{% endif %}">
+	{% url 'concept-home' org=concept.owner source=concept.source concept=concept.id as concept_url %}
 {% else %}
-<a href="{% url 'concept-home' user=concept.owner source=concept.source concept=concept.id %}" class="label label-primary{% if concept.retired %} retired{% endif %}">
+	{% url 'concept-home' user=concept.owner source=concept.source concept=concept.id as concept_url %}
 {% endif %}
-<span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{% if concept.retired %}<s>&nbsp;&nbsp;{% endif %}{{ concept.id }}{% if concept.retired %}&nbsp;&nbsp;</s>{% endif %}</a>
+{% generic_resource_label resource_type='concept' resource_id=concept.id resource_url=concept_url resource_retired=concept.retired label_size=label_size %}
