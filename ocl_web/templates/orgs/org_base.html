@@ -17,7 +17,7 @@
                     <div class="label-container">
                         {% org_label org %}
                         {# TODO: Only show if admin or owner - look at source_base.html for example #}
-                        <a href="{% url 'org-edit' org=org.id %}" class="small text-muted" title="Edit Organization"><span class="glyphicon glyphicon-cog"></span></a>
+                        <a href="{% url 'org-edit' org=org.id %}" class="text-muted" title="Edit Organization"><span class="glyphicon glyphicon-cog"></span></a>
                     </div>
                     <p>
                         <h4>{{ org.name }}</h4>

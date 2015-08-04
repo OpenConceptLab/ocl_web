@@ -130,16 +130,13 @@
                     <div class="pull-right small text-muted" style="padding-top:12px;">
                         <a href="{{ result_concepts_url }}" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>
                     </div>
-                    <h4><a href="{{ result_home_url }}" style="text-decoration: none;">
-                        <span class="resource-label small source">
-                            <span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-th-list"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / </span><span class="resource-label-id-code">{{ result.short_code }}</span>
-                            </span><span class="resource-label-name">{{ result.name }}</span>
-                        </span>
-                    </a></h4>
+                    <div class="label-container">
+                        {% generic_resource_label resource_type='source' resource_id=result.short_code resource_name=result.name resource_url=result_home_url owner_type=result.owner_type owner_id=result.owner label_size='small' display_breadcrumb=True %}
+                    </div>
                     <p>
                         <em>Source Type:</em> {{ result.source_type|default:"None" }}<br />
                         {% if result.description %}{{ result.description }}<br />{% endif %}
-                        {% if result.updated_on %}<!--br /--><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
+                        {% if result.updated_on %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
                     </p>
                     {% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
                 </div>
