@@ -1,3 +1,4 @@
+{% load ocl_tags %}
 {% if mapping.from_source_owner_type == 'Organization' %}
 	{% url 'concept-home' org=mapping.from_source_owner source=mapping.from_source_name concept=mapping.from_concept_code as concept_url %}
 {% else %}

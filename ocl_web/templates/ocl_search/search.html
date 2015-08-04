@@ -137,20 +137,10 @@
 			</div>
 
 	{% elif search_type == 'mappings' %}
-			{% if result.from_source_owner_type == 'Organization' %}
-				{% url 'concept-home' org=result.from_source_owner source=result.from_source_name concept=result.from_concept_code as from_concept_url %}
-			{% else %}
-				{% url 'concept-home' org=result.from_source_owner source=result.from_source_anme concept=result.from_concept_code as from_concept_url %}
-			{% endif %}
 			{% if result.owner_type == 'Organization' %}
 				{% url 'mapping-home' org=result.owner source=result.source mapping=result.id as mapping_url %}
 			{% else %}
 				{% url 'mapping-home' user=result.owner source=result.source mapping=result.id as mapping_url %}
-			{% endif %}
-			{% if mapping.to_source_owner_type == 'Organization' %}
-				{% url 'concept-home' org=result.to_source_owner source=result.to_source_name concept=result.to_concept_code as to_concept_url %}
-			{% else %}
-				{% url 'concept-home' user=result.to_source_owner source=result.to_source_name concept=result.to_concept_code as to_concept_url %}
 			{% endif %}
 
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->

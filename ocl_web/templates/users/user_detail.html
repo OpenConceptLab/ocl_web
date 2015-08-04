@@ -2,6 +2,7 @@
 {% load avatar_tags %}
 {% load static %}
 {% load ocl_tags %}
+{% load i18n %}
 
 {% block title %}{{ object.username }} - Open Concept Lab{% endblock %}
 
@@ -14,13 +15,13 @@
 			<div>{% avatar object size=200 %}</div>
 			<h2>{{ ocl_user.name }}<br /><small>{{ object.username }}</small></h2>
 			<hr />
-			<p><strong>Company:</strong><br />{{ ocl_user.company|default:"N/A" }}</p>
-			<p><strong>Location:</strong><br />{{ ocl_user.location|default:"N/A"  }}</p>
-			{% if ocl_user.website %}<p><strong>Website:</strong><br />{{ ocl_user.website }}</p>{% endif %}
-			<p><strong>Email:</strong><br />{{ ocl_user.email }}</p>
-			<p><strong>Preferred Locale(s):</strong><br />{{ ocl_user.preferred_locale }}</p>
-			<p><strong>Joined:</strong><br />{{ ocl_user.created_on|smart_date }}</p>
-			{% if api_token %}<hr /><p><strong>API Token:</strong><br /><span class="small">{{ api_token }}</span></p>{% endif %}
+			<p><strong>{% trans "Company" %}:</strong><br />{{ ocl_user.company|default:"N/A" }}</p>
+			<p><strong>{% trans "Location" %}:</strong><br />{{ ocl_user.location|default:"N/A"  }}</p>
+			{% if ocl_user.website %}<p><strong>{% trans "Website" %}:</strong><br />{{ ocl_user.website }}</p>{% endif %}
+			<p><strong>{% trans "Email" %}:</strong><br />{{ ocl_user.email }}</p>
+			<p><strong>{% trans "Preferred Locales" %}:</strong><br />{{ ocl_user.preferred_locale }}</p>
+			<p><strong>{% trans "Joined" %}:</strong><br />{{ ocl_user.created_on|smart_date }}</p>
+			{% if api_token %}<hr /><p><strong>{% trans "API Token" %}:</strong><br /><span class="small">{{ api_token }}</span></p>{% endif %}
 		</div>
 
 		<div class="col-sm-9">
@@ -51,13 +52,12 @@
 						</div>
 						<div class="list-group-item" style="overflow-x: scroll;">
 							{% for source in sources %}
-								<h4><a href="{% url 'source-home' user=source.owner source=source.short_code %}" style="text-decoration: none;">
-									<span class="resource-label small source">
-										<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-th-list"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source.owner }} / </span><span class="resource-label-id-code">{{ source.short_code }}</span></span><span class="resource-label-name">{{ source.name }}</span>
-									</span>
-								</a></h4>
+								{% url 'source-home' user=source.owner source=source.short_code as user_source_url %}
+								<div class="label_container">
+									{% generic_resource_label resource_type='source' resource_id=source.short_code resource_name=source.name resource_url=user_source_url owner_type='User' owner_id=source.owner label_size='small' display_breadcrumb=True %}
+								</div>
 							{% empty %}
-								<h3><small>No Sources</small></h3>
+								<h3><small>No User Sources</small></h3>
 							{% endfor %}
 						</div>
 					</div>
@@ -74,12 +74,10 @@
 						</div>
 						<div class="list-group-item" style="overflow-x: scroll;">
 							{% for org in orgs %}
-								<h4><a href="{% url 'org-home' org=org.id %}" style="text-decoration: none;">
-									<span class="resource-label small organization">
-										<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-home"></span></span>&nbsp;&nbsp;<span class="resource-label-id-code">{{ org.id }}</span>
-										</span><span class="resource-label-name">{{ org.name }}</span>
-									</span>
-								</a></h4>
+								{% url 'org-home' org=org.id as user_org_url %}
+								<div class="label_container">
+									{% generic_resource_label resource_type='org' resource_id=org.id resource_name=org.name resource_url=user_org_url label_size='small' display_breadcrumb=True %}
+								</div>
 							{% empty %}
 								<h3><small>No Organizations</small></h3>
 							{% endfor %}
