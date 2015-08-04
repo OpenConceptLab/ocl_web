@@ -99,36 +99,11 @@
 <!-- Search results -->
 
         {% for result in results %}
-
-			{# from_concept URL #}
-			{% comment %}
-			{% if result.from_source_owner_type == 'Organization' %}
-				{% url 'concept-home' org=result.from_source_owner source=result.from_source_name concept=result.from_concept_code as from_concept_url %}
-			 {% else %}
-				{% url 'concept-home' user=result.from_source_owner source=result.from_source_name concept=result.from_concept_code as from_concept_url %}
-	    	{% endif %}
-	    	{% endcomment %}
-
-			{# mapping URL #}
 			{% if result.owner_type == 'Organization' %}
 				{% url 'mapping-home' org=result.owner source=result.source mapping=result.id as mapping_url %}
 			{% else %}
 				{% url 'mapping-home' user=result.owner source=result.source mapping=result.id as mapping_url %}
 			{% endif %}
-
-	    	{# to_concept URL #}
-	    	{% comment %}
-			{% if result.to_concept_url %}
-				{# internal mapping: link to concept #}
-				{% if result.to_source_owner_type == 'Organization' %}
-					{% url 'concept-home' org=result.to_source_owner source=result.to_source_name concept=result.to_concept_code as to_concept_url %}
-				{% else %}
-					{% url 'concept-home' user=result.to_source_owner source=result.to_source_name concept=result.to_concept_code as to_concept_url %}
-				{% endif %}
-			{% else %}
-				{# external mapping: no link #}
-			{% endif %}
-			{% endcomment %}
 
 			<div class="row row-search-result"> 
 				<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
@@ -149,30 +124,6 @@
 							<span class="text-muted small">To:</span>&nbsp;&nbsp;{% mapping_to_concept_label result label_size="small" %}
 						</div>						
 					</div>
-					{% comment %}
-					<h4>
-						<!-- from_concept -->
-						<a href="{{ from_concept_url }}" style="text-decoration: none;">
-							<span class="resource-label small concept">
-								<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.from_source_owner }} / {{ result.from_source_name }} / </span><span class="resource-label-id-code">{{ result.from_concept_code }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.from_concept_name }}{% if result.retired %}</s>{% endif %}</span>
-							</span>
-						</a>
-
-						<!-- map_type -->
-						<a href="{{ mapping_url }}" style="text-decoration: none;">
-							<span class="resource-label small mapping">
-								<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-link"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.owner }} / {{ result.source }} / </span></span><span class="resource-label-name">{{ result.map_type }}{% if result.retired %}</s>{% endif %}</span>
-							</span>
-						</a>
-
-						<!-- to_concept -->
-						{% if to_concept_url %}<a href="{{ to_concept_url }}" style="text-decoration: none;">{% endif %}
-							<span class="resource-label small concept">
-								<span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ result.to_source_owner }} / {{ result.to_source_name }} / </span><span class="resource-label-id-code">{{ result.to_concept_code }}</span></span><span class="resource-label-name">{% if result.retired %}<s>{% endif %}{{ result.to_concept_name }}{% if result.retired %}</s>{% endif %}</span>
-							</span>
-						{% if to_concept_url %}</a>{% endif %}
-					</h4>
-					{% endcomment %}
 					<p>
 						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>
 					</p>
