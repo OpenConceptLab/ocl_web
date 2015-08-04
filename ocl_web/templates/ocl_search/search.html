@@ -148,7 +148,7 @@
 			<div class="col-md-10 search-result-col-content">
 				<div class="label-container">
 					<!-- map_type label -->
-					{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=mapping_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+					{% mapping_label result label_size='small' %}
 
 					<!-- from_concept label -->
 					{# TODO: we do not know if this concept is retired #}

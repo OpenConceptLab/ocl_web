@@ -274,61 +274,6 @@ a.resource-label:hover {
 
 
 
-/* Old Resource Labels -- REMOVE AFTER EVERYTHING IS SWITCHED OVER! */
-/*
-.concept-label {
-}
-.concept-label .concept-label-id {
-  display: inline;
-  padding: .2em .6em .3em .6em;
-  font-size: 10pt;
-  font-weight: 700;
-  line-height: 1;
-  color: #fff;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: baseline;
-  border-radius: .25em 0 0 .25em;
-  background-color: #eee;
-  color: #666;
-  line-height: 16pt;
-}
-.concept-label .concept-label-id .concept-label-id-icon {
-  font-weight: normal;
-  font-size: 10pt;
-}
-.concept-label .concept-label-id .concept-label-id-breadcrumb {
-  font-weight: 200;
-  font-size: 9pt;  
-}
-.concept-label .concept-label-id .concept-label-id-code {
-  font-size: 10pt;
-  font-weight: 700;
-  color: Black;
-}
-.concept-label .concept-label-name {
-  display: inline;
-  padding: .2em .6em .3em .6em;
-  font-size: 75%;
-  font-weight: 200;
-  line-height: 1;
-  color: #fff;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: baseline;
-  border-radius: 0 .25em .25em 0;
-  background-color: #eee;
-
-  background-color: #428bca;
-  color: White;
-  font-weight: 600;
-  font-size: 10pt;
-  line-height: 16pt;
-}
-*/
-
-
-
 /* Resource Header */
 
 .resource-header {
@@ -366,6 +311,11 @@ a.resource-label:hover {
   color: #b9b9b9;
   margin-left: 10px;
   margin-top: 10px;
+}
+.resource-header .label-container {
+  padding-top:20px;
+  padding-bottom:10px;
+  font-size:18pt;
 }
 
 
