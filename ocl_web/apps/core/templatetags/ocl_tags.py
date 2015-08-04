@@ -230,7 +230,9 @@ def generic_resource_label(
 
     # Determine label size
     css_size_class = ''
-    if label_size.lower() == 'small':
+    if not label_size or label_size.lower() not in ('small', 'large'):
+        pass
+    elif label_size.lower() == 'small':
         css_size_class = 'small'
     elif label_size.lower() == 'large':
         css_size_class = 'large'
