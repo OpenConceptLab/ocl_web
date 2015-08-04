@@ -101,11 +101,13 @@
         {% for result in results %}
 
 			{# from_concept URL #}
+			{% comment %}
 			{% if result.from_source_owner_type == 'Organization' %}
 				{% url 'concept-home' org=result.from_source_owner source=result.from_source_name concept=result.from_concept_code as from_concept_url %}
 			 {% else %}
 				{% url 'concept-home' user=result.from_source_owner source=result.from_source_name concept=result.from_concept_code as from_concept_url %}
 	    	{% endif %}
+	    	{% endcomment %}
 
 			{# mapping URL #}
 			{% if result.owner_type == 'Organization' %}
@@ -115,6 +117,7 @@
 			{% endif %}
 
 	    	{# to_concept URL #}
+	    	{% comment %}
 			{% if result.to_concept_url %}
 				{# internal mapping: link to concept #}
 				{% if result.to_source_owner_type == 'Organization' %}
@@ -125,11 +128,28 @@
 			{% else %}
 				{# external mapping: no link #}
 			{% endif %}
+			{% endcomment %}
 
 			<div class="row row-search-result"> 
 				<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 				<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-link search-result-icon"></span></div>
 				<div class="col-md-10 search-result-col-content">
+					<div class="label-container">
+						<!-- map_type label -->
+						{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=mapping_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+
+						<!-- from_concept label -->
+						{# TODO: we do not know if this concept is retired #}
+						<div style="padding: 8px 0 8px 20px;">
+							<span class="text-muted small">From:</span>&nbsp;&nbsp;{% mapping_from_concept_label result label_size="small" %}
+						</div>
+
+						<!-- to_concept label -->
+						<div style="padding: 0 0 8px 20px;">
+							<span class="text-muted small">To:</span>&nbsp;&nbsp;{% mapping_to_concept_label result label_size="small" %}
+						</div>						
+					</div>
+					{% comment %}
 					<h4>
 						<!-- from_concept -->
 						<a href="{{ from_concept_url }}" style="text-decoration: none;">
@@ -152,8 +172,10 @@
 							</span>
 						{% if to_concept_url %}</a>{% endif %}
 					</h4>
-
-					<p><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span></p>
+					{% endcomment %}
+					<p>
+						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>
+					</p>
 					{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 				</div>
 			</div>

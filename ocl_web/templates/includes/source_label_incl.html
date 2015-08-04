@@ -4,4 +4,4 @@
 {% else %}
 	{% url 'source-home' user=source.owner source=source.id as resource_url %}
 {% endif %}
-{% generic_resource_label resource_type='source' resource_id=source.short_name resource_url=resource_url label_size=label_size %}
+{% generic_resource_label resource_type='source' resource_id=source.short_code resource_url=resource_url label_size=label_size %}

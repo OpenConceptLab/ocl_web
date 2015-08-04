@@ -149,13 +149,13 @@
 				<div class="label-container">
 					<!-- map_type label -->
 					{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=mapping_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
-	
+
 					<!-- from_concept label -->
 					{# TODO: we do not know if this concept is retired #}
 					<div style="padding: 8px 0 8px 20px;">
 						<span class="text-muted small">From:</span>&nbsp;&nbsp;{% mapping_from_concept_label result label_size="small" %}
 					</div>
-	
+
 					<!-- to_concept label -->
 					<div style="padding: 0 0 8px 20px;">
 						<span class="text-muted small">To:</span>&nbsp;&nbsp;{% mapping_to_concept_label result label_size="small" %}
