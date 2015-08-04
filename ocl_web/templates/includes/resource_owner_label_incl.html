@@ -1,5 +1,8 @@
+{% load ocl_tags %}
 {% if resource_owner_type == 'Organization' %}
-<a href="{% url 'org-home' org=resource_owner %}" class="label label-warning"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ resource_owner }}</a>
+	{% url 'org-home' org=resource_owner as owner_url %}
+	{% generic_resource_label resource_type='org' resource_id=resource_owner resource_url=owner_url label_size=label_size %}
 {% else %}
-<a href="{% url 'users:detail' username=resource_owner %}" class="label label-warning"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ resource_owner }}</a>
+	{% url 'users:detail' username=resource_owner as owner_url %}
+	{% generic_resource_label resource_type='user' resource_id=resource_owner resource_url=owner_url label_size=label_size %}
 {% endif %}
