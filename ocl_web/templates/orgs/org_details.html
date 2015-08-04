@@ -12,32 +12,32 @@
 		<div class="col-md-8">
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3 class="panel-title">Organization Details</h3></div>
-                <div class="panel-body">
-                	{% field_label 'ID' org.id %}
-                	{% field_label 'Full Name' org.name %}
-                	<hr />
-                	{% field_label 'Company' org.company %}
-                	{% field_label 'Website' org.website url=True %}
-                	{% field_label 'Location' org.location %}
-                	{% field_label 'Public Access' org.public_access %}
-                	<hr />
-                	{% field_label 'Created By' org.created_by %}
-                	{% field_label 'Created On' org.created_on|smart_date %}
-                	{% field_label 'Updated By' org.updated_by %}
-                	{% field_label 'Updated On' org.updated_on|smart_date %}
-                	{% if org.extras and org.extras.items %}
-                		<hr />
-                		{% for k, v in org.extras.items %}
-                			{% field_label k v %}
-                		{% endfor %}
-                	{% endif %}
-                </div>
+				<div class="panel-body">
+					{% field_label 'ID' org.id %}
+					{% field_label 'Full Name' org.name %}
+					<hr />
+					{% field_label 'Company' org.company %}
+					{% field_label 'Website' org.website url=True %}
+					{% field_label 'Location' org.location %}
+					{% field_label 'Public Access' org.public_access %}
+					<hr />
+					{% field_label 'Created By' org.created_by %}
+					{% field_label 'Created On' org.created_on|smart_date %}
+					{% field_label 'Updated By' org.updated_by %}
+					{% field_label 'Updated On' org.updated_on|smart_date %}
+					{% if org.extras and org.extras.items %}
+						<hr />
+						{% for k, v in org.extras.items %}
+							{% field_label k v %}
+						{% endfor %}
+					{% endif %}
+				</div>
 			</div>
-    	</div>
+		</div>
 
-        <!-- Org members -->
-        {# TODO: Change this to a django form to add/remove org members #}
-        <div class="col-md-4">
+		<!-- Org members -->
+		{# TODO: Change this to a django form to add/remove org members #}
+		<div class="col-md-4">
 			<div class="panel panel-default" ng-app="ConceptApp" ng-controller="MemberRemoveController">
 				<div class="panel-heading"><h3 class="panel-title">Members</h3></div>
 				<div class="panel-body">
@@ -45,10 +45,10 @@
 					{% if_can_change org %}
 						<a href="{% url 'org-member-add' org.id %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add Member" %}</a>
 						{% for member in members %}
-							<h4>{% user_label member %}<button type="button" class="btn btn-link" data-org='{{org.id}}' ng-click="removeMember('{{org.id}}', '{{member.username}}')" ><span class="glyphicon glyphicon-trash"></span></button></h4>
-					
+							<div class="label-container">
+								{% user_label member %}<button type="button" class="btn btn-link" data-org='{{org.id}}' ng-click="removeMember('{{org.id}}', '{{member.username}}')" ><span class="glyphicon glyphicon-trash"></span></button>
+							</div>
 							{% if request.GET.debug %}<pre>{{ member|pprint }}</pre>{% endif %}
-
 						{% empty %}
 							No members.
 						{% endfor %}
@@ -59,16 +59,16 @@
 
 {% verbatim %}
 <script type="text/ng-template" id="myModalContent.html">
-    <div class="modal-header">
-        <h3 class="modal-title">Confirm Remove</h3>
-    </div>
-    <div class="modal-body">
-        Are you sure you want to remove {{ username }} from {{ org }}?
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="$close()">OK</button>
-        <button class="btn btn-warning" ng-click="$dismiss()">Cancel</button>
-    </div>
+	<div class="modal-header">
+		<h3 class="modal-title">Confirm Remove</h3>
+	</div>
+	<div class="modal-body">
+		Are you sure you want to remove {{ username }} from {{ org }}?
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="$close()">OK</button>
+		<button class="btn btn-warning" ng-click="$dismiss()">Cancel</button>
+	</div>
 </script>
 {% endverbatim %}
 {% csrf_token %}

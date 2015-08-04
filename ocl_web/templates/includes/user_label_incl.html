@@ -1,2 +1,2 @@
-<a href="{% url 'users:detail' username=user.username %}" class="label label-warning">
-<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ user.username }}</a>
+{% url 'users:detail' username=user.username as user_url %}
+{% generic_resource_label resource_type='user' resource_id=user.username resource_url=user_url label_size='small' %}

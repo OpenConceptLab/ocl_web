@@ -107,10 +107,6 @@ form div.input-group {
 }
 .search-result-col-content {
 }
-.search-result-col-content .label-container {
-  padding-top:10px;
-  padding-bottom:6px;
-}
 .row-pagination {
   text-align:center;
 }
@@ -269,6 +265,11 @@ a.resource-label:hover {
   -moz-text-decoration-color: Black;
   color: #c33;
   background-color: #ccc;
+}
+
+.label-container {
+  padding-top:10px;
+  padding-bottom:6px;
 }
 
 
