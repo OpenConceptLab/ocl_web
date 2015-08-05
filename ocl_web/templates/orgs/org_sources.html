@@ -33,9 +33,8 @@
     <div class="col-md-9">
 
         <!-- Search Toolbar -->
-        <div class="row" style="margin-bottom:20px;">
-            &nbsp;
-            <div class="col-md-12">
+        <div class="row" style="padding-top:15px;">
+            <div class="col-md-12" style="padding-left:0;">
 
                 <!-- Simple Pager -->
                 {% simple_pager source_page 'source' url=source_pagination_url %}
@@ -49,8 +48,8 @@
                 </div>
 
                 <!-- Org Sources Search -->
-                <div class="form-group pull-left" style="width:250px;">
-                    <div class="input-group input-group-sm">
+                <div class="form-group pull-left">
+                    <div class="input-group input-group-sm" style="width:250px;">
                         <input name="q" id="resourceFilter" type="text" value="{{ source_q }}" class="form-control" placeholder="Search sources within organization" />
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
@@ -59,7 +58,7 @@
                 </div>
 
                 <!-- Sort dropdown -->
-                <div class="btn-group pull-left" style="padding-left:6px;padding-top:6px;font-weight:300;text-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
+                <div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;text-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
                 <div class="btn-group pull-left" style="padding-top:5px;">
                     <select name="sort" class="btn btn-default btn-sm xdropdown-toggle">
                         {% for o in search_sort_options %}
