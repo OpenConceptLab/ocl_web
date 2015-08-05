@@ -41,18 +41,26 @@
 
 <!-- Search selecters -->
 
-		<div class="row" style="padding-top:20px;">
+		<div class="row" style="padding:15px;">
 			<div class="col-md-12">
-				<div class="btn-group pull-right">
-				  	<select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
+
+				<!-- Simple pager -->
+                {% simple_pager current_page 'mapping' url=pagination_url %}
+
+				<!-- Sort by dropdown -->
+				<div class="btn-group pull-right" style="padding-top:5px;margin-right:15px;">
+				  	<select name="sort" class="btn btn-default btn-xs xdropdown-toggle">
 				  		{% for sort_option in search_sort_options %}
 				    	<option {% if search_sort == sort_option %}selected{% endif %}>{{ sort_option }}</option>
 				    	{% endfor %}
 				  	</select>
 				</div>
-				<div class="btn-group pull-right"><span>Sort by:&nbsp;</span></div>
 
-				<div class="btn-group">
+				<!-- Sort by label -->
+				<div class="btn-group pull-right small" style="padding-top:6px;"><span>Sort by:&nbsp;</span></div>
+
+				<!-- Source version dropdown -->
+				<div class="btn-group pull-left">
 				  	<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 				    	<span class="text-muted">Source Version:</span> <strong>{% if source_version %}{{ source_version }}{% else %}head{% endif %}</strong> <span class="caret"></span>
 				  	</button>
@@ -67,18 +75,15 @@
 				    {% endfor %}
 				  	</ul>
 				</div>
-			</div>
-		</div>
 
-		<div class="row">
-			<div class="col-md-12" style="padding-top:20px;padding-bottom:20px;">
-                {% simple_pager current_page 'mapping' url=pagination_url %}
-		        <div class="input-group">
+				<!-- Source version dropdown -->
+		        <div class="input-group input-group-sm pull-left" style="width:220px;">
 		            <input type="text" name="q" class="form-control" placeholder="Search mappings within source" value="{{ search_query }}">
 		            <span class="input-group-btn">
                         <button class="btn btn-default" type="submit">Search</button>
                     </span>
                 </div>
+
 			</div>
 		</div>
 
