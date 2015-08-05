@@ -267,6 +267,14 @@ a.resource-label:hover {
   padding-bottom:6px;
 }
 
+.label.mapping-label-self {
+  padding: 6px 12px;
+  background-color: #EEE;
+  font-weight: normal;
+  color: #666;
+}
+
+
 
 
 /* RESOURCE HEADERS */

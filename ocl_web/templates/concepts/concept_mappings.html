@@ -24,7 +24,7 @@
 								<div style="padding: 15px 0 5px 20px;">
 									<div class="small text-muted" style="width:50px;float:left;">From:</div>
 									{% if mapping.is_direct_mapping %}
-										<span class="label label-primary small">THIS CONCEPT</span>
+										<span class="label label-primary mapping-label-self">THIS CONCEPT</span>
 									{% else %}
 										{% mapping_from_concept_label mapping label_size="small" %}
 									{% endif %}
@@ -34,16 +34,16 @@
 								<div style="padding: 5px 0 5px 20px;">
 									<div class="small text-muted" style="width:50px;float:left;">To:</div>
 									{% if mapping.is_inverse_mapping %}
-										<span class="label label-primary small">THIS CONCEPT</span>
+										<span class="label label-primary mapping-label-self">THIS CONCEPT</span>
 									{% else %}
 										{% mapping_to_concept_label mapping label_size="small" %}
 									{% endif %}
 								</div>
 
-								<p class="text-muted small">
+								<div class="text-muted small" style="padding-top:8px;">
 									{% if mapping.external_id %}<span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;External ID: {{ mapping.external_id }}&nbsp;&nbsp;&nbsp;{% endif %}
 									<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}
-								</p>
+								</div>
 							</div>
 							{% comment Disabling until editing is supported %}
 							<div class="col-md-2" style="text-align:right;">
