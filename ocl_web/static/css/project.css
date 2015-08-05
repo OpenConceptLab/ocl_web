@@ -138,8 +138,6 @@ form div.input-group {
 
 
 
-
-
 /* SITE FOOTER */
 
 /* footer */
@@ -163,8 +161,6 @@ form div.input-group {
 
 
 
-
-
 /* GENERIC RETIRED LABEL */
 /* TODO: Verify that this is still used after switching to generic resource label */
 
@@ -176,9 +172,8 @@ form div.input-group {
 
 
 
-
 /* RESOURCE LABELS */
-/* TODO: Source and Concept versions */
+/* TODO: Source and Concept versions (if listed individually) */
 
 .resource-label {
   font-size: 13pt;
@@ -274,7 +269,7 @@ a.resource-label:hover {
 
 
 
-/* Resource Header */
+/* RESOURCE HEADERS */
 
 .resource-header {
 }
@@ -303,7 +298,6 @@ a.resource-label:hover {
   font-size:32pt;
   color:#e5e5e5;
 }
-
 .resource-privacy {
   font-size: 8pt;
   font-weight: normal;

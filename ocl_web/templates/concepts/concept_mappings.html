@@ -39,6 +39,11 @@
 										{% mapping_to_concept_label mapping label_size="small" %}
 									{% endif %}
 								</div>
+
+								<p class="text-muted small">
+									{% if mapping.external_id %}<span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;External ID: {{ mapping.external_id }}&nbsp;&nbsp;&nbsp;{% endif %}
+									<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}
+								</p>
 							</div>
 							{% comment Disabling until editing is supported %}
 							<div class="col-md-2" style="text-align:right;">
