@@ -76,8 +76,8 @@
 				{% simple_pager page search_type_name url=pagination_url %}
 
 				<!-- Sorting -->
-				<div class="btn-group pull-right" style="padding-right:10px;">
-					<select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
+				<div class="btn-group pull-right" style="padding-right:10px;padding-top:5px;">
+					<select name="sort" class="btn btn-default btn-xs xdropdown-toggle">
 						{% for o in search_sort_options %}
 						<option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
 						{% endfor %}

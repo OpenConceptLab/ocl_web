@@ -8,96 +8,70 @@
 {% block tab-content %}
 <div class="container">
 <div class="row">
-    <form action="." method="get">
-        <input type="hidden" name="resource_type" value="source" />
+<form action="." method="get">
 
-        <!-- Filters -->
-        <div class="col-md-3">
-            {% for facet in source_facets %}
-            <div class="filter-group">
-                <div class="filter-group-header">{{ facet.search_filter_name }}</div>
-                <div class="filter-group-body">
-                    {% for facet_key, facet_option in facet.options.iteritems %}
-                        {% if facet_option.option_num > 0 %}
-                            <div class="checkbox"><label><input type="checkbox" name="{{ facet.search_filter_name }}" value="{{ facet_option.option_value }}" {% if facet_option.selected %}checked{% endif %}>{{ facet_option.option_name }}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ facet_option.option_num|intcomma }}</span></label></div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+    <input type="hidden" name="resource_type" value="source" />
+
+    <!-- Filters -->
+    <div class="col-md-3">
+        {% for facet in source_facets %}
+        <div class="filter-group">
+            <div class="filter-group-header">{{ facet.search_filter_name }}</div>
+            <div class="filter-group-body">
+                {% for facet_key, facet_option in facet.options.iteritems %}
+                    {% if facet_option.option_num > 0 %}
+                        <div class="checkbox"><label><input type="checkbox" name="{{ facet.search_filter_name }}" value="{{ facet_option.option_value }}" {% if facet_option.selected %}checked{% endif %}>{{ facet_option.option_name }}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ facet_option.option_num|intcomma }}</span></label></div>
+                    {% endif %}
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
+    </div>
 
 
-        <!-- Listing of sources -->
-        <div class="col-md-8">
+    <!-- Listing of sources -->
+    <div class="col-md-9">
 
-            <!-- Sort / filter -->
-            <div class="row" style="margin-bottom:20px;">
-                &nbsp;
-                <div class="col-md-12">
+        <!-- Search Toolbar -->
+        <div class="row" style="margin-bottom:20px;">
+            &nbsp;
+            <div class="col-md-12">
 
-                    <!-- Sort dropdown -->
-                    <div class="btn-group pull-right">
-                        <select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
-                            {% for o in search_sort_options %}
-                            <option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                <!-- Simple Pager -->
+                {% simple_pager source_page 'source' url=source_pagination_url %}
 
-                    <div class="btn-group pull-right">
-                        <span>Sort by:&nbsp;</span>
-                    </div>
-
-                    {% comment %}
-                    <div class="form-group">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                <span class="text-muted">Filter:</span> <strong>None</strong> <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Public</a></li>
-                                <li><a href="#">Private</a></li>
-                                <li><a href="#">Sources</a></li>
-                                <li><a href="#">Collections</a></li>
-                            </ul>
-                        </div> {# filter #}
-                    </div>
-                    {% endcomment %}
-
-                </div> <!-- /col-md-12 -->
-            </div> <!-- /row -->
-
-            <div class="row" style="margin-bottom:20px;">
-                <div class="col-md-12">
-
-                    {% simple_pager source_page 'source' url=source_pagination_url %}
-
-                    <div class="form-group">
-                        <div class="input-group input-group-sm">
-                            <input name="q" id="resourceFilter" type="text" value="{{ source_q }}" class="form-control" placeholder="Search sources within organization" />
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-                            </span>
-                        </div>
-                    </div>
-
-                {# this appears to be extra -- flagging for deletion later #}
-                </form>
-
-                    <span class="pull-right">
-                        {% if user.is_authenticated %}
-                        {# TBD: probably a more complete tag to check for access #}
-                        <a href="{% url "source-new" org=org.id %}" class="btn"><span class="glyphicon glyphicon-plus"></span>&nbsp;Add Organization Source</a>
-                        {% endif %}
-                    </span>
-
+                <!-- New Organization Button -->
+                <div class="pull-left">
+                    {% if user.is_authenticated %}
+                    {# TBD: need a more complete tag to check for access #}
+                    <a href="{% url 'source-new' org=org.id %}" class="btn btn-link btn-sm" title="Add New Source to Organization" style="font-weight:300;text-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'New Source' %}</a>
+                    {% endif %}
                 </div>
-            </div> <!-- /row -->
-        </form>
+
+                <!-- Org Sources Search -->
+                <div class="form-group pull-left" style="width:250px;">
+                    <div class="input-group input-group-sm">
+                        <input name="q" id="resourceFilter" type="text" value="{{ source_q }}" class="form-control" placeholder="Search sources within organization" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Sort dropdown -->
+                <div class="btn-group pull-left" style="padding-left:6px;padding-top:6px;font-weight:300;text-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
+                <div class="btn-group pull-left" style="padding-top:5px;">
+                    <select name="sort" class="btn btn-default btn-sm xdropdown-toggle">
+                        {% for o in search_sort_options %}
+                        <option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </div> <!-- /col-md-12-->
+        </div> <!-- /row -->
 
         <!-- Debug -->
-
         {% if request.GET.debug %}
         <div class="row">
             <div class="col-md-12">
@@ -150,7 +124,10 @@
         </div>
         {% endif %}
 
-    </div> {# col-md-8 #}
+    </div> {# col-md-9 #}
+
+
+</form>
 </div> {# row #}
 </div> {# container #}
 {% endblock tab-content %}
