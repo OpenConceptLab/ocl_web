@@ -72,24 +72,22 @@
 
 {% if results %}
 
-			<!-- Sorting -->
+				<!-- Paging -->
+				{% simple_pager page search_type_name url=pagination_url %}
 
-				<div class="btn-group pull-right">
+				<!-- Sorting -->
+				<div class="btn-group pull-right" style="padding-right:10px;">
 					<select name="sort" class="btn btn-default btn-xsm xdropdown-toggle">
 						{% for o in search_sort_options %}
 						<option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
 						{% endfor %}
 					</select>
 				</div>
+				<div class="btn-group pull-right small" style="padding-left:6px;padding-top:6px;font-weight:300;text-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
 
-			<!-- Paging -->
-
-				{% simple_pager page search_type_name url=pagination_url %}
-
-			<!-- Actions -->
-
-			{% comment %}
-			<!-- Jon commented until there are actions that we can perform on resources -->
+				<!-- Actions -->
+				{% comment %}
+				<!-- Jon commented until there are actions that we can perform on resources -->
 				<div class="btn-group">
 					&nbsp;&nbsp;
 					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><strong>Actions</strong> <span class="caret"></span></button>
@@ -98,7 +96,7 @@
 					</ul>
 					&nbsp;&nbsp;
 				</div>
-			{% endcomment %}
+				{% endcomment %}
 
 {% else %}
 				<h3><small>We found 0 {{ search_type_name }}{{ 0|pluralize }}.</small></h3>
