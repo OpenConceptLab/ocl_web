@@ -49,21 +49,23 @@
 
 				<!-- New Mapping Button -->
 				{% if_can_change source %}
-				{# TODO: Only allow if viewing "head" -- for now mapping is always added to head #}
+					{# TODO: Only allow if viewing "head" -- for now mapping is always added to head #}
 					{% if source.owner_type == 'Organization' %}
 						{% url 'mapping-create-for-org' org=source.owner source=source.id as new_mapping_url %}
 					{% else %}
 						{% url 'mapping-create-for-user' user=source.owner source=source.id as new_mapping_url %}
 					{% endif %}
 				<div class="pull-left">
-					<a class="btn btn-link btn-sm" style="font-weight:300;text-spacing:-0.1pt;" href="{{ new_mapping_url }}"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'New Mapping' %}</a>
+					<a class="btn btn-link btn-sm" title="Add New Mapping to Source" style="font-weight:300;text-spacing:-0.1pt;" href="{{ new_mapping_url }}"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'New Mapping' %}</a>
 				</div>
 				{% endif_can_change %}
 
 				<!-- Source version dropdown -->
 				<div class="btn-group pull-left" style="padding-right:5px;">
 				  	<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-				    	<span class="text-muted" style="letter-spacing:-0.1pt;font-weight:300;">Source Version:</span> <span style="font-weight:400;text-spacing:-0.1pt;">{% if source_version %}{{ source_version }}{% else %}head{% endif %}</span> <span class="caret"></span>
+				    	<span class="text-muted" style="letter-spacing:-0.1pt;font-weight:300;">Source Version:</span>
+				    	<span style="font-weight:400;text-spacing:-0.1pt;">{% if source_version %}{{ source_version }}{% else %}head{% endif %}</span>
+				    	<span class="caret"></span>
 				  	</button>
 				  	<ul class="dropdown-menu" role="menu">
 				  	{% for source_version_i in source_versions %}
@@ -77,7 +79,7 @@
 				  	</ul>
 				</div>
 
-				<!-- Source mappings search -->
+				<!-- Source Mappings Search -->
 		        <div class="input-group input-group-sm pull-left" style="width:180px;">
 		            <input type="text" name="q" class="form-control" placeholder="Search mappings within source" value="{{ search_query }}">
 		            <span class="input-group-btn">
@@ -85,10 +87,8 @@
                     </span>
                 </div>
 
-				<!-- Sort by label -->
+				<!-- Sort By Dropdown -->
 				<div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;text-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
-
-				<!-- Sort by dropdown -->
 				<div class="btn-group pull-left" style="padding-top:5px;">
 				  	<select name="sort" class="btn btn-default btn-xs xdropdown-toggle">
 				  		{% for sort_option in search_sort_options %}
