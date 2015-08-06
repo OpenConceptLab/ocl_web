@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.template.response import TemplateResponse
-from django.core.paginator import Paginator
+#from django.core.paginator import Paginator
 
 from braces.views import (LoginRequiredMixin, CsrfExemptMixin, JsonRequestResponseMixin)
 
@@ -24,6 +24,7 @@ logger = logging.getLogger('oclweb')
 
 
 
+# CLEAN
 class ConceptReadBaseView(TemplateView):
     """
     Base class for Concept Read views.
@@ -116,6 +117,7 @@ class ConceptReadBaseView(TemplateView):
 
 
 
+# CLEAN
 class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
     """
     Concept details view.
@@ -153,6 +155,7 @@ class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
 
 
 
+# CLEAN
 class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
     """
     Concept mappings view.
@@ -300,6 +303,7 @@ class ConceptMappingsView(UserOrOrgMixin, ConceptReadBaseView):
 
 
 
+# CLEAN
 class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
     """
     Concept history view.
@@ -347,6 +351,7 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
 
 
 
+# CLEAN
 class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     """
     View to create new concept
@@ -356,7 +361,7 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     template_name = "concepts/concept_new.html"
 
     def get_initial(self):
-        """ Load some useful data into the context """
+        """ Set the owner and source args for use in the form """
 
         data = super(ConceptNewView, self).get_initial()
 
@@ -380,13 +385,19 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         Loads the context data for creating a new concept.
         """
 
-        # Setup the context and args
+        # Setup the form context
         context = super(ConceptNewView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
         # Load the source that the new concept will belong to
         api = OCLapi(self.request, debug=True)
         source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
+
+        # TODO: Load list of names types
+        # TODO: Load list of description types
+        # TODO: Load list of locales
+        # TODO: Load list of datatypes
+        # TODO: Load list of concept classes
 
         # Set the context
         context['source'] = source
@@ -395,35 +406,53 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
     def form_valid(self, form, *args, **kwargs):
         """
-        Validates the form data and submits if valid
+        Submits the validated form data
         """
-        # TODO(paynejd@gmail.com): Rename this method - it validates and submits form
 
-        #org_id = form.cleaned_data.pop('short_name')
+        # Prepare the data for submission, incl. renaming fields as needed
+        concept_id = form.cleaned_data.pop('concept_id')
+        base_data = {
+            'id': concept_id,
+            'concept_class': form.cleaned_data.pop('concept_class'),
+            'datatype': form.cleaned_data.pop('datatype'),
+            'external_id': form.cleaned_data.pop('external_id', '')
+        }
+        names = [ {
+            'name': form.cleaned_data.pop('name'),
+            'locale': form.cleaned_data.pop('locale'),
+            'locale_preferred': True,
+            'name_type': form.cleaned_data.pop('name_type', '')
+        } ]
+        descriptions = [ {
+            'description': form.cleaned_data.pop('description'),
+            'locale': form.cleaned_data.pop('locale'),
+            'locale_preferred': True,
+            'description_type': form.cleaned_data.pop('description_type', '')
+        } ]
 
-        # api = OCLapi(self.request, debug=True)
-
-        # data = {
-        #     'id': org_id,
-        # }
-        # data.update(form.cleaned_data)
-        # print form.cleaned_data
-        # print data
-        # result = api.create_org(data)
-
-        # # TODO:  Catch exceptions that will be raised by
-        # # Ocl lib.
-        # if result.ok:
-        #     messages.add_message(self.request, messages.INFO, _('Concept Added'))
-        #     return redirect(reverse('org-details', kwargs={'org': org_id}))
-
-        # # TODO:  Add error messages from API to form.
-        # else:
-        #     return super(ConceptNewView, self).form_invalid(self, *args, **kwargs)
-
-
+        # Create new concept using the API
+        api = OCLapi(self.request, debug=True)
+        result = api.create_concept(
+            self.owner_type, self.owner_id, self.source_id, data,
+            names=names, descriptions=descriptions)
+        if result.ok:
+            messages.add_message(self.request, messages.INFO, _('Concept created.'))
+            if self.from_org:
+                return redirect(reverse('concept-details', kwargs={'org': self.owner_id,
+                                                                   'source': self.source_id,
+                                                                   'concept': concept_id }))
+            else:
+                return redirect(reverse('concept-details', kwargs={'user': self.owner_id,
+                                                                   'source': self.source_id,
+                                                                   'concept': concept_id }))
+        else:
+            logger.warning('Concept create POST failed: %s' % result.content)
+            # TODO(paynejd): Add error messages from API to form
+            return super(ConceptNewView, self).form_invalid(form)
 
 
+
+# TODO(paynejd@gmail.com): Retire ConceptCreateJsonView ASAP
 class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
                             TemplateView):
     """
@@ -503,10 +532,10 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
         data['external_id'] = self.request_json.get('external_id')
 
         name = {}
-        name['name'] = self.request_json.get('name')
+        name['description'] = self.request_json.get('description')
         name['locale'] = self.request_json.get('locale')
         name['preferred'] = self.request_json.get('preferred_locale')
-        name['name_type'] = self.request_json.get('name_type')
+        name['description_type'] = self.request_json.get('description_type')
         names = [name]
 
         # TEMP for faster testing
@@ -562,8 +591,11 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
             return self.add()
 
 
+
+# TODO(paynejd@gmail.com): ConceptRetireView needs to be tested
 class ConceptRetireView(UserOrOrgMixin, FormView):
-    """View for retiring a concept. This is like a logical delete.
+    """
+    View for retiring a concept.
     """
 
     form_class = ConceptRetireForm
@@ -618,9 +650,11 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.get_success_url())
 
 
+
+# TODO(paynejd@gmail.com): Retire ConceptCreateView -- replaced by ConceptNewView
 class ConceptCreateView(UserOrOrgMixin, FormView):
     """
-        This is not used anymore. See the Json version.
+    This is not used anymore. See the Json version.
     """
     form_class = ConceptCreateForm
     template_name = "concepts/concept_create.html"
@@ -677,9 +711,6 @@ class ConceptCreateView(UserOrOrgMixin, FormView):
         return data
 
     def form_valid(self, form, *args, **kwargs):
-        """Form validator
-        """
-
         self.get_args()
         source_id = self.kwargs.get('source')
 
@@ -715,6 +746,8 @@ class ConceptCreateView(UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.get_success_url())
 
 
+
+# TODO(paynejd): Resurrect ConceptEditView
 class ConceptEditView(UserOrOrgMixin, FormView):
     """
         This is not used anymore. See the Json version.
@@ -802,66 +835,77 @@ class ConceptEditView(UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.get_success_url())
 
 
-class ConceptDetailView(UserOrOrgMixin, TemplateView):
-    """
-    Display concept detail.
-    """
-    template_name = "concepts/concept_detail.html"
 
-    def get_all_args(self):
-        """ Get all input parameters for view.
-        """
-        self.get_args()
+# TODO(paynejd): Retire ConceptDetailView
+# class ConceptDetailView(UserOrOrgMixin, TemplateView):
+#     """
+#     Display concept detail.
+#     """
+#     template_name = "concepts/concept_detail.html"
 
-        api = OCLapi(self.request, debug=True)
+#     def get_all_args(self):
+#         """ Get all input parameters for view.
+#         """
+#         self.get_args()
 
-        self.source = api.get_json(self.owner_type, self.owner_id, 'sources',
-                                   self.source_id)
-        self.concept = api.get_json(self.owner_type, self.owner_id, 'sources',
-                                    self.source_id, 'concepts', self.concept_id)
-        return
+#         api = OCLapi(self.request, debug=True)
 
-    def get_context_data(self, *args, **kwargs):
-        """ Supply related data for the add form
-        """
-        self.get_all_args()
-        context = super(ConceptDetailView, self).get_context_data(*args, **kwargs)
+#         self.source = api.get_json(self.owner_type, self.owner_id, 'sources',
+#                                    self.source_id)
+#         self.concept = api.get_json(self.owner_type, self.owner_id, 'sources',
+#                                     self.source_id, 'concepts', self.concept_id)
+#         return
 
-        context['source'] = self.source
-        context['concept'] = self.concept
-        return context
+#     def get_context_data(self, *args, **kwargs):
+#         """ Supply related data for the add form
+#         """
+#         self.get_all_args()
+#         context = super(ConceptDetailView, self).get_context_data(*args, **kwargs)
 
-
-class ConceptVersionListView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin, View):
-    """
-    Return json concept versions.
-    """
-
-    def get_all_args(self):
-        """ Get all input parameters for view.
-        """
-        self.get_args()
-#        self.source_id = self.kwargs.get('source')
-#        self.concept_id = self.kwargs.get('concept')
-
-    def get(self, request, *args, **kwargs):
-        """
-            Return a list of versions as json.
-        """
-        self.get_all_args()
-        api = OCLapi(self.request, debug=True)
-
-        result = api.get(self.owner_type, self.owner_id, 'sources', self.source_id,
-                         'concepts', self.concept_id, 'versions')
-        if not result.ok:
-            print result
-            return self.render_bad_request_response(result)
-
-        return self.render_json_response(result.json())
+#         context['source'] = self.source
+#         context['concept'] = self.concept
+#         return context
 
 
+
+# TODO(paynejd): Retire ConceptVersionListView
+# class ConceptVersionListView(CsrfExemptMixin, JsonRequestResponseMixin, UserOrOrgMixin, View):
+#     """
+#     Return json concept versions.
+#     """
+
+#     def get_all_args(self):
+#         """ Get all input parameters for view.
+#         """
+#         self.get_args()
+# #        self.source_id = self.kwargs.get('source')
+# #        self.concept_id = self.kwargs.get('concept')
+
+#     def get(self, request, *args, **kwargs):
+#         """
+#             Return a list of versions as json.
+#         """
+#         self.get_all_args()
+#         api = OCLapi(self.request, debug=True)
+
+#         result = api.get(self.owner_type, self.owner_id, 'sources', self.source_id,
+#                          'concepts', self.concept_id, 'versions')
+#         if not result.ok:
+#             print result
+#             return self.render_bad_request_response(result)
+
+#         return self.render_json_response(result.json())
+
+
+
+# TODO(paynejd): Recreate ConceptItemView, ConceptDescView, ConceptNameView, and ConceptExtraView
+# Currently, these are onlu used for fetching the JSON of concept names, descriptions, and extras
+# They formerly handled Angular requests. Modify so that they support edits in the old Django way
+
+# TODO(paynejd): Resurrect ConceptItemView
 class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
-    """Interface to AngularJS concept description operations,
+    """
+    Interface to AngularJS concept description operations,
     supporting list, add, update and delete.
     """
     # override this, set to 'descriptions', 'names', etc
@@ -966,18 +1010,24 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             {'message': _('deleted')})
 
 
+
+# TODO(paynejd): Resurrect ConceptDescView
 class ConceptDescView(ConceptItemView):
     item_name = 'descriptions'
     kwarg_name = 'description'
     field_names = ['description', 'description_type', 'external_id', 'locale', 'locale_preferred']
 
 
+
+# TODO(paynejd): Resurrect ConceptNameView
 class ConceptNameView(ConceptItemView):
     item_name = 'names'
     kwarg_name = 'name'
     field_names = ['name', 'name_type', 'external_id', 'locale', 'locale_preferred']
 
 
+
+# TODO(paynejd): Resurrect ConceptExtraView
 class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
     """Concept extras handling is different from descriptions and names.
     So the view is similar to the ConceptItemView but not the same.
@@ -1082,98 +1132,100 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         return self.render_json_response({'message': _('extra deleted')})
 
 
-class ConceptMappingView(JsonRequestResponseMixin, UserOrOrgMixin, View):
-    """
-        Interface to front end json Mappings operations, supporting list, add, update and delete.
 
-    """
-    field_names = ['map_type', 'external_id', 'from_concept_url', 'to_concept_url',
-                   'to_source_url', 'to_concept_code', 'to_concept_name']
+# TODO(paynejd): Replace ConceptMappingView with Mapping*Views
+# TODO(paynejd): Allow some mapping operations from the Concept Mappings page
+# class ConceptMappingView(JsonRequestResponseMixin, UserOrOrgMixin, View):
+#     """
+#     Interface to front end json Mappings operations, supporting list, add, update and delete.
+#     """
+#     field_names = ['map_type', 'external_id', 'from_concept_url', 'to_concept_url',
+#                    'to_source_url', 'to_concept_code', 'to_concept_name']
 
-    def get_all_args(self):
-        """
-        Get all the input entities' identity, figure out whether this is a user owned
-        sourced concept or an org owned sourced concept, and set self.owner_type, self.owner_id
-        for easy interface to OCL API.
-        """
-        self.get_args()
-        self.item_id = self.kwargs.get('mapping')
+#     def get_all_args(self):
+#         """
+#         Get all the input entities' identity, figure out whether this is a user owned
+#         sourced concept or an org owned sourced concept, and set self.owner_type, self.owner_id
+#         for easy interface to OCL API.
+#         """
+#         self.get_args()
+#         self.item_id = self.kwargs.get('mapping')
 
-    def is_edit(self):
-        return self.item_id is not None
+#     def is_edit(self):
+#         return self.item_id is not None
 
-    def get(self, request, *args, **kwargs):
-        """
-            Return a list of mappings as json.
-        """
-        self.get_all_args()
-        api = OCLapi(self.request, debug=True)
+#     def get(self, request, *args, **kwargs):
+#         """
+#             Return a list of mappings as json.
+#         """
+#         self.get_all_args()
+#         api = OCLapi(self.request, debug=True)
 
-        # Note: value must be lowercase string "true", not boolean
-        result = api.get(self.owner_type, self.owner_id, 'sources', self.source_id,
-                         'concepts', self.concept_id, 'mappings',
-                         params={'includeInverseMappings': 'true'})
-        if not result.ok:
-            print result
-            return self.render_bad_request_response(result)
+#         # Note: value must be lowercase string "true", not boolean
+#         result = api.get(self.owner_type, self.owner_id, 'sources', self.source_id,
+#                          'concepts', self.concept_id, 'mappings',
+#                          params={'includeInverseMappings': 'true'})
+#         if not result.ok:
+#             print result
+#             return self.render_bad_request_response(result)
 
-        return self.render_json_response(result.json())
+#         return self.render_json_response(result.json())
 
-    def post(self, request, *args, **kwargs):
-        """
-        Post a new mapping
-        """
+#     def post(self, request, *args, **kwargs):
+#         """
+#         Post a new mapping
+#         """
 
-        self.get_all_args()
-        data = {}
-        try:
-            print 'request json:', self.request_json
-            for n in self.field_names:
-                # Skipping over fields that are not given -- exception is never thrown now...??
-                v = self.request_json.get(n, None)
-                if v is not None:
-                    data[n] = v
-        except KeyError:
-            resp = {u"message": _('Invalid input')}
-            return self.render_bad_request_response(resp)
+#         self.get_all_args()
+#         data = {}
+#         try:
+#             print 'request json:', self.request_json
+#             for n in self.field_names:
+#                 # Skipping over fields that are not given -- exception is never thrown now...??
+#                 v = self.request_json.get(n, None)
+#                 if v is not None:
+#                     data[n] = v
+#         except KeyError:
+#             resp = {u"message": _('Invalid input')}
+#             return self.render_bad_request_response(resp)
 
-        api = OCLapi(self.request, debug=True)
-        if self.is_edit():
-            # Somehow we get more data fields from the lookup  then
-            # what the update will accept
-            if data['to_concept_url']:
-                data.pop('to_source_url', None)
-                data.pop('to_concept_code', None)
-                data.pop('to_concept_name', None)
+#         api = OCLapi(self.request, debug=True)
+#         if self.is_edit():
+#             # Somehow we get more data fields from the lookup  then
+#             # what the update will accept
+#             if data['to_concept_url']:
+#                 data.pop('to_source_url', None)
+#                 data.pop('to_concept_code', None)
+#                 data.pop('to_concept_name', None)
 
-            result = api.put(
-                self.owner_type, self.owner_id, 'sources', self.source_id,
-                'mappings', self.item_id, **data)
-            msg = _('updated')
-        else:
-            result = api.post(
-                self.owner_type, self.owner_id, 'sources', self.source_id,
-                'mappings', **data)
-            msg = _('added')
+#             result = api.put(
+#                 self.owner_type, self.owner_id, 'sources', self.source_id,
+#                 'mappings', self.item_id, **data)
+#             msg = _('updated')
+#         else:
+#             result = api.post(
+#                 self.owner_type, self.owner_id, 'sources', self.source_id,
+#                 'mappings', **data)
+#             msg = _('added')
 
-        if not result.ok:
-            logger.warning('Update failed %s' % result.content)
-            return self.render_bad_request_response(result.content)
+#         if not result.ok:
+#             logger.warning('Update failed %s' % result.content)
+#             return self.render_bad_request_response(result.content)
 
-        return self.render_json_response({'message': msg})
+#         return self.render_json_response({'message': msg})
 
-    def delete(self, request, *args, **kwargs):
-        """
-        Delete the specified item.
-        """
-        self.get_all_args()
-        api = OCLapi(self.request, debug=True)
-        if self.is_edit():  # i.e. has item UUID
-            result = api.delete(self.owner_type, self.owner_id, 'sources', self.source_id,
-                                'mappings', self.item_id)
-        if not result.ok:
-            logger.warning('DEL failed %s' % result.content)
-            return self.render_bad_request_response(result.content)
+#     def delete(self, request, *args, **kwargs):
+#         """
+#         Delete the specified item.
+#         """
+#         self.get_all_args()
+#         api = OCLapi(self.request, debug=True)
+#         if self.is_edit():  # i.e. has item UUID
+#             result = api.delete(self.owner_type, self.owner_id, 'sources', self.source_id,
+#                                 'mappings', self.item_id)
+#         if not result.ok:
+#             logger.warning('DEL failed %s' % result.content)
+#             return self.render_bad_request_response(result.content)
 
-        return self.render_json_response(
-            {'message': _('deleted')})
+#         return self.render_json_response(
+#             {'message': _('deleted')})

@@ -323,14 +323,14 @@ class OCLapi(object):
     def create_concept(self, source_owner_type, source_owner_id, source_id, base_data,
                        names=[], descriptions=[], extras=[]):
         """ Create a concept.
-            NOTE: currently add by org+source, but there are other options... TODO
 
-            :param org_id: is the ID of the owner org
+            :param source_owner_type: 'orgs' or 'users'
+            :param owner_id: ID of the owner org or user
             :param source_id: is the ID of the owner source
             :param base_data: is a dictionary of all the data fields
             :param names: is a list of dictionary of name fields, optional.
             :param descriptions: is a list of dictionary of name fields, optional.
-            :param extras: is a list of dictionary of name fields, optional.
+            :param extras: is a dictionary of name fields, optional.
 
             :returns: POST result from requests package.
         """
@@ -359,6 +359,7 @@ class OCLapi(object):
             source_owner_type, source_owner_id, 'sources', source_id,
             'concepts', **data)
         return result
+
 
     def update_concept(self, source_owner_type, source_owner_id, source_id,
                        concept_id, base_data,

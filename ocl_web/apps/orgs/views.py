@@ -23,6 +23,7 @@ logger = logging.getLogger('oclweb')
 
 
 
+# CLEAN
 class OrganizationReadBaseView(TemplateView):
     """
     Base class for Organization Read views.
@@ -58,105 +59,8 @@ class OrganizationReadBaseView(TemplateView):
         return members
 
 
-# class OrganizationDetailView(OrganizationReadBaseView):
-#     """
-#     Organization details and source search view.
-#     """
 
-#     template_name = "orgs/org_detail.html"
-
-#     def get_context_data(self, *args, **kwargs):
-#         """Gets the org, then the sources of that org, and then the
-#         concepts from each of those sources.
-#         """
-
-#         context = super(OrganizationDetailView, self).get_context_data(*args, **kwargs)
-#         context['url_params'] = self.request.GET
-#         context['selected_tab'] = 'Details'
-
-#         # Determine the organization ID
-#         # TODO: Make the org object self-aware like the source context (e.g. self.org_id)
-#         org_id = self.kwargs.get('org')
-
-#         # Prepare to search the sources in this org
-#         # NOTE: Both are searched no matter what, but only one accepts search
-#         # criteria/filters at a time
-#         res_type = self.request.GET.get('resource_type')
-#         print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
-#         print res_type
-#         source_searcher = OCLSearch(
-#             search_type=OCLSearch.SOURCE_TYPE, params=self.request.GET)
-
-#         # Load the organization
-#         org = self.get_org_details(org_id)
-#         context['org'] = org
-
-#         # Set about text for the organization
-#         # TODO: Create a generic method for getting at extras
-#         if 'extras' in org and isinstance(org['extras'], dict):
-#             about = org['extras'].get('about', 'No about entry.')
-#         else:
-#             # TODO: If user has editing privileges, prompt them to create about entry
-#             about = 'No about entry.'
-#         context['about'] = about
-
-#         # Load members of this org
-#         members = self.get_org_members(org_id)
-#         context['members'] = members
-
-#         # Load the sources in this organization
-#         api_sources = OCLapi(self.request, debug=True, facets=True)
-#         search_result_sources = api_sources.get(
-#             'orgs', org_id, 'sources', params=source_searcher.search_params)
-#         if search_result_sources.status_code == requests.codes.not_found:
-#             sources_response_json = {}
-#             sources_facets_json = {}
-#             sources_facets = {}
-#             sources = []
-#             sources_num_found = 0
-#             sources_paginator = None
-#             sources_current_page = 0
-#         else:
-#             sources_response_json = search_result_sources.json()
-#             sources_facets_json = sources_response_json['facets']
-#             sources_facets = source_searcher.process_facets('sources', sources_facets_json)
-#             sources = sources_response_json['results']
-#             if 'num_found' in search_result_sources.headers:
-#                 try:
-#                     sources_num_found = int(search_result_sources.headers['num_found'])
-#                 except ValueError:
-#                     sources_num_found = 0
-#             else:
-#                 sources_num_found = 0
-#             sources_paginator = Paginator(range(sources_num_found), source_searcher.num_per_page)
-#             sources_current_page = sources_paginator.page(source_searcher.current_page)
-
-#         # TODO: Setup source filters based on the current search
-
-#         # Select filters
-#         # TODO: This is passing all parameters, but should pass only those relevant to sources
-#         source_searcher.select_search_filters(self.request.GET)
-
-#         # Set the context for the child sources
-#         context['sources'] = sources
-#         context['source_page'] = sources_current_page
-#         context['source_pagination_url'] = self.request.get_full_path()
-#         context['source_q'] = source_searcher.get_query()
-#         context['source_facets'] = sources_facets
-
-#         # Set debug context for sources
-#         context['sources_request_url'] = api_sources.url
-#         context['sources_search_params'] = source_searcher.search_params
-#         context['sources_search_response_headers'] = search_result_sources.headers
-#         context['sources_search_facets_json'] = sources_facets_json
-
-#         # TODO: Sort is not setup correctly to work with both sources and collections
-#         context['search_sort_options'] = source_searcher.get_sort_options()
-#         context['search_sort'] = source_searcher.get_sort()
-
-#         return context
-
-
+# CLEAN
 class OrganizationDetailsView(OrganizationReadBaseView):
     """
     Organization details view.
@@ -188,6 +92,8 @@ class OrganizationDetailsView(OrganizationReadBaseView):
         return context
 
 
+
+# CLEAN
 class OrganizationSourcesView(OrganizationReadBaseView):
     """
     Organization Sources view
@@ -263,28 +169,31 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         return context
 
 
-class OrganizationCollectionsView(OrganizationReadBaseView):
-    """
-    Organization Collections List view
-    """
 
-    template_name = "orgs/org_collections.html"
+# TODO(paynejd): Resurrect OrganizationCollectionsView when ready to implement collections
+# class OrganizationCollectionsView(OrganizationReadBaseView):
+#     """
+#     Organization Collections List view
+#     """
 
-    def get_context_data(self, *args, **kwargs):
-        """
-        Load collection search results, facets/filters, etc. for the org
-        """
-        context = super(OrganizationCollectionsView, self).get_context_data(*args, **kwargs)
+#     template_name = "orgs/org_collections.html"
 
-        # TODO(paynejd@gmail.com): Implement collections view
+#     def get_context_data(self, *args, **kwargs):
+#         """
+#         Load collection search results, facets/filters, etc. for the org
+#         """
+#         context = super(OrganizationCollectionsView, self).get_context_data(*args, **kwargs)
 
-        # Set the context
-        context['url_params'] = self.request.GET
-        context['selected_tab'] = 'Collections'
-        return context
+#         # TODO(paynejd@gmail.com): Implement collections view
+
+#         # Set the context
+#         context['url_params'] = self.request.GET
+#         context['selected_tab'] = 'Collections'
+#         return context
 
 
 
+# CLEAN
 class OrganizationAboutView(OrganizationReadBaseView):
     """
     Organization about page.
@@ -318,6 +227,7 @@ class OrganizationAboutView(OrganizationReadBaseView):
 
 
 
+# CLEAN
 class OrganizationNewView(LoginRequiredMixin, FormView):
     """
     View to create new organization
@@ -328,13 +238,13 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form, *args, **kwargs):
         """
-        Validates the form data and submits if valid
+        Submits the validated form data
         """
-
-        org_id = form.cleaned_data.pop('short_name')
 
         api = OCLapi(self.request, debug=True)
 
+        # Prepare form data for submission, incl. renaming fields as necessary
+        org_id = form.cleaned_data.pop('short_name')
         data = {
             'id': org_id,
         }
@@ -354,6 +264,7 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
 
 
 
+# CLEAN
 class OrganizationEditView(FormView):
     """
     View to edit organization
@@ -383,7 +294,6 @@ class OrganizationEditView(FormView):
         """
         Validates the form data and submits if valid
         """
-        # TODO(paynejd@gmail.com): Rename this method - it validates and submits form
 
         api = OCLapi(self.request, debug=True)
 
@@ -401,6 +311,8 @@ class OrganizationEditView(FormView):
             return super(OrganizationEditView, self).form_invalid(form)
 
 
+
+# TODO(paynejd): OrganizationMemberAddView only half works -- fix this
 class OrganizationMemberAddView(LoginRequiredMixin, FormView):
     """
     View to add member to organization
@@ -435,8 +347,6 @@ class OrganizationMemberAddView(LoginRequiredMixin, FormView):
         """
         Validates the form data and submits if valid
         """
-        # TODO(paynejd@gmail.com): Rename this method - it validates and submits form
-
         print args
         print kwargs
         self.get_org()
@@ -457,6 +367,8 @@ class OrganizationMemberAddView(LoginRequiredMixin, FormView):
             return super(OrganizationMemberAddView, self).form_invalid(form)
 
 
+
+# TODO(paynejd): OrganizationMemberRemoveView only half works -- fix this
 class OrganizationMemberRemoveView(LoginRequiredMixin,
                                    JsonRequestResponseMixin, View):
     """
