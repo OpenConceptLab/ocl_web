@@ -5,6 +5,7 @@ OCL Concept Views
 import requests
 import logging
 
+from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import (View, FormView)
 from django.http import (HttpResponseRedirect, Http404)
