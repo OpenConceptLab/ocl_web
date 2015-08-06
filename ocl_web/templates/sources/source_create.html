@@ -26,8 +26,8 @@
         {% csrf_token %}
 
         <div class="form-group required"><label class="col-md-2 control-label">Owner</label>
-          <div class="col-md-4">
-            {% if org %}{% org_label org %}{% else %}{% user_label ocl_user %}{% endif %}
+          <div class="col-md-4" style="padding-top:6px;">
+            {% if org %}{% org_label org label_size='small' %}{% else %}{% user_label ocl_user label_size='small' %}{% endif %}
           </div>
         </div>
 
@@ -35,7 +35,7 @@
 
         {% buttons layout="horizontal" %}
         <button type="submit" class="btn btn-primary">{% trans "Create Source" %}</button>
-        <button type="submit" class="btn btn-warning">{% trans "Cancel" %}</button>
+        <button type="submit" class="btn btn-default">{% trans "Cancel" %}</button>
         {% endbuttons %}
       </form>
 
