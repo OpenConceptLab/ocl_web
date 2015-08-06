@@ -1,86 +1,86 @@
 {% load staticfiles i18n %}<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>{% block title %}Open Concept Lab{% endblock title %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <meta name="robots" content="noindex">
+	<meta charset="utf-8">
+	<title>{% block title %}Open Concept Lab{% endblock title %}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<meta name="robots" content="noindex">
 
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-        <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+		<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
 
-    {% block css %}
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+	{% block css %}
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
 
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
 
-    <!-- Your stuff: Third-party css libraries go here -->
+	<!-- Your stuff: Third-party css libraries go here -->
 
-    <!-- This file store project specific CSS -->
-    <link href="{% static 'css/project.css' %}" rel="stylesheet">
-    {% endblock %}
+	<!-- This file store project specific CSS -->
+	<link href="{% static 'css/project.css' %}" rel="stylesheet">
+	{% endblock %}
 
-    {% block angular %}
-    {# was 1.2.9 #}
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-sanitize.min.js"></script>
-        <script src="/static/js/URI.js"></script>
-        <script src="/static/js/project.js"></script>
-        <script src="/static/js/ui-bootstrap-tpls-0.11.2.min.js"></script>
-    {% endblock %}
+	{% block angular %}
+	{# was 1.2.9 #}
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-sanitize.min.js"></script>
+		<script src="/static/js/URI.js"></script>
+		<script src="/static/js/project.js"></script>
+		<script src="/static/js/ui-bootstrap-tpls-0.11.2.min.js"></script>
+	{% endblock %}
 </head>
 <body>
-    {% block nav %}
-        {% include 'includes/nav.html' %}
-    {% endblock nav %}
+	{% block nav %}
+		{% include 'includes/nav.html' %}
+	{% endblock nav %}
 
-    {% if messages %}
-        <div class="container">
-            {% for message in messages %}
-                <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
-            {% endfor %}
-        </div> <!-- /container -->
-    {% endif %}
+	{% if messages %}
+		<div class="container">
+			{% for message in messages %}
+				<div style="margin-top:12px;" class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
+			{% endfor %}
+		</div> <!-- /container -->
+	{% endif %}
 
-    {% block content-no-container %}
-        <div class="container" style="margin-top:20px;">
-            {% block content %}
-                <p>Empty container.</p>
-            {% endblock content %}
-        </div> <!-- /container -->
-    {% endblock content-no-container %}
+	{% block content-no-container %}
+		<div class="container" style="margin-top:20px;">
+			{% block content %}
+				<p>Empty container.</p>
+			{% endblock content %}
+		</div> <!-- /container -->
+	{% endblock content-no-container %}
 
-    <div class="container">
-        {% block footer %}
-            {% include 'includes/footer.html' %}
-        {% endblock footer %}
-    </div>
+	<div class="container">
+		{% block footer %}
+			{% include 'includes/footer.html' %}
+		{% endblock footer %}
+	</div>
 
-    {% block modal %}{% endblock modal %}
+	{% block modal %}{% endblock modal %}
 
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    {% block javascript %}
-        <!-- Latest JQuery -->
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<!-- Le javascript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	{% block javascript %}
+		<!-- Latest JQuery -->
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
-        <!-- Latest compiled and minified JavaScript -->
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
-        <!-- Your stuff: Third-party javascript libraries go here -->
+		<!-- Your stuff: Third-party javascript libraries go here -->
 
-        <!-- place project specific Javascript in this file -->
-        <script src="{% static 'js/project.js' %}"></script>
-    {% endblock javascript %}
+		<!-- place project specific Javascript in this file -->
+		<script src="{% static 'js/project.js' %}"></script>
+	{% endblock javascript %}
 
-    {% block extrajavascript %}
-    {% endblock %}
+	{% block extrajavascript %}
+	{% endblock %}
 </body>
 </html>
