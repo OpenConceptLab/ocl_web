@@ -157,8 +157,8 @@ class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
 
 
 # CLEAN
-class ConceptMappingsView(LoginRequiredMixin, FormView, UserOrOrgMixin,
-                          ConceptReadBaseView):
+class ConceptMappingsView(LoginRequiredMixin, UserOrOrgMixin,
+                          ConceptReadBaseView, FormView):
     """
     View for seeing all mappings for the current concept,
     and creating a new mapping with this as the from_concept.
@@ -172,7 +172,7 @@ class ConceptMappingsView(LoginRequiredMixin, FormView, UserOrOrgMixin,
         Set the owner and source args for use in the form
         """
 
-        data = super(ConceptNewView, self).get_initial()
+        data = super(ConceptMappingsView, self).get_initial()
 
         # Set owner type and identifiers using UserOrOrgMixin.get_args()
         self.get_args()
