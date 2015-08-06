@@ -21,8 +21,9 @@ class SourceNewForm(forms.Form):
         label=_('Source Short Name'),
         max_length=128,
         required=True,
-        help_text=_('Your new source will live at: https://OpenConceptLab.com/[:OwnerType]/'
-                    '[:Owner]/sources/<span id="source-name">[:SourceName]</span>'),
+        help_text=_('Your new source will live at: http://www.openconceptlab.com'
+                    '<span id="new_source_base_url">/[owner-type]/[owner]/sources/</span>/'
+                    '<span id="new_source_id" style="font-weight:bold;">[source-id]</span>/'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. ICD-10"}))
     full_name = forms.CharField(
         label=_('Source Full Name'),
