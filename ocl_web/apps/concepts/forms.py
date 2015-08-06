@@ -43,13 +43,6 @@ class ConceptNewMappingForm(forms.Form):
     """
     required_css_class = 'required'
 
-    #map_type = ''
-    #is_internal_or_external = 'Internal'    # Values: Internal or External
-    #internal_to_concept_url = ''
-    #external_source_url = ''
-    #external_concept_name = ''
-    #external_concept_code = ''
-
     map_type = forms.CharField(
         label=_('Map Type'),
         required=True,

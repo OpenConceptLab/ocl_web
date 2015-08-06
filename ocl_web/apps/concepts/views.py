@@ -158,7 +158,7 @@ class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
 
 # CLEAN
 class ConceptMappingsView(LoginRequiredMixin, UserOrOrgMixin,
-                          ConceptReadBaseView, FormView):
+                          FormView, ConceptReadBaseView):
     """
     View for seeing all mappings for the current concept,
     and creating a new mapping with this as the from_concept.
