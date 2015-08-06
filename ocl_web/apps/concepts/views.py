@@ -17,7 +17,7 @@ from django.template.response import TemplateResponse
 
 from braces.views import (LoginRequiredMixin, CsrfExemptMixin, JsonRequestResponseMixin)
 
-from .forms import (ConceptNewForm, ConceptCreateForm, ConceptEditForm, ConceptRetireForm)
+from .forms import (ConceptNewForm, ConceptEditForm, ConceptRetireForm)
 from libs.ocl import OCLapi, OCLSearch
 from apps.core.views import UserOrOrgMixin
 
