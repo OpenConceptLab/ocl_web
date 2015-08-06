@@ -15,6 +15,7 @@ from libs.ocl import OCLapi
 
 register = template.Library()
 
+TRUNCATE_LENGTH = 97      # 100 minus 3 for the ellipses
 
 
 ## Custom Date Filters
@@ -25,8 +26,8 @@ def smart_datetime(iso8601_dt):
     Return a friendly date time display.
     Currently just localized, but eventually "two days ago", etc.
     """
-    dt = dateutil.parser.parse(iso8601_dt)
-    return dt.strftime('%c')
+    date_value = dateutil.parser.parse(iso8601_dt)
+    return date_value.strftime('%c')
 
 
 @register.filter
@@ -35,14 +36,14 @@ def smart_date(iso8601_dt):
     Return a friendly date display.
     Currently just localized, but eventually "two days ago", etc.
     """
-    dt = dateutil.parser.parse(iso8601_dt)
-    return dt.strftime('%x')
+    date_value = dateutil.parser.parse(iso8601_dt)
+    return date_value.strftime('%x')
 
 
 # TODO: Retire this if not in use
-@register.filter(name='get')
-def get(d, k):
-    return d.get(k, None)
+#@register.filter(name='get')
+#def get(d, k):
+#    return d.get(k, None)
 
 
 
@@ -52,8 +53,11 @@ def get(d, k):
 def org_label(org, label_size=None):
     """
     Independent org label, no breadcrumb. Ex:
-    
+
         [:org-icon :org-id]
+
+    :param org: OCL org resource
+    :param label_size: No value is 'medium'; Acceptabel values are 'small' or 'large'
     """
     return {'org':org, 'label_size':label_size}
 
@@ -62,8 +66,11 @@ def org_label(org, label_size=None):
 def user_label(user, label_size=None):
     """
     Independent user label, no breadcrumb. Ex:
-    
+
         [:user-icon :username]
+
+    :param user: OCL user resource
+    :param label_size: No value is 'medium'; Acceptabel values are 'small' or 'large'
     """
     return {'user':user, 'label_size':label_size}
 
@@ -73,11 +80,11 @@ def resource_owner_label(resource, label_size=None):
     """
     Display a independent label (no breadcrumb) for the owner (a user or organization) of
     a resource, based on the "owner_type" and "owner". Ex:
-    
+
         [:owner-type-icon :owner-id]
 
     :param resource: OCL resource with owner_type and owner attributes
-    :param label_size: Currently ignored
+    :param label_size: No value is 'medium'; Acceptabel values are 'small' or 'large'
     """
     return {
         'resource_owner_type': resource['owner_type'],
@@ -93,43 +100,10 @@ def source_label(source, label_size=None):
         [:source-icon :source-short-name]
 
     :param source: OCL source
-    :param label_size: Currently ignored
+    :param label_size: No value is 'medium'; Acceptabel values are 'small' or 'large'
     """
     return {
         'source':source,
-        'label_size':label_size
-    }
-
-
-@register.inclusion_tag('includes/source_label_incl.html')
-def generic_source_label(owner_type=None, owner_id=None,
-                         source_id=None, source_name=None,
-                         display_breadcrumb=False,
-                         label_size=None):
-    """
-    TODO: generic_source_label template is not implemented yet
-
-    Displays source label with options. Example with no breadcrumb:
-
-        [:source-icon :source-short-name]
-
-    Example with breadcrumb:
-
-        [:source-icon :owner-id / :source-id :source-name]
-
-    :param owner_type: (required) "Organization" or "User"
-    :param owner_id: (optional) ID of the resource owner
-    :param source_id: (required) ID of the source
-    :param source_name: (optional) Name of the source
-    :param display_breadcrumb: (optional) Whether to display source breadcrumb
-    :param label_size: (optional) Currently ignored
-    """
-    return {
-        'owner_type':owner_type,
-        'owner_id':owner_id,
-        'source_id':source_id,
-        'source_name':source_name,
-        'display_breadcrumb': display_breadcrumb,
         'label_size':label_size
     }
 
@@ -142,7 +116,7 @@ def concept_label(concept, label_size=None):
         [:concept-icon :concept-id]
 
     :param concept: (required) OCL concept
-    :param label_size: (ignored) Currently ignored
+    :param label_size: (optional) No value is 'medium'; Acceptabel values are 'small' or 'large'
     """
     return {
         'concept':concept,
@@ -162,7 +136,7 @@ def mapping_label(mapping, label_size=None, display_breadcrumb=False):
         [:mapping-icon :owner / :source / :mapping-id :map-type]
 
     :param mapping: (required) OCL mapping
-    :param label_size: (ignored) Currently ignored
+    :param label_size: (optional) No value is 'medium'; Acceptabel values are 'small' or 'large'
     :param display_breadcrumb: (optional) Whether to display source breadcrumb
     """
     return {
@@ -174,11 +148,23 @@ def mapping_label(mapping, label_size=None, display_breadcrumb=False):
 
 @register.inclusion_tag('includes/mapping_from_concept_label_incl.html')
 def mapping_from_concept_label(mapping, label_size=None):
+    """
+    Generates a breadcrumbed label for the from_concept of an OCL mapping.
+
+    :param mapping: (required) OCL mapping
+    :param label_size: (optional) No value is 'medium'; Acceptabel values are 'small' or 'large'
+    """
     return {'mapping':mapping, 'label_size':label_size}
 
 
 @register.inclusion_tag('includes/mapping_to_concept_label_incl.html')
 def mapping_to_concept_label(mapping, label_size=None):
+    """
+    Generates a breadcrumbed label for the to_concept of an OCL mapping.
+
+    :param mapping: (required) OCL mapping
+    :param label_size: (optional) No value is 'medium'; Acceptabel values are 'small' or 'large'
+    """
     return {'mapping':mapping, 'label_size':label_size}
 
 
@@ -199,15 +185,16 @@ def generic_resource_label(
     to display breadcrumb information.
 
     If display_breadcrumb == false:
-        Org/User:          ( :resource-icon :resource-id | :resource-name )
-        Source:            ( :resource-icon :owner_id / :resource-id | :resource-name )
-        Source Version:    ( :resource-icon :owner_id / :resource-id [ :resource_version_id ] | :resource-name )
-        Concept/Mapping:   ( :resource-icon :owner_id / :source_id / :resource-id | :resource-name )
-        Versioned Concept: ( :resource-icon :owner_id / :source_id / :resource-id [ :resource_version_id ] | :resource-name )
+        Org/User:       (:icon :resource-id | :resource-name )
+        Source:         (:icon :owner_id / :resource-id | :resource-name )
+        Source Version: (:icon :owner_id / :resource-id [ :resource_version_id ] | :resource-name)
+        Concept:        (:icon :owner_id / :source_id / :resource-id | :resource-name )
+        Mapping:        (:icon :owner_id / :source_id / :resource-id | :resource-name )
+        Concept Version:(:icon :owner_id / :source_id / :resource-id [ :resource_ver_id ] | :resource-name )
     Elif resource_id and resource_name:
-        ( :resource-icon :resource-id | :resource_name )
+        ( :icon :resource-id | :resource_name )
     Else:
-        ( :resource-icon :resource-id )
+        ( :icon :resource-id )
     """
 
     # Validate resource type and set the icon type
@@ -316,10 +303,9 @@ def field_label(label, value, url=False, truncate=True, vertical=False, small=Fa
         See the include template for details.
         :param url: If true, displays value as an anchor tag
         :param truncate: If true (default), display text is truncated
-        :param vertical: Default is a horizontal display using bootstrap grid divs. 
+        :param vertical: Default is a horizontal display using bootstrap grid divs.
             Set vertical to true to display in a vertical layout instead.
     """
-    TRUNCATE_LENGTH = 97      # 100 minus 3 for the ellipses
     url_string = ''
     if url:
         url_string = value
@@ -372,6 +358,9 @@ def simple_pager(page, name, url=None):
 ## Custom Tags: PERMISSION CHECKING
 
 class IfCanChangeNode(Node):
+    """
+    Class to support permission checking tags
+    """
 
     def __init__(self, nodelist_true, nodelist_false, obj_var):
         self.nodelist_true, self.nodelist_false = nodelist_true, nodelist_false
