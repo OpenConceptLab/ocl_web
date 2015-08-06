@@ -325,6 +325,7 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
         context['concept'] = concept
         context['source'] = source
         context['mappings'] = mappings
+        context['form'] = ConceptNewMappingForm()
 
         return context
 
