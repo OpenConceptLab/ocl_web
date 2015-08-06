@@ -43,12 +43,12 @@ class ConceptNewMappingForm(forms.Form):
     """
     required_css_class = 'required'
 
-    map_type = ''
-    is_internal_or_external = 'Internal'    # Values: Internal or External
-    internal_to_concept_url = ''
-    external_source_url = ''
-    external_concept_name = ''
-    external_concept_code = ''
+    #map_type = ''
+    #is_internal_or_external = 'Internal'    # Values: Internal or External
+    #internal_to_concept_url = ''
+    #external_source_url = ''
+    #external_concept_name = ''
+    #external_concept_code = ''
 
     map_type = forms.CharField(
         label=_('Map Type'),
@@ -56,7 +56,7 @@ class ConceptNewMappingForm(forms.Form):
         help_text=_('<small>Enter the type of relationship between the concepts</small>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. SAME-AS, NARROWER-THAN, BROADER-THAN"}))
 
-    concept_class = forms.ChoiceField(
+    is_internal_or_external = forms.ChoiceField(
         choices=['Internal', 'External'],
         label=_('To Concept Type'),
         required=True,
