@@ -58,6 +58,7 @@ class ConceptNewForm(forms.Form):
     locale = forms.ChoiceField(
         label=_('Name Locale'),
         required=True,
+        help_text=_('<small>Choose the locale for the initial name and description</small>'),
         choices=[(d['code'], d['name']) for d in _get_locale_list()])
 
     name = forms.CharField(
@@ -79,14 +80,12 @@ class ConceptNewForm(forms.Form):
         label=_('Description'),
         max_length=1024,
         required=False)
+
+    # TODO: Populate this dynamically
     description_type = forms.CharField(
         label=_('Description Type'),
         max_length=128,
         required=False)
-
-    # TODO: The first name is always the preferred name
-    #preferred_locale = forms.BooleanField(
-    #    label=_('Preferred Locale'), required=False, initial=False)
 
     external_id = forms.CharField(
         label=_('Concept External ID'),

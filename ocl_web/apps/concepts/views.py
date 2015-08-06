@@ -446,6 +446,7 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
                                                                    'source': self.source_id,
                                                                    'concept': concept_id }))
         else:
+            messages.add_message(self.request, messages.ERROR, _('Error occurred: ' + result.content))
             logger.warning('Concept create POST failed: %s' % result.content)
             # TODO(paynejd): Add error messages from API to form
             return super(ConceptNewView, self).form_invalid(form)
