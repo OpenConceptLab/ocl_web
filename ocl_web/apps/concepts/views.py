@@ -413,21 +413,21 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         concept_id = form.cleaned_data.pop('concept_id')
         base_data = {
             'id': concept_id,
-            'concept_class': form.cleaned_data.pop('concept_class'),
-            'datatype': form.cleaned_data.pop('datatype'),
-            'external_id': form.cleaned_data.pop('external_id', '')
+            'concept_class': form.cleaned_data.get('concept_class'),
+            'datatype': form.cleaned_data.get('datatype'),
+            'external_id': form.cleaned_data.get('external_id', '')
         }
         names = [ {
-            'name': form.cleaned_data.pop('name'),
-            'locale': form.cleaned_data.pop('locale'),
+            'name': form.cleaned_data.get('name'),
+            'locale': form.cleaned_data.get('locale'),
             'locale_preferred': True,
-            'name_type': form.cleaned_data.pop('name_type', '')
+            'name_type': form.cleaned_data.get('name_type', '')
         } ]
         descriptions = [ {
-            'description': form.cleaned_data.pop('description'),
-            'locale': form.cleaned_data.pop('locale'),
+            'description': form.cleaned_data.get('description'),
+            'locale': form.cleaned_data.get('locale'),
             'locale_preferred': True,
-            'description_type': form.cleaned_data.pop('description_type', '')
+            'description_type': form.cleaned_data.get('description_type', '')
         } ]
 
         # Create new concept using the API
