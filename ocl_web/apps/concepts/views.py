@@ -749,17 +749,18 @@ class ConceptCreateView(UserOrOrgMixin, FormView):
 
 
 
-# TODO(paynejd): Resurrect ConceptEditView
+# CLEAN
 class ConceptEditView(UserOrOrgMixin, FormView):
     """
-        This is not used anymore. See the Json version.
+    View to edit core concept data (class, datatype, external-id)
     """
+
     template_name = "concepts/concept_edit.html"
 
     def get_form_class(self):
-        """ A sneaky way to hook into the generic form processing view, to
-            grep arguments from the URL, retrieve some application data and store them
-            in the view.
+        """
+        A sneaky way to hook into the generic form processing view, to grep args
+        from the URL, retrieve some application data and store them in the view.
         """
         self.get_args()
         self.source_id = self.kwargs.get('source')
@@ -777,24 +778,29 @@ class ConceptEditView(UserOrOrgMixin, FormView):
             self.concept = api.get(
                 'users', self.user_id, 'sources', self.source_id,
                 'concepts', self.concept_id).json()
+
         return ConceptEditForm
 
+
     def get_success_url(self):
-        """Get success URL
+        """
+        Get success URL
         """
         if self.from_org:
-            return reverse("concept-detail",
+            return reverse("concept-details",
                            kwargs={"org": self.org_id,
                                    'source': self.kwargs.get('source'),
                                    'concept': self.concept_id})
         else:
-            return reverse("concept-detail",
+            return reverse("concept-details",
                            kwargs={"user": self.user_id,
                                    'source': self.kwargs.get('source'),
                                    'concept': self.concept_id})
 
+
     def get_context_data(self, *args, **kwargs):
-        """ Supply related data for the add form
+        """
+        Supply related data for the add form
         """
         context = super(ConceptEditView, self).get_context_data(*args, **kwargs)
 
@@ -804,8 +810,11 @@ class ConceptEditView(UserOrOrgMixin, FormView):
         context['concept'] = self.concept
         return context
 
+
     def get_initial(self):
-        """ Load some useful data, not really for form display but internal use """
+        """
+        Load some useful data, not really for form display but internal use
+        """
         self.get_args()
         data = {
             'source': self.source,
@@ -814,6 +823,7 @@ class ConceptEditView(UserOrOrgMixin, FormView):
         }
         data.update(self.concept)
         return data
+
 
     def form_valid(self, form, *args, **kwargs):
 
