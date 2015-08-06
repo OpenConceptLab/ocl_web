@@ -3,63 +3,37 @@
 {% load bootstrap3 %}
 {% load ocl_tags %}
 
+
 {% block title %}{% trans "Update Concept" %}{% endblock %}
+
+
 {% block content %}
+{% if concept.owner_type == 'Organization' %}
+	{% url 'concept-home' org=concept.owner source=concept.source concept=concept.id as concept_url %}
+{% else %}
+	{% url 'concept-home' user=concept.owner source=concept.source concept=concept.id as concept_url %}
+{% endif %}
 
 <h3>
-    {% resource_owner_label concept %} / {% source_label source %} / {% concept_label concept %} / {% trans 'Update Concept' %}
-    {# TODO: Only show if admin or owner #}
-    {% if not concept.retired %}
-    <a href="{% url 'concept-retire'  org=source.owner source=source.id concept=concept.id %}" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
-    {% endif %}
+	{% resource_owner_label concept %} / {% source_label source %} / {% concept_label concept %} / {% trans 'Update Concept' %}
+	{# TODO: Only show if admin or owner #}
+	{% if not concept.retired %}
+	&nbsp;&nbsp;&nbsp;<a href="{% url 'concept-retire' org=source.owner source=source.id concept=concept.id %}" title="Retire Concept" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+	{% endif %}
 </h3>
 
 &nbsp;
-<div class="container" ng-app="ConceptApp" ng-controller="ConceptController">
-
-    <div class="row">
-        <div class="col-md-6">
-
-            {% include 'includes/ng_alerts_incl.html' %}
-
-            <form class="form" name="concept_form" ng-submit="concept_form.$valid && updateItem(item)" autcomplete="off">
-
-                {% csrf_token %}
-                <div class="form-group required" ng-class="{ 'has-error': concept_form.concept_class.$invalid &amp;&amp; !concept_form.concept_class.$pristine }">
-                    <label class="control-label" for="id_locale">Concept Class</label>
-                    {% verbatim %}
-                    <input class="form-control" type="text" name="concept_class" ng-model="item.concept_class" typeahead-editable="false" typeahead="ct for ct in concept_classes | filter:$viewValue | limitTo:20">
-                    <p class="help-block" ng-show="concept_form.concept_class.$invalid">
-                        Select a valid Concept class
-                    </p>{% endverbatim %}
-                </div>
-
-                <div class="form-group" ng-class="{ 'has-error': concept_form.datatype.$invalid &amp;&amp; !concept_form.datatype.$pristine }">
-                    <label class="control-label" for="id_datatype">Concept Datatype</label>
-                    {% verbatim %}
-                    <input class="form-control" type="text" name="datatype" ng-model="item.datatype" typeahead-editable="false" typeahead="t for t in datatypes | filter:$viewValue | limitTo:20">
-                    <p class="help-block" ng-show="concept_form.datatype.$invalid">
-                        Select a valid Datatype
-                    </p>{% endverbatim %}
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label" for="id_external_id">Concept External ID</label>
-                    <input class="form-control" id="id_name" name="external_id" placeholder="External ID" title="" type="text" ng-model="item.external_id">
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label" for="id_update_comment">Update Comment</label>
-                    <input class="form-control" id="id_update_comment" name="update_comment" placeholder="Update Comment" title="" type="text" ng-model="item.update_comment" />
-                </div>
-
-                {% buttons %}
-                <button type="submit" class="btn btn-primary">{% trans "Update Concept" %}</button>
-                {% endbuttons %}
-
-            </form>
-
-        </div>
-    </div>
-
+<div class="container">
+	<div class="row">
+		<div class="col-md-8">
+			<form class="form" name="concept_form" autcomplete="off" method="post">
+				{% csrf_token %}
+				{% bootstrap_form form %}
+				{% buttons %}
+					<button type="submit" class="btn btn-primary">{% trans "Update Concept" %}</button>
+					<a href="{{ concept_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+				{% endbuttons %}
+			</form>
+		</div>
+	</div>
 {% endblock %}
