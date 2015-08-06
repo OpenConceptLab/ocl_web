@@ -433,7 +433,7 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         # Create new concept using the API
         api = OCLapi(self.request, debug=True)
         result = api.create_concept(
-            self.owner_type, self.owner_id, self.source_id, data,
+            self.owner_type, self.owner_id, self.source_id, base_data,
             names=names, descriptions=descriptions)
         if result.ok:
             messages.add_message(self.request, messages.INFO, _('Concept created.'))
