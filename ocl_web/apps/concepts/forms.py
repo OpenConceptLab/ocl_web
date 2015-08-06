@@ -19,7 +19,7 @@ from django.utils.translation import ugettext as _
 from django import forms
 from django.forms.formsets import formset_factory
 
-from libs.ocl import OCLapi
+#from libs.ocl import OCLapi
 from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list)
 
 
@@ -71,7 +71,8 @@ class ConceptNewMappingForm(forms.Form):
     external_source_url = forms.CharField(
         label=_('To Source Url'),
         required=False,
-        help_text=_('<small>Copy/paste the URL of a source in OCL with source type "External"</small>'),
+        help_text=_('<small>Copy/paste the URL of a source in '
+                    'OCL with source type "External"</small>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. /orgs/IHTSDO/sources/SNOMED-CT/"}))
 
     external_concept_code = forms.CharField(
@@ -84,9 +85,10 @@ class ConceptNewMappingForm(forms.Form):
         label=_('To Concept Code'),
         required=False,
         help_text=_('<small>Enter the name of the external concept name</small>'),
-        widget=forms.TextInput(attrs={'placeholder': "e.g. Tuberculosis of lung, confirmed by culture only"}))
+        widget=forms.TextInput(
+            attrs={'placeholder': "e.g. Tuberculosis of lung, confirmed by culture only"}))
 
-   external_id = forms.CharField(
+    external_id = forms.CharField(
         label=_('Mapping External ID'),
         required=False,
         widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
@@ -107,8 +109,10 @@ class ConceptNewForm(forms.Form):
         max_length=256,
         required=True,
         help_text=_('<small>Your new concept will live at: http://www.openconceptlab.com'
-                    '<span id="new_concept_base_url">/[owner-type]/[owner]/sources/[source]/concepts/</span>'
-                    '<span id="new_concept_id" style="font-weight:bold;">[concept-id]</span>/</small>'),
+                    '<span id="new_concept_base_url">/[owner-type]/[owner]/sources/'
+                    '[source]/concepts/</span>'
+                    '<span id="new_concept_id" style="font-weight:bold;">'
+                    '[concept-id]</span>/</small>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. A15.0"}))
 
     # TODO: Populate this dynamically
@@ -137,7 +141,8 @@ class ConceptNewForm(forms.Form):
         label=_('Name'),
         max_length=256,
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': "e.g. Tuberculosis of lung, confirmed by sputum microscopy with or without culture"}))
+        widget=forms.TextInput(
+            attrs={'placeholder': "e.g. Tuberculosis of lung, confirmed by sputum microscopy with or without culture"}))
 
     # TODO: Populate this dynamically
     name_type = forms.CharField(
@@ -178,7 +183,7 @@ class ConceptEditForm(ConceptNewForm):
                                      'placeholder':'Note the reason for editing the concept'}))
 
     def __init__(self, *args, **kwargs):
-        """ 
+        """
         Dirty trick to delete one field for edit form. django 1.6 lets you do this officially.
         """
         super(ConceptEditForm, self).__init__(*args, **kwargs)
@@ -200,8 +205,17 @@ class ConceptNameForm(forms.Form):
 
     name = forms.CharField(max_length=30, label=_('Name'), required=True)
     locale = forms.ChoiceField(
-        choices=[(d['code'], d['name']) for d in _get_locale_list()], label=_('Locale'), required=True)
-    preferred_locale = forms.BooleanField(label=_('Preferred Locale'), required=False, initial=False)
-    name_type = forms.CharField(max_length=30, label=_('Name Datatype'), required=False)
+        choices=[(d['code'], d['name']) for d in _get_locale_list()],
+        label=_('Locale'),
+        required=True)
+
+    preferred_locale = forms.BooleanField(
+        label=_('Preferred Locale'),
+        required=False,
+        initial=False)
+    name_type = forms.CharField(
+        max_length=30,
+        label=_('Name Datatype'),
+        required=False)
 
 ConceptNameFormSet = formset_factory(ConceptNameForm, extra=3)

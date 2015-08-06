@@ -17,7 +17,7 @@ from django.template.response import TemplateResponse
 
 from braces.views import (LoginRequiredMixin, CsrfExemptMixin, JsonRequestResponseMixin)
 
-from .forms import (ConceptNewForm, ConceptEditForm, ConceptRetireForm)
+from .forms import (ConceptNewForm, ConceptEditForm, ConceptNewMappingForm, ConceptRetireForm)
 from libs.ocl import OCLapi, OCLSearch
 from apps.core.views import UserOrOrgMixin
 
@@ -542,9 +542,9 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
                 return self.render_json_response(concept)
 
         if self.concept_id is None:
-            return TemplateResponse(request, 'concepts/concept_create.html', data)
+            #return TemplateResponse(request, 'concepts/concept_create.html', data)
         else:
-            return TemplateResponse(request, 'concepts/concept_edit.html', data)
+            #return TemplateResponse(request, 'concepts/concept_edit.html', data)
 
 
     def get_success_url(self):
