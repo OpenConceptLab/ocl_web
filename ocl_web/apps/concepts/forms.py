@@ -18,7 +18,9 @@ class ConceptRetireForm(forms.Form):
 
     comment = forms.CharField(
         label=_('Retire Reason'),
-        required=False)
+        required=True,
+        widget=forms.Textarea(attrs={'rows':5,
+                                     'placeholder':'Note the reason for retiring the concept'}))
 
 
 class ConceptNewForm(forms.Form):
@@ -141,7 +143,12 @@ class ConceptEditForm(ConceptNewForm):
     """
     Concept edit form
     """
-    update_comment = forms.CharField(max_length=90, label=_('Update Comment'), required=False)
+
+    update_comment = forms.CharField(
+        label=_('Update Comment'),
+        required=True,
+        widget=forms.Textarea(attrs={'rows':5,
+                                     'placeholder':'Note the reason for editing the concept'}))
 
     def __init__(self, *args, **kwargs):
         """ 
