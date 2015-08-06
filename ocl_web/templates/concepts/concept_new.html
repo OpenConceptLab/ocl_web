@@ -6,6 +6,12 @@
 {% block title %}{% trans "New Concept" %} - Open Concept Lab{% endblock %}
 
 {% block content %}
+{% if source.owner_type == 'Organization' %}
+	{% url 'source-concepts' org=source.owner source=source.id as source_concepts_url %}
+{% else %}
+	{% url 'source-concepts' user=source.owner source=source.id as source_concepts_url %}
+{% endif %}
+
 <h3>
 {% resource_owner_label source %} / {% source_label source %}
 &nbsp;/&nbsp;
@@ -21,7 +27,7 @@
 				{% bootstrap_form form %}
 				{% buttons %}
 					<button type="submit" class="btn btn-primary">{% trans "Create Concept" %}</button>
-					<button type="submit" class="btn btn-default">{% trans "Cancel" %}</button>
+					<a href="{{ source_concepts_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
 				{% endbuttons %}
 			</form>
 		</div>
