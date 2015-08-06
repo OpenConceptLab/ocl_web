@@ -658,7 +658,7 @@ class ConceptCreateView(UserOrOrgMixin, FormView):
     """
     This is not used anymore. See the Json version.
     """
-    form_class = ConceptCreateForm
+    form_class = ConceptNewForm
     template_name = "concepts/concept_create.html"
 
     def get_success_url(self):
