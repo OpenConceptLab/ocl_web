@@ -25,6 +25,7 @@
 &nbsp;
 <div class="container">
 	<div class="row">
+
 		<div class="col-md-8">
 			<form class="form" name="concept_form" autcomplete="off" method="post">
 				{% csrf_token %}
@@ -35,5 +36,19 @@
 				{% endbuttons %}
 			</form>
 		</div>
+
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+				<div class="panel-body">
+					<p class="small">All changes to concepts are saved to the <strong>Concept History</strong> page,
+						so that you can always refer back to an older version of a concept.</p>
+					<p class="small">Edits that substantively change the meaning of a concept are discouraged. For example,
+						instead of changing the concept class or datatype, consider creating a new concept.</p>
+				</div>
+			</div>
+		</div>
+
 	</div>
+</div>
 {% endblock %}
