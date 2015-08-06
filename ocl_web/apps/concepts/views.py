@@ -542,9 +542,9 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
                 return self.render_json_response(concept)
 
         if self.concept_id is None:
-            #return TemplateResponse(request, 'concepts/concept_create.html', data)
+            return TemplateResponse(request, 'concepts/concept_create.html', data)
         else:
-            #return TemplateResponse(request, 'concepts/concept_edit.html', data)
+            return TemplateResponse(request, 'concepts/concept_edit.html', data)
 
 
     def get_success_url(self):
