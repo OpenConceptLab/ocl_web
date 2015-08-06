@@ -4,7 +4,13 @@
 {% load ocl_tags %}
 
 {% block title %}{% trans "Retire Concept" %}{% endblock %}
+
 {% block content %}
+{% if concept.owner_type == 'Organization' %}
+    {% url 'concept-home' org=concept.owner source=concept.source concept=concept.id as concept_url %}
+{% else %}
+    {% url 'concept-home' user=concept.owner source=concept.source concept=concept.id as concept_url %}
+{% endif %}
 
 <h3>
     {% resource_owner_label concept %} / {% source_label source %} / {% concept_label concept %} / {% trans 'Retire Concept' %}
@@ -17,23 +23,18 @@
 
             <form class="form-horizontal" id="source_create_form" method="post" action=".">
                 {% csrf_token %}
-
                 <div class="form-group">
                     <label class="col-md-2 control-label">Concept</label>
-                    <div class="col-md-4">
-                      {{ concept.display_name }}
-                    </div>
+                    <div class="col-md-4">{{ concept.display_name }}</div>
                 </div>
-
-                {% bootstrap_form form layout="horizontal" %} {% buttons layout="horizontal" %}
-                <button type="submit" class="btn btn-primary">
-                    {% trans "Retire" %}
-                </button>
+                {% bootstrap_form form layout="horizontal" %}
+                {% buttons layout="horizontal" %}
+                    <button type="submit" class="btn btn-primary">{% trans "Retire" %}</button>
+                    <a href="{{ concept_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
                 {% endbuttons %}
             </form>
 
         </div> {# col-lg-12 #}
     </div> {# row #}
 </div> {# container #}
-
 {% endblock %}

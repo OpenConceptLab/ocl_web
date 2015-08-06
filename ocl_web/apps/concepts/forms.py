@@ -1,6 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-    Forms for concepts.
+Forms for concepts.
+
+# Preserving this method here as it may be useful later!
+def clean_concept_id(self):
+    #concept ID must be unique
+    concept_id = self.cleaned_data['concept_id']
+    source = self.initial['source']
+    request = self.initial['request']
+    api = OCLapi(request, debug=True)
+    result = api.get('orgs', source['owner'], 'sources', source['id'], 'concepts', concept_id)
+    if result.status_code == 200:
+        raise forms.ValidationError(_('This Concept ID is already used in this source.'))
+    return concept_id
+
 """
 from django.utils.translation import ugettext as _
 from django import forms
@@ -12,7 +25,7 @@ from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_dat
 
 class ConceptRetireForm(forms.Form):
     """
-        Concept retirement form
+    Concept retirement form
     """
     required_css_class = 'required'
 
@@ -21,6 +34,63 @@ class ConceptRetireForm(forms.Form):
         required=True,
         widget=forms.Textarea(attrs={'rows':5,
                                      'placeholder':'Note the reason for retiring the concept'}))
+
+
+
+class ConceptNewMappingForm(forms.Form):
+    """
+    New concept mapping form -- from_mapping is already set
+    """
+    required_css_class = 'required'
+
+    map_type = ''
+    is_internal_or_external = 'Internal'    # Values: Internal or External
+    internal_to_concept_url = ''
+    external_source_url = ''
+    external_concept_name = ''
+    external_concept_code = ''
+
+    map_type = forms.CharField(
+        label=_('Map Type'),
+        required=True,
+        help_text=_('<small>Enter the type of relationship between the concepts</small>'),
+        widget=forms.TextInput(attrs={'placeholder': "e.g. SAME-AS, NARROWER-THAN, BROADER-THAN"}))
+
+    concept_class = forms.ChoiceField(
+        choices=['Internal', 'External'],
+        label=_('To Concept Type'),
+        required=True,
+        widget=forms.RadioSelect())
+
+    internal_to_concept_url = forms.CharField(
+        label=_('To Concept Url'),
+        required=False,
+        help_text=_('<small>Copy/paste the URL of a concept stored in OCL</small>'),
+        widget=forms.TextInput(attrs={'placeholder': "e.g. /orgs/CIEL/sources/CIEL/concepts/32/"}))
+
+    external_source_url = forms.CharField(
+        label=_('To Source Url'),
+        required=False,
+        help_text=_('<small>Copy/paste the URL of a source in OCL with source type "External"</small>'),
+        widget=forms.TextInput(attrs={'placeholder': "e.g. /orgs/IHTSDO/sources/SNOMED-CT/"}))
+
+    external_concept_code = forms.CharField(
+        label=_('To Concept Code'),
+        required=False,
+        help_text=_('<small>Enter the name of the external concept code</small>'),
+        widget=forms.TextInput(attrs={'placeholder': "e.g. A15.1"}))
+
+    external_concept_name = forms.CharField(
+        label=_('To Concept Code'),
+        required=False,
+        help_text=_('<small>Enter the name of the external concept name</small>'),
+        widget=forms.TextInput(attrs={'placeholder': "e.g. Tuberculosis of lung, confirmed by culture only"}))
+
+   external_id = forms.CharField(
+        label=_('Mapping External ID'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
+
 
 
 class ConceptNewForm(forms.Form):
@@ -93,49 +163,6 @@ class ConceptNewForm(forms.Form):
         label=_('Concept External ID'),
         required=False,
         widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
-
-
-
-# TODO: Retire this
-# class ConceptCreateForm(forms.Form):
-#     """
-#         Concept create form
-#     """
-#     required_css_class = 'required'
-
-#     concept_id = forms.CharField(
-#         label=_('Concept ID'), 
-#         max_length=256, 
-#         required=True)
-#     concept_class = forms.CharField(
-#         label=_('Concept Class'), 
-#         required=True)
-#     datatype = forms.CharField(
-#         label=_('Datatype'), 
-#         required=False)
-#     name = forms.CharField(
-#         label=_('Name'),
-#         max_length=256,
-#         required=True)
-#     locale = forms.ChoiceField(
-#         label=_('Name Locale'), 
-#         choices=[(d['code'], d['name']) for d in _get_locale_list()], 
-#         required=True)
-#     preferred_locale = forms.BooleanField(
-#         label=_('Preferred Locale'), 
-#         required=False, 
-#         initial=False)
-
-#     def clean_concept_id(self):
-#         """ concept ID must be unique """
-#         concept_id = self.cleaned_data['concept_id']
-#         source = self.initial['source']
-#         request = self.initial['request']
-#         api = OCLapi(request, debug=True)
-#         result = api.get('orgs', source['owner'], 'sources', source['id'], 'concepts', concept_id)
-#         if result.status_code == 200:
-#             raise forms.ValidationError(_('This Concept ID is already used in this source.'))
-#         return concept_id
 
 
 

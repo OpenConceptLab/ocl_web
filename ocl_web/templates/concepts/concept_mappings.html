@@ -63,6 +63,7 @@
 			</div>
 		</div>
 		<div class="col-md-4">
+
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
 				<div class="panel-body">
@@ -72,6 +73,21 @@
 					</ul>
 				</div>
 			</div>
+
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Add Mapping</h3></div>
+				<div class="panel-body">
+					<form class="form" name="add_mapping_form" autocomplete="off" method="post">
+						{% csrf_token %}
+						{% bootstrap_form form %}
+						{% buttons %}
+							<button type="submit" class="btn btn-primary">{% trans "Create Concept" %}</button>
+							<a href="{{ source_concepts_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+						{% endbuttons %}
+					</form>
+				</div>
+			</div>
+
 		</div>
 	</div>
 </div>
