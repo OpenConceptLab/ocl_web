@@ -50,8 +50,8 @@ class ConceptNewMappingForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': "e.g. SAME-AS, NARROWER-THAN, BROADER-THAN"}))
 
     is_internal_or_external = forms.ChoiceField(
-        choices=['Internal', 'External'],
-        label=_('To Concept Type'),
+        choices=[('Internal', 'Internal'), ('External', 'External'],
+        label=_('Mapping Destination'),
         required=True,
         widget=forms.RadioSelect())
 
