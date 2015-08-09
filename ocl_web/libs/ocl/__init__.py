@@ -542,8 +542,32 @@ class OCLapi(object):
         return result
 
 
+    def create_mapping_from_concept(self, source_owner_type, source_owner_id,
+                                    source_id, from_concept_id, data):
+        """ Create a concept mapping from the specified concept
+
+            The 'from_concept_url' is automatically set using the provided source_owner_type,
+            'source_owner_id', 'source_id', and 'from_concept_id'. If the from_concept is not
+            stored in the provided source, use create_mapping().            
+
+            :param source_owner_type: Either 'orgs' or 'users'
+            :param source_owner_id: ID of the owner org/user
+            :param source_id: ID of the source that will own the new mapping
+            :param from_concept_id: ID of the from-concept
+            :param data: A dictionary of all the data fields to POST
+
+            :returns: POST result from requests package.
+        """
+        data['from_concept_url'] = ('/' + source_owner_type + '/' + source_owner_id +
+                                    '/sources/' + source_id + '/concepts/' +
+                                    from_concept_id + '/')
+        return self.create_mapping(source_owner_type, source_owner_id, source_id, data)
+
+
     def create_mapping(self, source_owner_type, source_owner_id, source_id, data):
         """ Create a concept mapping
+
+            'from_concept_url' is a required field in the data dictionary
 
             :param source_owner_type: Either 'orgs' or 'users'
             :param source_owner_id: ID of the owner org/user

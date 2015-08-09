@@ -1,8 +1,6 @@
 """
 Import mappings via API.
 
-TODO: OCLapi.create_mapping method has changed and needs to be updated here
-
     The input file format is a record per line, each line in the form:
     mapping_name sorce_concept_id [list of dest_concept_id]
 
@@ -118,9 +116,8 @@ class Command(BaseCommand):
                 'to_source_code': source,
                 'to_concept_code': code,
             }
-            result = self.ocl.create_mapping(
-                'orgs', self.ORG_ID, self.SOURCE_ID, source_cid,
-                data)
+            result = self.ocl.create_mapping_from_concept(
+                'orgs', self.ORG_ID, self.SOURCE_ID, source_cid, data)
             print result
             return
 
@@ -135,9 +132,8 @@ class Command(BaseCommand):
                                                                         self.SOURCE_ID,
                                                                         dest_id),
             }
-            result = self.ocl.create_mapping(
-                'orgs', self.ORG_ID, self.SOURCE_ID, source_cid,
-                data)
+            result = self.ocl.create_mapping_from_concept(
+                'orgs', self.ORG_ID, self.SOURCE_ID, source_cid, data)
             print result
 
     def load_mappings(self):

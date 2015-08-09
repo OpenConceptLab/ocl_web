@@ -353,8 +353,7 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
 
         # Create the mapping
         api = OCLapi(self.request, debug=True)
-        result = api.create_mapping(
-            self.owner_type, self.owner_id, self.source_id, self.concept_id, base_data)
+        result = api.create_mapping(self.owner_type, self.owner_id, self.source_id, base_data)
         if result.ok:
             messages.add_message(self.request, messages.INFO, _('Mapping created.'))
             if self.from_org:
