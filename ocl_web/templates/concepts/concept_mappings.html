@@ -82,11 +82,12 @@
 
 						<div class="form-group">
 							<label class="small">Save Mapping In</label>
-							<div>{% generic_resource_label resource_type='source' resource_id=concept.source label_size='small' %}</span>
+							<div style="margin-bottom:14px;">{% generic_resource_label resource_type='source' resource_id=concept.source label_size='small' %}</span>
 						</div>
+
 						<div class="form-group">
 							<label class="small">From Concept</label>
-							<div style="margin-bottom:15px;">{% generic_resource_label resource_type='concept' resource_id=concept.id resource_name=concept.display_name resource_retired=concept.retired owner_type=concept.owner_type owner_id=concept.owner source_id=concept.source label_size='small' display_breadcrumb=True %}</div>
+							<div>{% generic_resource_label resource_type='concept' resource_id=concept.id resource_name=concept.display_name resource_retired=concept.retired owner_type=concept.owner_type owner_id=concept.owner source_id=concept.source label_size='small' display_breadcrumb=True %}</div>
 						</div>
 
 						<div class="form-group required">
@@ -164,3 +165,23 @@
 <h4>Source</h4><pre>{{ source|pprint }}</pre>
 <h4>Mappings</h4><pre>{{ mappings|pprint }}</pre>
 {% endblock resource-debug %}
+
+
+{% block extrajavascript %}
+<script>
+$(document).ready(function(){
+	$('#id_is_internal_or_external input[type="radio"]').click(function(){
+		if($(this).attr("value")=="External") {
+			$('div#internal-mapping-form div.form-group').hide()
+			$('div#external-mapping-form div.form-group').show()
+		} else if($(this).attr("value")=="Internal") {
+			$('div#internal-mapping-form div.form-group').hide()
+			$('div#external-mapping-form div.form-group').show()
+		} else {
+			$('div#internal-mapping-form div.form-group').hide()
+			$('div#external-mapping-form div.form-group').hide()
+		}
+	});
+});
+</script>
+{% endblock %}
