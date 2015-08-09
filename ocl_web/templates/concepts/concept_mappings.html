@@ -112,7 +112,7 @@
 
 						<div id="internal-mapping-form">
 
-							<div class="form-group show">
+							<div class="form-group">
 								<label class="control-label small" for="id_internal_to_concept_url">To Concept Url</label>
 								<input class="form-control input-sm" id="id_internal_to_concept_url" name="internal_to_concept_url" placeholder="e.g. /orgs/CIEL/sources/CIEL/concepts/32/" title="Copy/paste the URL of a concept stored in OCL" type="text">
 								<span class="help-block small" style="margin-top:0;">Copy/paste the URL of a concept stored in OCL</span>
@@ -122,19 +122,19 @@
 
 						<div id="external-mapping-form">
 
-							<div class="form-group hidden">
+							<div class="form-group">
 								<label class="control-label small" for="id_external_source_url">To Source Url</label>
 								<input class="form-control input-sm" id="id_external_source_url" name="external_source_url" placeholder="e.g. /orgs/IHTSDO/sources/SNOMED-CT/" title="Copy/paste the URL of a source in OCL with source type &quot;External&quot;" type="text">
 								<span class="help-block small" style="margin-top:0;">Copy/paste the URL of a source in OCL with source type "External"</span>
 							</div>
 
-							<div class="form-group hidden">
+							<div class="form-group">
 								<label class="control-label small" for="id_external_concept_code">To Concept Code</label>
 								<input class="form-control input-sm" id="id_external_concept_code" name="external_concept_code" placeholder="e.g. A15.1" title="Enter the name of the external concept code" type="text">
 								<span class="help-block small" style="margin-top:0;">Enter the name of the external concept code</span>
 							</div>
 
-							<div class="form-group hidden">
+							<div class="form-group">
 								<label class="control-label small" for="id_external_concept_name">To Concept Code</label>
 								<input class="form-control input-sm" id="id_external_concept_name" name="external_concept_name" placeholder="e.g. Tuberculosis of lung, confirmed by culture only" title="Enter the name of the external concept name" type="text">
 								<span class="help-block small" style="margin-top:0;">Enter the name of the external concept name</span>
@@ -170,18 +170,20 @@
 {% block extrajavascript %}
 <script>
 $(document).ready(function(){
-	$('#id_is_internal_or_external input[type="radio"]').click(function(){
-		if($(this).attr("value")=="External") {
+	function show_hide_mapping_fields(){
+		if($('input:radio[name="is_internal_or_external"]:checked').val() == "External") {
 			$('div#internal-mapping-form div.form-group').hide()
 			$('div#external-mapping-form div.form-group').show()
-		} else if($(this).attr("value")=="Internal") {
-			$('div#internal-mapping-form div.form-group').hide()
-			$('div#external-mapping-form div.form-group').show()
+		} else if($('input:radio[name="is_internal_or_external"]:checked').val() == "Internal") {
+			$('div#internal-mapping-form div.form-group').show()
+			$('div#external-mapping-form div.form-group').hide()
 		} else {
 			$('div#internal-mapping-form div.form-group').hide()
 			$('div#external-mapping-form div.form-group').hide()
 		}
-	});
+	}
+	show_hide_mapping_fields()
+	$('#id_is_internal_or_external input[type="radio"]').click(show_hide_mapping_fields());
 });
 </script>
 {% endblock %}
