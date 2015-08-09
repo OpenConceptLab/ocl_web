@@ -1,5 +1,5 @@
 {% if breadcrumb_parts %}
-{% if resource_url %}<a href="{{ resource_url }}" class="resource-label {{ resource_type }} {{ css_size_class }}">{% else %}<div class="resource-label {{ resource_type }} {{ css_size_class }}">{% endif %}
+{% if resource_url %}<a href="{{ resource_url }}" class="resource-label {{ resource_type }} {{ css_size_class }}">{% else %}<span class="resource-label {{ resource_type }} {{ css_size_class }}">{% endif %}
 	<span class="resource-label-id">
 		{% if display_icon %}<span class="resource-label-id-icon"><span class="glyphicon glyphicon-{{ resource_icon }}"></span></span>&nbsp;&nbsp;{% endif %}
 		<span class="resource-label-id-breadcrumb">
@@ -13,7 +13,7 @@
 		</span>
 	</span>
 	<span class="resource-label-name{% if resource_retired %} retired{% endif %}">{% if not resource_name and empty_name_text %}<small><em>{{ empty_name_text }}</small></em>{% else %}{{ resource_name }}{% endif %}</span>
-{% if resource_url %}</a>{% else %}</div>{% endif %}
+{% if resource_url %}</a>{% else %}</span>{% endif %}
 {% else %}
-{% if resource_url %}<a href="{{ resource_url }}" class="resource-label {{ resource_type }} {{ css_size_class }} no-breadcrumb">{% else %}<div class="resource-label {{ resource_type }} {{ css_size_class }} no-breadcrumb">{% endif %}{% if display_icon %}<span class="resource-label-name{% if resource_retired %} retired{% endif %}"><span class="glyphicon glyphicon-{{ resource_icon }}"></span>&nbsp;&nbsp;{% endif %}{{ resource_id }}</span>{% if resource_url %}</a>{% else %}</div>{% endif %}
+{% if resource_url %}<a href="{{ resource_url }}" class="resource-label {{ resource_type }} {{ css_size_class }} no-breadcrumb">{% else %}<span class="resource-label {{ resource_type }} {{ css_size_class }} no-breadcrumb">{% endif %}{% if display_icon %}<span class="resource-label-name{% if resource_retired %} retired{% endif %}"><span class="glyphicon glyphicon-{{ resource_icon }}"></span>&nbsp;&nbsp;{% endif %}{{ resource_id }}</span>{% if resource_url %}</a>{% else %}</span>{% endif %}
 {% endif %}

@@ -81,18 +81,72 @@
 						{% csrf_token %}
 
 						<div class="form-group form-group-sm">
-							<label class"control-label">Save Mapping In</label>
-							{% generic_resource_label resource_type='source' resource_id=concept.source label_size='small' %}
+							<label class"small">Save Mapping In</label>
+							<div>{% generic_resource_label resource_type='source' resource_id=concept.source label_size='small' %}</span>
 						</div>
 						<div class="form-group form-group-sm">
-							<label class"control-label">From Concept</label>
+							<label class"small">From Concept</label>
 							<div>{% generic_resource_label resource_type='concept' resource_id=concept.id resource_name=concept.display_name resource_retired=concept.retired owner_type=concept.owner_type owner_id=concept.owner source_id=concept.source label_size='small' display_breadcrumb=True %}</div>
 						</div>
 
+						<div class="form-group required">
+							<label class="control-label small" for="id_map_type">Map Type</label>
+							<input class="form-control input-sm" id="id_map_type" name="map_type" placeholder="e.g. SAME-AS, NARROWER-THAN, BROADER-THAN" required="required" title="Enter the type of relationship between the concepts" type="text" />
+							<span class="help-block small" style="margin-top:0;">Enter the type of relationship between the concepts</span>
+						</div>
+
+						<div class="form-group required">
+							<label class="control-label small" for="id_is_internal_or_external_0">Mapping Destination</label>
+							<div id="id_is_internal_or_external">
+								<label for="id_is_internal_or_external_0" class="radio-inline" title="To Concept is stored in OCL"><input class="radio-inline" id="id_is_internal_or_external_0" name="is_internal_or_external" required="required" type="radio" selected="selected" value="Internal">&nbsp;Internal</label>
+								<label for="id_is_internal_or_external_1" class="radio-inline" title="To Concept is not stored in OCL"><input id="id_is_internal_or_external_1" name="is_internal_or_external" required="required" type="radio" value="External" class="radio-inline">&nbsp;External</label>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="control-label small" for="id_external_id">Mapping External ID</label>
+							<input class="form-control input-sm" id="id_external_id" name="external_id" placeholder="e.g. UUID from external system" title="" type="text">
+							<span class="help-block small" style="margin-top:0;">Optional external identifier for this mapping</span>
+						</div>
+
+						<div id="internal-mapping-form show">
+
+							<div class="form-group">
+								<label class="control-label small" for="id_internal_to_concept_url">To Concept Url</label>
+								<input class="form-control input-sm" id="id_internal_to_concept_url" name="internal_to_concept_url" placeholder="e.g. /orgs/CIEL/sources/CIEL/concepts/32/" title="Copy/paste the URL of a concept stored in OCL" type="text">
+								<span class="help-block small" style="margin-top:0;">Copy/paste the URL of a concept stored in OCL</span>
+							</div>
+
+						</div>
+
+						<div id="external-mapping-form hidden">
+
+							<div class="form-group">
+								<label class="control-label small" for="id_external_source_url">To Source Url</label>
+								<input class="form-control input-sm" id="id_external_source_url" name="external_source_url" placeholder="e.g. /orgs/IHTSDO/sources/SNOMED-CT/" title="Copy/paste the URL of a source in OCL with source type &quot;External&quot;" type="text">
+								<span class="help-block small" style="margin-top:0;">Copy/paste the URL of a source in OCL with source type "External"</span>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label small" for="id_external_concept_code">To Concept Code</label>
+								<input class="form-control input-sm" id="id_external_concept_code" name="external_concept_code" placeholder="e.g. A15.1" title="Enter the name of the external concept code" type="text">
+								<span class="help-block small" style="margin-top:0;">Enter the name of the external concept code</span>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label small" for="id_external_concept_name">To Concept Code</label>
+								<input class="form-control input-sm" id="id_external_concept_name" name="external_concept_name" placeholder="e.g. Tuberculosis of lung, confirmed by culture only" title="Enter the name of the external concept name" type="text">
+								<span class="help-block small" style="margin-top:0;">Enter the name of the external concept name</span>
+							</div>
+
+						</div>
+
+						{% comment %}
 						{% bootstrap_form form %}
+						{% endcomment %}
+
 						{% buttons %}
-							<button type="submit" class="btn btn-primary">{% trans "Create Mapping" %}</button>
-							<a href="{{ source_concepts_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+							<button type="submit" class="btn btn-sm btn-primary">{% trans "Create Mapping" %}</button>
 						{% endbuttons %}
 					</form>
 				</div>
