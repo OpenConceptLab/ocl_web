@@ -1,13 +1,14 @@
 """
-    Import mappings via API.
+Import mappings via API.
 
+TODO: OCLapi.create_mapping method has changed and needs to be updated here
 
-        The input file format is a record per line, each line in the form:
-        mapping_name sorce_concept_id [list of dest_concept_id]
+    The input file format is a record per line, each line in the form:
+    mapping_name sorce_concept_id [list of dest_concept_id]
 
-        manage.py import_mappings input_file_name
+    manage.py import_mappings input_file_name
 
-        File Example:
+    File Example:
 
 q_and_a 985 1173 1152 5254 1150 6046 5526 968
 q_and_a 986 987 988 989 5622
@@ -97,13 +98,14 @@ class Command(BaseCommand):
         self.ocl.save_auth_token(self.request, result.json())
         self.ocl = OCLapi(self.request, debug=True)
 
+
     def create_mapping(self, fields):
         """
-            Create mappings from fields.
+        Create mappings from fields.
 
-            :param fields: is a list in the form of mapping_name, src_id, dest_id+
+        :param fields: is a list in the form of mapping_name, src_id, dest_id+
 
-            NOTE: The API URL path version is hard coded TBW
+        NOTE: The API URL path version is hard coded TBW
         """
         map_type = fields[0]
         source_cid = fields[1]

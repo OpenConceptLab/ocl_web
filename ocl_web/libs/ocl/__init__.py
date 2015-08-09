@@ -35,6 +35,7 @@ class OCLapi(object):
 
     logger = logging.getLogger('oclapi')
 
+
     def debug_result(self, results):
         """
         Some serious debug output.
@@ -118,6 +119,7 @@ class OCLapi(object):
         elif 'includeFacets' in self.headers:
             del(self.headers['includeFacets'])
 
+
     def post(self, type_name, *args, **kwargs):
         """ Issue Post request to API.
 
@@ -143,6 +145,7 @@ class OCLapi(object):
             self.debug_result(results)
         return results
 
+
     def delete(self, *args, **kwargs):
         """ Issue delete request to API.
 
@@ -158,6 +161,7 @@ class OCLapi(object):
                                   headers=self.headers)
         self.status_code = results.status_code
         return results
+
 
     def put(self, type_name, *args, **kwargs):
         """ Issue delete request to API.
@@ -179,6 +183,7 @@ class OCLapi(object):
         if self.debug:
             self.debug_result(results)
         return results
+
 
     def head(self, *args, **kwargs):
         """ Issue HEAD request to API.
@@ -204,6 +209,7 @@ class OCLapi(object):
         if self.debug:
             self.debug_result(results)
         return results
+
 
     def get(self, *args, **kwargs):
         """ Issue get request to API.
@@ -234,6 +240,7 @@ class OCLapi(object):
             self.debug_result(results)
         return results
 
+
     def get_json(self, *args):
         """ Smarter GET request when you really want a json object back.
 
@@ -251,6 +258,7 @@ class OCLapi(object):
         else:
             return None
 
+
     def get_by_url(self, url, **kwargs):
         """ Issue get request to API.
 
@@ -266,6 +274,7 @@ class OCLapi(object):
                                headers=self.headers)
         return results
 
+
     def save_auth_token(self, request, json_data):
         """ Save API user token into session table for online use.
 
@@ -273,6 +282,7 @@ class OCLapi(object):
             :param api_json_data: contains the backend auth token.
         """
         request.session[SESSION_TOKEN_KEY] = json_data['token']
+
 
     def create_user(self, data):
         """ Create a user in the system. This call is a bit special because
@@ -284,6 +294,7 @@ class OCLapi(object):
         result = self.post('users', **data)
         return result
 
+
     def delete_user(self, username):
         """ Delete a user in the system, actually just deactivates her.
             delete users needs admin credentials.
@@ -293,6 +304,7 @@ class OCLapi(object):
         """
         result = self.delete('users', username)
         return result
+
 
     def reactivate_user(self, username):
         """ Delete a user in the system, actually just deactivates her.
@@ -304,6 +316,7 @@ class OCLapi(object):
         result = self.put('users/%s/reactivate/' % username)
         return result
 
+
     def get_user_auth(self, username, password):
         """ Get the user AUTH token for the specified user.
             :param username: is a string containing the user name.
@@ -313,12 +326,14 @@ class OCLapi(object):
         result = self.post('users', 'login', username=username, password=password)
         return result
 
+
     def sync_password(self, user):
         """
         sync password with backend
         """
         result = self.post('users/%s/' % user.username, hashed_password=user.password)
         return result
+
 
     def create_concept(self, source_owner_type, source_owner_id, source_id, base_data,
                        names=[], descriptions=[], extras=[]):
@@ -403,6 +418,7 @@ class OCLapi(object):
             'concepts', concept_id, **data)
         return result
 
+
     def create_org(self, base_data, extras=[]):
         """
             Create organization
@@ -415,6 +431,7 @@ class OCLapi(object):
         data.update(base_data)
         result = self.post('orgs', **data)
         return result
+
 
     def update_org(self, org_id, base_data, extras=[]):
         """
@@ -430,6 +447,7 @@ class OCLapi(object):
         result = self.post('orgs', org_id, **data)
         return result
 
+
     def create_source_by_org(self, org_id, base_data, extras=[]):
         """
             :returns: response object.
@@ -438,6 +456,7 @@ class OCLapi(object):
         data.update(base_data)
         result = self.post('orgs', org_id, 'sources', **data)
         return result
+
 
     def create_source_by_user(self, user_id, base_data, extras=[]):
         """
@@ -448,6 +467,7 @@ class OCLapi(object):
         result = self.post('users', user_id, 'sources', **data)
         return result
 
+
     def create_source_by_me(self, base_data, extras=[]):
         """
             :returns: response object.
@@ -456,6 +476,7 @@ class OCLapi(object):
         data.update(base_data)
         result = self.post('users', 'sources', **data)
         return result
+
 
     def update_source_by_org(self, org_id, source_id, base_data, extras=[]):
         """
@@ -472,6 +493,7 @@ class OCLapi(object):
         result = self.put('orgs', org_id, 'sources', source_id, **data)
         return result
 
+
     def update_source_by_user(self, username, source_id, base_data, extras=[]):
         """
             Update source owned by user.
@@ -486,6 +508,7 @@ class OCLapi(object):
         # TODO: Why doesn't POST work?
         result = self.put('users', username, 'sources', source_id, **data)
         return result
+
 
     def create_source_version_by_org(self, org_id, source_id, base_data):
         """
@@ -502,6 +525,7 @@ class OCLapi(object):
                            'versions', **data)
         return result
 
+
     def create_source_version_by_user(self, username, source_id, base_data):
         """
             create a new source version owned by user.
@@ -517,19 +541,17 @@ class OCLapi(object):
                            'versions', **data)
         return result
 
-    def create_mapping(self, source_owner_type, source_owner_id, source_id,
-                       concept_id, data):
+
+    def create_mapping(self, source_owner_type, source_owner_id, source_id, data):
         """ Create a concept mapping
 
-            :param source_owner_type: is a string of either 'org' or 'user'
-            :param source_owner_id: is the ID of the owner org or user
-            :param source_id: is the ID of the owner source
-            :param concept_id: is the concept ID of the source concept
-            :param data: is a dictionary of all the data fields
+            :param source_owner_type: Either 'orgs' or 'users'
+            :param source_owner_id: ID of the owner org/user
+            :param source_id: ID of the source that will own the new mapping
+            :param data: A dictionary of all the data fields to POST
 
             :returns: POST result from requests package.
         """
         result = self.post(source_owner_type, source_owner_id,
-                           'sources', source_id, 'concepts', concept_id,
-                           'mappings', **data)
+                           'sources', source_id, 'mappings', **data)
         return result

@@ -336,28 +336,39 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
         """
 
         # Prepare the data form submission, incl. renaming fields as needed
-        # internal
-        # external
+        mapping_destination = form.cleaned_data.pop('is_internal_or_external')
+        from_concept_url = ('/' + self.owner_type + '/' + self.owner_id + '/sources/' +
+                            self.source_id + '/concepts/' + self.concept_id + '/')
+        base_data = {
+            'from_concept_url': from_concept_url,
+            'map_type': form.cleaned_data.get('map_type', ''),
+            'external_id': form.cleaned_data.get('external_id', '')
+        }
+        if mapping_destination == 'Internal':
+            base_data['to_concept_url'] = form.cleaned_data.get('to_concept_url')
+        elif mapping_destination == 'External':
+            base_data['to_source_url'] = form.cleaned_data.get('to_source_url')
+            base_data['to_concept_code'] = form.cleaned_data.get('to_concept_code')
+            base_data['to_concept_name'] = form.cleaned_data.get('to_concept_name')
 
         # Create the mapping
         api = OCLapi(self.request, debug=True)
-        result = api.create_concept(
-            self.owner_type, self.owner_id, self.source_id, base_data,
-            names=names, descriptions=descriptions)
+        result = api.create_mapping(
+            self.owner_type, self.owner_id, self.source_id, self.concept_id, base_data)
         if result.ok:
-            messages.add_message(self.request, messages.INFO, _('Concept created.'))
+            messages.add_message(self.request, messages.INFO, _('Mapping created.'))
             if self.from_org:
-                return redirect(reverse('concept-details', kwargs={'org': self.owner_id,
-                                                                   'source': self.source_id,
-                                                                   'concept': concept_id }))
+                return redirect(reverse('concept-mappings', kwargs={'org': self.owner_id,
+                                                                    'source': self.source_id,
+                                                                    'concept': concept_id}))
             else:
-                return redirect(reverse('concept-details', kwargs={'user': self.owner_id,
-                                                                   'source': self.source_id,
-                                                                   'concept': concept_id }))
+                return redirect(reverse('concept-mappings', kwargs={'user': self.owner_id,
+                                                                    'source': self.source_id,
+                                                                    'concept': concept_id}))
         else:
-            messages.add_message(self.request, messages.ERROR, _('Error occurred: ' + result.content))
-            logger.warning('Concept create POST failed: %s' % result.content)
-            # TODO(paynejd): Add error messages from API to form
+            messages.add_message(self.request, messages.ERROR,
+                                 _('Error occurred: ' + result.content))
+            logger.warning('Mapping create POST failed: %s' % result.content)
             return super(ConceptNewView, self).form_invalid(form)
 
 
@@ -476,18 +487,18 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             'datatype': form.cleaned_data.get('datatype'),
             'external_id': form.cleaned_data.get('external_id', '')
         }
-        names = [ {
+        names = [{
             'name': form.cleaned_data.get('name'),
             'locale': form.cleaned_data.get('locale'),
             'locale_preferred': True,
             'name_type': form.cleaned_data.get('name_type', '')
-        } ]
-        descriptions = [ {
+        }]
+        descriptions = [{
             'description': form.cleaned_data.get('description'),
             'locale': form.cleaned_data.get('locale'),
             'locale_preferred': True,
             'description_type': form.cleaned_data.get('description_type', '')
-        } ]
+        }]
 
         # Create new concept using the API
         api = OCLapi(self.request, debug=True)
@@ -499,13 +510,14 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             if self.from_org:
                 return redirect(reverse('concept-details', kwargs={'org': self.owner_id,
                                                                    'source': self.source_id,
-                                                                   'concept': concept_id }))
+                                                                   'concept': concept_id}))
             else:
                 return redirect(reverse('concept-details', kwargs={'user': self.owner_id,
                                                                    'source': self.source_id,
-                                                                   'concept': concept_id }))
+                                                                   'concept': concept_id}))
         else:
-            messages.add_message(self.request, messages.ERROR, _('Error occurred: ' + result.content))
+            messages.add_message(self.request, messages.ERROR,
+                                 _('Error occurred: ' + result.content))
             logger.warning('Concept create POST failed: %s' % result.content)
             # TODO(paynejd): Add error messages from API to form
             return super(ConceptNewView, self).form_invalid(form)

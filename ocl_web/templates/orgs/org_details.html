@@ -46,7 +46,7 @@
 						<a href="{% url 'org-member-add' org.id %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add Member" %}</a>
 						{% for member in members %}
 							<div class="label-container">
-								{% user_label member %}<button type="button" class="btn btn-link" data-org='{{org.id}}' ng-click="removeMember('{{org.id}}', '{{member.username}}')" ><span class="glyphicon glyphicon-trash"></span></button>
+								{% user_label member label_size='small' %}<button type="button" class="btn btn-link" data-org='{{org.id}}' ng-click="removeMember('{{org.id}}', '{{member.username}}')" ><span class="glyphicon glyphicon-trash"></span></button>
 							</div>
 							{% if request.GET.debug %}<pre>{{ member|pprint }}</pre>{% endif %}
 						{% empty %}
