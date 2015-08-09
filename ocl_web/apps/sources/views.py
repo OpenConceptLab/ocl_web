@@ -381,6 +381,7 @@ class SourceVersionsNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         }
         return data
 
+
     def get_context_data(self, *args, **kwargs):
         """
         Load context data needed for the view
@@ -400,6 +401,7 @@ class SourceVersionsNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         context['source'] = source
 
         return context
+
 
     def form_valid(self, form):
         """

@@ -79,6 +79,10 @@
 				<div class="panel-body">
 					<form class="form" name="add_mapping_form" autocomplete="off" method="post">
 						{% csrf_token %}
+						<div class="form-group form-group-sm">
+							<label class"control-label">From Concept</label>
+							{% generic_resource_label resource_type='concept' resource_id=concept.id resource_name=concept.display_name resource_retired=concept.retired owner_type=concept.owner_type owner_id=concept.owner source_id=concept.source label_size='small' display_breadcrumb=True %}
+						</div>
 						{% bootstrap_form form %}
 						{% buttons %}
 							<button type="submit" class="btn btn-primary">{% trans "Create Mapping" %}</button>

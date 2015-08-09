@@ -152,7 +152,7 @@ def mapping_from_concept_label(mapping, label_size=None):
     Generates a breadcrumbed label for the from_concept of an OCL mapping.
 
     :param mapping: (required) OCL mapping
-    :param label_size: (optional) No value is 'medium'; Acceptabel values are 'small' or 'large'
+    :param label_size: (optional) Default value is 'medium'; Acceptable values are 'small' or 'large'
     """
     return {'mapping':mapping, 'label_size':label_size}
 
@@ -163,7 +163,7 @@ def mapping_to_concept_label(mapping, label_size=None):
     Generates a breadcrumbed label for the to_concept of an OCL mapping.
 
     :param mapping: (required) OCL mapping
-    :param label_size: (optional) No value is 'medium'; Acceptabel values are 'small' or 'large'
+    :param label_size: (optional) Default value is 'medium'; Acceptable values are 'small' or 'large'
     """
     return {'mapping':mapping, 'label_size':label_size}
 
