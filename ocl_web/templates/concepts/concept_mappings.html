@@ -103,7 +103,8 @@
 						</div>
 
 						<div class="form-group required">
-							<label class="control-label small" for="id_is_internal_or_external_0">Mapping Destination</label>
+							<label class="control-label small" for="id_is_internal_or_external_0">Mapping Destination</label>&nbsp;
+							<a href="#" data-toggle="tooltip" data-placement="right" title="Internal means the to-concept is stored in OCL. External means that the to-concept is not stored in OCL."><span class="glyphicon glyphicon-question-sign"></span></a>
 							<div id="id_is_internal_or_external">
 								<label for="id_is_internal_or_external_0" class="radio-inline" title="To Concept is stored in OCL"><input class="radio-inline" id="id_is_internal_or_external_0" name="is_internal_or_external" required="required" type="radio" checked="checked" value="Internal">&nbsp;Internal</label>
 								<label for="id_is_internal_or_external_1" class="radio-inline" title="To Concept is not stored in OCL"><input id="id_is_internal_or_external_1" name="is_internal_or_external" required="required" type="radio" value="External" class="radio-inline">&nbsp;External</label>
@@ -170,6 +171,7 @@
 {% block extrajavascript %}
 <script>
 $(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
 	function show_hide_mapping_fields(){
 		if($('input:radio[name="is_internal_or_external"]:checked').val() == "External") {
 			$('div#internal-mapping-form div.form-group').hide();
