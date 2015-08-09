@@ -3,6 +3,9 @@ from django import forms
 
 
 class OrganizationNewForm(forms.Form):
+    """
+    Form to create a new organization
+    """
 
     short_name = forms.CharField(
         label=_('Organization Short Name'),
@@ -31,6 +34,9 @@ class OrganizationNewForm(forms.Form):
 
 
 class OrganizationEditForm(OrganizationNewForm):
+    """
+    Form to edit an organization
+    """
 
     def __init__(self, *args, **kwargs):
         """ Dirty trick to delete one field for edit form. Django 1.6 lets you do this
@@ -41,6 +47,9 @@ class OrganizationEditForm(OrganizationNewForm):
 
 
 class OrganizationMemberAddForm(forms.Form):
+    """
+    Form to add a member to an organization
+    """
 
     member_username = forms.CharField(
         label="Member Username",

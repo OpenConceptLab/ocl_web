@@ -104,29 +104,29 @@ class SourceVersionsNewForm(forms.Form):
         widget=forms.TextInput(
             attrs={'style':'width:480px;',
                    'placeholder': "Name this source version"}))
+
     description = forms.CharField(
         label=_('Description'),
         required=True,
         widget=forms.Textarea(attrs={'style':'width:480px;',
                                      'rows':5,
                                      'placeholder':'Describe this source version'}))
+
     previous_version = forms.CharField(
         required=True,
         widget=forms.HiddenInput())
 
 
-class SourceVersionsEditForm(forms.Form):
+class SourceVersionsEditForm(SourceVersionsNewForm):
     """
     Form to edit a source version
     """
-    required_css_class = 'required'
-
     def __init__(self, *args, **kwargs):
         """ Dirty trick to delete one field for edit form. django 1.6 lets you do this
             officially.
         """
-        super(SourceEditForm, self).__init__(*args, **kwargs)
-        self.fields.pop('id')
+        super(SourceVersionsEditForm, self).__init__(*args, **kwargs)
+        #self.fields.pop('id')
 
 
 
