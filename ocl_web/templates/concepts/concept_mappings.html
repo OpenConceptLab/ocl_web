@@ -172,18 +172,18 @@
 $(document).ready(function(){
 	function show_hide_mapping_fields(){
 		if($('input:radio[name="is_internal_or_external"]:checked').val() == "External") {
-			$('div#internal-mapping-form div.form-group').hide()
-			$('div#external-mapping-form div.form-group').show()
+			$('div#internal-mapping-form div.form-group').hide();
+			$('div#external-mapping-form div.form-group').show();
 		} else if($('input:radio[name="is_internal_or_external"]:checked').val() == "Internal") {
-			$('div#internal-mapping-form div.form-group').show()
-			$('div#external-mapping-form div.form-group').hide()
+			$('div#internal-mapping-form div.form-group').show();
+			$('div#external-mapping-form div.form-group').hide();
 		} else {
-			$('div#internal-mapping-form div.form-group').hide()
-			$('div#external-mapping-form div.form-group').hide()
+			$('div#internal-mapping-form div.form-group').hide();
+			$('div#external-mapping-form div.form-group').hide();
 		}
 	}
-	show_hide_mapping_fields()
-	$('#id_is_internal_or_external input[type="radio"]').click(show_hide_mapping_fields());
+	show_hide_mapping_fields();
+	$('#id_is_internal_or_external input[type="radio"]').click(function (){ show_hide_mapping_fields(); });
 });
 </script>
 {% endblock %}
