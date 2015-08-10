@@ -346,15 +346,16 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
             'external_id': form.cleaned_data.get('external_id', '')
         }
         if mapping_destination == 'Internal':
-            base_data['to_concept_url'] = form.cleaned_data.get('to_concept_url')
+            base_data['to_concept_url'] = form.cleaned_data.get('internal_to_concept_url')
         elif mapping_destination == 'External':
-            base_data['to_source_url'] = form.cleaned_data.get('to_source_url')
-            base_data['to_concept_code'] = form.cleaned_data.get('to_concept_code')
-            base_data['to_concept_name'] = form.cleaned_data.get('to_concept_name')
+            base_data['to_source_url'] = form.cleaned_data.get('external_to_source_url')
+            base_data['to_concept_code'] = form.cleaned_data.get('external_to_concept_code')
+            base_data['to_concept_name'] = form.cleaned_data.get('external_to_concept_name')
 
         # Create the mapping
         api = OCLapi(self.request, debug=True)
         result = api.create_mapping(self.owner_type, self.owner_id, self.source_id, base_data)
+        messages.add_message(self.request, messages.INFO, _(json.dumps(base_data)))
         if result.ok:
             messages.add_message(self.request, messages.INFO, _('Mapping created.'))
             if self.from_org:
@@ -368,8 +369,6 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
         else:
             messages.add_message(self.request, messages.ERROR,
                                  _('Error occurred: ' + result.content))
-            messages.add_message(self.request, messages.ERROR,
-                                 _(json.dumps(base_data)))
             logger.warning('Mapping create POST failed: %s' % result.content)
             return super(ConceptMappingsView, self).form_invalid(form)
 
