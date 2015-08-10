@@ -19,6 +19,7 @@
 					{% field_label 'Concept Class' concept.concept_class vertical="true" small="true" %}
 					{% field_label 'Datatype' concept.datatype vertical="true" small="true" %}
 					{% field_label 'Retired' concept.retired vertical="true" small="true" %}
+					{% field_label 'Concept Version URL' concept.version_url vertical="true" small="true" %}
 					{% if concept.external_id %}
 					<hr />
 					{% field_label 'External ID' concept.external_id vertical="true" small="true" %}
@@ -62,7 +63,7 @@
 							<button type="button" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button>
 							{% endcomment %}
 						</div>
-						{% if request.GET.debug %}<pre>{{ name }}</pre>{% endif %}
+						{% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ name }}</pre></div></div>{% endif %}
 					</div>
 				{% empty %}
 					<h3><small>None</small></h3>
