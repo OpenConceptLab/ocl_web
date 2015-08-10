@@ -1,3 +1,6 @@
+"""
+Organization forms
+"""
 from django.utils.translation import ugettext as _
 from django import forms
 
@@ -11,8 +14,9 @@ class OrganizationNewForm(forms.Form):
         label=_('Organization Short Name'),
         max_length="128",
         required=True,
-        help_text='Your new organization will live at: ' +
-                  'https://OpenConceptLab.com/orgs/<span id="new_org_id" style="font-weight:bold;">[org-id]</span>/',
+        help_text=('Your new organization will live at: '
+                  'https://OpenConceptLab.com/orgs/'
+                  '<span id="new_org_id" style="font-weight:bold;">[org-id]</span>/'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. WHO"}))
     full_name = forms.CharField(
         label=_('Organization Full Name'),

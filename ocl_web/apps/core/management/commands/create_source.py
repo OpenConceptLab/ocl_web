@@ -1,30 +1,29 @@
 """
-    Create organization in system via command line.
+Create organization in system via command line.
 
-    Setup is a little bit tricky:
-    - you need to have a working OCL user created, via the web, stored
-      on the same backend you are trying to create test data on.
-      - e.g. point your local dev environment to api.dev.ocl.com and
-        create a unique new user.
+Setup is a little bit tricky:
+- you need to have a working OCL user created, via the web, stored
+  on the same backend you are trying to create test data on.
+  - e.g. point your local dev environment to api.dev.ocl.com and
+    create a unique new user.
 
-    -   then this tool will read your local django DB to get the auth info
-        and create a lot of test/demo data under that user ID.
+-   then this tool will read your local django DB to get the auth info
+    and create a lot of test/demo data under that user ID.
 
-        manage.py create_org --username testusername --csv filename
-        or
-        manage.py create_org --username testusername --short_name sn
-            --full_name=full_name --website=.....
+    manage.py create_org --username testusername --csv filename
+    or
+    manage.py create_org --username testusername --short_name sn
+        --full_name=full_name --website=.....
 
-    - The CSV file must have a header row.
+- The CSV file must have a header row.
 
-    The column names must be:
-    org_short_name
-    org_full_name
-    website
-    company_name
-    location
-    hl7_code
-
+The column names must be:
+org_short_name
+org_full_name
+website
+company_name
+location
+hl7_code
 """
 from optparse import make_option
 
@@ -84,11 +83,11 @@ class Command(BaseCommand):
         self.importer = Importer()
 
     def create_source(
-        self, org_id,
-        source_id, external_id, short_code,
-        name, full_name, source_type,
-        public_access, default_locale, supported_locales,
-        website, description, hl7_code):
+            self, org_id,
+            source_id, external_id, short_code,
+            name, full_name, source_type,
+            public_access, default_locale, supported_locales,
+            website, description, hl7_code):
         """ Create one source for the specified org """
 
         # some basic validation
@@ -120,7 +119,7 @@ class Command(BaseCommand):
         if hl7_code != '':
             extras = {'hl7_code': hl7_code}
             data['extras'] = extras
-            
+
         print data
         if self.importer.test_mode:
             print 'Just testing...'

@@ -124,13 +124,12 @@ class Common(Configuration):
     ########## END DATABASE CONFIGURATION
 
     ########## CACHING
-    # Do this here because thanks to django-pylibmc-sasl and pylibmc memcacheify is painful to install on windows.
-    # memcacheify is what's used in Production
+    # Do this here because thanks to django-pylibmc-sasl and pylibmc memcacheify is
+    # painful to install on windows. memcacheify is what's used in Production
     CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': ''
-
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': ''
         }
     }
     ########## END CACHING
@@ -274,25 +273,25 @@ class Common(Configuration):
                 'filters': ['require_debug_false'],
                 'class': 'django.utils.log.AdminEmailHandler'
             },
-        'null': {
-            'class': 'django.utils.log.NullHandler',
-            },
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'normal',
-            },
-        'debug_file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/debug.log'),
-            'formatter': 'normal',
-            },
-        'logfile': {
-            'level': 'INFO',
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'when': 'midnight',
-            'filename': os.path.join(BASE_DIR, 'logs/app.log'),
-            'formatter': 'normal',
+            'null': {
+                'class': 'django.utils.log.NullHandler',
+                },
+            'console': {
+                'class': 'logging.StreamHandler',
+                'formatter': 'normal',
+                },
+            'debug_file': {
+                'level': 'DEBUG',
+                'class': 'logging.FileHandler',
+                'filename': os.path.join(BASE_DIR, 'logs/debug.log'),
+                'formatter': 'normal',
+                },
+            'logfile': {
+                'level': 'INFO',
+                'class': 'logging.handlers.TimedRotatingFileHandler',
+                'when': 'midnight',
+                'filename': os.path.join(BASE_DIR, 'logs/app.log'),
+                'formatter': 'normal',
             },
         },
 
@@ -414,8 +413,7 @@ class Production(Common):
     ########## END STORAGE CONFIGURATION
 
     ########## EMAIL
-    DEFAULT_FROM_EMAIL = values.Value(
-            'ocl_web <ocl_web_noreply@openconceptlab.com>')
+    DEFAULT_FROM_EMAIL = values.Value('ocl_web <ocl_web_noreply@openconceptlab.com>')
 #    EMAIL_HOST = values.Value('smtp.sendgrid.com')
 #    EMAIL_HOST_PASSWORD = values.SecretValue(environ_prefix="", environ_name="SENDGRID_PASSWORD")
 #    EMAIL_HOST_USER = values.SecretValue(environ_prefix="", environ_name="SENDGRID_USERNAME")
@@ -466,25 +464,25 @@ class Production(Common):
                 'filters': ['require_debug_false'],
                 'class': 'django.utils.log.AdminEmailHandler'
             },
-        'null': {
-            'class': 'django.utils.log.NullHandler',
-            },
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'normal',
-            },
-        'debug_file': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '/var/log/ocl/web_debug.log',
-            'formatter': 'normal',
-            },
-        'logfile': {
-            'level': 'INFO',
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'when': 'midnight',
-            'filename': '/var/log/ocl/web_app.log',
-            'formatter': 'normal',
+            'null': {
+                'class': 'django.utils.log.NullHandler',
+                },
+            'console': {
+                'class': 'logging.StreamHandler',
+                'formatter': 'normal',
+                },
+            'debug_file': {
+                'level': 'DEBUG',
+                'class': 'logging.handlers.TimedRotatingFileHandler',
+                'filename': '/var/log/ocl/web_debug.log',
+                'formatter': 'normal',
+                },
+            'logfile': {
+                'level': 'INFO',
+                'class': 'logging.handlers.TimedRotatingFileHandler',
+                'when': 'midnight',
+                'filename': '/var/log/ocl/web_app.log',
+                'formatter': 'normal',
             },
         },
 

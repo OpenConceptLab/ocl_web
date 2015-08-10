@@ -3,37 +3,30 @@ from django.conf.urls import patterns, url, include
 
 from users import views
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
 
     # TODO(paynejd@gmail.com): Retire this include -- move into main URL config files
-    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/', 
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/',
         include('apps.sources.urls')),
 
     # URL pattern for the UserListView
-    url(
-        regex=r'^$',
+    url(regex=r'^$',
         view=views.UserListView.as_view(),
-        name='list'
-    ),
+        name='list'),
 
     # URL pattern for the UserRedirectView
-    url(
-        regex=r'^~redirect/$',
+    url(regex=r'^~redirect/$',
         view=views.UserRedirectView.as_view(),
-        name='redirect'
-    ),
+        name='redirect'),
 
     # URL pattern for the UserDetailView
-    url(
-        regex=r'^(?P<username>[\w\-_\.]+)/$',
+    url(regex=r'^(?P<username>[\w\-_\.]+)/$',
         view=views.UserDetailView.as_view(),
-        name='detail'
-    ),
+        name='detail'),
 
     # URL pattern for the UserUpdateView
-    url(
-        regex=r'^update/(?P<username>[\w\-_]+)/$',
+    url(regex=r'^update/(?P<username>[\w\-_]+)/$',
         view=views.UserUpdateView.as_view(),
-        name='update'
-    ),
+        name='update'),
 )

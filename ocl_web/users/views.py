@@ -48,7 +48,8 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         ocl_user = api.get('users', username).json()
         ocl_user_orgs = api.get('users', username, 'orgs', params={'limit':limit}).json()
         ocl_user_sources = api.get('users', username, 'sources', params={'limit':limit}).json()
-        #ocl_user_collections = api.get('users', username, 'collections', params={'limit':limit}).json()
+        #ocl_user_collections = api.get('users', username, 'collections',
+        #                               params={'limit':limit}).json()
 
         # Set the context
         context['ocl_user'] = ocl_user

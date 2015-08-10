@@ -1,7 +1,7 @@
 """
-    Create sysadmin user.
+Create sysadmin user.
 
-    Run this onces at system generation time.
+Run this onces at system generation time.
 """
 from optparse import make_option
 
@@ -37,22 +37,22 @@ class Command(BaseCommand):
     def create_sysadmin_user(self):
 
         from users.models import User
-        sysadmin = User.objects.create_superuser('sysadmin', 'paynejd+sysadmin@gmail.com',
-            'password')
+        sysadmin = User.objects.create_superuser(
+            'sysadmin', 'paynejd+sysadmin@gmail.com', 'password')
         sysadmin.first_name = 'System'
         sysadmin.last_name = 'Administrator'
         sysadmin.save()
 
         ocl = OCLapi(admin=True)
         data = {
-                "username": sysadmin.username,
-                "name": "System Administrator",
-                "email": sysadmin.email,
-                'hashed_password': sysadmin.password,
-                "company": self.company_name,
-                "location": self.location,
-                "preferred_locale": 'en',
-                }
+            "username": sysadmin.username,
+            "name": "System Administrator",
+            "email": sysadmin.email,
+            'hashed_password': sysadmin.password,
+            "company": self.company_name,
+            "location": self.location,
+            "preferred_locale": 'en',
+        }
 
         result = ocl.create_user(data)
         self.stdout.write('Sysadmin user created, result:' + str(result.status_code))

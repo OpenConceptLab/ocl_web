@@ -1,5 +1,5 @@
 """
-    Forms for collections.
+Forms for collections.
 """
 from django.utils.translation import ugettext as _
 from django import forms
@@ -16,34 +16,36 @@ class CollectionCreateForm(forms.Form):
     required_css_class = 'required'
 
     short_name = forms.CharField(
-        label=_('Collection Short Name'), 
-        max_length=128, 
+        label=_('Collection Short Name'),
+        max_length=128,
         required=True,
-        help_text=_('Short Name (e.g. ICD-10), Your new collection will live at: https://OpenConceptLab.com/[OwnerType]/[Owner]/collections/<span id="collection-name">[CollectionName]</span>'))
+        help_text=_('Short Name (e.g. ICD-10), Your new collection will live at: '
+                    'https://OpenConceptLab.com/[OwnerType]/[Owner]/collections/'
+                    '<span id="collection-name">[CollectionName]</span>'))
     full_name = forms.CharField(
         label=_('Collection Full Name'),
         required=True,
         help_text=_('Full Name (e.g. International Classification for Diseases v10)'))
     website = forms.URLField(
-        label=_('Website'), 
+        label=_('Website'),
         required=False,
         help_text=_('Website (e.g. http://apps.who.int/classifications/icd10)'))
     collection_type = forms.ChoiceField(
-        choices=[(v, v) for v in _get_source_type_list()], 
-        label=_('Collection Type'), 
+        choices=[(v, v) for v in _get_source_type_list()],
+        label=_('Collection Type'),
         required=False)
     public_access = forms.ChoiceField(
-        label=_('Public Access'), 
-        required=False, 
+        label=_('Public Access'),
+        required=False,
         initial='View',
         choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
     default_locale = forms.ChoiceField(
-        choices=[(d['code'], d['name']) for d in _get_locale_list()], 
-        label=_('Locale'), 
+        choices=[(d['code'], d['name']) for d in _get_locale_list()],
+        label=_('Locale'),
         required=True)
     supported_locales = forms.CharField(
-        max_length=30, 
-        label=_('Supported Locales'), 
+        max_length=30,
+        label=_('Supported Locales'),
         required=True)
 
     description = forms.CharField(max_length=80, label=_('Description'), required=False)
@@ -54,7 +56,8 @@ class CollectionCreateForm(forms.Form):
         collection = self.initial['collection']
         request = self.initial['request']
         api = OCLapi(request, debug=True)
-        result = api.get('orgs', collection['owner'], 'collections', collection['id'], 'concepts', concept_id)
+        result = api.get('orgs', collection['owner'], 'collections', collection['id'],
+                         'concepts', concept_id)
         if result.status_code == 200:
             raise forms.ValidationError(_('This Concept ID is already used.'))
         return concept_id

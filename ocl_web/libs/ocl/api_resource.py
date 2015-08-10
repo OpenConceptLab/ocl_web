@@ -21,7 +21,8 @@ class ApiResource(object):
             self.__setattr__(key, value)
 
     def json(self):
-        return json.dumps(dict(self.__dict__.items() + {'__type__': self.__class__.__name__}.items()))
+        return json.dumps(
+            dict(self.__dict__.items() + {'__type__': self.__class__.__name__}.items()))
 
     def __repr__(self):
         return '(' + self.uuid + ') ' + self.display + ' [' + self.display_locale + ']'

@@ -152,7 +152,7 @@ def mapping_from_concept_label(mapping, label_size=None):
     Generates a breadcrumbed label for the from_concept of an OCL mapping.
 
     :param mapping: (required) OCL mapping
-    :param label_size: (optional) Default value is 'medium'; Acceptable values are 'small' or 'large'
+    :param label_size: (optional) Default value is 'medium'; accepts 'small' or 'large'
     """
     return {'mapping':mapping, 'label_size':label_size}
 
@@ -163,7 +163,7 @@ def mapping_to_concept_label(mapping, label_size=None):
     Generates a breadcrumbed label for the to_concept of an OCL mapping.
 
     :param mapping: (required) OCL mapping
-    :param label_size: (optional) Default value is 'medium'; Acceptable values are 'small' or 'large'
+    :param label_size: (optional) Default value is 'medium'; accepts 'small' or 'large'
     """
     return {'mapping':mapping, 'label_size':label_size}
 
@@ -185,12 +185,12 @@ def generic_resource_label(
     to display breadcrumb information.
 
     If display_breadcrumb == false:
-        Org/User:       (:icon :resource-id | :resource-name )
-        Source:         (:icon :owner_id / :resource-id | :resource-name )
-        Source Version: (:icon :owner_id / :resource-id [ :resource_version_id ] | :resource-name)
-        Concept:        (:icon :owner_id / :source_id / :resource-id | :resource-name )
-        Mapping:        (:icon :owner_id / :source_id / :resource-id | :resource-name )
-        Concept Version:(:icon :owner_id / :source_id / :resource-id [ :resource_ver_id ] | :resource-name )
+        Org/User:    (:icon :resource-id | :resource-name )
+        Source:      (:icon :owner_id / :resource-id | :resource-name )
+        Source Ver:  (:icon :owner_id / :resource-id [ :resource_version_id ] | :resource-name)
+        Concept:     (:icon :owner_id / :source_id / :resource-id | :resource-name )
+        Mapping:     (:icon :owner_id / :source_id / :resource-id | :resource-name )
+        Concept Ver: (:icon :owner_id / :source_id /:resource-id[:resource_ver_id]|:resource-name)
     Elif resource_id and resource_name:
         ( :icon :resource-id | :resource_name )
     Else:

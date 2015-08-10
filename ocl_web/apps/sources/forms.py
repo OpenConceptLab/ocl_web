@@ -131,7 +131,7 @@ class SourceVersionsEditForm(SourceVersionsNewForm):
 
 
 class SourceVersionsRetireForm(forms.Form):
-    """ 
+    """
     Form to retire a source version - empty form
     """
     required_css_class = 'required'

@@ -1,6 +1,6 @@
-from django.conf.urls import patterns, url
+#from django.conf.urls import patterns, url
 
-from apps.concepts.views import (ConceptDetailsView, ConceptCreateView, ConceptNamesUpdateView, ConceptNameAddView)
+#from apps.concepts.views import (ConceptDetailsView, ConceptCreateView, ConceptNamesUpdateView, ConceptNameAddView)
 
 # TODO(paynejd): Retire this file -- replaced by URL files in config
 

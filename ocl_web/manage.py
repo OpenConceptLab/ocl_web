@@ -1,4 +1,7 @@
-#!/usr/bin/env python
+"""
+ocl_web manage.py
+"""
+
 import os
 import sys
 

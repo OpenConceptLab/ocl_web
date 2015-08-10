@@ -49,13 +49,13 @@ class OCLapi(object):
         elif len(results.content) > 0:
             try:
                 self.logger.debug('%s JSON: %s' % (results.request.method,
-                                  json.dumps(results.json(),
-                                             sort_keys=True, indent=4,
-                                             separators=(',', ': '))))
+                                                   json.dumps(results.json(),
+                                                              sort_keys=True, indent=4,
+                                                              separators=(',', ': '))))
             except json.JSONDecodeError:
                 self.logger.error('JSON: Error decoding it: %s' % results.content[:40])
         else:
-                self.logger.debug('%s no content.' % results.request.method)
+            self.logger.debug('%s no content.' % results.request.method)
 
     @classmethod
     def resource_type_name(cls, type_id):
@@ -117,7 +117,7 @@ class OCLapi(object):
         if include_facets_bool:
             self.headers['includeFacets'] = 'true'
         elif 'includeFacets' in self.headers:
-            del(self.headers['includeFacets'])
+            del self.headers['includeFacets']
 
 
     def post(self, type_name, *args, **kwargs):
@@ -215,7 +215,8 @@ class OCLapi(object):
         """ Issue get request to API.
 
             :param *args: All positional arguments are appended to the request URL.
-                Note: To pass query parameters to the GET function, use a params={k:v} keyword argument.
+                Note: To pass query parameters to the GET function,
+                use a params={k:v} keyword argument.
             :param **kwargs: These are not used at the moment, since this is a get request TODO
             :returns: requests.response object.
 
@@ -548,7 +549,7 @@ class OCLapi(object):
 
             The 'from_concept_url' is automatically set using the provided source_owner_type,
             'source_owner_id', 'source_id', and 'from_concept_id'. If the from_concept is not
-            stored in the provided source, use create_mapping().            
+            stored in the provided source, use create_mapping().
 
             :param source_owner_type: Either 'orgs' or 'users'
             :param source_owner_id: ID of the owner org/user

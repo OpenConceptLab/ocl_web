@@ -1,6 +1,10 @@
-from django.conf.urls import patterns, url, include
-from django.views.generic import TemplateView
-from .views import OrganizationDetailsView, OrganizationNewView
+"""
+Organization urls
+TODO: Retire this file!
+"""
+#from django.conf.urls import patterns, url, include
+#from django.views.generic import TemplateView
+#from .views import OrganizationDetailsView, OrganizationNewView
 
 # TODO(paynejd@gmail.com): I believe this file is retired...
 
