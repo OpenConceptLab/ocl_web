@@ -13,6 +13,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.template.response import TemplateResponse
+import json
 #from django.core.paginator import Paginator
 
 from braces.views import (LoginRequiredMixin, CsrfExemptMixin, JsonRequestResponseMixin)
@@ -368,7 +369,7 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
             messages.add_message(self.request, messages.ERROR,
                                  _('Error occurred: ' + result.content))
             messages.add_message(self.request, messages.ERROR,
-                                 _(base_data))
+                                 _(json.dumps(base_data)))
             logger.warning('Mapping create POST failed: %s' % result.content)
             return super(ConceptMappingsView, self).form_invalid(form)
 
