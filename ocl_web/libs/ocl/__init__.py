@@ -567,11 +567,14 @@ class OCLapi(object):
     def create_mapping(self, source_owner_type, source_owner_id, source_id, data):
         """ Create a concept mapping
 
-            'from_concept_url' is a required field in the data dictionary
+            'from_concept_url' and 'map-type' are required fields in the data dictionary.
+            If internal mapping, must include 'to_concept_url'. If external mapping, must
+            include 'to_source_url' and 'to_concept_code'. Refer to API documentation
+            for details and other optional fields.
 
             :param source_owner_type: Either 'orgs' or 'users'
-            :param source_owner_id: ID of the owner org/user
-            :param source_id: ID of the source that will own the new mapping
+            :param source_owner_id: ID of the owner org/user (e.g. "WHO")
+            :param source_id: ID of the source that will own the new mapping (e.g. "ICD-10")
             :param data: A dictionary of all the data fields to POST
 
             :returns: POST result from requests package.
