@@ -361,11 +361,11 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
             if self.from_org:
                 return redirect(reverse('concept-mappings', kwargs={'org': self.owner_id,
                                                                     'source': self.source_id,
-                                                                    'concept': concept_id}))
+                                                                    'concept': self.concept_id}))
             else:
                 return redirect(reverse('concept-mappings', kwargs={'user': self.owner_id,
                                                                     'source': self.source_id,
-                                                                    'concept': concept_id}))
+                                                                    'concept': self.concept_id}))
         else:
             messages.add_message(self.request, messages.ERROR,
                                  _('Error occurred: ' + result.content))
