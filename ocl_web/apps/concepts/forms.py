@@ -75,7 +75,7 @@ class ConceptNewMappingForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': "e.g. A15.1"}))
 
     external_concept_name = forms.CharField(
-        label=_('To Concept Code'),
+        label=_('To Concept Name'),
         required=False,
         help_text=_('<small>Enter the name of the external concept name</small>'),
         widget=forms.TextInput(
