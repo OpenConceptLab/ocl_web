@@ -61,20 +61,20 @@ class ConceptNewMappingForm(forms.Form):
         help_text=_('<small>Copy/paste the URL of a concept stored in OCL</small>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. /orgs/CIEL/sources/CIEL/concepts/32/"}))
 
-    external_source_url = forms.CharField(
+    external_to_source_url = forms.CharField(
         label=_('To Source Url'),
         required=False,
         help_text=_('<small>Copy/paste the URL of a source in '
                     'OCL with source type "External"</small>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. /orgs/IHTSDO/sources/SNOMED-CT/"}))
 
-    external_concept_code = forms.CharField(
+    external_to_concept_code = forms.CharField(
         label=_('To Concept Code'),
         required=False,
         help_text=_('<small>Enter the name of the external concept code</small>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. A15.1"}))
 
-    external_concept_name = forms.CharField(
+    external_to_concept_name = forms.CharField(
         label=_('To Concept Name'),
         required=False,
         help_text=_('<small>Enter the name of the external concept name</small>'),

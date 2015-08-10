@@ -337,7 +337,7 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
         """
 
         # Prepare the data form submission, incl. renaming fields as needed
-        mapping_destination = form.cleaned_data.pop('is_internal_or_external')
+        mapping_destination = form.cleaned_data.get('is_internal_or_external')
         from_concept_url = ('/' + self.owner_type + '/' + self.owner_id + '/sources/' +
                             self.source_id + '/concepts/' + self.concept_id + '/')
         base_data = {
@@ -355,7 +355,10 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
         # Create the mapping
         api = OCLapi(self.request, debug=True)
         result = api.create_mapping(self.owner_type, self.owner_id, self.source_id, base_data)
-        messages.add_message(self.request, messages.INFO, _(json.dumps(base_data)))
+        messages.add_message(
+            self.request, messages.INFO, _('Form data: ' + json.dumps(form.cleaned_data)))
+        messages.add_message(
+            self.request, messages.INFO, _('POST data: ' + json.dumps(base_data)))
         if result.ok:
             messages.add_message(self.request, messages.INFO, _('Mapping created.'))
             if self.from_org:
