@@ -8,6 +8,12 @@
 
 
 {% block content %}
+{% if org %}
+	{% url 'org-sources' org=org.id as owner_url %}
+{% else %}
+	{% url 'users:detail' username=ocl_user.username as owner_url %}
+{% endif %}
+
 <h3>
 	{% if org %}{% org_label org %}{% else %}{% user_label ocl_user %}{% endif %}
 	&nbsp;/&nbsp;
@@ -25,10 +31,10 @@
 						{% if org %}{% org_label org label_size='small' %}{% else %}{% user_label ocl_user label_size='small' %}{% endif %}
 					</div>
 				</div>
-				{% bootstrap_form form layout="horizontal" %}
-				{% buttons layout="horizontal" %}
+				{% bootstrap_form form %}
+				{% buttons %}
 					<button type="submit" class="btn btn-primary">{% trans "Create Source" %}</button>
-					<button type="submit" class="btn btn-default">{% trans "Cancel" %}</button>
+					<a href="{{ owner_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
 				{% endbuttons %}
 			</form>
 
