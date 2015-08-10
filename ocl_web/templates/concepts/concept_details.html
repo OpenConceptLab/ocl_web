@@ -12,7 +12,7 @@
 		<div class="col-md-4">
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3 class="panel-title">Concept Details</h3></div>
-				<div class="panel-body">
+				<div class="panel-body" style="overflow-x:scroll;">
 					{% field_label 'ID' concept.id vertical="true" small="true" %}
 					{% field_label 'Default Display Name' concept.display_name vertical="true" small="true" %}
 					{% field_label 'Display Name Locale' concept.display_locale vertical="true" small="true" %}
@@ -124,8 +124,8 @@
 
 
 {% block resource-debug %}
+<h4>URL kwargs</h4><pre>{{ kwargs|pprint }}</pre>
 <h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
-<h4>URL Parameters</h4><pre>{{ kwargs|pprint }}</pre>
 <h4>Concept</h4><pre>{{ concept|pprint }}</pre>
 <h4>Source</h4><pre>{{ source|pprint }}</pre>
 {% endblock resource-debug %}

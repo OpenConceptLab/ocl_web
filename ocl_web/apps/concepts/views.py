@@ -322,6 +322,7 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
                 mappings['Other'].append(mapping)
 
         # Set the context
+        context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Mappings'
         context['concept'] = concept
@@ -411,6 +412,7 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
         #search_results_current_page = search_results_paginator.page(searcher.current_page)
 
         # Set the context
+        context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'History'
         context['concept'] = concept
@@ -472,6 +474,7 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         # TODO: Load list of concept classes
 
         # Set the context
+        context['kwargs'] = self.kwargs
         context['source'] = source
 
         return context
@@ -666,7 +669,7 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
 
 
 
-# TODO(paynejd@gmail.com): ConceptRetireView needs to be tested
+# CLEAN
 class ConceptRetireView(UserOrOrgMixin, FormView):
     """
     View for retiring a concept.
@@ -687,6 +690,7 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
             self.owner_type, self.owner_id, 'sources', self.source_id,
             'concepts', self.concept_id).json()
         context['concept'] = concept
+        context['kwargs'] = self.kwargs
         return context
 
     def get_success_url(self):
@@ -782,6 +786,7 @@ class ConceptEditView(UserOrOrgMixin, FormView):
 
         self.get_args()
 
+        context['kwargs'] = self.kwargs
         context['source'] = self.source
         context['concept'] = self.concept
         return context
