@@ -48,15 +48,28 @@
 
 
 {% block resource-tabs %}
-{% if concept.owner_type == 'Organization' %}
-	{% url 'concept-details' org=concept.owner source=concept.source concept=concept.id as concept_details_url %}
-	{% url 'concept-mappings' org=concept.owner source=concept.source concept=concept.id as concept_mappings_url %}
-	{% url 'concept-history' org=concept.owner source=concept.source concept=concept.id as concept_history_url %}
+{% if kwargs and "concept_version" in kwargs %}
+	{% if concept.owner_type == 'Organization' %}
+		{% url 'concept-version-details' org=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_details_url %}
+		{% url 'concept-version-mappings' org=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_mappings_url %}
+		{% url 'concept-version-history' org=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_history_url %}
+	{% else %}
+		{% url 'concept-version-details' user=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_details_url %}
+		{% url 'concept-version-mappings' user=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_mappings_url %}
+		{% url 'concept-version-history' user=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_history_url %}
+	{% endif %}
 {% else %}
-	{% url 'concept-details' user=concept.owner source=concept.source concept=concept.id as concept_details_url %}
-	{% url 'concept-mappings' user=concept.owner source=concept.source concept=concept.id as concept_mappings_url %}
-	{% url 'concept-history' user=concept.owner source=concept.source concept=concept.id as concept_history_url %}
+	{% if concept.owner_type == 'Organization' %}
+		{% url 'concept-details' org=concept.owner source=concept.source concept=concept.id as concept_details_url %}
+		{% url 'concept-mappings' org=concept.owner source=concept.source concept=concept.id as concept_mappings_url %}
+		{% url 'concept-history' org=concept.owner source=concept.source concept=concept.id as concept_history_url %}
+	{% else %}
+		{% url 'concept-details' user=concept.owner source=concept.source concept=concept.id as concept_details_url %}
+		{% url 'concept-mappings' user=concept.owner source=concept.source concept=concept.id as concept_mappings_url %}
+		{% url 'concept-history' user=concept.owner source=concept.source concept=concept.id as concept_history_url %}
+	{% endif %}
 {% endif %}
+
 <div class="container">
     <ul class="nav nav-tabs">
         <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ concept_details_url }}">Details</a></li>
