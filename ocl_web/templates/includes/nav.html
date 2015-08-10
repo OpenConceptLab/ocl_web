@@ -30,7 +30,7 @@
       <!--li><a href="{% url 'help' %}">Learning Center</a></li-->
 
       {% if request.user.is_authenticated %}
-        <li><a href="{% url 'users:detail' request.user.username  %}">{% trans user.username %}</a></li>
+        <li><a href="{% url 'users:detail' request.user.username %}">{{ user.username }}</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> <b class="caret"></b></a>
           <ul class="dropdown-menu" role="menu">

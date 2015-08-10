@@ -149,6 +149,7 @@ class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
 
         # Set the context
         context['url_params'] = self.request.GET
+        context['kwargs'] = self.kwargs
         context['selected_tab'] = 'Details'
         context['concept'] = concept
         context['source'] = source
