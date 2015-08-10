@@ -264,6 +264,15 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
 
 
 
+# TODO: Implement OrganizationRetireView
+class OrganizationRetireView(FormView):
+    """
+    View to retire organization
+    """
+    template_name = 'orgs/org_retire.html'
+
+
+
 # CLEAN
 class OrganizationEditView(FormView):
     """

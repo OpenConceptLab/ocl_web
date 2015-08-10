@@ -21,7 +21,7 @@ from django.conf.urls import (patterns, url)
 
 from apps.orgs.views import (
     OrganizationDetailsView, OrganizationAboutView, OrganizationSourcesView,
-    OrganizationNewView, OrganizationEditView,
+    OrganizationNewView, OrganizationEditView, OrganizationRetireView,
     OrganizationMemberAddView, OrganizationMemberRemoveView)
 
 from apps.sources.views import (
@@ -71,6 +71,10 @@ urlpatterns = patterns(
     # /orgs/:org/sources/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/$',
         OrganizationSourcesView.as_view(), name='org-sources'),
+
+    # /orgs/:org/retire/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/retire/$',
+        OrganizationRetireView.as_view(), name='org-retire'),
 
 
 
