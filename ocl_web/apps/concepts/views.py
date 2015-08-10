@@ -368,7 +368,7 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
             messages.add_message(self.request, messages.ERROR,
                                  _('Error occurred: ' + result.content))
             messages.add_message(self.request, messages.ERROR,
-                                 _(base_date))
+                                 _(base_data))
             logger.warning('Mapping create POST failed: %s' % result.content)
             return super(ConceptMappingsView, self).form_invalid(form)
 
