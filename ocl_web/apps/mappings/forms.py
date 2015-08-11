@@ -2,14 +2,8 @@
 """
 Forms for mappings.
 """
-
 from django.utils.translation import ugettext as _
 from django import forms
-from django.forms.formsets import formset_factory
-
-#from libs.ocl import OCLapi
-#from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list)
-
 
 
 class MappingRetireForm(forms.Form):
@@ -38,7 +32,8 @@ class MappingNewForm(forms.Form):
         required=True,
         help_text=_('<small>Copy/paste the relative URL of the concept in '
                     'OCL from which this mapping originates</small>'),
-        widget=forms.TextInput(attrs={'placeholder':"e.g. /orgs/MyOrg/sources/MySource/concepts/1234/"}))
+        widget=forms.TextInput(
+            attrs={'placeholder':"e.g. /orgs/MyOrg/sources/MySource/concepts/1234/"}))
 
     # TODO: Populate map_type dynamically
     map_type = forms.CharField(

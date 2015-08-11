@@ -1,10 +1,20 @@
 """
 Views for OCL Mappings.
 """
+#import requests
 import logging
 
+from django.shortcuts import redirect
 from django.http import Http404
 from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
+from django.contrib import messages
+from django.utils.translation import ugettext as _
+from django.core.urlresolvers import reverse
+import json
+
+from .forms import (MappingNewForm, MappingEditForm, MappingRetireForm)
+from braces.views import LoginRequiredMixin
 from libs.ocl import OCLapi
 from apps.core.views import UserOrOrgMixin
 
@@ -115,7 +125,7 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         """ Loads the mapping details. """
 
         # Setup the form context
-        context = super(MappingNewView, self).get_context_data(*args, **kwargs)
+        context = super(MappingEditView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
         # Load the source that the new mapping will belong to
@@ -197,7 +207,7 @@ class MappingNewView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
                 self.request, messages.ERROR,
                 _('Error: ' + result.content + '<br />POST data: ' + json.dumps(base_data)))
             logger.warning('Mapping create POST failed: %s' % result.content)
-            return super(ConceptMappingsView, self).form_invalid(form)
+            return super(MappingNewView, self).form_invalid(form)
 
 
 
@@ -205,7 +215,7 @@ class MappingRetireView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView)
     """
     Mapping retire view
     """
-
+    form_class = MappingRetireForm
     template_name = "mappings/mapping_retire.html"
 
     def get_context_data(self, *args, **kwargs):
