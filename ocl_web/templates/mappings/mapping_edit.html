@@ -73,17 +73,26 @@
 
 				<div id="internal-mapping-form">
 
+					{% bootstrap_field form.internal_to_concept_url %}
+
+					{% comment %}
 					<div class="form-group">
 						{{ form.internal_to_concept_url.errors }}
 						<label class="control-label" for="id_internal_to_concept_url">{{ form.internal_to_concept_url.label }}</label>
 						<input class="form-control" id="id_internal_to_concept_url" name="internal_to_concept_url" placeholder="e.g. /orgs/CIEL/sources/CIEL/concepts/32/" title="{{ form.internal_to_concept_url.help_text }}" type="text">
 						<span class="help-block small">{{ form.internal_to_concept_url.help_text }}</span>
 					</div>
+					{% endcomment %}
 
 				</div>
 
 				<div id="external-mapping-form">
 
+					{% bootstrap_field form.external_to_source_url %}
+					{% bootstrap_field form.external_to_concept_code %}
+					{% bootstrap_field form.external_to_concept_name %}
+
+					{% comment %}
 					<div class="form-group">
 						{{ form.external_to_source_url.errors }}
 						<label class="control-label" for="id_external_to_source_url">{{ form.external_to_source_url.label }}</label>
@@ -104,6 +113,7 @@
 						<input class="form-control" id="id_external_to_concept_name" name="external_to_concept_name" placeholder="e.g. Tuberculosis of lung, confirmed by culture only" title="{{ form.external_to_concept_name.help_text }}" type="text">
 						<span class="help-block small">{{ form.external_to_concept_name.help_text }}</span>
 					</div>
+					{% endcomment %}
 
 				</div>
 
