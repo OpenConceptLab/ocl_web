@@ -78,15 +78,16 @@ class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
         # Load the source that contains this mapping
         # TODO(paynejd): Source is only loaded because of funky custom tags - REMOVE IN THE FUTURE
         # NOTE: Testing if "if_can_change" tag can accept a mapping
-        source = self.get_source_details(
-            self.owner_type, self.owner_id, self.source_id,
-            source_version_id=self.source_version_id)
+        #source = self.get_source_details(
+        #    self.owner_type, self.owner_id, self.source_id,
+        #    source_version_id=self.source_version_id)
 
         # Set the context
+        context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Details'
         context['mapping'] = mapping
-        context['source'] = source
+        #context['source'] = source
 
         return context
 
