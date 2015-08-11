@@ -144,10 +144,8 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
     def get_initial(self):
         """ Set the owner and source args for use in the form """
         data = super(MappingEditView, self).get_initial()
-        api = OCLapi(self.request, debug=True)
-        self.mapping = api.get(
-            self.owner_type, self.owner_id, 'sources', self.source_id,
-            'mappings', self.mapping_id).json()
+        data['source'] = self.source
+        data['mapping'] = self.mapping
         data.update(self.mapping)
         return data
 
@@ -159,15 +157,11 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         context = super(MappingEditView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
-        # Load the source that the mapping belongs to
-        api = OCLapi(self.request, debug=True)
-        source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
-
         # TODO: Load list of map types
 
         # Set the context
         context['kwargs'] = self.kwargs
-        context['source'] = source
+        context['source'] = self.source
         context['mapping'] = self.mapping
 
         return context

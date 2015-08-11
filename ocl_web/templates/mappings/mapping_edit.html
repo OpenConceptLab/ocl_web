@@ -37,7 +37,10 @@
 				<div class="form-group required">
 					{{ form.from_concept_url.errors }}
 					<label class="control-label required" for="id_map_type">{{ form.from_concept_url.label }}</label>
+					{% bootstrap_field form.from_concept_url %}
+					{% comment %}
 					<input class="form-control" id="id_from_concept_url" name="from_concept_url" placeholder="e.g. /orgs/MyOrg/sources/MySource/concepts/1234/" required="required" title="{{ form.from_concept_url.help_text }}" type="text" />
+					{% endcomment %}
 					<span class="help-block small">{{ form.from_concept_url.help_text }}</span>
 				</div>
 
