@@ -125,10 +125,10 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         """ Set the owner and source args for use in the form """
         data = super(MappingEditView, self).get_initial()
         api = OCLapi(self.request, debug=True)
-        self.mapping = api.get(
+        mapping = api.get(
             self.owner_type, self.owner_id, 'sources', self.source_id,
             'mappings', self.mapping_id)
-        data.update(self.mapping)
+        data.update(mapping)
         return data
 
 
