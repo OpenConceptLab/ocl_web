@@ -604,6 +604,6 @@ class OCLapi(object):
 
             :returns: POST result from requests package.
         """
-        result = self.post(source_owner_type, source_owner_id,
+        result = self.put(source_owner_type, source_owner_id,
                            'sources', source_id, 'mappings', mapping_id, **data)
         return result
