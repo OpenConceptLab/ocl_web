@@ -63,7 +63,7 @@ class MappingNewForm(forms.Form):
 
     # TODO(paynejd@gmail.com): Use dynamic resource selector for to_source
     external_to_source_url = forms.CharField(
-        label=_('To Source Url'),
+        label=_('To Source URL'),
         required=False,
         help_text=_('Copy/paste the relative URL of a source in '
                     'OCL with source type "External"'),
