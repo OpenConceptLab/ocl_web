@@ -30,8 +30,8 @@ class MappingNewForm(forms.Form):
     from_concept_url = forms.CharField(
         label=_('From Concept URL'),
         required=True,
-        help_text=_('<small>Copy/paste the relative URL of the concept in '
-                    'OCL from which this mapping originates</small>'),
+        help_text=_('Copy/paste the relative URL of the concept in '
+                    'OCL from which this mapping originates'),
         widget=forms.TextInput(
             attrs={'placeholder':"e.g. /orgs/MyOrg/sources/MySource/concepts/1234/"}))
 
@@ -39,7 +39,7 @@ class MappingNewForm(forms.Form):
     map_type = forms.CharField(
         label=_('Map Type'),
         required=True,
-        help_text=_('<small>Enter the type of relationship between the concepts</small>'),
+        help_text=_('Enter the type of relationship between the concepts'),
         widget=forms.TextInput(attrs={'placeholder':"e.g. SAME-AS, NARROWER-THAN, BROADER-THAN"}))
 
     external_id = forms.CharField(
@@ -57,28 +57,28 @@ class MappingNewForm(forms.Form):
     internal_to_concept_url = forms.CharField(
         label=_('To Concept URL'),
         required=False,
-        help_text=_('<small>Copy/paste the relative URL of a concept '
-                    'stored in OCL to which this mapping points</small>'),
+        help_text=_('Copy/paste the relative URL of a concept '
+                    'stored in OCL to which this mapping points'),
         widget=forms.TextInput(attrs={'placeholder':"e.g. /orgs/CIEL/sources/CIEL/concepts/32/"}))
 
     # TODO(paynejd@gmail.com): Use dynamic resource selector for to_source
     external_to_source_url = forms.CharField(
         label=_('To Source Url'),
         required=False,
-        help_text=_('<small>Copy/paste the relative URL of a source in '
-                    'OCL with source type "External"</small>'),
+        help_text=_('Copy/paste the relative URL of a source in '
+                    'OCL with source type "External"'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. /orgs/IHTSDO/sources/SNOMED-CT/"}))
 
     external_to_concept_code = forms.CharField(
         label=_('To Concept Code'),
         required=False,
-        help_text=_('<small>Enter the name of the external concept code</small>'),
+        help_text=_('Enter the name of the external concept code'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. A15.1"}))
 
     external_to_concept_name = forms.CharField(
         label=_('To Concept Name'),
         required=False,
-        help_text=_('<small>Enter the name of the external concept name</small>'),
+        help_text=_('Enter the name of the external concept name'),
         widget=forms.TextInput(
             attrs={'placeholder': "e.g. Tuberculosis of lung, confirmed by culture only"}))
 
