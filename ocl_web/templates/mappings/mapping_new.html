@@ -1,4 +1,4 @@
-{% extends "mappings/mapping_base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 {% load ocl_tags %}
 {% load bootstrap3 %}
@@ -54,10 +54,3 @@
 	</div>
 </div>
 {% endblock content %}
-
-
-{% block resource-debug %}
-<h4>URL kwargs</h4><pre>{{ kwargs|pprint }}</pre>
-<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
-<h4>Mapping</h4><pre>{{ mapping|pprint }}</pre>
-{% endblock resource-debug %}
