@@ -128,7 +128,7 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         mapping = api.get(
             self.owner_type, self.owner_id, 'sources', self.source_id,
             'mappings', self.mapping_id).json()
-        data.update(mapping
+        data.update(mapping)
         return data
 
 
