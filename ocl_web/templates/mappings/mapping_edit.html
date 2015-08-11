@@ -34,13 +34,15 @@
 					<div style="margin-bottom:14px;">{% generic_resource_label resource_type='source' resource_id=source.id resource_name=source.name owner_type=source.owner_type owner_id=source.owner label_size='small' display_breadcrumb=True %}</div>
 				</div>
 
+				{% bootstrap_field form.from_concept_url %}
+				{% bootstrap_field form.map_type %}
+				{% bootstrap_field form.external_id %}
+
+				{% comment %}
 				<div class="form-group required">
 					{{ form.from_concept_url.errors }}
 					<label class="control-label required" for="id_map_type">{{ form.from_concept_url.label }}</label>
-					{% bootstrap_field form.from_concept_url %}
-					{% comment %}
 					<input class="form-control" id="id_from_concept_url" name="from_concept_url" placeholder="e.g. /orgs/MyOrg/sources/MySource/concepts/1234/" required="required" title="{{ form.from_concept_url.help_text }}" type="text" />
-					{% endcomment %}
 					<span class="help-block small">{{ form.from_concept_url.help_text }}</span>
 				</div>
 
@@ -57,6 +59,7 @@
 					<input class="form-control" id="id_external_id" name="external_id" placeholder="e.g. UUID from external system" title="" type="text" title="{{ form.external_id.help_text }}">
 					<span class="help-block small">{{ form.external_id.help_text }}</span>
 				</div>
+				{% endcomment %}
 
 				<div class="form-group required">
 					{{ form.is_internal_or_external.errors }}
