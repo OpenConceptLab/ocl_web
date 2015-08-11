@@ -147,6 +147,14 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         data['source'] = self.source
         data['mapping'] = self.mapping
         data.update(self.mapping)
+        if self.mapping['from_concept_url']:
+            data['is_internal_or_external'] = 'Internal'
+            data['internal_to_concept_url'] = self.mapping['to_concept_url']
+        else:
+            data['is_internal_or_external'] = 'External'
+            data['external_to_source_url'] = self.mapping['to_source_url']
+            data['external_to_concept_code'] = self.mapping['to_concept_code']
+            data['external_to_concept_name'] = self.mapping['to_concept_name']
         return data
 
 
