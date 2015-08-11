@@ -15,11 +15,11 @@ def user_created_handler(sender, request, user, **kwargs):
     print 'user created handler %s' % user.username
     ocl = OCLapi(admin=True, debug=True)
     data = {
-            'username': user.username,
-            'email': user.email,
-            'hashed_password': user.password,
-            'name': '%s %s' % (user.first_name, user.last_name),  # not great
-            }
+        'username': user.username,
+        'email': user.email,
+        'hashed_password': user.password,
+        'name': '%s %s' % (user.first_name, user.last_name),  # not great
+    }
     result = ocl.create_user(data)
     print result.status_code
     if result.status_code == 201:

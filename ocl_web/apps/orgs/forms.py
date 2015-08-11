@@ -9,14 +9,15 @@ class OrganizationNewForm(forms.Form):
     """
     Form to create a new organization
     """
+    required_css_class = 'required'
 
     short_name = forms.CharField(
         label=_('Organization Short Name'),
         max_length="128",
         required=True,
         help_text=('Your new organization will live at: '
-                  'https://OpenConceptLab.com/orgs/'
-                  '<span id="new_org_id" style="font-weight:bold;">[org-id]</span>/'),
+                   'https://OpenConceptLab.com/orgs/'
+                   '<span id="new_org_id" style="font-weight:bold;">[org-id]</span>/'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. WHO"}))
     full_name = forms.CharField(
         label=_('Organization Full Name'),
@@ -54,6 +55,7 @@ class OrganizationMemberAddForm(forms.Form):
     """
     Form to add a member to an organization
     """
+    required_css_class = 'required'
 
     member_username = forms.CharField(
         label="Member Username",

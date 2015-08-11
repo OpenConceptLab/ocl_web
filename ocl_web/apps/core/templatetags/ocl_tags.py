@@ -6,16 +6,16 @@
 """
 import re
 import dateutil.parser
-
 from django import template
 from django.template.base import (Node, NodeList)
-
 from libs.ocl import OCLapi
-
 
 register = template.Library()
 
-TRUNCATE_LENGTH = 97      # 100 minus 3 for the ellipses
+
+
+# Number of characters to display in field tag - subtract 3 to account for the ellipses
+TRUNCATE_LENGTH = 97
 
 
 ## Custom Date Filters
@@ -38,13 +38,6 @@ def smart_date(iso8601_dt):
     """
     date_value = dateutil.parser.parse(iso8601_dt)
     return date_value.strftime('%x')
-
-
-# TODO: Retire this if not in use
-#@register.filter(name='get')
-#def get(d, k):
-#    return d.get(k, None)
-
 
 
 ## Custom Tags: RESOURCE LABELS
@@ -360,6 +353,10 @@ def simple_pager(page, name, url=None):
 class IfCanChangeNode(Node):
     """
     Class to support permission checking tags
+
+    Works with orgs, users, or resources that contain "owner" and "owner_type" fields.
+    Meaning sources, concepts, mappings are fine, but not extras, concept names/descriptions,
+    source versions, etc.
     """
 
     def __init__(self, nodelist_true, nodelist_false, obj_var):
@@ -374,51 +371,60 @@ class IfCanChangeNode(Node):
             return ''
 
         user = context['user']
-        can = False
-        if obj.get('type') == 'Organization':
-            can = user.is_authenticated()
-            # TODO: Actually we need to check to see if this user/member
-            # is an administrative member of this org. How?
+        has_access = False
+        if not user.is_authenticated():
+            # User must be authenticated if checking for access
+            has_access = False
+
+        elif obj.get('type') == 'Organization':
+            # If org, authenticated user can access only if they are a member of the org
+            api = OCLapi(context['request'], debug=True)
+            results = api.get('orgs', obj.get('id'), 'members', user.username)
+            if results.status_code == 204:
+                has_access = True
+            print 'ACCESS Check on org:', results.status_code
+
+        elif obj.get('type') == 'User':
+            # If user, authenticated user can access only if they are that user
+            if user.username == obj.get('username'):
+                has_access = True
 
         elif obj.get('owner_type') == 'Organization':
-            # member can change
-            # TODO: need a better API call to check for access
+            # If resource is owned by an org, then user must be a member of the org
             api = OCLapi(context['request'], debug=True)
-            results = api.get('orgs', obj.get('owner'), 'members',
-                              user.username)
+            results = api.get('orgs', obj.get('owner'), 'members', user.username)
             if results.status_code == 204:
-                can = True
-            print 'ACCESS Check:', results.status_code
+                has_access = True
+            print 'ACCESS Check on ' + obj.get('type') + ':', results.status_code
 
-        else:
-            # owned by a user
-            can = True
+        elif obj.get('owner_type') == 'User':
+            # If resource is owned by a user, then authenticated user must own the resource
+            if obj.get('owner') == user.username:
+                has_access = True
 
-        if can:
+        if has_access:
             return self.nodelist_true.render(context)
         else:
             return self.nodelist_false.render(context)
 
 
+
 @register.tag('if_can_change')
 def do_if_can_change(parser, token):
     """
-    The ``{% if_can_change source_or_concept %}`` tag
-    evaluates whether the current user have
-    access to the specified object.
+    The ``{% if_can_change ocl_resource %}`` tag evaluates whether the current user has access
+    to the specified OCL resource. 
 
-    If so, the block bracketed are output.
+    The OCL resource can be an org, user, or any resource that contains "owner" and "owner_type"
+    fields. Meaning sources, source versions, concepts, mappings are fine, but not extras,
+    concept names/descriptions, concept versions, etc.
 
     ::
-
-        {% if_can_change source %}
+        {% if_can_change ocl_resource %}
 
         {% endif_can_change %}
-
-
     """
-    # {% if ... %}
-    # NOTE: the obj_var can also be a source, org or concept
+    # NOTE: the obj_var can also be a source, org, mapping or concept
     obj_var = token.split_contents()[1]
 
     nodelist_true = parser.parse(('else', 'endif_can_change'))

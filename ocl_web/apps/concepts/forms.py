@@ -135,7 +135,8 @@ class ConceptNewForm(forms.Form):
         max_length=256,
         required=True,
         widget=forms.TextInput(
-            attrs={'placeholder': "e.g. Tuberculosis of lung, confirmed by sputum microscopy with or without culture"}))
+            attrs={'placeholder':_("e.g. Tuberculosis of lung, confirmed by sputum "
+                                   "microscopy with or without culture")}))
 
     # TODO: Populate this dynamically
     name_type = forms.CharField(

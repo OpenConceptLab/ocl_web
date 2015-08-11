@@ -19,7 +19,7 @@ class UserForm(forms.Form):
     last_name = forms.CharField(max_length=30, label=_('Last Name'), required=True)
     email = forms.EmailField(max_length=30, label=_('Email'), required=True)
     company = forms.CharField(max_length=30, label=_('Company'), required=False)
-    location = forms.CharField(max_length=30, label=_('location'),  required=False)
+    location = forms.CharField(max_length=30, label=_('location'), required=False)
     preferred_locale = forms.CharField(max_length=30, label=_('Preferred Locale'), required=False)
 
     def clean_email(self):
@@ -28,7 +28,8 @@ class UserForm(forms.Form):
         try:
             u = User.objects.get(email=data)
             if u.username != self.initial['username']:
-                raise forms.ValidationError(_('This email is already used by a different account.'))
+                raise forms.ValidationError(
+                    _('This email is already used by a different account.'))
         except User.DoesNotExist:
             pass
         return data

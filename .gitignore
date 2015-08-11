@@ -36,3 +36,5 @@ media/
 
 
 ocl.db
+
+pylintrc

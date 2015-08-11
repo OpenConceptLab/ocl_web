@@ -6,10 +6,6 @@ from users import views
 urlpatterns = patterns(
     '',
 
-    # TODO(paynejd@gmail.com): Retire this include -- move into main URL config files
-    #url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/',
-    #    include('apps.sources.urls')),
-
     # URL pattern for the UserListView
     url(regex=r'^$',
         view=views.UserListView.as_view(),

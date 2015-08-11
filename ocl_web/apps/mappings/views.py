@@ -1,7 +1,6 @@
 """
 Views for OCL Mappings.
 """
-#import requests
 import logging
 
 from django.http import Http404
@@ -15,7 +14,7 @@ from django.views.generic import TemplateView
 #from django.core.paginator import Paginator
 #from braces.views import JsonRequestResponseMixin
 
-from libs.ocl import OCLapi     #, OCLSearch
+from libs.ocl import OCLapi
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
@@ -77,8 +76,8 @@ class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
             self.owner_type, self.owner_id, self.source_id, self.mapping_id)
 
         # Load the source that contains this mapping
-        # TODO(paynejd@gmail.com): This is only loaded because of the funky implementation of the
-        # owner and source label tags --- REMOVE IN THE FUTURE
+        # TODO(paynejd): Source is only loaded because of funky custom tags - REMOVE IN THE FUTURE
+        # NOTE: Testing if "if_can_change" tag can accept a mapping
         source = self.get_source_details(
             self.owner_type, self.owner_id, self.source_id,
             source_version_id=self.source_version_id)

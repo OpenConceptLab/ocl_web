@@ -176,9 +176,9 @@ class Common(Configuration):
     )
 
     TEMPLATE_LOADERS = (
-            'django.template.loaders.filesystem.Loader',
-            'django.template.loaders.app_directories.Loader',
-        )
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    )
 
     # See: http://django-crispy-forms.readthedocs.org/en/latest/install.html#template-packs
     CRISPY_TEMPLATE_PACK = 'bootstrap3'

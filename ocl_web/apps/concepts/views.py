@@ -1,7 +1,6 @@
 """
 OCL Concept Views
 """
-
 import requests
 import logging
 
@@ -89,13 +88,12 @@ class ConceptReadBaseView(TemplateView):
         return search_response.json()
 
     def get_concept_history(self, owner_type, owner_id, source_id, concept_id,
-                            source_version_id=None, concept_version_id=None,
                             search_params=None):
         """
         Get the concept version history.
+        Note that source_version_id and concept_version_id are not applied here.
         """
         # TODO(paynejd@gmail.com): Validate input parameters
-        # TODO(paynejd@gmail.com): source_version_id and concept_version_id not currently used
 
         # Create the searcher
         searcher = OCLSearch(search_type=OCLapi.CONCEPT_VERSION_TYPE, params=search_params)
@@ -267,8 +265,6 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
                     mapping['to_url'] = reverse('concept-home', kwargs=to_concept_url_args)
                 else:
                     mapping['is_external_mapping'] = True
-                    # TODO(paynejd@gmail.com): Consider still linking directly to external concept
-                    # and have the concept view redirect output to the "external source" view
                     mapping['to_url'] = reverse('source-home', kwargs=to_concept_url_args)
 
                 # Determine the mapping category relative to current concept
@@ -406,8 +402,7 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
 
         # Load the concept version history
         searcher = self.get_concept_history(
-            self.owner_type, self.owner_id, self.source_id, self.concept_id,
-            source_version_id=self.source_version_id, concept_version_id=self.concept_version_id)
+            self.owner_type, self.owner_id, self.source_id, self.concept_id)
         #search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         #search_results_current_page = search_results_paginator.page(searcher.current_page)
 
@@ -524,7 +519,6 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             messages.add_message(self.request, messages.ERROR,
                                  _('Error occurred: ' + result.content))
             logger.warning('Concept create POST failed: %s' % result.content)
-            # TODO(paynejd): Add error messages from API to form
             return super(ConceptNewView, self).form_invalid(form)
 
 
@@ -679,6 +673,7 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
     template_name = "concepts/concept_retire.html"
 
     def get_context_data(self, *args, **kwargs):
+        """ Set context data for retiring the concept """
         context = super(ConceptRetireView, self).get_context_data(*args, **kwargs)
 
         self.get_args()
@@ -694,6 +689,7 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
         return context
 
     def get_success_url(self):
+        """ Return URL for redirecting browser """
         if self.from_org:
             return reverse('concept-details',
                            kwargs={'org': self.org_id,
@@ -707,6 +703,7 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
                                    'concept': self.concept_id})
 
     def form_valid(self, form, *args, **kwargs):
+        """ Use validated form data to retire the concept """
 
         self.get_args()
         print form.cleaned_data
@@ -763,9 +760,7 @@ class ConceptEditView(UserOrOrgMixin, FormView):
 
 
     def get_success_url(self):
-        """
-        Get success URL
-        """
+        """ Get success URL """
         if self.from_org:
             return reverse("concept-details",
                            kwargs={"org": self.org_id,
@@ -779,9 +774,7 @@ class ConceptEditView(UserOrOrgMixin, FormView):
 
 
     def get_context_data(self, *args, **kwargs):
-        """
-        Supply related data for the add form
-        """
+        """ Supply related data for the add form """
         context = super(ConceptEditView, self).get_context_data(*args, **kwargs)
 
         self.get_args()
@@ -807,6 +800,7 @@ class ConceptEditView(UserOrOrgMixin, FormView):
 
 
     def form_valid(self, form, *args, **kwargs):
+        """ Submit the edited concept data using the API """
 
         self.get_args()
 
@@ -830,8 +824,8 @@ class ConceptEditView(UserOrOrgMixin, FormView):
 
 
 # TODO(paynejd): Recreate ConceptItemView, ConceptDescView, ConceptNameView, and ConceptExtraView
-# Currently, these are onlu used for fetching the JSON of concept names, descriptions, and extras
-# They formerly handled Angular requests. Modify so that they support edits in the old Django way
+# Currently, these are only used for fetching the JSON of concept names, descriptions, and extras
+# They formerly handled Angular requests. Modify so that they support edits in the old Django way.
 
 # TODO(paynejd): Resurrect ConceptItemView
 class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):

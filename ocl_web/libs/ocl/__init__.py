@@ -1,5 +1,5 @@
 """
-    This is the central interface to the OCL API.
+This is the central interface to the OCL API.
 """
 import os
 import logging
@@ -7,12 +7,11 @@ import requests
 import simplejson as json
 
 from django.conf import settings
-
-# for others to import via this module
 from .search import OCLSearch
 
 
 SESSION_TOKEN_KEY = 'API_USER_TOKEN'
+
 
 
 class OCLapi(object):
@@ -57,14 +56,16 @@ class OCLapi(object):
         else:
             self.logger.debug('%s no content.' % results.request.method)
 
+
     @classmethod
     def resource_type_name(cls, type_id):
+        """ Get formal name of a resource type (e.g. 'User Type') """
         if type_id == cls.USER_TYPE:
             return 'User Type'
         if type_id == cls.ORG_TYPE:
             return 'Organization Type'
         if type_id == cls.SOURCE_TYPE:
-            return 'Souce Type'
+            return 'Source Type'
         if type_id == cls.CONCEPT_TYPE:
             return 'Concept Type'
         if type_id == cls.COLLECTION_TYPE:
@@ -72,6 +73,7 @@ class OCLapi(object):
         if type_id == cls.MAPPING_TYPE:
             return 'Mapping Type'
         return 'Unknown type'
+
 
     def __init__(self, request=None, debug=False, admin=False, facets=False):
         """
@@ -105,15 +107,19 @@ class OCLapi(object):
                 self.api_key = request.session.get(SESSION_TOKEN_KEY, None)
                 self.headers['Authorization'] = 'Token %s' % key
 
+
     @property
     def include_facets(self):
+        """ Return whether 'includeFacets' is set in the request headers """
         if 'includeFacets' in self.headers:
-            return true
+            return True
         else:
-            return false
+            return False
+
 
     @include_facets.setter
     def include_facets(self, include_facets_bool):
+        """ Set whether 'includeFacets' is included in the request header """
         if include_facets_bool:
             self.headers['includeFacets'] = 'true'
         elif 'includeFacets' in self.headers:
@@ -121,7 +127,7 @@ class OCLapi(object):
 
 
     def post(self, type_name, *args, **kwargs):
-        """ Issue Post request to API.
+        """ Issue POST request to API.
 
             :param type_name: is a string specifying the type of the object
                               according to the API.
@@ -354,20 +360,20 @@ class OCLapi(object):
         data.update(base_data)
 
         list_data = []
-        for n in names:
-            list_data.append(n)
+        for name in names:
+            list_data.append(name)
         if len(list_data) > 0:
             data['names'] = list_data
 
         list_data = []
-        for d in descriptions:
-            list_data.append(d)
+        for desc in descriptions:
+            list_data.append(desc)
         if len(list_data) > 0:
             data['descriptions'] = list_data
 
         list_data = []
-        for e in extras:
-            list_data.append(e)
+        for extra in extras:
+            list_data.append(extra)
         if len(list_data) > 0:
             data['extras'] = list_data
 
@@ -396,20 +402,20 @@ class OCLapi(object):
         data.update(base_data)
 
         list_data = []
-        for n in names:
-            list_data.append(n)
+        for name in names:
+            list_data.append(name)
         if len(list_data) > 0:
             data['names'] = list_data
 
         list_data = []
-        for d in descriptions:
-            list_data.append(d)
+        for desc in descriptions:
+            list_data.append(desc)
         if len(list_data) > 0:
             data['descriptions'] = list_data
 
         list_data = []
-        for e in extras:
-            list_data.append(e)
+        for extra in extras:
+            list_data.append(extra)
         if len(list_data) > 0:
             data['extras'] = list_data
 
@@ -528,8 +534,7 @@ class OCLapi(object):
 
 
     def create_source_version_by_user(self, username, source_id, base_data):
-        """
-            create a new source version owned by user.
+        """ Create a new source version owned by user.
 
             :param username: is the user owner of this wource.
             :param base_data: is a dictionary of fields.

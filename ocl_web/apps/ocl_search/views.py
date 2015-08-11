@@ -2,16 +2,14 @@
 
 Examples:
 https://github.com/search?q=malaria&ref=cmdform
-https://github.com/search?q=malaria&ref=cmdform&type=Code
+https://github.com/search?q=malaria&ref=cmdform&type=Concept
 """
 import logging
 
 from django.views.generic import TemplateView
-from django.conf import settings
+#from django.conf import settings
 from django.core.paginator import Paginator
 import urllib
-#import math
-
 from libs.ocl import (OCLapi, OCLSearch)
 
 

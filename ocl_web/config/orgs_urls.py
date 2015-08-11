@@ -36,13 +36,6 @@ from apps.mappings.views import (
 from apps.core.views import ExtraJsonView
 
 
-# TODO(paynejd@gmail.com): OLD -- remove after tested
-#from apps.concepts.views import (ConceptDetailView)
-#from apps.sources.views import (SourceDetailView, SourceVersionView)
-#from apps.concepts.views import (ConceptMappingView, ConceptCreateJsonView,
-#    ConceptVersionListView)
-
-
 urlpatterns = patterns(
     '',
 
