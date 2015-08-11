@@ -148,7 +148,7 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         # Set the context
         context['kwargs'] = self.kwargs
         context['source'] = source
-        context['mapping'] = mapping
+        context['mapping'] = self.mapping
 
         return context
 
