@@ -15,7 +15,7 @@
 {% endif %}
 
 <h3>
-	{% resource_owner_label mapping %} / {% source_label source %} / {% mapping_label %}&nbsp;/&nbsp;{% trans 'Update Mapping' %}
+	{% resource_owner_label mapping label_size='large' %} / {% generic_resource_label resource_type='source' resource_id=mapping.source resource_url=source_url label_size='large' %} / {% generic_resource_label resource_type='mapping' resource_id=mapping.id resource_name=mapping.map_type resource_url=mapping_home_url label_size='large' %}&nbsp;/&nbsp;{% trans 'Update Mapping' %}
 	{% if not mapping.retired %}
 		&nbsp;&nbsp;&nbsp;<a href="{% url 'mapping-retire' org=source.owner source=source.id mapping=mapping.id %}" title="Retire Mapping" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
 	{% endif %}
