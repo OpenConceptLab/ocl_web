@@ -51,9 +51,9 @@
 				{% if_can_change source %}
 					{# TODO: Only allow if viewing "head" -- for now mapping is always added to head #}
 					{% if source.owner_type == 'Organization' %}
-						{% url 'mapping-create-for-org' org=source.owner source=source.id as new_mapping_url %}
+						{% url 'mapping-new' org=source.owner source=source.id as new_mapping_url %}
 					{% else %}
-						{% url 'mapping-create-for-user' user=source.owner source=source.id as new_mapping_url %}
+						{% url 'mapping-new' user=source.owner source=source.id as new_mapping_url %}
 					{% endif %}
 				<div class="pull-left">
 					<a class="btn btn-link btn-sm" title="Add New Mapping to Source" style="font-weight:300;text-spacing:-0.1pt;" href="{{ new_mapping_url }}"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'New Mapping' %}</a>
