@@ -29,10 +29,18 @@
 
 				<div class="form-group">
 					<label class="small">Save Mapping In</label>
-					<div style="margin-bottom:14px;">{% generic_resource_label resource_type='source' resource_id=source.id resource_name=source.name owner_type=source.owner_type owner_id=source.owner label_size='small' display_breadcrumb=True %}</span>
+					<div style="margin-bottom:14px;">{% generic_resource_label resource_type='source' resource_id=source.id resource_name=source.name owner_type=source.owner_type owner_id=source.owner label_size='small' display_breadcrumb=True %}</div>
+				</div>
+
+				<div class="form-group required">
+					{{ form.from_concept_url.errors }}
+					<label class="control-label small" for="id_from_concept_url">{{ form.from_concept_url.label }}</label>
+					<input class="form-control" id="id_from_concept_url" name="from_concept_url" placeholder="e.g. /orgs/MyOrg/sources/MySource/concepts/1234/" required="required" title="{{ form.from_concept_url.help_text }}" type="text">
+					<span class="help-block small">{{ form.from_concept_url.help_text }}</span>
 				</div>
 
 				{% bootstrap_form form %}
+
 				{% buttons %}
 					<button type="submit" class="btn btn-primary">{% trans "Create Mapping" %}</button>
 					<a href="{{ source_mappings_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
@@ -54,3 +62,26 @@
 	</div>
 </div>
 {% endblock content %}
+
+
+{% block extrajavascript %}
+<script>
+$(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
+	function show_hide_mapping_fields(){
+		if($('input:radio[name="is_internal_or_external"]:checked').val() == "External") {
+			$('div#internal-mapping-form div.form-group').hide();
+			$('div#external-mapping-form div.form-group').show();
+		} else if($('input:radio[name="is_internal_or_external"]:checked').val() == "Internal") {
+			$('div#internal-mapping-form div.form-group').show();
+			$('div#external-mapping-form div.form-group').hide();
+		} else {
+			$('div#internal-mapping-form div.form-group').hide();
+			$('div#external-mapping-form div.form-group').hide();
+		}
+	}
+	show_hide_mapping_fields();
+	$('#id_is_internal_or_external input[type="radio"]').click(function (){ show_hide_mapping_fields(); });
+});
+</script>
+{% endblock extrajavascript %}
