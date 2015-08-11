@@ -3,6 +3,8 @@
 {% load bootstrap3 %}
 {% load ocl_tags %}
 
+{# Check user permissions #}
+
 
 {% block title %}{% trans "Update Concept" %}{% endblock %}
 
@@ -16,9 +18,8 @@
 
 <h3>
 	{% resource_owner_label concept %} / {% source_label source %} / {% concept_label concept %} / {% trans 'Update Concept' %}
-	{# TODO: Only show if admin or owner #}
 	{% if not concept.retired %}
-	&nbsp;&nbsp;&nbsp;<a href="{% url 'concept-retire' org=source.owner source=source.id concept=concept.id %}" title="Retire Concept" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+		&nbsp;&nbsp;&nbsp;<a href="{% url 'concept-retire' org=source.owner source=source.id concept=concept.id %}" title="Retire Concept" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
 	{% endif %}
 </h3>
 

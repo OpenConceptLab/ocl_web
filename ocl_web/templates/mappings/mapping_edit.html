@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+
+{% block title %}{{ mapping.owner }} / {{ mapping.source }} / {{ mapping.id }} / {% trans "Edit" %} - Open Concept Lab{% endblock title %}
+
+
+{% block content %}
+{% if source.owner_type == 'Organization' %}
+	{% url 'mapping-home' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_url %}
+{% else %}
+	{% url 'mapping-home' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_url %}
+{% endif %}
+
+<h3>
+	{% resource_owner_label mapping %} / {% source_label source %} / {% mapping_label %}&nbsp;/&nbsp;{% trans 'Update Mapping' %}
+	{% if not mapping.retired %}
+		&nbsp;&nbsp;&nbsp;<a href="{% url 'mapping-retire' org=source.owner source=source.id mapping=mapping.id %}" title="Retire Mapping" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+	{% endif %}
+</h3>
+
+<div class="container">
+	<div class="row" style="padding-top:15px;">
+
+		<!-- Edit Mapping Form -->
+		<div class="col-md-8">
+			<form class="form" name="mapping_form" autocomplete="off" method="post">
+				{% csrf_token %}
+
+				<div class="form-group">
+					<label class="small">Mapping Belongs To:</label>
+					<div style="margin-bottom:14px;">{% generic_resource_label resource_type='source' resource_id=source.id resource_name=source.name owner_type=source.owner_type owner_id=source.owner label_size='small' display_breadcrumb=True %}</div>
+				</div>
+
+				<div class="form-group required">
+					{{ form.from_concept_url.errors }}
+					<label class="control-label required" for="id_map_type">{{ form.from_concept_url.label }}</label>
+					<input class="form-control" id="id_from_concept_url" name="from_concept_url" placeholder="e.g. /orgs/MyOrg/sources/MySource/concepts/1234/" required="required" title="{{ form.from_concept_url.help_text }}" type="text" />
+					<span class="help-block small">{{ form.from_concept_url.help_text }}</span>
+				</div>
+
+				<div class="form-group required">
+					{{ form.map_type.errors }}
+					<label class="control-label required" for="id_map_type">{{ form.map_type.label }}</label>
+					<input class="form-control" id="id_map_type" name="map_type" placeholder="e.g. SAME-AS, NARROWER-THAN, BROADER-THAN" required="required" title="{{ form.map_type.help_text }}" type="text" />
+					<span class="help-block small">{{ form.map_type.help_text }}</span>
+				</div>
+
+				<div class="form-group">
+					{{ form.external_id.errors }}
+					<label class="control-label" for="id_external_id">{{ form.external_id.label }}</label>
+					<input class="form-control" id="id_external_id" name="external_id" placeholder="e.g. UUID from external system" title="" type="text" title="{{ form.external_id.help_text }}">
+					<span class="help-block small">{{ form.external_id.help_text }}</span>
+				</div>
+
+				<div class="form-group required">
+					{{ form.is_internal_or_external.errors }}
+					<label class="control-label" for="id_is_internal_or_external_0">{{ form.is_internal_or_external.label }}</label>&nbsp;
+					<a href="#" data-toggle="tooltip" data-placement="right" title="Internal means the to-concept is stored in OCL. External means that the to-concept is not stored in OCL."><span class="glyphicon glyphicon-question-sign"></span></a>
+					<div id="id_is_internal_or_external">
+						<label for="id_is_internal_or_external_0" class="radio-inline" title="To Concept is stored in OCL"><input class="radio-inline" id="id_is_internal_or_external_0" name="is_internal_or_external" required="required" type="radio" checked="checked" value="Internal">&nbsp;Internal</label>
+						<label for="id_is_internal_or_external_1" class="radio-inline" title="To Concept is not stored in OCL"><input id="id_is_internal_or_external_1" name="is_internal_or_external" required="required" type="radio" value="External" class="radio-inline">&nbsp;External</label>
+					</div>
+				</div>
+
+				<div id="internal-mapping-form">
+
+					<div class="form-group">
+						{{ form.internal_to_concept_url.errors }}
+						<label class="control-label" for="id_internal_to_concept_url">{{ form.internal_to_concept_url.label }}</label>
+						<input class="form-control" id="id_internal_to_concept_url" name="internal_to_concept_url" placeholder="e.g. /orgs/CIEL/sources/CIEL/concepts/32/" title="{{ form.internal_to_concept_url.help_text }}" type="text">
+						<span class="help-block small">{{ form.internal_to_concept_url.help_text }}</span>
+					</div>
+
+				</div>
+
+				<div id="external-mapping-form">
+
+					<div class="form-group">
+						{{ form.external_to_source_url.errors }}
+						<label class="control-label" for="id_external_to_source_url">{{ form.external_to_source_url.label }}</label>
+						<input class="form-control" id="id_external_to_source_url" name="external_to_source_url" placeholder="e.g. /orgs/IHTSDO/sources/SNOMED-CT/" title="{{ form.external_to_source_url.help_text }}" type="text">
+						<span class="help-block small">{{ form.external_to_source_url.help_text }}</span>
+					</div>
+
+					<div class="form-group">
+						{{ form.external_to_concept_code.errors }}
+						<label class="control-label" for="id_external_to_concept_code">{{ form.external_to_concept_code.label }}</label>
+						<input class="form-control" id="id_external_to_concept_code" name="external_to_concept_code" placeholder="e.g. A15.1" title="{{ form.external_to_concept_code.help_text }}" type="text">
+						<span class="help-block small">{{ form.external_to_concept_code.help_text }}</span>
+					</div>
+
+					<div class="form-group">
+						{{ form.external_to_concept_name.errors }}
+						<label class="control-label" for="id_external_to_concept_name">{{ form.external_to_concept_name.label }}</label>
+						<input class="form-control" id="id_external_to_concept_name" name="external_to_concept_name" placeholder="e.g. Tuberculosis of lung, confirmed by culture only" title="{{ form.external_to_concept_name.help_text }}" type="text">
+						<span class="help-block small">{{ form.external_to_concept_name.help_text }}</span>
+					</div>
+
+				</div>
+
+				{% buttons %}
+					<button type="submit" class="btn btn-primary">{% trans "Update Mapping" %}</button>
+					<a href="{{ mapping_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+				{% endbuttons %}
+			</form>
+		</div>
+
+		<!-- Tip Panel -->
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+				<div class="panel-body">
+					<p class="small">Choose a <strong>Concept ID</strong> that is consistent across the source. Concept IDs cannot be changed after a concept is created.</p>
+					<p class="small">Assign the first name and description now. Additional names and descriptions in any locale can be added later.</p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+{% endblock content %}
+
+
+{% block extrajavascript %}
+<script>
+$(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
+	function show_hide_mapping_fields(){
+		if($('input:radio[name="is_internal_or_external"]:checked').val() == "External") {
+			$('div#internal-mapping-form div.form-group').hide();
+			$('div#external-mapping-form div.form-group').show();
+		} else if($('input:radio[name="is_internal_or_external"]:checked').val() == "Internal") {
+			$('div#internal-mapping-form div.form-group').show();
+			$('div#external-mapping-form div.form-group').hide();
+		} else {
+			$('div#internal-mapping-form div.form-group').hide();
+			$('div#external-mapping-form div.form-group').hide();
+		}
+	}
+	show_hide_mapping_fields();
+	$('#id_is_internal_or_external input[type="radio"]').click(function (){ show_hide_mapping_fields(); });
+});
+</script>
+{% endblock extrajavascript %}

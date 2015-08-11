@@ -49,7 +49,7 @@ class MappingNewForm(forms.Form):
 
     is_internal_or_external = forms.ChoiceField(
         choices=[('Internal', 'Internal'), ('External', 'External')],
-        label=_('Mapping Destination'),
+        label=_('Mapping Target'),
         required=True,
         widget=forms.RadioSelect(attrs={'class':'radio-inline'}))
 
