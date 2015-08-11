@@ -3,7 +3,9 @@
 {% load bootstrap3 %}
 {% load ocl_tags %}
 
+
 {% block title %}{{ concept.owner }} / {{ concept.source }} / {{ concept.id }}{% if kwargs and "concept_version" in kwargs %} [ {{ kwargs.concept_version }} ]{% endif %} - Open Concept Lab{% endblock title %}
+
 
 {% block content-no-container %}
 
@@ -25,9 +27,9 @@
 					<div class="label-container">
 						{% resource_owner_label concept label_size='large' %} / {% generic_resource_label resource_type='source' resource_id=concept.source resource_url=source_url label_size='large' %} / {% concept_label concept label_size='large' %}
 						{% if kwargs and "concept_version" in kwargs %}<span class="small" title="Concept Version ID">[ {{ kwargs.concept_version }} ]</span>{% endif %}
-						{% if_can_change source %}
+						{% if_can_change concept %}
 							<a href="{{ concept_edit_url }}" class="text-muted small" title="Edit Concept"><span class="glyphicon glyphicon-cog"></span></a>
-						{% endif_can_change source %}
+						{% endif_can_change concept %}
 					</div>
 					<p>
 						<span {% if concept.retired %}class="retired"{% endif %}>{{ concept.display_name }}</span>

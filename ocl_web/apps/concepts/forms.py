@@ -23,6 +23,7 @@ from django.forms.formsets import formset_factory
 from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list)
 
 
+
 class ConceptRetireForm(forms.Form):
     """
     Concept retirement form
@@ -56,15 +57,16 @@ class ConceptNewMappingForm(forms.Form):
         widget=forms.RadioSelect(attrs={'class':'radio-inline'}))
 
     internal_to_concept_url = forms.CharField(
-        label=_('To Concept Url'),
+        label=_('To Concept URL'),
         required=False,
-        help_text=_('<small>Copy/paste the URL of a concept stored in OCL</small>'),
+        help_text=_('<small>Copy/paste the relative URL of a concept '
+                    'stored in OCL to which this mapping points</small>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. /orgs/CIEL/sources/CIEL/concepts/32/"}))
 
     external_to_source_url = forms.CharField(
-        label=_('To Source Url'),
+        label=_('To Source URL'),
         required=False,
-        help_text=_('<small>Copy/paste the URL of a source in '
+        help_text=_('<small>Copy/paste the relative URL of a source in '
                     'OCL with source type "External"</small>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. /orgs/IHTSDO/sources/SNOMED-CT/"}))
 

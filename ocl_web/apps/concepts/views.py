@@ -168,9 +168,7 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
     template_name = "concepts/concept_mappings.html"
 
     def get_initial(self):
-        """
-        Set the owner and source args for use in the form
-        """
+        """ Set the owner and source args for use in the form """
 
         data = super(ConceptMappingsView, self).get_initial()
 
@@ -189,10 +187,9 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
 
         return data
 
+
     def get_context_data(self, *args, **kwargs):
-        """
-        Loads the concept details.
-        """
+        """ Loads the concept details. """
 
         # Setup the context and args
         context = super(ConceptMappingsView, self).get_context_data(*args, **kwargs)
@@ -330,9 +327,7 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
 
 
     def form_valid(self, form, *args, **kwargs):
-        """
-        Submits the validated form data: A new Concept Mapping
-        """
+        """ Submits the validated form data: A new Concept Mapping """
 
         # Prepare the data form submission, incl. renaming fields as needed
         mapping_destination = form.cleaned_data.get('is_internal_or_external')
@@ -356,13 +351,15 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
         if result.ok:
             messages.add_message(self.request, messages.INFO, _('Mapping created.'))
             if self.from_org:
-                return redirect(reverse('concept-mappings', kwargs={'org': self.owner_id,
-                                                                    'source': self.source_id,
-                                                                    'concept': self.concept_id}))
+                return redirect(reverse('concept-mappings',
+                                        kwargs={'org': self.owner_id,
+                                                'source': self.source_id,
+                                                'concept': self.concept_id}))
             else:
-                return redirect(reverse('concept-mappings', kwargs={'user': self.owner_id,
-                                                                    'source': self.source_id,
-                                                                    'concept': self.concept_id}))
+                return redirect(reverse('concept-mappings',
+                                        kwargs={'user': self.owner_id,
+                                                'source': self.source_id,
+                                                'concept': self.concept_id}))
         else:
             messages.add_message(
                 self.request, messages.ERROR,
@@ -425,7 +422,6 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     """
     View to create new concept
     """
-
     form_class = ConceptNewForm
     template_name = "concepts/concept_new.html"
 
@@ -449,10 +445,9 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
         return data
 
+
     def get_context_data(self, *args, **kwargs):
-        """
-        Loads the context data for creating a new concept.
-        """
+        """ Loads the context data for creating a new concept. """
 
         # Setup the form context
         context = super(ConceptNewView, self).get_context_data(*args, **kwargs)
@@ -474,10 +469,9 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
         return context
 
+
     def form_valid(self, form, *args, **kwargs):
-        """
-        Submits the validated form data: A new Concept
-        """
+        """ Submits the validated form data: A new Concept """
 
         # Prepare the data for submission, incl. renaming fields as needed
         concept_id = form.cleaned_data.pop('concept_id')
@@ -508,13 +502,15 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         if result.ok:
             messages.add_message(self.request, messages.INFO, _('Concept created.'))
             if self.from_org:
-                return redirect(reverse('concept-details', kwargs={'org': self.owner_id,
-                                                                   'source': self.source_id,
-                                                                   'concept': concept_id}))
+                return redirect(reverse('concept-details',
+                                        kwargs={'org': self.owner_id,
+                                                'source': self.source_id,
+                                                'concept': concept_id}))
             else:
-                return redirect(reverse('concept-details', kwargs={'user': self.owner_id,
-                                                                   'source': self.source_id,
-                                                                   'concept': concept_id}))
+                return redirect(reverse('concept-details',
+                                        kwargs={'user': self.owner_id,
+                                                'source': self.source_id,
+                                                'concept': concept_id}))
         else:
             messages.add_message(self.request, messages.ERROR,
                                  _('Error occurred: ' + result.content))

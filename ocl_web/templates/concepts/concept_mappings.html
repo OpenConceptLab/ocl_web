@@ -80,7 +80,7 @@
 
 
 			<!-- Add Mapping Panel -->
-			{% if_can_change source %}
+			{% if_can_change concept %}
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3 class="panel-title">Add Mapping</h3></div>
 				<div class="panel-body">
@@ -121,9 +121,9 @@
 						<div id="internal-mapping-form">
 
 							<div class="form-group">
-								<label class="control-label small" for="id_internal_to_concept_url">To Concept Url</label>
-								<input class="form-control input-sm" id="id_internal_to_concept_url" name="internal_to_concept_url" placeholder="e.g. /orgs/CIEL/sources/CIEL/concepts/32/" title="Copy/paste the URL of a concept stored in OCL" type="text">
-								<span class="help-block small" style="margin-top:0;">Copy/paste the URL of a concept stored in OCL</span>
+								<label class="control-label small" for="id_internal_to_concept_url">To Concept URL</label>
+								<input class="form-control input-sm" id="id_internal_to_concept_url" name="internal_to_concept_url" placeholder="e.g. /orgs/CIEL/sources/CIEL/concepts/32/" title="Copy/paste the relative URL of a concept stored in OCL to which this mapping points" type="text">
+								<span class="help-block small" style="margin-top:0;">Copy/paste the relative URL of a concept stored in OCL to which this mapping points</span>
 							</div>
 
 						</div>
@@ -131,9 +131,9 @@
 						<div id="external-mapping-form">
 
 							<div class="form-group">
-								<label class="control-label small" for="id_external_to_source_url">To Source Url</label>
-								<input class="form-control input-sm" id="id_external_to_source_url" name="external_to_source_url" placeholder="e.g. /orgs/IHTSDO/sources/SNOMED-CT/" title="Copy/paste the URL of a source in OCL with source type &quot;External&quot;" type="text">
-								<span class="help-block small" style="margin-top:0;">Copy/paste the URL of a source in OCL with source type "External"</span>
+								<label class="control-label small" for="id_external_to_source_url">To Source URL</label>
+								<input class="form-control input-sm" id="id_external_to_source_url" name="external_to_source_url" placeholder="e.g. /orgs/IHTSDO/sources/SNOMED-CT/" title="Copy/paste the relative URL of a source in OCL with source type &quot;External&quot;" type="text">
+								<span class="help-block small" style="margin-top:0;">Copy/paste the relative URL of a source in OCL with source type "External"</span>
 							</div>
 
 							<div class="form-group">
@@ -150,17 +150,13 @@
 
 						</div>
 
-						{% comment %}
-						{% bootstrap_form form %}
-						{% endcomment %}
-
 						{% buttons %}
 							<button type="submit" class="btn btn-sm btn-primary">{% trans "Create Mapping" %}</button>
 						{% endbuttons %}
 					</form>
 				</div> <!-- /panel-body -->
 			</div> <!-- /panel -->
-			{% endif_can_change source %}
+			{% endif_can_change concept %}
 
 		</div> <!-- /col-md-4 -->
 	</div> <!-- /row -->
