@@ -1,0 +1,63 @@
+{% extends "mappings/mapping_base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+
+{% block title %}{{ source.owner }} / {{ source.id }} / {% trans "New Mapping" %} - Open Concept Lab{% endblock %}
+
+
+{% block content %}
+{% if source.owner_type == 'Organization' %}
+	{% url 'source-mappings' org=source.owner source=source.id as source_mappings_url %}
+{% else %}
+	{% url 'source-mappings' user=source.owner source=source.id as source_mappings_url %}
+{% endif %}
+
+<h3>
+	{% resource_owner_label source %} / {% source_label source %}&nbsp;/&nbsp;
+	<span style="color:#e5e5e5"><span class="glyphicon glyphicon-link"></span></span>&nbsp;&nbsp;{% trans 'New Mapping' %}
+</h3>
+
+<div class="container">
+	<div class="row" style="padding-top:15px;">
+
+		<!-- New Mapping Form -->
+		<div class="col-md-8">
+			<form class="form" name="mapping_form" autocomplete="off" method="post">
+				{% csrf_token %}
+
+				<div class="form-group">
+					<label class="small">Save Mapping In</label>
+					<div style="margin-bottom:14px;">{% generic_resource_label resource_type='source' resource_id=source.id resource_name=source.name owner_type=source.owner_type owner_id=source.owner label_size='small' display_breadcrumb=True %}</span>
+				</div>
+
+				{% bootstrap_form form %}
+				{% buttons %}
+					<button type="submit" class="btn btn-primary">{% trans "Create Mapping" %}</button>
+					<a href="{{ source_mappings_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+				{% endbuttons %}
+			</form>
+		</div>
+
+		<!-- Tip Panel -->
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+				<div class="panel-body">
+					<p class="small">Choose a <strong>Concept ID</strong> that is consistent across the source. Concept IDs cannot be changed after a concept is created.</p>
+					<p class="small">Assign the first name and description now. Additional names and descriptions in any locale can be added later.</p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL kwargs</h4><pre>{{ kwargs|pprint }}</pre>
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Mapping</h4><pre>{{ mapping|pprint }}</pre>
+{% endblock resource-debug %}

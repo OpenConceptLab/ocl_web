@@ -5,15 +5,6 @@ import logging
 
 from django.http import Http404
 from django.views.generic import TemplateView
-
-#from django.utils.translation import ugettext as _
-#from django.core.urlresolvers import reverse
-#from django.http import HttpResponseRedirect
-#from django.views.generic.edit import FormView
-#from django.contrib import messages
-#from django.core.paginator import Paginator
-#from braces.views import JsonRequestResponseMixin
-
 from libs.ocl import OCLapi
 from apps.core.views import UserOrOrgMixin
 
@@ -30,6 +21,7 @@ class MappingReadBaseView(TemplateView):
         """
         Load source details from the API and return as dictionary.
         """
+        # NOTE: This is not used by mappings view - remove?
         # TODO(paynejd@gmail.com): Load details from source version, if applicable (or remove?)
         # TODO(paynejd@gmail.com): Validate the input parameters
         api = OCLapi(self.request, debug=True)
@@ -39,6 +31,7 @@ class MappingReadBaseView(TemplateView):
         elif search_response.status_code != 200:
             search_response.raise_for_status()
         return search_response.json()
+
 
     def get_mapping_details(self, owner_type, owner_id, source_id, mapping_id):
         """
@@ -53,6 +46,32 @@ class MappingReadBaseView(TemplateView):
         elif search_response.status_code != 200:
             search_response.raise_for_status()
         return search_response.json()
+
+
+
+class MappingFormBaseView(FormView):
+    """
+    Base class for Mapping Form views.
+    """
+
+    def get_initial(self):
+        """ Set the owner and source args for use in the form """
+
+        data = super(MappingFormBaseView, self).get_initial()
+
+        # Set owner type and identifiers using UserOrOrgMixin.get_args()
+        self.get_args()
+        data.update({
+            'request': self.request,
+            'from_user': self.from_user,
+            'from_org': self.from_org,
+            'user_id': self.user_id,
+            'org_id': self.org_id,
+            'owner_type': self.owner_type,
+            'owner_id': self.owner_id,
+            'source_id': self.source_id
+        })
+        return data
 
 
 
@@ -75,52 +94,114 @@ class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
         mapping = self.get_mapping_details(
             self.owner_type, self.owner_id, self.source_id, self.mapping_id)
 
-        # Load the source that contains this mapping
-        # TODO(paynejd): Source is only loaded because of funky custom tags - REMOVE IN THE FUTURE
-        # NOTE: Testing if "if_can_change" tag can accept a mapping
-        #source = self.get_source_details(
-        #    self.owner_type, self.owner_id, self.source_id,
-        #    source_version_id=self.source_version_id)
-
         # Set the context
         context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Details'
         context['mapping'] = mapping
-        #context['source'] = source
 
         return context
 
 
 
-class MappingEditView(UserOrOrgMixin, MappingReadBaseView):
+class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
     """
     Mapping Edit view.
     """
+    form_class = MappingEditForm
     template_name = "mappings/mapping_edit.html"
 
     def get_context_data(self, *args, **kwargs):
-        """
-        Loads the mapping details.
-        """
-        return
+        """ Loads the mapping details. """
+
+        # Setup the form context
+        context = super(MappingNewView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the source that the new mapping will belong to
+        api = OCLapi(self.request, debug=True)
+        source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
+
+        # TODO: Load list of map types
+
+        # Set the context
+        context['kwargs'] = self.kwargs
+        context['source'] = source
+
+        return context
 
 
 
-class MappingNewView(UserOrOrgMixin, MappingReadBaseView):
+class MappingNewView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
     """
     Mapping New view.
     """
+    form_class = MappingNewForm
     template_name = "mappings/mapping_new.html"
 
     def get_context_data(self, *args, **kwargs):
-        """
-        Loads the mapping details.
-        """
-        return
+        """ Loads the mapping details. """
+
+        # Setup the form context
+        context = super(MappingNewView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the source that the new mapping will belong to
+        api = OCLapi(self.request, debug=True)
+        source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
+
+        # TODO: Load list of map types
+
+        # Set the context
+        context['kwargs'] = self.kwargs
+        context['source'] = source
+
+        return context
 
 
-class MappingRetireView(UserOrOrgMixin, MappingReadBaseView):
+    def form_valid(self, form, *args, **kwargs):
+        """ Submits the validated form data using the API: new mapping """
+
+        # Prepare the data form submission, incl. renaming fields as needed
+        mapping_destination = form.cleaned_data.get('is_internal_or_external')
+        base_data = {
+            'from_concept_url': form.cleaned_data.get('from_concept_url'),
+            'map_type': form.cleaned_data.get('map_type', ''),
+            'external_id': form.cleaned_data.get('external_id', '')
+        }
+        if mapping_destination == 'Internal':
+            base_data['to_concept_url'] = form.cleaned_data.get('internal_to_concept_url')
+        elif mapping_destination == 'External':
+            base_data['to_source_url'] = form.cleaned_data.get('external_to_source_url')
+            base_data['to_concept_code'] = form.cleaned_data.get('external_to_concept_code')
+            base_data['to_concept_name'] = form.cleaned_data.get('external_to_concept_name')
+
+        # Create the mapping
+        api = OCLapi(self.request, debug=True)
+        result = api.create_mapping(self.owner_type, self.owner_id, self.source_id, base_data)
+        if result.ok:
+            new_mapping_id = result.json()['id']
+            messages.add_message(self.request, messages.INFO, _('Mapping created.'))
+            if self.from_org:
+                return redirect(reverse('mapping-home',
+                                        kwargs={'org': self.owner_id,
+                                                'source': self.source_id,
+                                                'mapping': new_mapping_id}))
+            else:
+                return redirect(reverse('mapping-home',
+                                        kwargs={'user': self.owner_id,
+                                                'source': self.source_id,
+                                                'mapping': new_mapping_id}))
+        else:
+            messages.add_message(
+                self.request, messages.ERROR,
+                _('Error: ' + result.content + '<br />POST data: ' + json.dumps(base_data)))
+            logger.warning('Mapping create POST failed: %s' % result.content)
+            return super(ConceptMappingsView, self).form_invalid(form)
+
+
+
+class MappingRetireView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
     """
     Mapping retire view
     """
