@@ -175,6 +175,51 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         return context
 
 
+    def form_valid(self, form, *args, **kwargs):
+        """ Submits the validated form data using the API: edit mapping """
+
+        # Prepare the data form submission, incl. renaming fields as needed
+        mapping_destination = form.cleaned_data.get('is_internal_or_external')
+        base_data = {
+            'from_concept_url': form.cleaned_data.get('from_concept_url'),
+            'map_type': form.cleaned_data.get('map_type', ''),
+            'external_id': form.cleaned_data.get('external_id', '')
+        }
+        if mapping_destination == 'Internal':
+            base_data['to_concept_url'] = form.cleaned_data.get('internal_to_concept_url')
+            base_data['to_source_url'] = ''
+            base_data['to_concept_code'] = ''
+            base_data['to_concept_name'] = ''
+        elif mapping_destination == 'External':
+            base_data['to_concept_url'] = ''
+            base_data['to_source_url'] = form.cleaned_data.get('external_to_source_url')
+            base_data['to_concept_code'] = form.cleaned_data.get('external_to_concept_code')
+            base_data['to_concept_name'] = form.cleaned_data.get('external_to_concept_name')
+
+        # Create the mapping
+        api = OCLapi(self.request, debug=True)
+        result = api.update_mapping(
+            self.owner_type, self.owner_id, self.source_id,
+            self.mapping_id, base_data)
+        if result.ok:
+            messages.add_message(self.request, messages.INFO, _('Mapping updated.'))
+            if self.from_org:
+                return redirect(reverse('mapping-home',
+                                        kwargs={'org': self.owner_id,
+                                                'source': self.source_id,
+                                                'mapping': self.mapping_id}))
+            else:
+                return redirect(reverse('mapping-home',
+                                        kwargs={'user': self.owner_id,
+                                                'source': self.source_id,
+                                                'mapping': self.mapping_id}))
+        else:
+            messages.add_message(
+                self.request, messages.ERROR,
+                _('Error: ' + result.content + '<br />POST data: ' + json.dumps(base_data)))
+            logger.warning('Mapping update POST failed: %s' % result.content)
+            return super(MappingEditView, self).form_invalid(form)
+
 
 class MappingNewView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
     """

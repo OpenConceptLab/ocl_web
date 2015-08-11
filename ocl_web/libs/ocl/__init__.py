@@ -571,7 +571,7 @@ class OCLapi(object):
 
 
     def create_mapping(self, source_owner_type, source_owner_id, source_id, data):
-        """ Create a concept mapping
+        """ Create a mapping
 
             'from_concept_url' and 'map-type' are required fields in the data dictionary.
             If internal mapping, must include 'to_concept_url'. If external mapping, must
@@ -587,4 +587,23 @@ class OCLapi(object):
         """
         result = self.post(source_owner_type, source_owner_id,
                            'sources', source_id, 'mappings', **data)
+        return result
+
+
+    def update_mapping(self, source_owner_type, source_owner_id, source_id, mapping_id, data):
+        """ Update a mapping
+
+            TODO: Unclear what happens if changing between internal/external -- consider only
+            allowing updates to external_id, map_type, to_concept_name, and extras.
+
+            :param source_owner_type: Either 'orgs' or 'users'
+            :param source_owner_id: ID of the owner org/user (e.g. "WHO")
+            :param source_id: ID of the source that will own the new mapping (e.g. "ICD-10")
+            :param mapping_id: ID of the mapping to update
+            :param data: A dictionary of all the data fields to POST
+
+            :returns: POST result from requests package.
+        """
+        result = self.post(source_owner_type, source_owner_id,
+                           'sources', source_id, 'mappings', mapping_id, **data)
         return result

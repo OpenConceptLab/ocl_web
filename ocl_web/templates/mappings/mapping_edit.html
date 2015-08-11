@@ -15,7 +15,7 @@
 {% endif %}
 
 <h3>
-	{% resource_owner_label mapping label_size='large' %} / {% generic_resource_label resource_type='source' resource_id=mapping.source resource_url=source_url label_size='large' %} / {% generic_resource_label resource_type='mapping' resource_id=mapping.id resource_name=mapping.map_type resource_url=mapping_home_url label_size='large' %}&nbsp;/&nbsp;{% trans 'Update Mapping' %}
+	{% resource_owner_label mapping label_size='large' %} / {% generic_resource_label resource_type='source' resource_id=mapping.source resource_url=source_url label_size='large' %} / {% generic_resource_label resource_type='mapping' resource_id=mapping.id resource_name=mapping.map_type resource_url=mapping_home_url label_size='large' %}&nbsp;/&nbsp;{% trans 'Edit' %}
 	{% if not mapping.retired %}
 		&nbsp;&nbsp;&nbsp;<a href="{% url 'mapping-retire' org=source.owner source=source.id mapping=mapping.id %}" title="Retire Mapping" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
 	{% endif %}
@@ -61,11 +61,11 @@
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
 				<div class="panel-body">
-					<p class="small">A <strong>Mapping</strong> represents a relationship between two concepts, such as an a "Same As" identity map across sources, or a parent/child relationship between two concepts in the same source.</p>
-					<p class="small">Edits that substantively change the meaning of a mapping are discouraged. For example, instead of changing the "map_type" or the "from" or "to" concept, consider retiring this mapping and creating a new mapping.</p>
+					<p class="small">A <strong>Mapping</strong> represents a relationship between two concepts, such as an a "Same As" identity map across sources, or a parent/child relationship between two concepts in the same source. There are two types of mappings:</p>
 					<ul><li class="small">An <em>Internal Mapping</em> points to a concept that is defined in OCL (e.g. CIEL).
 						<li class="small">An <em>External Mapping</em> points to a concept that is <em>not</em> defined in OCL, such as SNOMED-CT. However, the source must exist in OCL with its <code>source_type</code> attribute set to "External".</li>
 					</ul>
+					<p class="small">Edits that substantively change the meaning of a mapping are discouraged. For example, instead of changing the "map_type" or the "from" or "to" concept, consider retiring this mapping and creating a new mapping.</p>
 				</div>
 			</div>
 		</div>
