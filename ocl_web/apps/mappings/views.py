@@ -118,8 +118,28 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
     """
     Mapping Edit view.
     """
-    form_class = MappingEditForm
+    #form_class = MappingEditForm
     template_name = "mappings/mapping_edit.html"
+
+    def get_form_class(self):
+        """
+        A sneaky way to hook into the generic form processing view, to grep args
+        from the URL, retrieve some application data and store them in the view.
+        """
+        self.get_args()
+        self.source_id = self.kwargs.get('source')
+        self.mapping_id = self.kwargs.get('mapping')
+
+        api = OCLapi(self.request, debug=True)
+
+        self.source = api.get(
+            self.owner_type, self.org_id, 'sources', self.source_id).json()
+        self.mapping = api.get(
+            self.owner_type, self.org_id, 'sources', self.source_id,
+            'mappings', self.mapping_id).json()
+
+        return MappingEditForm
+
 
     def get_initial(self):
         """ Set the owner and source args for use in the form """

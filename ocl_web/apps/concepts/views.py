@@ -741,16 +741,11 @@ class ConceptEditView(UserOrOrgMixin, FormView):
 
         api = OCLapi(self.request, debug=True)
 
-        if self.from_org:
-            self.source = api.get('orgs', self.org_id, 'sources', self.source_id).json()
-            self.concept = api.get(
-                'orgs', self.org_id, 'sources', self.source_id,
-                'concepts', self.concept_id).json()
-        else:
-            self.source = api.get('users', self.user_id, 'sources', self.source_id).json()
-            self.concept = api.get(
-                'users', self.user_id, 'sources', self.source_id,
-                'concepts', self.concept_id).json()
+        self.source = api.get(
+            self.owner_type, self.org_id, 'sources', self.source_id).json()
+        self.concept = api.get(
+            self.owner_type, self.org_id, 'sources', self.source_id,
+            'concepts', self.concept_id).json()
 
         return ConceptEditForm
 
