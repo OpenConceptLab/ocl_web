@@ -26,10 +26,10 @@ class SearchFilterOption(object):
                                    self.selected)
 
     def __unicode__(self):
-        return "%s: %s [%s] %s" % (self.search_filter.search_filter_name,
-                                   self.option_name,
-                                   self.option_num,
-                                   self.selected)
+        return u"%s: %s [%s] %s" % (self.search_filter.search_filter_name,
+                                    self.option_name,
+                                    self.option_num,
+                                    self.selected)
 
 
 
@@ -110,92 +110,6 @@ class SearchFilterList(object):
     def __unicode__(self):
         return 'Resource %s: %s\n\n' % (self.resource_name,
                                         [str(f) for f in self.search_filter_list])
-
-
-
-# TOOD(paynejd@gmail.com): Only setup_filters uses this -- possibly retire?
-# def turn_to_tuples(values):
-#     """
-#     Temporary util to turn a list of values into a list of json friendly dictionary.
-#     Used to translate the concept_class_list type of lists to a code/name tuple
-#     list for used in filter.
-
-#     Once we clean up these lists to be all code/name pair this will go away.
-
-#     """
-#     if isinstance(values[0], dict):
-#         # already a list of dictionary, just add "selected"
-#         for d in values:
-#             d['selected'] = False
-#         return values
-#     else:
-#         # input is a list of codes which are the same as values, split up into
-#         # code, value and selected dictionary
-#         return [{'code': v, 'name': v, 'selected': False} for v in values]
-
-
-
-# TODO(paynejd@gmail.com): Replace with new facets/filter methodology
-# def setup_filters():
-#     """Sets up filters with static options. Deprecated.
-#     """
-#     from apps.core.views import _get_concept_class_list
-#     from apps.core.views import _get_datatype_list
-#     from apps.core.views import _get_source_type_list
-#     from apps.core.views import _get_locale_list
-
-#     # concept filters
-#     filters = SearchFilterList('concepts')
-#     f = filters.add_search_filter('concept_class', 'Concept Classes')
-#     f.options = turn_to_tuples(_get_concept_class_list())
-
-#     f = filters.add_search_filter('datatype', 'Datatypes')
-#     f.options = turn_to_tuples(_get_datatype_list())
-
-#     f = filters.add_search_filter('locale', 'Locale')
-#     f.options = turn_to_tuples(_get_locale_list())
-
-#     f = filters.add_search_filter('includeRetired', 'Include Retired')
-#     f.options = turn_to_tuples([{'code': u'1', 'name': 'Retired'}])
-#     concept_filters = filters
-
-#     # source filter
-#     filters = SearchFilterList('sources')
-#     f = filters.add_search_filter('source_type', 'Source Types')
-#     f.options = turn_to_tuples(_get_source_type_list())
-
-#     f = filters.add_search_filter('language', 'Locale')
-#     f.options = _get_locale_list()
-#     source_filters = filters
-
-#     # collection filters
-#     filters = SearchFilterList('collections')
-#     f = filters.add_search_filter('collection_type', 'Collection Types')
-#     f.options = turn_to_tuples(['Dictionary',
-#                                 'Interface Terminology',
-#                                 'Indicator Registry',
-#                                 'Reference',
-#                                 'External'])
-
-#     f = filters.add_search_filter('language', 'Locale')
-#     f.options = _get_locale_list()
-#     collection_filters = filters
-
-#     # mapping filters
-#     filters = SearchFilterList('mappings')
-#     f = filters.add_search_filter('collection_type', 'Collection Types')
-#     f.options = turn_to_tuples(['Dictionary',
-#                                 'Interface Terminology',
-#                                 'Indicator Registry',
-#                                 'Reference',
-#                                 'External'])
-#     mapping_filters = filters
-
-#     user_filters = None
-#     org_filters = None
-
-#     return [user_filters, org_filters, source_filters, concept_filters,
-#             collection_filters, mapping_filters]
 
 
 
