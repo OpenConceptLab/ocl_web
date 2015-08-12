@@ -50,21 +50,6 @@
 
 	<div class="col-md-9">
 
-<!-- Debug -->
-
-	{% if request.GET.debug %}
-		<div class="row">
-			<div class="col-md-12">
-				<pre><strong>Search Type:</strong><br />{{ search_type|pprint }}</pre>
-				<pre><strong>GET Params:</strong><br />{{ get_params|pprint }}</pre>
-				<pre><strong>API Search Params:</strong><br />{{ search_params|pprint }}</pre>
-				<pre><strong>Response Headers:</strong><br />{{ search_response_headers|pprint }}</pre>
-				<pre><strong>Facets</strong><br />{{ search_facets_json|pprint }}</pre>
-			</div>
-		</div>
-	{% endif %}
-
-
 <!-- Search Results, Actions, Sorting and Paging -->
 
 		<div class="row" style="margin-bottom:10px;">
@@ -265,5 +250,20 @@
 <!-- End content row -->
 
 </div>
+
+<!-- Debug -->
+
+	{% if request.GET.debug %}
+		<div class="row">
+			<div class="col-md-12">
+				<pre><strong>Search Type:</strong><br />{{ search_type|pprint }}</pre>
+				<pre><strong>GET Params:</strong><br />{{ get_params|pprint }}</pre>
+				<pre><strong>API Search Params:</strong><br />{{ search_params|pprint }}</pre>
+				<pre><strong>Response Headers:</strong><br />{{ search_response_headers|pprint }}</pre>
+				<pre><strong>Filters</strong><br />{{ search_filters|pprint }}</pre>
+				<pre><strong>Facets</strong><br />{{ search_facets_json|pprint }}</pre>
+			</div>
+		</div>
+	{% endif %}
 
 {% endblock content %}
