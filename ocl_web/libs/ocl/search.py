@@ -118,8 +118,10 @@ class OclSearch(object):
     Helper to handle search queries and processing of search results.
     """
 
-    # resource types
+    # Resource types
     # TODO(paynejd@gmail.com): Resource type constants are duplicated in OclApi
+    # TODO(paynejd@gmail.com): Standardized resource type representation
+    # NOTE: Code uses mixture of integers (ORG_TYPE=1), singular text ('org'), and plural ('orgs')
     USER_TYPE = 0
     ORG_TYPE = 1
     SOURCE_TYPE = 2
@@ -129,58 +131,73 @@ class OclSearch(object):
     SOURCE_VERSION_TYPE = 6
     CONCEPT_VERSION_TYPE = 7
 
-    # Default values
+    # Default search values
     DEFAULT_NUM_PER_PAGE = 25
     DEFAULT_SEARCH_TYPE = 'concepts'
 
+    # List of URL parameters that are transferred between searches of different resource types
+    # NOTE: This is used to build the resource links on the global search page
+    TRANSFERRABLE_SEARCH_PARAMS = ['q', 'limit', 'debug']
+
     # Search filter definitions for each resource
-    search_filter_info = {
+    SEARCH_FILTER_INFO = {
         'concepts': [
-            {'id': 'source', 'display_name': 'Sources', 'facet': 'source'},
-            {'id': 'conceptClass', 'display_name': 'Concept Classes', 'facet': 'conceptClass'},
-            {'id': 'datatype', 'display_name': 'Datatype', 'facet': 'datatype'},
-            {'id': 'includeRetired', 'display_name': 'Include Retired'},
-            {'id': 'retired', 'display_name': 'Retired', 'facet': 'retired'},
-            {'id': 'owner', 'display_name': 'Owner', 'facet': 'owner'},
-            {'id': 'ownerType', 'display_name': 'Owner Type', 'facet': 'ownerType'},
-            {'id': 'locale', 'display_name': 'Locale', 'facet': 'locale'}
+            {'id':'source', 'display_name':'Source', 'filter_widget':'checkboxes', 'facet':'source'},
+            {'id':'conceptClass', 'display_name':'Concept Class', 'filter_widget':'checkboxes', 'facet':'conceptClass'},
+            {'id':'datatype', 'display_name':'Datatype', 'filter_widget':'checkboxes', 'facet':'datatype'},
+            {'id':'includeRetired', 'display_name':'Include Retired''filter_widget':'include_retired'},
+            {'id':'retired', 'display_name':'Retired', 'filter_widget':'checkboxes', 'filter_widget':'checkboxes', 'facet':'retired', 'minimized':True},
+            {'id':'owner', 'display_name':'Concept Owner', 'filter_widget':'checkboxes', 'filter_widget':'checkboxes', 'facet':'owner'},
+            {'id':'locale', 'display_name':'Locale', 'filter_widget':'checkboxes', 'filter_widget':'checkboxes', 'facet':'locale'},
+            {'id':'ownerType', 'display_name':'Owner Type', 'filter_widget':'checkboxes', 'filter_widget':'checkboxes', 'facet':'ownerType', 'minimized':True},
         ],
         'mappings': [
-            {'id': 'source', 'display_name': 'Sources', 'facet': 'source'},
-            {'id': 'conceptClass', 'display_name': 'Concept Classes', 'facet': 'conceptClass'},
-            {'id': 'datatype', 'display_name': 'Datatype', 'facet': 'datatype'},
-            {'id': 'retired', 'display_name': 'Retired', 'facet': 'retired'},
-            {'id': 'owner', 'display_name': 'Owner', 'facet': 'owner'},
-            {'id': 'ownerType', 'display_name': 'Owner Type', 'facet': 'ownerType'},
-            {'id': 'locale', 'display_name': 'Locale', 'facet': 'locale'}
+            {'id':'mapType', 'display_name':'Map Type', 'filter_widget':'checkboxes', 'facet':'mapType'},
+            {'id':'source', 'display_name':'Mapping Source', 'filter_widget':'checkboxes', 'facet':'source'},
+            {'id':'includeRetired', 'display_name':'Include Retired', 'filter_widget':'include_retired'},
+            {'id':'retired', 'display_name':'Retired', 'filter_widget':'checkboxes', 'facet':'retired', 'minimized':True},
+            {'id':'conceptOwner', 'display_name':'Concept Owner', 'filter_widget':'checkboxes', 'facet':'conceptOwner'},
+            {'id':'conceptSource', 'display_name':'Concept Source', 'filter_widget':'checkboxes', 'facet':'conceptSource'},
+            {'id':'conceptOwnerType', 'display_name':'Concept Owner Type', 'filter_widget':'checkboxes', 'facet':'conceptOwnerType', 'minimized':True},
+            {'id':'toConceptSource', 'display_name':'To Concept Source', 'filter_widget':'checkboxes', 'facet':'toConceptSource', 'minimized':True},
+            {'id':'toConceptOwner', 'display_name':'To Concept Owner', 'filter_widget':'checkboxes', 'facet':'toConceptOwner', 'minimized':True},
+            {'id':'toConceptOwnerType', 'display_name':'To Concept Owner Type', 'filter_widget':'checkboxes', 'facet':'toConceptOwnerType', 'minimized':True},
+            {'id':'fromConceptSource', 'display_name':'From Concept Source', 'filter_widget':'checkboxes', 'facet':'fromConceptSource', 'minimized':True},
+            {'id':'fromConceptOwnerType', 'display_name':'From Concept Owner Type', 'filter_widget':'checkboxes', 'facet':'fromConceptOwnerType', 'minimized':True},
+            {'id':'fromConceptOwner', 'display_name':'From Concept Owner', 'filter_widget':'checkboxes', 'facet':'fromConceptOwner', 'minimized':True},
+            {'id':'owner', 'display_name':'Mapping Owner', 'filter_widget':'checkboxes', 'facet':'owner', 'minimized':True},
+            {'id':'ownerType', 'display_name':'Mapping Owner Type', 'filter_widget':'checkboxes', 'facet':'ownerType', 'minimized':True},
         ],
-        'source': [
-            {'id': 'sourceType', 'display_name': 'Source Type', 'facet': 'sourceType'},
-            {'id': 'owner', 'display_name': 'Owner', 'facet': 'owner'},
-            {'id': 'ownerType', 'display_name': 'Owner Type', 'facet': 'ownerType'},
-            {'id': 'locale', 'display_name': 'Locale', 'facet': 'locale'}
+        'sources': [
+            {'id':'sourceType', 'display_name':'Source Type', 'filter_widget':'checkboxes', 'facet':'sourceType'},
+            {'id':'owner', 'display_name':'Owner', 'filter_widget':'checkboxes', 'facet':'owner'},
+            {'id':'ownerType', 'display_name':'Owner Type', 'filter_widget':'checkboxes', 'facet':'ownerType'},
+            {'id':'locale', 'display_name':'Supported Locale', 'filter_widget':'checkboxes', 'facet':'locale'},
         ],
         'collections': [],
         'orgs': [],
         'users': [],
-        'source_version': []
+        'source_versions': [],
+        'concept_versions': [],
     }
 
     # Resource type definitions
-    resource_type_info = {
-        'concepts': {'int': CONCEPT_TYPE, 'name': 'concept', 'facets': True},
-        'mappings': {'int': MAPPING_TYPE, 'name': 'mapping', 'facets': True},
-        'sources': {'int': SOURCE_TYPE, 'name': 'source', 'facets': True},
-        'collections': {'int': COLLECTION_TYPE, 'name': 'collection', 'facets': True},
-        'orgs': {'int': ORG_TYPE, 'name': 'organization', 'facets': False},
-        'users': {'int': USER_TYPE, 'name': 'user', 'facets': False},
-        'source_version': {'int': SOURCE_VERSION_TYPE, 'name':'version', 'facets': False}
+    RESOURCE_TYPE_INFO = {
+        'concepts': {'int':CONCEPT_TYPE, 'name':'concept', 'facets':True},
+        'mappings': {'int':MAPPING_TYPE, 'name':'mapping', 'facets':True},
+        'sources': {'int':SOURCE_TYPE, 'name':'source', 'facets':True},
+        'collections': {'int':COLLECTION_TYPE, 'name':'collection', 'facets':True},
+        'orgs': {'int':ORG_TYPE, 'name':'organization', 'facets':False},
+        'users': {'int':USER_TYPE, 'name':'user', 'facets':False},
+        'source_versions': {'int':SOURCE_VERSION_TYPE, 'name':'version', 'facets':False},
+        'concept_versions': {'int':CONCEPT_VERSION_TYPE, 'name':'concept version', 'facets':False},
     }
 
 
     def __init__(self, search_type='', params=None):
         """
-        :param search_type: dictionary, QueryDict, or string of search params
+        :param search_type: Plural text of OCL resource (e.g. 'concepts', 'sources', 'users')
+        :param params: dictionary, QueryDict, or string of search params
         """
         # outputs
         self.search_type = search_type
@@ -200,24 +217,24 @@ class OclSearch(object):
     @property
     def search_resource_id(self):
         """Get numeric resource identifier."""
-        if self.search_type in self.resource_type_info:
-            return self.resource_type_info[self.search_type]['int']
+        if self.search_type in self.RESOURCE_TYPE_INFO:
+            return self.RESOURCE_TYPE_INFO[self.search_type]['int']
         else:
             return None
 
     @property
     def search_resource_name(self):
         """Get singular display name of the resource."""
-        if self.search_type in self.resource_type_info:
-            return self.resource_type_info[self.search_type]['name']
+        if self.search_type in self.RESOURCE_TYPE_INFO:
+            return self.RESOURCE_TYPE_INFO[self.search_type]['name']
         else:
             return ''
 
     @property
     def search_resource_has_facets(self):
         """Get whether the set resource type supports facets."""
-        if self.search_type in self.resource_type_info:
-            return self.resource_type_info[self.search_type]['facets']
+        if self.search_type in self.RESOURCE_TYPE_INFO:
+            return self.RESOURCE_TYPE_INFO[self.search_type]['facets']
         else:
             return False
 
@@ -299,6 +316,7 @@ class OclSearch(object):
                     matched_search_filter.select_option(params.getlist(key))
                 print '\tMatched search filter:', matched_search_filter
 
+
     def process_search_results(self, search_type=None, search_response=None,
                                has_facets=False, search_params=None):
         """
@@ -333,20 +351,19 @@ class OclSearch(object):
             except ValueError:
                 self.num_found = 0
 
+
     def parse_search_request(self, request_get):
         """
-        Parse processes a request string, dictionary or QueryDict as
-        the input/criteria for an OCL search. The parsed search inputs
-        are saved in self.search_params
+        Parse processes a request string, dictionary or QueryDict as the input/criteria for an
+        OCL search. The parsed search inputs are saved in self.search_params
 
-        :params request_get: request string, dictionary or QueryDict of
-            search inputs/criteria
+        :params request_get: request string, dictionary or QueryDict of search inputs/criteria
         :returns: None
         """
 
         search_params_dict = {}
 
-        # Verbose - all searches should return resource details, so set verbose to true
+        # Verbose - all searches return full resource details, so set verbose to true
         search_params_dict['verbose'] = 'true'
 
         # Get into QueryDict format if not already and make a copy
@@ -363,7 +380,7 @@ class OclSearch(object):
 
         # Determine the search type - gets the latest occurence of type
         if 'type' in params:
-            if params['type'] in self.resource_type_info:
+            if params['type'] in self.RESOURCE_TYPE_INFO:
                 self.search_type = params['type']
             else:
                 self.search_type = self.DEFAULT_SEARCH_TYPE
