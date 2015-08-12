@@ -349,6 +349,7 @@ class OclSearch(object):
             search_filter = SearchFilter(**filter_definition)
             # Do anything that needs to be done to the filter here
             filter_list.add_filter(search_filter)
+        self.search_filter_list = filter_list
 
 
     def process_facets(self, resource_type='', facets=None):
