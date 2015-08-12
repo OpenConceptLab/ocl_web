@@ -40,38 +40,7 @@ class GlobalSearchView(TemplateView):
         # Process the primary search results
         searcher.process_search_results(
             search_type=searcher.search_type, search_response=search_response,
-            has_facets=searcher.search_resource_has_facets, search_params=searcher.search_params)
-
-        #if searcher.search_resource_has_facets:
-        #    search_response_json = search_response.json()
-        #    search_facets_json = search_response_json['facets']
-        #    search_facets = searcher.process_facets(searcher.search_type, search_facets_json)
-        #    search_results = search_response_json['results']
-        #else:
-        #    search_results = search_response.json()
-        #    search_facets_json = {}
-        #    search_facets = {}
-
-        # Process number of results found in primary search
-        #if 'num_found' in search_response.headers:
-        #    try:
-        #        num_found = int(search_response.headers['num_found'])
-        #    except ValueError:
-        #        num_found = 0
-        #else:
-        #    num_found = 0
-
-        # Setup filters based on the current search
-        # NOTE: Facets should be processed separately from filters --
-        #       Facets are what are returned by Solr, filters are what are displayed
-        #       Some processing will be required to convert between the two
-        # TODO: sort filters
-        # TODO: add some other filters (e.g. Include Retired)
-
-        # Select filters
-        # TODO: Currently this is selecting the filters created only by the facets returned but this
-        #       should change to select the actual filters
-        #searcher.select_search_filters(self.request.GET)
+            search_params=searcher.search_params)
 
         # Setup paginator for primary search
         search_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
@@ -85,7 +54,7 @@ class GlobalSearchView(TemplateView):
         context['search_type_name'] = searcher.search_resource_name
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
-        context['search_facets'] = searcher.search_filter_list
+        context['search_filters'] = searcher.search_filter_list
 
         # Build URL params for navigating to other resources
         other_resource_search_params = {}
@@ -116,7 +85,7 @@ class GlobalSearchView(TemplateView):
         context['get_params'] = self.request.GET
         context['search_params'] = searcher.search_params
         context['search_response_headers'] = search_response.headers
-        #context['search_facets_json'] = search_facets_json
+        context['search_facets_json'] = searcher.search_facets
 
         # Set to remove closing form tag in nav.html -- retire in the future
         context['extend_nav_form'] = True
