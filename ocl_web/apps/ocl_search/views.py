@@ -80,7 +80,7 @@ class GlobalSearchView(TemplateView):
         # Set context for primary search
         context['page'] = search_current_page
         context['pagination_url'] = self.request.get_full_path()
-        context['results'] = self.search_results
+        context['results'] = searcher.search_results
         context['search_type'] = searcher.search_type
         context['search_type_name'] = searcher.search_resource_name
         context['search_sort_options'] = searcher.get_sort_options()
