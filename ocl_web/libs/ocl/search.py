@@ -105,7 +105,7 @@ class SearchFilterList(object):
 
     def __init__(self, resource_name=''):
         self.resource_name = resource_name
-        self.search_filter_list = None
+        self.search_filter_list = []
 
 
     def match_search_filter(self, filter_id):
