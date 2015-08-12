@@ -219,27 +219,112 @@ class OclSearch(object):
                 'minimized':True},
         ],
         'mappings': [
-            {'filter_id':'mapType', 'filter_name':'Map Type', 'filter_widget':'checkboxes', 'facet_id':'mapType'},
-            {'filter_id':'source', 'filter_name':'Mapping Source', 'filter_widget':'checkboxes', 'facet_id':'source'},
-            {'filter_id':'includeRetired', 'filter_name':'Include Retired', 'filter_widget':'include_retired'},
-            {'filter_id':'retired', 'filter_name':'Retired', 'filter_widget':'checkboxes', 'facet_id':'retired', 'minimized':True},
-            {'filter_id':'conceptOwner', 'filter_name':'Concept Owner', 'filter_widget':'checkboxes', 'facet_id':'conceptOwner'},
-            {'filter_id':'conceptSource', 'filter_name':'Concept Source', 'filter_widget':'checkboxes', 'facet_id':'conceptSource'},
-            {'filter_id':'conceptOwnerType', 'filter_name':'Concept Owner Type', 'filter_widget':'checkboxes', 'facet_id':'conceptOwnerType', 'minimized':True},
-            {'filter_id':'toConceptSource', 'filter_name':'To Concept Source', 'filter_widget':'checkboxes', 'facet_id':'toConceptSource', 'minimized':True},
-            {'filter_id':'toConceptOwner', 'filter_name':'To Concept Owner', 'filter_widget':'checkboxes', 'facet_id':'toConceptOwner', 'minimized':True},
-            {'filter_id':'toConceptOwnerType', 'filter_name':'To Concept Owner Type', 'filter_widget':'checkboxes', 'facet_id':'toConceptOwnerType', 'minimized':True},
-            {'filter_id':'fromConceptSource', 'filter_name':'From Concept Source', 'filter_widget':'checkboxes', 'facet_id':'fromConceptSource', 'minimized':True},
-            {'filter_id':'fromConceptOwnerType', 'filter_name':'From Concept Owner Type', 'filter_widget':'checkboxes', 'facet_id':'fromConceptOwnerType', 'minimized':True},
-            {'filter_id':'fromConceptOwner', 'filter_name':'From Concept Owner', 'filter_widget':'checkboxes', 'facet_id':'fromConceptOwner', 'minimized':True},
-            {'filter_id':'owner', 'filter_name':'Mapping Owner', 'filter_widget':'checkboxes', 'facet_id':'owner', 'minimized':True},
-            {'filter_id':'ownerType', 'filter_name':'Mapping Owner Type', 'filter_widget':'checkboxes', 'facet_id':'ownerType', 'minimized':True},
+            {
+                'filter_id':'mapType',
+                'filter_name':'Map Type',
+                'filter_widget':'checkboxes',
+                'facet_id':'mapType'},
+            {
+                'filter_id':'source',
+                'filter_name':'Mapping Source',
+                'filter_widget':'checkboxes',
+                'facet_id':'source'},
+            {
+                'filter_id':'includeRetired',
+                'filter_name':'Include Retired',
+                'filter_widget':'include_retired'},
+            {
+                'filter_id':'retired',
+                'filter_name':'Retired',
+                'filter_widget':'checkboxes',
+                'facet_id':'retired',
+                'minimized':True},
+            {
+                'filter_id':'conceptOwner',
+                'filter_name':'Concept Owner',
+                'filter_widget':'checkboxes',
+                'facet_id':'conceptOwner'},
+            {
+                'filter_id':'conceptSource',
+                'filter_name':'Concept Source',
+                'filter_widget':'checkboxes',
+                'facet_id':'conceptSource'},
+            {
+                'filter_id':'conceptOwnerType',
+                'filter_name':'Concept Owner Type',
+                'filter_widget':'checkboxes',
+                'facet_id':'conceptOwnerType',
+                'minimized':True},
+            {
+                'filter_id':'toConceptSource',
+                'filter_name':'To Concept Source',
+                'filter_widget':'checkboxes',
+                'facet_id':'toConceptSource',
+                'minimized':True},
+            {
+                'filter_id':'toConceptOwner',
+                'filter_name':'To Concept Owner',
+                'filter_widget':'checkboxes',
+                'facet_id':'toConceptOwner',
+                'minimized':True},
+            {
+                'filter_id':'toConceptOwnerType',
+                'filter_name':'To Concept Owner Type',
+                'filter_widget':'checkboxes',
+                'facet_id':'toConceptOwnerType',
+                'minimized':True},
+            {
+                'filter_id':'fromConceptSource',
+                'filter_name':'From Concept Source',
+                'filter_widget':'checkboxes',
+                'facet_id':'fromConceptSource',
+                'minimized':True},
+            {
+                'filter_id':'fromConceptOwnerType',
+                'filter_name':'From Concept Owner Type',
+                'filter_widget':'checkboxes',
+                'facet_id':'fromConceptOwnerType',
+                'minimized':True},
+            {
+                'filter_id':'fromConceptOwner',
+                'filter_name':'From Concept Owner',
+                'filter_widget':'checkboxes',
+                'facet_id':'fromConceptOwner',
+                'minimized':True},
+            {
+                'filter_id':'owner',
+                'filter_name':'Mapping Owner',
+                'filter_widget':'checkboxes',
+                'facet_id':'owner',
+                'minimized':True},
+            {
+                'filter_id':'ownerType',
+                'filter_name':'Mapping Owner Type',
+                'filter_widget':'checkboxes',
+                'facet_id':'ownerType',
+                'minimized':True},
         ],
         'sources': [
-            {'filter_id':'sourceType', 'filter_name':'Source Type', 'filter_widget':'checkboxes', 'facet_id':'sourceType'},
-            {'filter_id':'owner', 'filter_name':'Owner', 'filter_widget':'checkboxes', 'facet_id':'owner'},
-            {'filter_id':'ownerType', 'filter_name':'Owner Type', 'filter_widget':'checkboxes', 'facet_id':'ownerType'},
-            {'filter_id':'locale', 'filter_name':'Supported Locale', 'filter_widget':'checkboxes', 'facet_id':'locale'},
+            {
+                'filter_id':'sourceType',
+                'filter_name':'Source Type',
+                'filter_widget':'checkboxes',
+                'facet_id':'sourceType'},
+            {
+                'filter_id':'owner',
+                'filter_name':'Owner',
+                'filter_widget':'checkboxes',
+                'facet_id':'owner'},
+            {
+                'filter_id':'ownerType',
+                'filter_name':'Owner Type',
+                'filter_widget':'checkboxes',
+                'facet_id':'ownerType'},
+            {
+                'filter_id':'locale',
+                'filter_name':'Supported Locale',
+                'filter_widget':'checkboxes',
+                'facet_id':'locale'},
         ],
     }
 
@@ -413,7 +498,7 @@ class OclSearch(object):
         self.search_facets = None
         if 'results' in search_response_json and 'facets' in search_response_json:
             self.search_results = search_response_json['results']
-            self.search_facets = search_response_json['facets']
+            self.search_facets = search_response_json['facets']['fields']
         else:
             self.search_results = search_response_json
 
