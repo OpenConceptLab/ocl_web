@@ -18,7 +18,7 @@ import json
 from braces.views import (LoginRequiredMixin, CsrfExemptMixin, JsonRequestResponseMixin)
 
 from .forms import (ConceptNewForm, ConceptEditForm, ConceptNewMappingForm, ConceptRetireForm)
-from libs.ocl import OCLapi, OCLSearch
+from libs.ocl import OclApi, OclSearch
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
@@ -37,7 +37,7 @@ class ConceptReadBaseView(TemplateView):
         """
         # TODO(paynejd@gmail.com): Load details from source version, if applicable (or remove?)
         # TODO(paynejd@gmail.com): Validate the input parameters
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         search_response = api.get(owner_type, owner_id, 'sources', source_id)
         if search_response.status_code == 404:
             raise Http404
@@ -62,7 +62,7 @@ class ConceptReadBaseView(TemplateView):
             params['verbose'] = 'true'
 
         # TODO(paynejd@gmail.com): Validate input parameters
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         if source_version_id and concept_version_id:
             raise ValueError(
                 'Must specify only a source version or a concept version. Both were specified.')
@@ -96,10 +96,10 @@ class ConceptReadBaseView(TemplateView):
         # TODO(paynejd@gmail.com): Validate input parameters
 
         # Create the searcher
-        searcher = OCLSearch(search_type=OCLapi.CONCEPT_VERSION_TYPE, params=search_params)
+        searcher = OclSearch(search_type=OclApi.CONCEPT_VERSION_TYPE, params=search_params)
 
         # Perform the search
-        api = OCLapi(self.request, debug=True, facets=False)
+        api = OclApi(self.request, debug=True, facets=False)
         search_response = api.get(
             owner_type, owner_id, 'sources', source_id,
             'concepts', concept_id, 'versions')
@@ -346,7 +346,7 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
             base_data['to_concept_name'] = form.cleaned_data.get('external_to_concept_name')
 
         # Create the mapping
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         result = api.create_mapping(self.owner_type, self.owner_id, self.source_id, base_data)
         if result.ok:
             messages.add_message(self.request, messages.INFO, _('Mapping created.'))
@@ -454,7 +454,7 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         self.get_args()
 
         # Load the source that the new concept will belong to
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
 
         # TODO: Load list of names types
@@ -495,7 +495,7 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         }]
 
         # Create new concept using the API
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         result = api.create_concept(
             self.owner_type, self.owner_id, self.source_id, base_data,
             names=names, descriptions=descriptions)
@@ -535,7 +535,7 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
         self.get_args()
         data = {}
         print self.request.is_ajax()
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
         data['source'] = source
 
@@ -573,7 +573,7 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
         """ concept ID must be unique
         """
 
-        api = OCLapi(request, debug=True)
+        api = OclApi(request, debug=True)
         result = api.get(
             self.owner_type, self.owner_id, 'sources', self.source_id,
             'concepts', concept_id)
@@ -608,7 +608,7 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
         # TEMP for faster testing
         # return self.render_json_response({'message': _('Concept created')})
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         result = api.create_concept(
             self.owner_type, self.owner_id, self.source_id, data, names=names)
         if result.status_code != 201:
@@ -632,7 +632,7 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
         # TEMP for faster testing
         # return self.render_json_response({'message': _('Concept updated')})
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         result = api.update_concept(
             self.owner_type, self.owner_id, self.source_id,
             self.concept_id, data)
@@ -674,7 +674,7 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
 
         self.get_args()
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
         context['source'] = source
         concept = api.get(
@@ -705,7 +705,7 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
         print form.cleaned_data
 
         data = {'update_comment': form.cleaned_data['comment']}
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         result = api.delete(
             self.owner_type, self.owner_id, 'sources', self.source_id, 'concepts',
             self.concept_id, **data)
@@ -739,7 +739,7 @@ class ConceptEditView(UserOrOrgMixin, FormView):
         self.source_id = self.kwargs.get('source')
         self.concept_id = self.kwargs.get('concept')
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
 
         self.source = api.get(
             self.owner_type, self.org_id, 'sources', self.source_id).json()
@@ -797,7 +797,7 @@ class ConceptEditView(UserOrOrgMixin, FormView):
 
         data = form.cleaned_data
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         if self.from_org:
             result = api.update_concept('orgs', self.org_id, self.source_id, self.concept_id, data)
         else:
@@ -847,7 +847,7 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             Return a list of descriptions as json.
         """
         self.get_all_args()
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
 
         if self.optional:
             result = api.get(
@@ -880,7 +880,7 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             resp = {u"message": _('Invalid input')}
             return self.render_bad_request_response(resp)
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         if self.is_edit():
             if self.item_name == 'mappings':
                 result = api.put(
@@ -913,7 +913,7 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         Delete the specified item.
         """
         self.get_all_args()
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         if self.is_edit():  # i.e. has item UUID
             result = api.delete(
                 self.owner_type, self.owner_id, 'sources', self.source_id,
@@ -976,7 +976,7 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         """Return a list of descriptions as json.
         """
         self.get_all_args()
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
 
         result = api.get(self.owner_type, self.owner_id, 'sources', self.source_id,
                          'concepts', self.concept_id, self.item_name)
@@ -1011,7 +1011,7 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             resp = {'message': _('Invalid input')}
             return self.render_bad_request_response(resp)
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         if self.is_edit():
             result = api.put(self.owner_type, self.owner_id, 'sources', self.source_id,
                              'concepts', self.concept_id, 'extras', fn,
@@ -1034,7 +1034,7 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         """
         self.get_all_args()
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         self.item_id = None
         if not self.is_edit():  # i.e. has item UUID
             return self.render_bad_request_response({'message': 'key missing'})
@@ -1076,7 +1076,7 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
 #             Return a list of mappings as json.
 #         """
 #         self.get_all_args()
-#         api = OCLapi(self.request, debug=True)
+#         api = OclApi(self.request, debug=True)
 
 #         # Note: value must be lowercase string "true", not boolean
 #         result = api.get(self.owner_type, self.owner_id, 'sources', self.source_id,
@@ -1106,7 +1106,7 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
 #             resp = {u"message": _('Invalid input')}
 #             return self.render_bad_request_response(resp)
 
-#         api = OCLapi(self.request, debug=True)
+#         api = OclApi(self.request, debug=True)
 #         if self.is_edit():
 #             # Somehow we get more data fields from the lookup  then
 #             # what the update will accept
@@ -1136,7 +1136,7 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
 #         Delete the specified item.
 #         """
 #         self.get_all_args()
-#         api = OCLapi(self.request, debug=True)
+#         api = OclApi(self.request, debug=True)
 #         if self.is_edit():  # i.e. has item UUID
 #             result = api.delete(self.owner_type, self.owner_id, 'sources', self.source_id,
 #                                 'mappings', self.item_id)

@@ -21,7 +21,7 @@ import requests
 
 from django.core.management import BaseCommand, CommandError
 
-from libs.ocl import OCLapi
+from libs.ocl import OclApi
 from apps.core.views import _get_concept_class_list
 from apps.core.views import _get_datatype_list
 from apps.core.views import _get_source_type_list
@@ -107,7 +107,7 @@ class Command(BaseCommand):
             Perform a login for the user to get authenticated access
             for subsequence create calls.
         """
-        self.ocl = OCLapi(admin=True, debug=True)
+        self.ocl = OclApi(admin=True, debug=True)
 
         result = self.ocl.get_user_auth(self.username, self.password)
         print 'get auth:', result.status_code
@@ -117,7 +117,7 @@ class Command(BaseCommand):
         # now use a "normal" API interface, save the user's access permission
         self.request = FakeRequest()
         self.ocl.save_auth_token(self.request, result.json())
-        self.ocl = OCLapi(self.request, debug=True)
+        self.ocl = OclApi(self.request, debug=True)
 
     def make_source_name(self, n):
         """

@@ -7,7 +7,7 @@ from optparse import make_option
 
 from django.core.management import BaseCommand, CommandError
 
-from libs.ocl import OCLapi
+from libs.ocl import OclApi
 
 
 class Command(BaseCommand):
@@ -43,7 +43,7 @@ class Command(BaseCommand):
         sysadmin.last_name = 'Administrator'
         sysadmin.save()
 
-        ocl = OCLapi(admin=True)
+        ocl = OclApi(admin=True)
         data = {
             "username": sysadmin.username,
             "name": "System Administrator",

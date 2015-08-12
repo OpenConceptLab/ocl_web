@@ -11,7 +11,7 @@ from django.core.paginator import Paginator
 from braces.views import JsonRequestResponseMixin
 
 
-from libs.ocl import OCLapi, OCLSearch
+from libs.ocl import OclApi, OclSearch
 from .forms import (CollectionCreateForm, CollectionEditForm)
 from apps.core.views import UserOrOrgMixin
 
@@ -28,9 +28,9 @@ class CollectionDetailView(UserOrOrgMixin, TemplateView):
         self.get_args()
 
         print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
-        searcher = OCLSearch(OCLapi.COLLECTION_TYPE, params=self.request.GET)
+        searcher = OclSearch(OclApi.COLLECTION_TYPE, params=self.request.GET)
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
 
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         if results.status_code != 200:
@@ -85,7 +85,7 @@ class CollectionCreateView(UserOrOrgMixin, FormView):
 
         self.get_args()
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         org = ocl_user = None
 
         if self.from_org:
@@ -114,7 +114,7 @@ class CollectionCreateView(UserOrOrgMixin, FormView):
         data['id'] = short_code
         data['name'] = short_code
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         result = api.post(self.owner_type, self.owner_id, 'collections', **data)
         if not result.status_code == requests.codes.created:
             emsg = result.json().get('detail', 'Error')
@@ -142,7 +142,7 @@ class CollectionEditView(UserOrOrgMixin, FormView):
     def get_form_class(self):
         """ Trick to load initial data """
         self.get_args()
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         self.source_id = self.kwargs.get('source')
         if self.from_org:
             self.source = api.get('orgs', self.org_id, 'sources', self.source_id).json()
@@ -169,7 +169,7 @@ class CollectionEditView(UserOrOrgMixin, FormView):
 
         self.get_args()
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         org = ocl_user = None
 
         if self.from_org:
@@ -195,7 +195,7 @@ class CollectionEditView(UserOrOrgMixin, FormView):
 
         data = form.cleaned_data
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         if self.from_org:
             result = api.update_source_by_org(self.org_id, self.source_id, data)
         else:

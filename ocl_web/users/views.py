@@ -19,7 +19,7 @@ from .forms import UserForm
 
 # Import the customized User model
 from .models import User
-from libs.ocl import OCLapi
+from libs.ocl import OclApi
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -39,7 +39,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 
         # Setup API calls
         username = (kwargs["object"].username)
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
 
         # Set the limit of records for standard display
         # TODO(paynejd@gmail.com): Create page for each user resource list to handle > than limit
@@ -90,7 +90,7 @@ class UserUpdateView(LoginRequiredMixin, FormView):
 
     def get_initial(self):
         user = User.objects.get(username=self.kwargs.get('username'))
-        api = OCLapi(self.request)
+        api = OclApi(self.request)
         result = api.get('users', user.username)
         api_user = result.json()
         data = {
@@ -109,7 +109,7 @@ class UserUpdateView(LoginRequiredMixin, FormView):
         # only pass updatable fields to backend
         field_names = ('first_name', 'last_name', 'company', 'location')
         data = dict([(k, v) for k, v in form.cleaned_data.iteritems() if k in field_names])
-        api = OCLapi(self.request)
+        api = OclApi(self.request)
         result = api.post('user', **data)
         print result.status_code
         if len(result.text) > 0:

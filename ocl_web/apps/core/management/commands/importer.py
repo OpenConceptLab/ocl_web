@@ -7,7 +7,7 @@ import csv
 
 from django.core.management import BaseCommand, CommandError
 
-from libs.ocl import OCLapi
+from libs.ocl import OclApi
 
 from users.models import User
 
@@ -39,7 +39,7 @@ class Importer(object):
             Perform a login for the user to get authenticated access
             for subsequence create calls.
         """
-        self.ocl = OCLapi(admin=True, debug=True)
+        self.ocl = OclApi(admin=True, debug=True)
 
         result = self.ocl.get_user_auth(self.username, self.password)
         print 'get auth:', result.status_code
@@ -49,7 +49,7 @@ class Importer(object):
         # now use a "normal" API interface, save the user's access permission
         self.request = FakeRequest()
         self.ocl.save_auth_token(self.request, result.json())
-        self.ocl = OCLapi(self.request, debug=True)
+        self.ocl = OclApi(self.request, debug=True)
 
     def connect(self):
         self.load_user()

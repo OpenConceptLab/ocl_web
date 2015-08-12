@@ -5,7 +5,7 @@ Forms for sources.
 from django.utils.translation import ugettext as _
 from django import forms
 
-from libs.ocl import OCLapi
+from libs.ocl import OclApi
 
 from apps.core.views import _get_source_type_list, _get_locale_list
 
@@ -69,7 +69,7 @@ class SourceNewForm(forms.Form):
         concept_id = self.cleaned_data['concept_id']
         source = self.initial['source']
         request = self.initial['request']
-        api = OCLapi(request, debug=True)
+        api = OclApi(request, debug=True)
         result = api.get('orgs', source['owner'], 'sources', source['id'], 'concepts', concept_id)
         if result.status_code == 200:
             raise forms.ValidationError(_('This Concept ID is already used.'))

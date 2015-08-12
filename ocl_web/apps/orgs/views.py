@@ -17,7 +17,7 @@ from braces.views import JsonRequestResponseMixin
 
 from .forms import (OrganizationNewForm, OrganizationEditForm)
 from .forms import (OrganizationMemberAddForm)
-from libs.ocl import OCLapi, OCLSearch
+from libs.ocl import OclApi, OclSearch
 
 logger = logging.getLogger('oclweb')
 
@@ -33,7 +33,7 @@ class OrganizationReadBaseView(TemplateView):
         """
         Get the org details
         """
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         search_result = api.get('orgs', org_id)
         if search_result.status_code != 200:
             if search_result.status_code == 404:
@@ -48,7 +48,7 @@ class OrganizationReadBaseView(TemplateView):
         """
         # TODO(paynejd@gmail.com): Access issue, error if user is not super user??
         members = []
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         search_results = api.get('orgs', org_id, 'members')
         if search_results.status_code == 200:
             members = search_results.json()
@@ -112,9 +112,9 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         org = self.get_org_details(org_id)
 
         # Load the sources in this organization
-        source_searcher = OCLSearch(
-            search_type=OCLSearch.SOURCE_TYPE, params=self.request.GET)
-        api_sources = OCLapi(self.request, debug=True, facets=True)
+        source_searcher = OclSearch(
+            search_type=OclSearch.SOURCE_TYPE, params=self.request.GET)
+        api_sources = OclApi(self.request, debug=True, facets=True)
         search_result_sources = api_sources.get(
             'orgs', org_id, 'sources', params=source_searcher.search_params)
         if search_result_sources.status_code == requests.codes.not_found:
@@ -241,7 +241,7 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
         Submits the validated form data
         """
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
 
         # Prepare form data for submission, incl. renaming fields as necessary
         org_id = form.cleaned_data.pop('short_name')
@@ -284,7 +284,7 @@ class OrganizationEditView(FormView):
     def get_form_class(self):
         """ Trick to do some initial lookup """
         self.org_id = self.kwargs.get('org')
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         self.org = api.get('orgs', self.org_id).json()
         return OrganizationEditForm
 
@@ -304,7 +304,7 @@ class OrganizationEditView(FormView):
         Validates the form data and submits if valid
         """
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
 
         data = {}
         data.update(form.cleaned_data)
@@ -335,7 +335,7 @@ class OrganizationMemberAddView(LoginRequiredMixin, FormView):
         Load the organization
         """
         self.org_id = self.kwargs.get('org')
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         self.org = api.get('orgs', self.org_id).json()
 
     def get_initial(self):
@@ -361,7 +361,7 @@ class OrganizationMemberAddView(LoginRequiredMixin, FormView):
         self.get_org()
         new_username = form.cleaned_data.pop('member_username')
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
 
         result = api.put('orgs', self.org['id'], 'members', new_username)
 
@@ -389,7 +389,7 @@ class OrganizationMemberRemoveView(LoginRequiredMixin,
         self.org_id = self.kwargs.get('org')
         self.username = self.kwargs.get('username')
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         result = api.delete('orgs', self.org_id, 'members', self.username)
 
         return self.render_json_response({'message':'Member removed'})

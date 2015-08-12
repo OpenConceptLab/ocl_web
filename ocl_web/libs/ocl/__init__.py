@@ -7,14 +7,14 @@ import requests
 import simplejson as json
 
 from django.conf import settings
-from .search import OCLSearch
+from .search import OclSearch
 
 
 SESSION_TOKEN_KEY = 'API_USER_TOKEN'
 
 
 
-class OCLapi(object):
+class OclApi(object):
     """ Interface to the OCL API backend.
         Handles all the authentication and formating.
         Also contain helper and utility functions.
@@ -22,7 +22,7 @@ class OCLapi(object):
         :logging: This class outputs debug level information to the "oclapi" logger.
     """
     # resource types
-    # TODO(paynejd@gmail.com): These are duplicated in OCLSearch class
+    # TODO(paynejd@gmail.com): These are duplicated in OclSearch class
     USER_TYPE = 0
     ORG_TYPE = 1
     SOURCE_TYPE = 2

@@ -4,7 +4,7 @@
     Tie the front end user models with the backend, each front end
     user has a correponding entry in the API database.
 """
-from libs.ocl import OCLapi
+from libs.ocl import OclApi
 
 
 def user_created_handler(sender, request, user, **kwargs):
@@ -13,7 +13,7 @@ def user_created_handler(sender, request, user, **kwargs):
     a corresponding user at the backend.
     """
     print 'user created handler %s' % user.username
-    ocl = OCLapi(admin=True, debug=True)
+    ocl = OclApi(admin=True, debug=True)
     data = {
         'username': user.username,
         'email': user.email,
@@ -54,7 +54,7 @@ def user_logged_in_handler(sender, request, user, **kwargs):
     fails with an invalid password.
     """
     print 'User logged in Signal for:', user.username
-    ocl = OCLapi(admin=True, debug=True)
+    ocl = OclApi(admin=True, debug=True)
     result = ocl.get_user_auth(user.username, user.password)
     if result.status_code == 200:
         print 'LOGIN auth code:', result.json()

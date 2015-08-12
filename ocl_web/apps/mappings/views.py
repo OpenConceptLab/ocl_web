@@ -15,7 +15,7 @@ import json
 
 from .forms import (MappingNewForm, MappingEditForm, MappingRetireForm)
 from braces.views import LoginRequiredMixin
-from libs.ocl import OCLapi
+from libs.ocl import OclApi
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
@@ -34,7 +34,7 @@ class MappingReadBaseView(TemplateView):
         # NOTE: This is not used by mappings view - remove?
         # TODO(paynejd@gmail.com): Load details from source version, if applicable (or remove?)
         # TODO(paynejd@gmail.com): Validate the input parameters
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         search_response = api.get(owner_type, owner_id, 'sources', source_id)
         if search_response.status_code == 404:
             raise Http404
@@ -48,7 +48,7 @@ class MappingReadBaseView(TemplateView):
         Load mapping details from the API and return as dictionary.
         """
         # TODO(paynejd@gmail.com): Validate the input parameters
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         search_response = api.get(
             owner_type, owner_id, 'sources', source_id, 'mappings', mapping_id)
         if search_response.status_code == 404:
@@ -130,7 +130,7 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         self.source_id = self.kwargs.get('source')
         self.mapping_id = self.kwargs.get('mapping')
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
 
         self.source = api.get(
             self.owner_type, self.org_id, 'sources', self.source_id).json()
@@ -197,7 +197,7 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
             base_data['to_concept_name'] = form.cleaned_data.get('external_to_concept_name')
 
         # Create the mapping
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         result = api.update_mapping(
             self.owner_type, self.owner_id, self.source_id,
             self.mapping_id, base_data)
@@ -236,7 +236,7 @@ class MappingNewView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         self.get_args()
 
         # Load the source that the new mapping will belong to
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
 
         # TODO: Load list of map types
@@ -266,7 +266,7 @@ class MappingNewView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
             base_data['to_concept_name'] = form.cleaned_data.get('external_to_concept_name')
 
         # Create the mapping
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         result = api.create_mapping(self.owner_type, self.owner_id, self.source_id, base_data)
         if result.ok:
             new_mapping_id = result.json()['id']

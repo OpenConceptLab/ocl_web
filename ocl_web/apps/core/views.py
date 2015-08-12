@@ -8,7 +8,7 @@ from django.views.generic.edit import View
 from django.utils.translation import ugettext as _
 from braces.views import JsonRequestResponseMixin
 
-from libs.ocl import OCLapi
+from libs.ocl import OclApi
 
 logger = logging.getLogger('oclweb')
 
@@ -147,7 +147,7 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         """Return a list of descriptions as json.
         """
         self.get_all_args()
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
 
         result = api.get(*self.build_url())
         if not result.ok:
@@ -180,7 +180,7 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             resp = {'message': _('Invalid input')}
             return self.render_bad_request_response(resp)
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         if self.is_edit():
             result = api.put(*self.build_url(fn), **data)
             msg = _('Extra updated')
@@ -199,7 +199,7 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         """
         self.get_all_args()
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
 
         if not self.is_edit():  # i.e. has item UUID
             return self.render_bad_request_response({'message': 'key missing'})
@@ -419,7 +419,7 @@ class GetStatsView(View):
         key = self.kwargs['key']
         cnt = 0
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         if key == 'concepts':
             response = api.head('concepts')
             cnt = response.headers.get('num_found')

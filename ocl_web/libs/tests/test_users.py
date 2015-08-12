@@ -2,7 +2,7 @@
 #http://65.99.230.144/v1/users/
 from django.test import TestCase
 
-from libs.ocl import OCLapi
+from libs.ocl import OclApi
 from users.models import User
 
 class FakeRequest(object):
@@ -16,8 +16,8 @@ class UserTestCase(TestCase):
 
     def test_create_user(self):
 
-#        ocl = OCLapi(debug=True)
-        ocl = OCLapi(admin=True)
+#        ocl = OclApi(debug=True)
+        ocl = OclApi(admin=True)
 
         username = 'testuser995'
         data = {
@@ -51,7 +51,7 @@ class UserTestCase(TestCase):
     def test_user_login(self):
         """ Note that password is hardcoded for now.
          """
-        ocl = OCLapi(admin=True, debug=True)
+        ocl = OclApi(admin=True, debug=True)
 
         user = User.objects.create_user(username=self.username)
         user.password=self.password
@@ -66,7 +66,7 @@ class UserTestCase(TestCase):
         """ Test user partial data update.
             Need to login first with hard coded password.
          """
-        ocl = OCLapi(admin=True, debug=True)
+        ocl = OclApi(admin=True, debug=True)
 
         user = User.objects.create_user(username=self.username)
         user.password=self.password
@@ -80,7 +80,7 @@ class UserTestCase(TestCase):
         ocl.save_auth_token(request, result.json())
 
 
-        ocl = OCLapi(request, debug=True)
+        ocl = OclApi(request, debug=True)
         print ocl.get('users', user.username).json()
 
         data = {'company': 'company one'}
@@ -92,7 +92,7 @@ class UserTestCase(TestCase):
         """ Test concept create
             Need to login first with hard coded password.
          """
-        ocl = OCLapi(admin=True, debug=True)
+        ocl = OclApi(admin=True, debug=True)
 
         user = User.objects.create_user(username=self.username)
         user.password=self.password
@@ -106,7 +106,7 @@ class UserTestCase(TestCase):
         ocl.save_auth_token(request, result.json())
 
 
-        ocl = OCLapi(request, debug=True)
+        ocl = OclApi(request, debug=True)
         org_id = 'TESTORG1'
         source_id = 'S1'
 
@@ -131,7 +131,7 @@ class UserTestCase(TestCase):
         """ Test concept names operations
             Need to login first with hard coded password.
          """
-        ocl = OCLapi(admin=True, debug=True)
+        ocl = OclApi(admin=True, debug=True)
 
         user = User.objects.create_user(username=self.username)
         user.password=self.password
@@ -145,7 +145,7 @@ class UserTestCase(TestCase):
         ocl.save_auth_token(request, result.json())
 
 
-        ocl = OCLapi(request, debug=True)
+        ocl = OclApi(request, debug=True)
         org_id = 'TESTORG1'
         source_id = 'S1'
         concept_id = 'C2'

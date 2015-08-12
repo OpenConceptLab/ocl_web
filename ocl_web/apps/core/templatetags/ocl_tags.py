@@ -8,7 +8,7 @@ import re
 import dateutil.parser
 from django import template
 from django.template.base import (Node, NodeList)
-from libs.ocl import OCLapi
+from libs.ocl import OclApi
 
 register = template.Library()
 
@@ -378,7 +378,7 @@ class IfCanChangeNode(Node):
 
         elif obj.get('type') == 'Organization':
             # If org, authenticated user can access only if they are a member of the org
-            api = OCLapi(context['request'], debug=True)
+            api = OclApi(context['request'], debug=True)
             results = api.get('orgs', obj.get('id'), 'members', user.username)
             if results.status_code == 204:
                 has_access = True
@@ -391,7 +391,7 @@ class IfCanChangeNode(Node):
 
         elif obj.get('owner_type') == 'Organization':
             # If resource is owned by an org, then user must be a member of the org
-            api = OCLapi(context['request'], debug=True)
+            api = OclApi(context['request'], debug=True)
             results = api.get('orgs', obj.get('owner'), 'members', user.username)
             if results.status_code == 204:
                 has_access = True

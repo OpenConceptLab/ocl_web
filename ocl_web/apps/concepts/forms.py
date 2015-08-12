@@ -8,7 +8,7 @@ def clean_concept_id(self):
     concept_id = self.cleaned_data['concept_id']
     source = self.initial['source']
     request = self.initial['request']
-    api = OCLapi(request, debug=True)
+    api = OclApi(request, debug=True)
     result = api.get('orgs', source['owner'], 'sources', source['id'], 'concepts', concept_id)
     if result.status_code == 200:
         raise forms.ValidationError(_('This Concept ID is already used in this source.'))
@@ -19,7 +19,7 @@ from django.utils.translation import ugettext as _
 from django import forms
 from django.forms.formsets import formset_factory
 
-#from libs.ocl import OCLapi
+#from libs.ocl import OclApi
 from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list)
 
 

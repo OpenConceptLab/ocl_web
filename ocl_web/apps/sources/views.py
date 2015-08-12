@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from braces.views import (JsonRequestResponseMixin, LoginRequiredMixin)
 
-from libs.ocl import OCLapi, OCLSearch
+from libs.ocl import OclApi, OclSearch
 from .forms import (
     SourceNewForm, SourceEditForm,
     SourceVersionsNewForm, SourceVersionsEditForm, SourceVersionsRetireForm)
@@ -34,7 +34,7 @@ class SourceReadBaseView(TemplateView):
         """
         # TODO(paynejd@gmail.com): Load details from source version, if applicable (or remove?)
         # TODO(paynejd@gmail.com): Validate the input parameters
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         search_response = api.get(owner_type, owner_id, 'sources', source_id)
         if search_response.status_code == 404:
             raise Http404
@@ -44,15 +44,15 @@ class SourceReadBaseView(TemplateView):
 
     def get_source_versions(self, owner_type, owner_id, source_id, search_params=None):
         """
-        Load source versions from the API and return OCLSearch instance with results.
+        Load source versions from the API and return OclSearch instance with results.
         """
         # TODO(paynejd@gmail.com): Validate the input parameters
 
         # Create the searcher
-        searcher = OCLSearch(search_type=OCLapi.SOURCE_VERSION_TYPE, params=search_params)
+        searcher = OclSearch(search_type=OclApi.SOURCE_VERSION_TYPE, params=search_params)
 
         # Perform the search
-        api = OCLapi(self.request, debug=True, facets=False)
+        api = OclApi(self.request, debug=True, facets=False)
         search_response = api.get(
             owner_type, owner_id, 'sources', source_id, 'versions',
             params=searcher.search_params)
@@ -71,15 +71,15 @@ class SourceReadBaseView(TemplateView):
     def get_source_concepts(self, owner_type, owner_id, source_id,
                             source_version_id=None, search_params=None):
         """
-        Load source concepts from the API and return OCLSearch instance with results.
+        Load source concepts from the API and return OclSearch instance with results.
         """
         # TODO(paynejd@gmail.com): Validate the input parameters
 
         # Create the searcher
-        searcher = OCLSearch(search_type=OCLapi.CONCEPT_TYPE, params=search_params)
+        searcher = OclSearch(search_type=OclApi.CONCEPT_TYPE, params=search_params)
 
         # Perform the search
-        api = OCLapi(self.request, debug=True, facets=True)
+        api = OclApi(self.request, debug=True, facets=True)
         if source_version_id:
             search_response = api.get(
                 owner_type, owner_id, 'sources', source_id, source_version_id, 'concepts',
@@ -103,15 +103,15 @@ class SourceReadBaseView(TemplateView):
     def get_source_mappings(self, owner_type, owner_id, source_id,
                             source_version_id=None, search_params=None):
         """
-        Load source mappings from the API and return OCLSearch instance with results.
+        Load source mappings from the API and return OclSearch instance with results.
         """
         # TODO(paynejd@gmail.com): Validate the input parameters
 
         # Create the searcher
-        searcher = OCLSearch(search_type=OCLapi.MAPPING_TYPE, params=search_params)
+        searcher = OclSearch(search_type=OclApi.MAPPING_TYPE, params=search_params)
 
         # Perform the search
-        api = OCLapi(self.request, debug=True, facets=True)
+        api = OclApi(self.request, debug=True, facets=True)
         if source_version_id:
             search_response = api.get(
                 owner_type, owner_id, 'sources', source_id, source_version_id, 'mappings',
@@ -363,7 +363,7 @@ class SourceVersionsNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         self.get_args()
 
         # Load the most recent source version
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         source_version = None
         if self.from_org:
             source_version = api.get('orgs', self.org_id, 'sources', self.source_id,
@@ -395,7 +395,7 @@ class SourceVersionsNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         self.get_args()
 
         # Load the source
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         source = None
         if self.from_org:
             source = api.get('orgs', self.org_id, 'sources', self.source_id).json()
@@ -419,7 +419,7 @@ class SourceVersionsNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
         # Submit the new source version
         data = form.cleaned_data
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         if self.from_org:
             result = api.create_source_version_by_org(self.org_id, self.source_id, data)
         else:
@@ -501,7 +501,7 @@ class SourceNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
         self.get_args()
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         org = ocl_user = None
 
         if self.from_org:
@@ -534,7 +534,7 @@ class SourceNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         data['id'] = short_code
         data['name'] = short_code
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         if self.from_org:
             result = api.create_source_by_org(self.org_id, data)
         else:
@@ -568,7 +568,7 @@ class SourceEditView(UserOrOrgMixin, FormView):
         Trick to load initial data
         """
         self.get_args()
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         self.source_id = self.kwargs.get('source')
         if self.from_org:
             self.source = api.get('orgs', self.org_id, 'sources', self.source_id).json()
@@ -606,7 +606,7 @@ class SourceEditView(UserOrOrgMixin, FormView):
 
         self.get_args()
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         org = ocl_user = None
 
         if self.from_org:
@@ -636,7 +636,7 @@ class SourceEditView(UserOrOrgMixin, FormView):
 
         data = form.cleaned_data
 
-        api = OCLapi(self.request, debug=True)
+        api = OclApi(self.request, debug=True)
         if self.from_org:
             result = api.update_source_by_org(self.org_id, self.source_id, data)
         else:
@@ -692,9 +692,9 @@ class SourceEditView(UserOrOrgMixin, FormView):
 #         context['about'] = about
 
 #         # Load the concepts in this source
-#         api = OCLapi(self.request, debug=True)
+#         api = OclApi(self.request, debug=True)
 #         api.include_facets = True
-#         concept_searcher = OCLSearch(search_type=OCLapi.CONCEPT_TYPE, params=self.request.GET)
+#         concept_searcher = OclSearch(search_type=OclApi.CONCEPT_TYPE, params=self.request.GET)
 #         concept_search_results = api.get(
 #             self.owner_type, self.owner_id, 'sources', self.source_id,
 #             'concepts', params=concept_searcher.search_params)
@@ -740,7 +740,7 @@ class SourceEditView(UserOrOrgMixin, FormView):
 #         # TODO: Set the context for the child mappings
 
 #         # Load the source versions
-#         source_version_api = OCLapi(self.request, debug=True)
+#         source_version_api = OclApi(self.request, debug=True)
 #         source_version_search_results = source_version_api.get(
 #             self.owner_type, self.owner_id, 'sources', self.source_id,
 #             'versions')
@@ -788,7 +788,7 @@ class SourceEditView(UserOrOrgMixin, FormView):
 #         Return a list of versions as json.
 #         """
 #         self.get_all_args()
-#         api = OCLapi(self.request, debug=True)
+#         api = OclApi(self.request, debug=True)
 
 #         result = api.get(self.owner_type, self.owner_id, 'sources', self.source_id,
 #                          'versions', '?verbose=True')
@@ -815,7 +815,7 @@ class SourceEditView(UserOrOrgMixin, FormView):
 #             resp = {u"message": _('Invalid input')}
 #             return self.render_bad_request_response(resp)
 
-#         api = OCLapi(self.request, debug=True)
+#         api = OclApi(self.request, debug=True)
 #         if self.is_edit():
 #             # NOTE: updating a version URL does not have the keyword "versions",
 #             # rather, it is /owner/:owner/sources/:source/:version/
@@ -838,7 +838,7 @@ class SourceEditView(UserOrOrgMixin, FormView):
 #         Delete the specified source version.
 #         """
 #         self.get_all_args()
-#         api = OCLapi(self.request, debug=True)
+#         api = OclApi(self.request, debug=True)
 #         if self.is_edit():  # i.e. has item UUID
 #             result = api.delete(self.owner_type, self.owner_id, 'sources',
 #                                 self.source_id, self.item_id)

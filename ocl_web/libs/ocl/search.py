@@ -199,13 +199,13 @@ class SearchFilterList(object):
 
 
 
-class OCLSearch(object):
+class OclSearch(object):
     """
     Helper to handle search queries and processing of search results.
     """
 
     # resource types
-    # TODO(paynejd@gmail.com): Resource type constants are duplicated in OCLapi
+    # TODO(paynejd@gmail.com): Resource type constants are duplicated in OclApi
     USER_TYPE = 0
     ORG_TYPE = 1
     SOURCE_TYPE = 2
@@ -307,7 +307,7 @@ class OCLSearch(object):
         else:
             return False
 
-    # TODO(paynejd@gmail.com): Use OCLSearch.get_search_filters to create SearchFilterList
+    # TODO(paynejd@gmail.com): Use OclSearch.get_search_filters to create SearchFilterList
     def get_search_filters(self):
         """
         Get the search filters applicable for this search object type.

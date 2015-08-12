@@ -10,7 +10,7 @@ from django.views.generic import TemplateView
 #from django.conf import settings
 from django.core.paginator import Paginator
 import urllib
-from libs.ocl import (OCLapi, OCLSearch)
+from libs.ocl import (OclApi, OclSearch)
 
 
 logger = logging.getLogger('oclweb')
@@ -29,10 +29,10 @@ class GlobalSearchView(TemplateView):
         context = super(GlobalSearchView, self).get_context_data(*args, **kwargs)
 
         # Setup the OCL Search helper class
-        searcher = OCLSearch(params=self.request.GET)
+        searcher = OclSearch(params=self.request.GET)
 
         # Perform the primary search via the API
-        api = OCLapi(self.request, debug=True, facets=searcher.search_resource_has_facets)
+        api = OclApi(self.request, debug=True, facets=searcher.search_resource_has_facets)
         search_response = api.get(searcher.search_type, params=searcher.search_params)
         if searcher.search_resource_has_facets:
             search_response_json = search_response.json()
@@ -93,7 +93,7 @@ class GlobalSearchView(TemplateView):
 
         # Perform the counter searches for the other resources
         resource_count = {}
-        for resource_type in OCLSearch.resource_type_info:
+        for resource_type in OclSearch.resource_type_info:
             if resource_type == searcher.search_type:
                 # this search has already been performed, so just set value from above
                 resource_count[searcher.search_type] = num_found
