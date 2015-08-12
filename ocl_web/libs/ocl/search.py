@@ -394,29 +394,27 @@ class OclSearch(object):
 
 
     def process_search_results(self, search_type=None, search_response=None,
-                               has_facets=False, search_params=None, create_filters=True):
+                               search_params=None, create_filters=True):
         """
-        Processes the search results and saves to the searcher in self.search_results, and
-        self.num_found. If has_facets is set to True, processes facets, selects options
-        from search_params, and saves to self.search_filter_list.
+        Processes the search results and saves to the searcher in self.search_results and
+        self.num_found. If the results contains facets, they are saved to self.search_facets.
+        If create_filters is set to True, filters are created and saved to
+        self.search_filter_list, taking into account facets as defined by the resource type.
         """
 
         # Get search results as JSON - for now, passing on exceptions if invalid
         search_response_json = search_response.json()
 
-        # Get the resources from the search results -- if facets were returned,
+        # Get the resources from the search results -- If facets were returned,
         # then results live under the 'results' dictionary item. If no facets,
-        # then the results are the full JSON response
+        # then the results are the full JSON response.
         self.search_results = None
-        if has_facets and 'results' in search_response_json:
-            self.search_results = search_response_json['results']
-        elif not has_facets:
-            self.search_results = search_response_json
-
-        # Determine if facets are present in the search response
         self.search_facets = None
-        if 'facets' in search_response_json:
+        if 'results' in search_response_json and 'facets' in search_response_json:
+            self.search_results = search_response_json['results']
             self.search_facets = search_response_json['facets']
+        else:
+            self.search_results = search_response_json
 
         # Process num_found
         self.num_found = 0
@@ -426,7 +424,7 @@ class OclSearch(object):
             except ValueError:
                 self.num_found = 0
 
-        # Build filters
+        # Build filters, sending any facets that were returned
         if create_filters and search_type in self.SEARCH_FILTER_INFO:
             self.build_filters(search_type, facets=self.search_facets)
 
