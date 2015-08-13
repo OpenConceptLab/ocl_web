@@ -43,7 +43,7 @@ class SearchFilter(object):
     """
     def __init__(
             self,
-            filter_id='', filter_name='', filter_widget='',
+            filter_id='', filter_name='', filter_widget='', options=None,
             facet_id='', facet_results=None, minimized=False, attrs=None):
         self.filter_id = filter_id          # unique ID for query etc
         self.filter_name = filter_name      # for display
@@ -54,10 +54,20 @@ class SearchFilter(object):
         if not attrs:
             attrs = {}
         self.attrs = attrs
+        self.option_defs = options
         self.options = []                   # list of search filter options
+
+        if self.option_defs:
+            self.build_options(option_defs=self.option_defs)
 
         if self.facet_results:
             self.build_options_from_facets(facet_results=facet_results)
+
+
+    def build_options(self, option_defs=None):
+        """ Creates filter options from option definitions """
+        for option_def in option_defs:
+            self.add_option(**option_def)
 
 
     def build_options_from_facets(self, facet_results=None):
