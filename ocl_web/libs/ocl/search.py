@@ -386,7 +386,7 @@ class OclSearch(object):
     }
 
 
-    def __init__(self, search_type='', params=None):
+    def __init__(self, search_type=None, params=None):
         """
         :param search_type: Plural of OCL resource name (e.g. 'concepts', 'sources', 'users')
         :param params: dictionary, QueryDict, or string of search params
