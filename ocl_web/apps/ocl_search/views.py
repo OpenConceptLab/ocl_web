@@ -86,6 +86,7 @@ class GlobalSearchView(TemplateView):
         context['search_params'] = searcher.search_params
         context['search_response_headers'] = search_response.headers
         context['search_facets_json'] = searcher.search_facets
+        context['search_filters_debug'] = str(searcher.search_filter_list)
 
         # Set to remove closing form tag in nav.html -- retire in the future
         context['extend_nav_form'] = True
