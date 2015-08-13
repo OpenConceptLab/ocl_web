@@ -64,8 +64,7 @@ class OrganizationReadBaseView(TemplateView):
         # TODO(paynejd@gmail.com): Validate the input parameters
 
         # Perform the search
-        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_SOURCES,
-                             params=self.request.GET)
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_SOURCES, params=search_params)
         api = OclApi(self.request, debug=True, facets=True)
         search_response = api.get('orgs', org_id, 'sources', params=searcher.search_params)
         if search_response.status_code == 404:
@@ -143,7 +142,6 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         context['search_type'] = searcher.search_type
         context['url_params'] = self.request.GET
         context['search_params'] = searcher.search_params
-        context['search_response_headers'] = search_response.headers
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
 
