@@ -40,7 +40,7 @@ class GlobalSearchView(TemplateView):
         # Process the primary search results
         searcher.process_search_results(
             search_type=searcher.search_type, search_response=search_response,
-            search_params=searcher.search_params)
+            search_params=self.request.GET)
 
         # Setup paginator for primary search
         search_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
