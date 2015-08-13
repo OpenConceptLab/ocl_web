@@ -1,29 +1,28 @@
 """
-    Create organization in system via command line.
+Create organization in system via command line.
 
-    Setup is a little bit tricky:
-    - you need to have a working OCL user created, via the web, stored
-      on the same backend you are trying to create test data on.
-      - e.g. point your local dev environment to api.dev.ocl.com and
-        create a unique new user.
+Setup is a little bit tricky:
+- you need to have a working OCL user created, via the web, stored
+  on the same backend you are trying to create test data on.
+  - e.g. point your local dev environment to api.dev.ocl.com and
+    create a unique new user.
 
-    -   then this tool will read your local django DB to get the auth info
-        and create a lot of test/demo data under that user ID.
+-   then this tool will read your local django DB to get the auth info
+    and create a lot of test/demo data under that user ID.
 
-        manage.py create_org --username testusername --csv filename
-        or
-        manage.py create_org --username testusername --short_name sn
-            --full_name=full_name --website=.....
+    manage.py create_org --username testusername --csv filename
+    or
+    manage.py create_org --username testusername --short_name sn
+        --full_name=full_name --website=.....
 
-    - The CSV file must have a header row.
+- The CSV file must have a header row.
 
-    The column names must be:
-    org_short_name
-    org_full_name
-    website
-    company_name
-    location
-
+The column names must be:
+org_short_name
+org_full_name
+website
+company_name
+location
 """
 from optparse import make_option
 
@@ -33,6 +32,8 @@ from .importer import Importer
 
 
 class Command(BaseCommand):
+    """ create_org manage.py Command """
+
     help = 'Create demo data'
     option_list = BaseCommand.option_list + (
         make_option('--username',
@@ -100,6 +101,7 @@ class Command(BaseCommand):
             print result
 
     def handle_file(self):
+        """ Load from CSV """
         self.importer.load_csv()
         for row in self.importer.reader:
             self.create_org(row['org_short_name'], row['org_full_name'],

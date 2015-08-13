@@ -1,4 +1,6 @@
-# This should be eliminated and use _get_locale_list instead.
+""" __init__.py for apps.core """
+
+# TODO: This should be eliminated and use _get_locale_list instead.
 LOCALE_LIST = (
     ('', '--- Select Locale ---'),
     ('en', 'English'),

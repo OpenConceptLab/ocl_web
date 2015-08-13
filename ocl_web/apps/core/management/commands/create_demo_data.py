@@ -1,17 +1,16 @@
 """
-    A very useful demo data creator.
+A very useful demo data creator.
 
-    Setup is a little bit tricky:
-    - you need to have a working OCL user created, via the web, stored
-      on the same backend you are trying to create test data on.
-      - e.g. point your local dev environment to api.dev.ocl.com and
-        create a unique new user.
+Setup is a little bit tricky:
+- you need to have a working OCL user created, via the web, stored
+  on the same backend you are trying to create test data on.
+  - e.g. point your local dev environment to api.dev.ocl.com and
+    create a unique new user.
 
-    -   then this tool will read your local django DB to get the auth info
-        and create a lot of test/demo data under that user ID.
+-   then this tool will read your local django DB to get the auth info
+    and create a lot of test/demo data under that user ID.
 
-        manage.py create_demo_data --username testusername --create
-
+    manage.py create_demo_data --username testusername --create
 """
 from optparse import make_option
 import os.path
@@ -31,11 +30,13 @@ from users.models import User
 
 
 class FakeRequest(object):
+    """ FakeRequest class """
     def __init__(self):
         self.session = {}
 
 
 class Command(BaseCommand):
+    """ manage.py Command 'create_demo_data' """
     help = 'Create demo data'
     option_list = BaseCommand.option_list + (
         make_option('--username',
@@ -151,6 +152,7 @@ class Command(BaseCommand):
         print result
 
     def create_sources(self):
+        """ Create sources for demo data """
 
         for n in range(1, 11):
             n = self.make_source_name(n)
@@ -161,10 +163,11 @@ class Command(BaseCommand):
                 'source_type': random.choice(self.source_type_list)
             }
             print 'creating source %s' % n
-            result = self.ocl.create_source_by_org(self.ORG_ID, data)
+            result = self.ocl.create_source('orgs', self.ORG_ID, data)
             print result
 
     def create_concepts(self):
+        """ Create concepts for demo data """
 
         for s in range(1, 11):
             sid = self.make_source_name(s)
@@ -189,6 +192,7 @@ class Command(BaseCommand):
                 print result
 
     def update_concepts(self):
+        """ Update concepts for demo data -- WHEN IS THIS USED? """
 
         for s in range(1, 11):
             sid = self.make_source_name(s)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 URL Configuration for "/users/..." and all its children.
 
@@ -9,6 +8,7 @@ TODO:
 1. Source extras
 2. Source version for about, details, etc. -- only implemented now for concepts/mappings tabs
 """
+# -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
 from django.conf.urls import (patterns, url)

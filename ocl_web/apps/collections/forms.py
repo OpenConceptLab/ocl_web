@@ -10,9 +10,7 @@ from apps.core.views import _get_source_type_list, _get_locale_list
 
 
 class CollectionCreateForm(forms.Form):
-    """
-        collection create form
-    """
+    """ collection create form """
     required_css_class = 'required'
 
     short_name = forms.CharField(
@@ -64,6 +62,7 @@ class CollectionCreateForm(forms.Form):
 
 
 class CollectionEditForm(CollectionCreateForm):
+    """ Form to edit collections """
 
     def __init__(self, *args, **kwargs):
         """ Dirty trick to delete one field for edit form. django 1.6 lets you do this

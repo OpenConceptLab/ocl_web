@@ -5,12 +5,14 @@ Run this onces at system generation time.
 """
 from optparse import make_option
 
-from django.core.management import BaseCommand, CommandError
+from django.core.management import BaseCommand
+#from django.core.management import CommandError
 
 from libs.ocl import OclApi
 
 
 class Command(BaseCommand):
+    """ manage.py Command 'create_sysadmin' """
     help = 'Create sysadmin user'
     option_list = BaseCommand.option_list + (
 
@@ -35,6 +37,7 @@ class Command(BaseCommand):
         super(Command, self).__init__()
 
     def create_sysadmin_user(self):
+        """ Creates the OCL sysadmin user """
 
         from users.models import User
         sysadmin = User.objects.create_superuser(

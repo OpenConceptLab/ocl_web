@@ -27,6 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
 class Common(Configuration):
+    """ manage.py Command 'settings' to setup environment """
 
     ########## APP CONFIGURATION
     DJANGO_APPS = (
@@ -191,7 +192,8 @@ class Common(Configuration):
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
     STATIC_URL = '/static/'
 
-    # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
+    # See:
+    # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
     STATICFILES_DIRS = (
         join(BASE_DIR, 'static'),
     )
@@ -322,6 +324,7 @@ class Common(Configuration):
 
 
 class Local(Common):
+    """ Local class """
 
     ########## INSTALLED_APPS
     INSTALLED_APPS = Common.INSTALLED_APPS
@@ -350,6 +353,7 @@ class Local(Common):
 
 
 class Production(Common):
+    """ Production class -- the default """
 
     ########## INSTALLED_APPS
     INSTALLED_APPS = Common.INSTALLED_APPS

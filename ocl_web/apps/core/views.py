@@ -1,6 +1,7 @@
-"""OCL Web Core Functionality
 """
-import requests
+OCL Web Core Functionality
+"""
+#import requests
 import logging
 
 from django.http import HttpResponse

@@ -1,3 +1,6 @@
+"""
+OCL Collection views
+"""
 import requests
 import logging
 
@@ -8,7 +11,7 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.core.paginator import Paginator
-from braces.views import JsonRequestResponseMixin
+#from braces.views import JsonRequestResponseMixin
 
 
 from libs.ocl import OclApi, OclSearch, OclConstants
@@ -19,6 +22,7 @@ logger = logging.getLogger('oclweb')
 
 
 class CollectionDetailView(UserOrOrgMixin, TemplateView):
+    """ Collection detail views """
 
     template_name = "collections/collection_detail.html"
 
@@ -49,7 +53,7 @@ class CollectionDetailView(UserOrOrgMixin, TemplateView):
                 results.raise_for_status()
 
         concept_list = results.json()
-        context['source'] = source
+        #context['source'] = source
         context['concepts'] = concept_list
 
         #context['search_filters'] = searcher.get_search_filters()
@@ -196,10 +200,7 @@ class CollectionEditView(UserOrOrgMixin, FormView):
         data = form.cleaned_data
 
         api = OclApi(self.request, debug=True)
-        if self.from_org:
-            result = api.update_source_by_org(self.org_id, self.source_id, data)
-        else:
-            result = api.update_source_by_user(self.user_id, self.source_id, data)
+        result = api.update_source(self.owner_type, self.owner_id, self.source_id, data)
         print result
         if len(result.text) > 0:
             print result.json()
@@ -214,33 +215,3 @@ class CollectionEditView(UserOrOrgMixin, FormView):
             return HttpResponseRedirect(reverse("source-home",
                                                 kwargs={"user": self.user_id,
                                                         'source': self.source_id}))
-
-
-class OldCollectionDetailView(TemplateView):
-
-    template_name = "conceptcollections/conceptcollections_detail.html"
-
-    def get_context_data(self, *args, **kwargs):
-
-        context = super(OldCollectionDetailView, self).get_context_data(*args, **kwargs)
-
-        # Setup API calls
-        host = settings.API_HOST
-        auth_token = settings.API_TOKEN
-        collection_path = "/v1/orgs/%s/collections/%s/" % (kwargs['org'], kwargs['collection'])
-        concept_path = "/v1/orgs/%s/collections/%s/concepts/" % (kwargs['org'],
-                                                                 kwargs['collection'])
-        collection_url = host + collection_path
-        concept_url = host + concept_path
-        requestHeaders = {'Authorization': auth_token}
-
-        # API calls for collection details and concepts
-        collection = requests.get(collection_url, headers=requestHeaders).json()
-        concepts = requests.get(concept_url, headers=requestHeaders).json()
-
-        # Set the context
-        context['collection'] = collection
-        context['concepts'] = concepts
-
-        return context
-

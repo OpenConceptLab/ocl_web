@@ -4,7 +4,7 @@
 """
 from django.utils.translation import ugettext as _
 from django import forms
-from django.core.urlresolvers import reverse
+#from django.core.urlresolvers import reverse
 
 from .models import User
 
@@ -37,7 +37,7 @@ class UserForm(forms.Form):
 
 class SignupForm(forms.ModelForm):
     """
-        Custom form for user to sign up for an account, used by django-allauth
+    Custom form for user to sign up for an account, used by django-allauth
     """
     required_css_class = 'required'
 
@@ -45,6 +45,7 @@ class SignupForm(forms.ModelForm):
     last_name = forms.CharField(max_length=30, label=_('Last Name'), required=True)
 
     class Meta:
+        """ Meta class """
         # Set this form to use the User model.
         model = User
 
@@ -52,11 +53,13 @@ class SignupForm(forms.ModelForm):
         fields = ("first_name", "last_name")
 
     def signup(self, request, user):
+        """ signup """
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.save()
 
     def save(self, user):
+        """ save """
         print 'In SignupForm save:', user.username
         print user.first_name, user.email
         return user

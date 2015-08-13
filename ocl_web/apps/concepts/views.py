@@ -15,7 +15,8 @@ from django.template.response import TemplateResponse
 import json
 #from django.core.paginator import Paginator
 
-from braces.views import (LoginRequiredMixin, CsrfExemptMixin, JsonRequestResponseMixin)
+from braces.views import (LoginRequiredMixin, JsonRequestResponseMixin)
+#from braces.views importCsrfExemptMixin
 
 from .forms import (ConceptNewForm, ConceptEditForm, ConceptNewMappingForm, ConceptRetireForm)
 from libs.ocl import OclApi, OclSearch, OclConstants
@@ -793,6 +794,7 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         self.item_id = self.kwargs.get(self.kwarg_name)
 
     def is_edit(self):
+        """ Returns whether concept item is being edited or is new using self.item_id """
         return self.item_id is not None
 
     def get(self, request, *args, **kwargs):
@@ -819,6 +821,7 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         return self.render_json_response(result.json())
 
     def post(self, request, *args, **kwargs):
+        """ Post the data """
 
         self.get_all_args()
         data = {}
@@ -882,6 +885,7 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
 
 # TODO(paynejd): Resurrect ConceptDescView
 class ConceptDescView(ConceptItemView):
+    """ Concept description view """
     item_name = 'descriptions'
     kwarg_name = 'description'
     field_names = ['description', 'description_type', 'external_id', 'locale', 'locale_preferred']
@@ -890,6 +894,7 @@ class ConceptDescView(ConceptItemView):
 
 # TODO(paynejd): Resurrect ConceptNameView
 class ConceptNameView(ConceptItemView):
+    """ Concept name view """
     item_name = 'names'
     kwarg_name = 'name'
     field_names = ['name', 'name_type', 'external_id', 'locale', 'locale_preferred']
@@ -923,6 +928,7 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         self.item_id = self.kwargs.get(self.kwarg_name)
 
     def is_edit(self):
+        """ Returns whether extra is being edited or is new using self.item_id """
         return self.item_id is not None
 
     def get(self, request, *args, **kwargs):
@@ -948,6 +954,7 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         return self.render_json_response(ls)
 
     def post(self, request, *args, **kwargs):
+        """ Post the form data """
 
         self.get_all_args()
 

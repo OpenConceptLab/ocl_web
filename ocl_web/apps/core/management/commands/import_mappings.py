@@ -31,11 +31,13 @@ from users.models import User
 
 
 class FakeRequest(object):
+    """ FakeRequest class """
     def __init__(self):
         self.session = {}
 
 
 class Command(BaseCommand):
+    """ manage.py Command 'import_mappings' """
     help = 'Import mappigs'
     option_list = BaseCommand.option_list + (
         make_option('--username',
@@ -137,7 +139,7 @@ class Command(BaseCommand):
             print result
 
     def load_mappings(self):
-
+        """ Load mappings from file """
         for line in self.input:
             fields = line.split()
             self.create_mapping(fields)

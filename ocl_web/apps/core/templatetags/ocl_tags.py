@@ -376,30 +376,30 @@ class IfCanChangeNode(Node):
             # User must be authenticated if checking for access
             has_access = False
 
-        elif obj.get('type') == 'Organization':
+        elif obj.get('type') == 'Organization':     # pylint: disable=E1101
             # If org, authenticated user can access only if they are a member of the org
             api = OclApi(context['request'], debug=True)
-            results = api.get('orgs', obj.get('id'), 'members', user.username)
+            results = api.get('orgs', obj.get('id'), 'members', user.username)  # pylint: disable=E1101
             if results.status_code == 204:
                 has_access = True
             print 'ACCESS Check on org:', results.status_code
 
-        elif obj.get('type') == 'User':
+        elif obj.get('type') == 'User':     # pylint: disable=E1101
             # If user, authenticated user can access only if they are that user
-            if user.username == obj.get('username'):
+            if user.username == obj.get('username'):    # pylint: disable=E1101
                 has_access = True
 
-        elif obj.get('owner_type') == 'Organization':
+        elif obj.get('owner_type') == 'Organization':       # pylint: disable=E1101
             # If resource is owned by an org, then user must be a member of the org
             api = OclApi(context['request'], debug=True)
-            results = api.get('orgs', obj.get('owner'), 'members', user.username)
+            results = api.get('orgs', obj.get('owner'), 'members', user.username)       # pylint: disable=E1101
             if results.status_code == 204:
                 has_access = True
-            print 'ACCESS Check on ' + obj.get('type') + ':', results.status_code
+            print 'ACCESS Check on ' + obj.get('type') + ':', results.status_code       # pylint: disable=E1101
 
-        elif obj.get('owner_type') == 'User':
+        elif obj.get('owner_type') == 'User':       # pylint: disable=E1101
             # If resource is owned by a user, then authenticated user must own the resource
-            if obj.get('owner') == user.username:
+            if obj.get('owner') == user.username:       # pylint: disable=E1101
                 has_access = True
 
         if has_access:

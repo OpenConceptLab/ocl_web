@@ -1,11 +1,12 @@
 """
-    Base for importing objects into OCL.
+Base for importing objects into OCL.
 """
-from optparse import make_option
+#from optparse import make_option
 import os.path
 import csv
 
-from django.core.management import BaseCommand, CommandError
+#from django.core.management import BaseCommand
+from django.core.management import CommandError
 
 from libs.ocl import OclApi
 
@@ -13,11 +14,13 @@ from users.models import User
 
 
 class FakeRequest(object):
+    """ FakeRequest class """
     def __init__(self):
         self.session = {}
 
 
 class Importer(object):
+    """ Importer class for importing objects into OCL """
 
     def __init__(self):
         self.ocl = None
@@ -52,10 +55,12 @@ class Importer(object):
         self.ocl = OclApi(self.request, debug=True)
 
     def connect(self):
+        """ Login to OCL """
         self.load_user()
         self.login()
 
     def load_csv(self):
+        """ Load data from CSV file and save to self.reader """
         print 'Loading from %s...' % self.filename
         f = open(self.filename, 'r')
         self.reader = csv.DictReader(f)

@@ -26,14 +26,16 @@ location
 hl7_code
 """
 from optparse import make_option
-
 from django.core.management import BaseCommand, CommandError
-
 from .importer import Importer
+
 
 PUBLIC_ACCESS_VALUES = ('View', 'Edit', 'None')
 
+
 class Command(BaseCommand):
+    """ create_source manage.py command """
+
     help = 'Create demo data'
     option_list = BaseCommand.option_list + (
         make_option('--username',
@@ -124,10 +126,11 @@ class Command(BaseCommand):
         if self.importer.test_mode:
             print 'Just testing...'
             return
-        result = self.importer.ocl.create_source_by_org(org_id, data)
+        result = self.importer.ocl.create_source('orgs', org_id, data)
         print result
 
     def handle_file(self):
+        """ Load CSV from the file """
         self.importer.load_csv()
         for row in self.importer.reader:
             self.create_source(
@@ -161,4 +164,5 @@ class Command(BaseCommand):
             self.handle_file()
         else:
             # TBW
-            self.create_source()
+            # TODO: Command.handle:: self.create_source()
+            pass

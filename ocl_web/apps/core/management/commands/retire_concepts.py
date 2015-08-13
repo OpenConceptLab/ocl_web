@@ -1,11 +1,8 @@
 """
-    Retire concepts using the API.
+Retire concepts using the API.
 
-
-        The input file format is a record per line, each line contains a concept id.
-
-        manage.py retire_concepts input_file_name
-
+The input file format is a record per line, each line contains a concept id.
+manage.py retire_concepts input_file_name
 """
 from optparse import make_option
 import os.path
@@ -22,11 +19,13 @@ from users.models import User
 
 
 class FakeRequest(object):
+    """ FakeRequest class """
     def __init__(self):
         self.session = {}
 
 
 class Command(BaseCommand):
+    """ manage.py Command retire_concepts """
     help = 'Retire concepts'
     option_list = BaseCommand.option_list + (
         make_option('--username',
@@ -101,7 +100,7 @@ class Command(BaseCommand):
         print result
 
     def retire_concepts(self):
-
+        """ Load concepts to retire from file, iterate through them, and retire """
         for line in self.input:
             cid = line.strip()
             self.retire(cid)

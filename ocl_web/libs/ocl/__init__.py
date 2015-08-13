@@ -15,11 +15,11 @@ SESSION_TOKEN_KEY = 'API_USER_TOKEN'
 
 
 class OclApi(object):
-    """ Interface to the OCL API backend.
-        Handles all the authentication and formating.
-        Also contain helper and utility functions.
-
-        :logging: This class outputs debug level information to the "oclapi" logger.
+    """
+    Interface to the OCL API backend.
+    Handles all the authentication and formating.
+    Also contain helper and utility functions.
+    :logging: This class outputs debug level information to the "oclapi" logger.
     """
 
     logger = logging.getLogger('oclapi')
@@ -27,14 +27,11 @@ class OclApi(object):
 
     def __init__(self, request=None, debug=False, admin=False, facets=False):
         """
-        :param request: gives the API access to the current active session,
-            to get Authorization etc.
-        :param admin: optional, if set to True, access API as admin user.
-            Needed for create_user.
-        :param facets: optional, if set to True, API returns faceted search
-            information instead of clean JSON results. Note that faceted
-            results are only applicable on certain list requests, and this
-            argument is ignored otherwise.
+        :param request: gives API access to the current active session, to get Authorization etc.
+        :param admin: optional, if set to True, access API as admin user. Needed for create_user.
+        :param facets: optional, if set to True, API returns faceted search information instead
+                       of clean JSON results. Note that faceted results are only applicable on
+                       certain list requests, and this argument is ignored otherwise.
         """
         self.status_code = None
         self.debug = debug
@@ -97,15 +94,12 @@ class OclApi(object):
 
 
     def post(self, type_name, *args, **kwargs):
-        """ Issue POST request to API.
-
-            :param type_name: is a string specifying the type of the object
-                              according to the API.
-            :param *args: The rest of the positional arguments will be appended
-                          to the post URL
-            :param *kwargs: all the keyword arguments will become post data.
-
-            :returns: response object from requests.
+        """
+        Issue POST request to API.
+        :param type_name: is a string specifying the type of the object according to the API.
+        :param *args: The rest of the positional arguments will be appended to the post URL
+        :param *kwargs: all the keyword arguments will become post data.
+        :returns: response object from requests.
         """
         url = '%s/%s/' % (self.host, type_name)
         if len(args) > 0:
@@ -123,8 +117,8 @@ class OclApi(object):
 
 
     def delete(self, *args, **kwargs):
-        """ Issue delete request to API.
-
+        """
+        Issue delete request to API.
         """
         url = '%s/' % (self.host)
         if len(args) > 0:
@@ -140,10 +134,9 @@ class OclApi(object):
 
 
     def put(self, type_name, *args, **kwargs):
-        """ Issue delete request to API.
-
-            :param type_name: is a string specifying the type of the object
-                              according to the API.
+        """
+        Issue delete request to API.
+        :param type_name: is a string specifying the type of the object according to the API.
         """
         url = '%s/%s/' % (self.host, type_name)
         if len(args) > 0:
@@ -162,12 +155,11 @@ class OclApi(object):
 
 
     def head(self, *args, **kwargs):
-        """ Issue HEAD request to API.
-
-            :param *args: All positional arguments are appended to the request URL.
-            :param **kwargs: These are not used at the moment, since this is a get request TODO
-            :returns: requests.response object.
-
+        """
+        Issue HEAD request to API.
+        :param *args: All positional arguments are appended to the request URL.
+        :param **kwargs: These are not used at the moment, since this is a get request TODO
+        :returns: requests.response object.
         """
         self.url = '%s/' % (self.host)
         if len(args) > 0:
@@ -188,14 +180,13 @@ class OclApi(object):
 
 
     def get(self, *args, **kwargs):
-        """ Issue get request to API.
-
-            :param *args: All positional arguments are appended to the request URL.
-                Note: To pass query parameters to the GET function,
-                use a params={k:v} keyword argument.
-            :param **kwargs: These are not used at the moment, since this is a get request TODO
-            :returns: requests.response object.
-
+        """
+        Issue get request to API.
+        :param *args: All positional arguments are appended to the request URL.
+            Note: To pass query parameters to the GET function,
+            use a params={k:v} keyword argument.
+        :param **kwargs: These are not used at the moment, since this is a get request TODO
+        :returns: requests.response object.
         """
         # Build the URL
         self.url = '%s/' % (self.host)
@@ -218,14 +209,14 @@ class OclApi(object):
         return results
 
 
+    # TODO: Retire get_json?
     def get_json(self, *args):
-        """ Smarter GET request when you really want a json object back.
-
-            Note: This is experimental -- not sure if this is the right abstraction.
-
-            :param *args: All positional arguments are appended to the request URL.
-            :returns: json string or None if error.
-            :exception: Will raise exception if response status code is not 200.
+        """
+        Smarter GET request when you really want a json object back.
+        Note: This is experimental -- not sure if this is the right abstraction.
+        :param *args: All positional arguments are appended to the request URL.
+        :returns: json string or None if error.
+        :exception: Will raise exception if response status code is not 200.
         """
         results = self.get(*args)
         if results.status_code != requests.codes.ok:
@@ -236,11 +227,12 @@ class OclApi(object):
             return None
 
 
+    # TODO: Retire get_by_url?
     def get_by_url(self, url, **kwargs):
-        """ Issue get request to API.
-
-            :param url: is a string specifying the request url. Useful
-                for urls contained in OCL response data like members_url.
+        """
+        Issue get request to API.
+        :param url: is a string specifying the request url. Useful
+            for urls contained in OCL response data like members_url.
         """
         url = '%s/%s' % (self.host, url)
 
@@ -253,52 +245,52 @@ class OclApi(object):
 
 
     def save_auth_token(self, request, json_data):
-        """ Save API user token into session table for online use.
-
-            :param request: is the django http request
-            :param api_json_data: contains the backend auth token.
+        """
+        Save API user token into session table for online use.
+        :param request: is the django http request
+        :param api_json_data: contains the backend auth token.
         """
         request.session[SESSION_TOKEN_KEY] = json_data['token']
 
 
     def create_user(self, data):
-        """ Create a user in the system. This call is a bit special because
-            users need to be created using admin credentials.
-            :param data: is a dictionary of all the data fields.
-
-            :returns: requests.reponse object
+        """
+        Create a user in the system. This call is a bit special because
+        users need to be created using admin credentials.
+        :param data: is a dictionary of all the data fields.
+        :returns: requests.reponse object
         """
         result = self.post('users', **data)
         return result
 
 
     def delete_user(self, username):
-        """ Delete a user in the system, actually just deactivates her.
-            delete users needs admin credentials.
-            :param username: is a string specifying the username.
-
-            :returns: ??
+        """
+        Delete a user in the system, actually just deactivates her.
+        delete users needs admin credentials.
+        :param username: is a string specifying the username.
+        :returns: ??
         """
         result = self.delete('users', username)
         return result
 
 
     def reactivate_user(self, username):
-        """ Delete a user in the system, actually just deactivates her.
-            delete users needs admin credentials.
-            :param username: is a string specifying the username.
-
-            :returns: ??
+        """
+        Delete a user in the system, actually just deactivates her.
+        delete users needs admin credentials.
+        :param username: is a string specifying the username.
+        :returns: ??
         """
         result = self.put('users/%s/reactivate/' % username)
         return result
 
 
     def get_user_auth(self, username, password):
-        """ Get the user AUTH token for the specified user.
-            :param username: is a string containing the user name.
-
-            :returns: ??
+        """
+        Get the user AUTH token for the specified user.
+        :param username: is a string containing the user name.
+        :returns: ??
         """
         result = self.post('users', 'login', username=username, password=password)
         return result
@@ -314,17 +306,16 @@ class OclApi(object):
 
     def create_concept(self, source_owner_type, source_owner_id, source_id, base_data,
                        names=[], descriptions=[], extras=[]):
-        """ Create a concept.
-
-            :param source_owner_type: 'orgs' or 'users'
-            :param owner_id: ID of the owner org or user
-            :param source_id: is the ID of the owner source
-            :param base_data: is a dictionary of all the data fields
-            :param names: is a list of dictionary of name fields, optional.
-            :param descriptions: is a list of dictionary of name fields, optional.
-            :param extras: is a dictionary of name fields, optional.
-
-            :returns: POST result from requests package.
+        """
+        Create a concept.
+        :param source_owner_type: 'orgs' or 'users'
+        :param source_owner_id: ID of org/user owner
+        :param source_id: is the ID of the owner source
+        :param base_data: is a dictionary of all the data fields
+        :param names: is a list of dictionary of name fields, optional.
+        :param descriptions: is a list of dictionary of name fields, optional.
+        :param extras: is a dictionary of name fields, optional.
+        :returns: POST result from requests package.
         """
         data = {}
         data.update(base_data)
@@ -356,17 +347,18 @@ class OclApi(object):
     def update_concept(self, source_owner_type, source_owner_id, source_id,
                        concept_id, base_data,
                        names=[], descriptions=[], extras=[]):
-        """ Update a concept.
-            NOTE: currently add by org+source, but there are other options... TODO
-
-            :param org_id: is the ID of the owner org
-            :param source_id: is the ID of the owner source
-            :param base_data: is a dictionary of all the data fields
-            :param names: is a list of dictionary of name fields, optional.
-            :param descriptions: is a list of dictionary of name fields, optional.
-            :param extras: is a list of dictionary of name fields, optional.
-
-            :returns: POST result from requests package.
+        """
+        Update a concept.
+        NOTE: currently add by org+source, but there are other options... TODO
+        :param source_owner_type: 'orgs' or 'users'
+        :param source_owner_id: ID of org/user owner
+        :param source_id: is the ID of the owner source
+        :param concept_id: is the ID of the owner source
+        :param base_data: is a dictionary of all the data fields
+        :param names: is a list of dictionary of name fields, optional.
+        :param descriptions: is a list of dictionary of name fields, optional.
+        :param extras: is a list of dictionary of name fields, optional.
+        :returns: POST result from requests package.
         """
         data = {}
         data.update(base_data)
@@ -389,7 +381,6 @@ class OclApi(object):
         if len(list_data) > 0:
             data['extras'] = list_data
 
-        # TODO: Why doesn't POST work?
         result = self.put(
             source_owner_type, source_owner_id, 'sources', source_id,
             'concepts', concept_id, **data)
@@ -398,11 +389,9 @@ class OclApi(object):
 
     def create_org(self, base_data, extras=[]):
         """
-            Create organization
-
-            :param base_data: is a dictionary of fields.
-
-            :returns: response object.
+        Create organization
+        :param base_data: is a dictionary of fields.
+        :returns: response object.
         """
         data = {}
         data.update(base_data)
@@ -412,12 +401,10 @@ class OclApi(object):
 
     def update_org(self, org_id, base_data, extras=[]):
         """
-            Update organization
-
-            :param org_id: is the ID for the organization being updated.
-            :param base_data: is a dictionary of fields.
-
-            :returns: response object.
+        Update organization
+        :param org_id: is the ID for the organization being updated.
+        :param base_data: is a dictionary of fields.
+        :returns: response object.
         """
         data = {}
         data.update(base_data)
@@ -425,114 +412,89 @@ class OclApi(object):
         return result
 
 
-    def create_source_by_org(self, org_id, base_data, extras=[]):
+    def create_source(self, owner_type, owner_id, base_data, extras=[]):
         """
-            :returns: response object.
+        Create source.
+        :param owner_type: 'orgs' or 'users'
+        :param owner_id: ID of the org/user/ owner
+        :param base_data: Dictionary of fields for the new source version
+        :param extras: Extras to save to the resource
+        :returns: response object
+
+        TODO(paynejd): create_sources extras not implemented
         """
         data = {}
         data.update(base_data)
-        result = self.post('orgs', org_id, 'sources', **data)
+        result = self.post(owner_type, owner_id, 'sources', **data)
         return result
 
 
-    def create_source_by_user(self, user_id, base_data, extras=[]):
+    def update_source(self, owner_type, owner_id, source_id, base_data, extras=[]):
         """
-            :returns: response object.
+        Update source owned by org.
+        :param owner_type: 'orgs' or 'users'
+        :param owner_id: ID of the org/user/ owner
+        :param base_data: is a dictionary of fields.
+        :param extras: Extras to save to the resource
+        :returns: response object.
         """
         data = {}
         data.update(base_data)
-        result = self.post('users', user_id, 'sources', **data)
+        result = self.put(owner_type, owner_id, 'sources', source_id, **data)
         return result
 
 
-    def create_source_by_me(self, base_data, extras=[]):
+    def create_source_version(self, owner_type, org_id, source_id, base_data):
         """
-            :returns: response object.
+        Create a new source version.
+        :param owner_type: 'orgs' or 'users'
+        :param owner_id: ID of the org/user/ owner
+        :param source_id: ID of the source
+        :param base_data: Dictionary of fields for the new source version
+        :returns: response object
         """
         data = {}
         data.update(base_data)
-        result = self.post('users', 'sources', **data)
+        result = self.post(owner_type, org_id, 'sources', source_id, 'versions', **data)
         return result
 
 
-    def update_source_by_org(self, org_id, source_id, base_data, extras=[]):
+    def update_source_version(self, owner_type, owner_id,
+                              source_id, source_version_id, base_data):
         """
-            update source owned by org.
-
-            :param org_id: is the org owner of this wource.
-            :param base_data: is a dictionary of fields.
-
-            :returns: response object.
-        """
-        data = {}
-        data.update(base_data)
-        # TODO: Why doesn't POST work?
-        result = self.put('orgs', org_id, 'sources', source_id, **data)
-        return result
-
-
-    def update_source_by_user(self, username, source_id, base_data, extras=[]):
-        """
-            Update source owned by user.
-
-            :param username: is the user owner of this wource.
-            :param base_data: is a dictionary of fields.
-
-            :returns: response object.
+        Update source version. Limits update to only the description and released fields for now.
+        :param owner_type: 'orgs' or 'users'
+        :param owner_id: ID of the org/user owner
+        :param source_id: ID of the source
+        :param source_version_id: ID of the source_version
+        :param base_data: Dictionary of fields to update
+        :returns: response object
         """
         data = {}
-        data.update(base_data)
-        # TODO: Why doesn't POST work?
-        result = self.put('users', username, 'sources', source_id, **data)
-        return result
-
-
-    def create_source_version_by_org(self, org_id, source_id, base_data):
-        """
-            create a new source version owned by org.
-
-            :param org_id: is the org owner of this wource.
-            :param base_data: is a dictionary of fields.
-
-            :returns: response object.
-        """
-        data = {}
-        data.update(base_data)
-        result = self.post('orgs', org_id, 'sources', source_id,
-                           'versions', **data)
-        return result
-
-
-    def create_source_version_by_user(self, username, source_id, base_data):
-        """ Create a new source version owned by user.
-
-            :param username: is the user owner of this wource.
-            :param base_data: is a dictionary of fields.
-
-            :returns: response object.
-        """
-        data = {}
-        data.update(base_data)
-        result = self.post('users', username, 'sources', source_id,
-                           'versions', **data)
+        if 'description' in base_data:
+            data['description'] = base_data['description']
+        if 'released' in base_data:
+            data['released'] = base_data['released']
+        result = self.put(owner_type, owner_id, 'sources', source_id,
+                          'versions', source_version_id, **data)
         return result
 
 
     def create_mapping_from_concept(self, source_owner_type, source_owner_id,
                                     source_id, from_concept_id, data):
-        """ Create a concept mapping from the specified concept
+        """
+        Create a concept mapping from the specified concept
 
-            The 'from_concept_url' is automatically set using the provided source_owner_type,
-            'source_owner_id', 'source_id', and 'from_concept_id'. If the from_concept is not
-            stored in the provided source, use create_mapping().
+        The 'from_concept_url' is automatically set using the provided source_owner_type,
+        'source_owner_id', 'source_id', and 'from_concept_id'. If the from_concept is not
+        stored in the provided source, use create_mapping().
 
-            :param source_owner_type: Either 'orgs' or 'users'
-            :param source_owner_id: ID of the owner org/user
-            :param source_id: ID of the source that will own the new mapping
-            :param from_concept_id: ID of the from-concept
-            :param data: A dictionary of all the data fields to POST
-
-            :returns: POST result from requests package.
+        :param source_owner_type: Either 'orgs' or 'users'
+        :param source_owner_id: ID of the owner org/user
+        :param source_id: ID of the source that will own the new mapping
+        :param from_concept_id: ID of the from-concept
+        :param data: A dictionary of all the data fields to POST
+        :returns: POST result from requests package.
         """
         data['from_concept_url'] = ('/' + source_owner_type + '/' + source_owner_id +
                                     '/sources/' + source_id + '/concepts/' +
@@ -541,19 +503,19 @@ class OclApi(object):
 
 
     def create_mapping(self, source_owner_type, source_owner_id, source_id, data):
-        """ Create a mapping
+        """
+        Create a mapping
 
-            'from_concept_url' and 'map-type' are required fields in the data dictionary.
-            If internal mapping, must include 'to_concept_url'. If external mapping, must
-            include 'to_source_url' and 'to_concept_code'. Refer to API documentation
-            for details and other optional fields.
+        'from_concept_url' and 'map-type' are required fields in the data dictionary.
+        If internal mapping, must include 'to_concept_url'. If external mapping, must
+        include 'to_source_url' and 'to_concept_code'. Refer to API documentation
+        for details and other optional fields.
 
-            :param source_owner_type: Either 'orgs' or 'users'
-            :param source_owner_id: ID of the owner org/user (e.g. "WHO")
-            :param source_id: ID of the source that will own the new mapping (e.g. "ICD-10")
-            :param data: A dictionary of all the data fields to POST
-
-            :returns: POST result from requests package.
+        :param source_owner_type: Either 'orgs' or 'users'
+        :param source_owner_id: ID of the owner org/user (e.g. "WHO")
+        :param source_id: ID of the source that will own the new mapping (e.g. "ICD-10")
+        :param data: A dictionary of all the data fields to POST
+        :returns: POST result from requests package.
         """
         result = self.post(source_owner_type, source_owner_id,
                            'sources', source_id, 'mappings', **data)
@@ -561,18 +523,18 @@ class OclApi(object):
 
 
     def update_mapping(self, source_owner_type, source_owner_id, source_id, mapping_id, data):
-        """ Update a mapping
+        """
+        Update a mapping
 
-            TODO: Unclear what happens if changing between internal/external -- consider only
-            allowing updates to external_id, map_type, to_concept_name, and extras.
+        TODO: Unclear what happens if changing between internal/external -- consider only
+        allowing updates to external_id, map_type, to_concept_name, and extras.
 
-            :param source_owner_type: Either 'orgs' or 'users'
-            :param source_owner_id: ID of the owner org/user (e.g. "WHO")
-            :param source_id: ID of the source that will own the new mapping (e.g. "ICD-10")
-            :param mapping_id: ID of the mapping to update
-            :param data: A dictionary of all the data fields to POST
-
-            :returns: POST result from requests package.
+        :param source_owner_type: Either 'orgs' or 'users'
+        :param source_owner_id: ID of the owner org/user (e.g. "WHO")
+        :param source_id: ID of the source that will own the new mapping (e.g. "ICD-10")
+        :param mapping_id: ID of the mapping to update
+        :param data: A dictionary of all the data fields to POST
+        :returns: POST result from requests package.
         """
         result = self.put(source_owner_type, source_owner_id,
                           'sources', source_id, 'mappings', mapping_id, **data)
