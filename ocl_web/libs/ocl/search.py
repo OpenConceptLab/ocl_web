@@ -388,7 +388,7 @@ class OclSearch(object):
 
     def __init__(self, search_type='', params=None):
         """
-        :param search_type: Plural text of OCL resource (e.g. 'concepts', 'sources', 'users')
+        :param search_type: Plural of OCL resource name (e.g. 'concepts', 'sources', 'users')
         :param params: dictionary, QueryDict, or string of search params
         """
         # outputs
@@ -405,7 +405,7 @@ class OclSearch(object):
 
         # Optionally parse search parameters (i.e. GET request parameters)
         if params is not None:
-            self.parse_search_request(params)
+            self.parse_search_request(params, search_type=search_type)
 
     @property
     def search_resource_id(self):
@@ -563,12 +563,15 @@ class OclSearch(object):
         self.select_search_filters(search_params)
 
 
-    def parse_search_request(self, request_get):
+    def parse_search_request(self, request_get, search_type=None):
         """
-        Parse processes a request string, dictionary or QueryDict as the input/criteria for an
-        OCL search. The parsed search inputs are saved in self.search_params
+        Processes a request string, dict or QueryDict as the input/criteria for an OCL search.
+        The parsed search inputs are saved in self.search_params. Set search_type if type=...
+        not included in request_get and search_type != DEFAULT_SEARCH_TYPE. type=... in
+        request_get takes priority over search_type attribute.
 
         :params request_get: request string, dictionary or QueryDict of search inputs/criteria
+        :params search_type: Plural name of search_type (e.g. 'concepts')
         :returns: None
         """
 
@@ -590,6 +593,16 @@ class OclSearch(object):
             raise TypeError('Expected QueryDict, dict, or str, but ' + str(request_get) + ' passed')
 
         # Determine the search type - gets the latest occurence of type
+        if 'type' in params and params['type'] in self.RESOURCE_TYPE_INFO:
+            self.search_type = params['type']
+        elif search_type and search_type in self.RESOURCE_TYPE_INFO:
+            self.search_type = search_type
+        else:
+            self.search_type = self.DEFAULT_SEARCH_TYPE
+        if 'type' in params:
+            del params['type']
+        print 'search type:', self.search_type
+
         if 'type' in params:
             if params['type'] in self.RESOURCE_TYPE_INFO:
                 self.search_type = params['type']
