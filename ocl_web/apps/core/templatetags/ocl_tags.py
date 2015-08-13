@@ -413,7 +413,7 @@ class IfCanChangeNode(Node):
 def do_if_can_change(parser, token):
     """
     The ``{% if_can_change ocl_resource %}`` tag evaluates whether the current user has access
-    to the specified OCL resource. 
+    to the specified OCL resource.
 
     The OCL resource can be an org, user, or any resource that contains "owner" and "owner_type"
     fields. Meaning sources, source versions, concepts, mappings are fine, but not extras,

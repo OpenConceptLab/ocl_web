@@ -17,7 +17,7 @@ from braces.views import JsonRequestResponseMixin
 
 from .forms import (OrganizationNewForm, OrganizationEditForm)
 from .forms import (OrganizationMemberAddForm)
-from libs.ocl import OclApi, OclSearch
+from libs.ocl import OclApi, OclSearch, OclConstants
 
 logger = logging.getLogger('oclweb')
 
@@ -60,9 +60,7 @@ class OrganizationReadBaseView(TemplateView):
 
 
 class OrganizationDetailsView(OrganizationReadBaseView):
-    """
-    Organization details view.
-    """
+    """ Organization details view. """
 
     template_name = "orgs/org_details.html"
 
@@ -106,7 +104,8 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         org = self.get_org_details(org_id)
 
         # Load the sources in this organization
-        searcher = OclSearch(search_type='sources', params=self.request.GET)
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_SOURCES,
+                             params=self.request.GET)
         api = OclApi(self.request, debug=True, facets=True)
         search_response = api.get('orgs', org_id, 'sources', params=searcher.search_params)
         if search_response.status_code == 404:

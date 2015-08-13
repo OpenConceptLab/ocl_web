@@ -18,7 +18,7 @@ import json
 from braces.views import (LoginRequiredMixin, CsrfExemptMixin, JsonRequestResponseMixin)
 
 from .forms import (ConceptNewForm, ConceptEditForm, ConceptNewMappingForm, ConceptRetireForm)
-from libs.ocl import OclApi, OclSearch
+from libs.ocl import OclApi, OclSearch, OclConstants
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
@@ -95,10 +95,9 @@ class ConceptReadBaseView(TemplateView):
         """
         # TODO(paynejd@gmail.com): Validate input parameters
 
-        # Create the searcher
-        searcher = OclSearch(search_type=OclApi.CONCEPT_VERSION_TYPE, params=search_params)
-
         # Perform the search
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_CONCEPT_VERSIONS,
+                             params=search_params)
         api = OclApi(self.request, debug=True, facets=False)
         search_response = api.get(
             owner_type, owner_id, 'sources', source_id,
@@ -110,8 +109,8 @@ class ConceptReadBaseView(TemplateView):
 
         # Process the results
         searcher.process_search_results(
-            search_type='concept version', search_response=search_response,
-            has_facets=False, search_params=search_params)
+            search_type=searcher.search_type, search_response=search_response,
+            search_params=search_params)
 
         return searcher
 

@@ -11,7 +11,7 @@ from django.core.paginator import Paginator
 from braces.views import JsonRequestResponseMixin
 
 
-from libs.ocl import OclApi, OclSearch
+from libs.ocl import OclApi, OclSearch, OclConstants
 from .forms import (CollectionCreateForm, CollectionEditForm)
 from apps.core.views import UserOrOrgMixin
 
@@ -28,7 +28,7 @@ class CollectionDetailView(UserOrOrgMixin, TemplateView):
         self.get_args()
 
         print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
-        searcher = OclSearch(OclApi.COLLECTION_TYPE, params=self.request.GET)
+        searcher = OclSearch(OclConstants.RESOURCE_NAME_COLLECTIONS, params=self.request.GET)
 
         api = OclApi(self.request, debug=True)
 
@@ -228,7 +228,8 @@ class OldCollectionDetailView(TemplateView):
         host = settings.API_HOST
         auth_token = settings.API_TOKEN
         collection_path = "/v1/orgs/%s/collections/%s/" % (kwargs['org'], kwargs['collection'])
-        concept_path = "/v1/orgs/%s/collections/%s/concepts/" % (kwargs['org'], kwargs['collection'])
+        concept_path = "/v1/orgs/%s/collections/%s/concepts/" % (kwargs['org'],
+                                                                 kwargs['collection'])
         collection_url = host + collection_path
         concept_url = host + concept_path
         requestHeaders = {'Authorization': auth_token}

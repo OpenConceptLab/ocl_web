@@ -10,7 +10,7 @@ from django.views.generic import TemplateView
 from django.http import Http404
 from django.core.paginator import Paginator
 import urllib
-from libs.ocl import (OclApi, OclSearch)
+from libs.ocl import (OclApi, OclSearch, OclConstants)
 
 
 logger = logging.getLogger('oclweb')
@@ -28,7 +28,8 @@ class GlobalSearchView(TemplateView):
 
         # Perform the primary search via the API
         searcher = OclSearch(params=self.request.GET)
-        api = OclApi(self.request, debug=True, facets=searcher.search_resource_has_facets)
+        api = OclApi(self.request, debug=True,
+                     facets=OclConstants.resource_has_facets(searcher.search_type))
         search_response = api.get(searcher.search_type, params=searcher.search_params)
         if search_response.status_code == 404:
             raise Http404
@@ -49,7 +50,7 @@ class GlobalSearchView(TemplateView):
         context['page'] = search_current_page
         context['pagination_url'] = self.request.get_full_path()
         context['search_type'] = searcher.search_type
-        context['search_type_name'] = searcher.search_resource_name
+        context['search_type_name'] = OclConstants.resource_display_name(searcher.search_type)
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.search_filter_list
@@ -66,7 +67,7 @@ class GlobalSearchView(TemplateView):
 
         # Perform the counter searches for the other resources
         resource_count = {}
-        for resource_type in OclSearch.RESOURCE_TYPE_INFO:
+        for resource_type in OclConstants.RESOURCE_TYPE_INFO:
             if resource_type == searcher.search_type:
                 # Primary search has already been performed, so just set value from above
                 resource_count[searcher.search_type] = searcher.num_found

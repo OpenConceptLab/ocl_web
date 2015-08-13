@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from braces.views import (JsonRequestResponseMixin, LoginRequiredMixin)
 
-from libs.ocl import OclApi, OclSearch
+from libs.ocl import OclApi, OclSearch, OclConstants
 from .forms import (
     SourceNewForm, SourceEditForm,
     SourceVersionsNewForm, SourceVersionsEditForm, SourceVersionsRetireForm)
@@ -48,10 +48,9 @@ class SourceReadBaseView(TemplateView):
         """
         # TODO(paynejd@gmail.com): Validate the input parameters
 
-        # Create the searcher
-        searcher = OclSearch(search_type=OclApi.SOURCE_VERSION_TYPE, params=search_params)
-
         # Perform the search
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_SOURCE_VERSIONS,
+                             params=search_params)
         api = OclApi(self.request, debug=True, facets=False)
         search_response = api.get(
             owner_type, owner_id, 'sources', source_id, 'versions',
@@ -63,8 +62,8 @@ class SourceReadBaseView(TemplateView):
 
         # Process the results
         searcher.process_search_results(
-            search_type='source version', search_response=search_response,
-            has_facets=False, search_params=search_params)
+            search_type=searcher.search_type, search_response=search_response,
+            search_params=search_params)
 
         return searcher
 
@@ -75,10 +74,8 @@ class SourceReadBaseView(TemplateView):
         """
         # TODO(paynejd@gmail.com): Validate the input parameters
 
-        # Create the searcher
-        searcher = OclSearch(search_type=OclApi.CONCEPT_TYPE, params=search_params)
-
-        # Perform the search
+        # Perform the search, applying source_version_id if not None
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_CONCEPTS, params=search_params)
         api = OclApi(self.request, debug=True, facets=True)
         if source_version_id:
             search_response = api.get(
@@ -95,8 +92,8 @@ class SourceReadBaseView(TemplateView):
 
         # Process the results
         searcher.process_search_results(
-            search_type='concepts', search_response=search_response,
-            has_facets=True, search_params=search_params)
+            search_type=searcher.search_type, search_response=search_response,
+            search_params=search_params)
 
         return searcher
 
@@ -107,10 +104,8 @@ class SourceReadBaseView(TemplateView):
         """
         # TODO(paynejd@gmail.com): Validate the input parameters
 
-        # Create the searcher
-        searcher = OclSearch(search_type=OclApi.MAPPING_TYPE, params=search_params)
-
         # Perform the search
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_MAPPINGS, params=search_params)
         api = OclApi(self.request, debug=True, facets=True)
         if source_version_id:
             search_response = api.get(
@@ -127,8 +122,8 @@ class SourceReadBaseView(TemplateView):
 
         # Process the results
         searcher.process_search_results(
-            search_type='mappings', search_response=search_response,
-            has_facets=True, search_params=search_params)
+            search_type=search_type.search_type, search_response=search_response,
+            search_params=search_params)
 
         return searcher
 
@@ -198,15 +193,12 @@ class SourceAboutView(UserOrOrgMixin, SourceReadBaseView):
 
 
 class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
-    """
-    Source Concepts view.
-    """
+    """ Source Concepts view. """
+
     template_name = "sources/source_concepts.html"
 
     def get_context_data(self, *args, **kwargs):
-        """
-        Loads the concepts that are in the source.
-        """
+        """ Loads the concepts that are in the source. """
 
         # Setup the context and args
         context = super(SourceConceptsView, self).get_context_data(*args, **kwargs)
@@ -220,7 +212,8 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         # Load the concepts in this source, applying search parameters
         searcher = self.get_source_concepts(
             self.owner_type, self.owner_id, self.source_id,
-            source_version_id=self.source_version_id, search_params=self.request.GET)
+            source_version_id=self.source_version_id,
+            search_params=self.request.GET)
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
@@ -240,9 +233,11 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
         context['search_query'] = searcher.get_query()
-        context['search_facets'] = searcher.search_filter_list
+        context['search_filters'] = searcher.search_filter_list
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
+        context['search_facets_json'] = searcher.search_facets
+        context['search_filters_debug'] = str(searcher.search_filter_list)
 
         return context
 
@@ -291,9 +286,11 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
         context['search_query'] = searcher.get_query()
-        context['search_facets'] = searcher.search_filter_list
+        context['search_filters'] = searcher.search_filter_list
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
+        context['search_facets_json'] = searcher.search_facets
+        context['search_filters_debug'] = str(searcher.search_filter_list)
 
         return context
 
@@ -694,7 +691,8 @@ class SourceEditView(UserOrOrgMixin, FormView):
 #         # Load the concepts in this source
 #         api = OclApi(self.request, debug=True)
 #         api.include_facets = True
-#         concept_searcher = OclSearch(search_type=OclApi.CONCEPT_TYPE, params=self.request.GET)
+#         concept_searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_CONCEPTS,
+#                                      params=self.request.GET)
 #         concept_search_results = api.get(
 #             self.owner_type, self.owner_id, 'sources', self.source_id,
 #             'concepts', params=concept_searcher.search_params)

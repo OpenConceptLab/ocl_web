@@ -2,8 +2,9 @@
 Search helper for interfacing web with OCL API.
 """
 from django.http import QueryDict
-#from urllib import quote
 import logging
+from .constants import OclConstants
+
 
 logger = logging.getLogger('oclweb')
 
@@ -162,19 +163,6 @@ class OclSearch(object):
     Helper to handle search queries and processing of search results.
     """
 
-    # Resource types
-    # TODO(paynejd@gmail.com): Resource type constants are duplicated in OclApi
-    # TODO(paynejd@gmail.com): Standardized resource type representation
-    # NOTE: Code uses mixture of integers (ORG_TYPE=1), singular text ('org'), and plural ('orgs')
-    USER_TYPE = 0
-    ORG_TYPE = 1
-    SOURCE_TYPE = 2
-    CONCEPT_TYPE = 3
-    COLLECTION_TYPE = 4
-    MAPPING_TYPE = 5
-    SOURCE_VERSION_TYPE = 6
-    CONCEPT_VERSION_TYPE = 7
-
     # Default search values
     DEFAULT_NUM_PER_PAGE = 25
     DEFAULT_SEARCH_TYPE = 'concepts'
@@ -182,208 +170,6 @@ class OclSearch(object):
     # List of URL parameters that are transferred between searches of different resource types
     # NOTE: This is used to build the resource links on the global search page
     TRANSFERRABLE_SEARCH_PARAMS = ['q', 'limit', 'debug']
-
-    # Search filter definitions for each resource
-    SEARCH_FILTER_INFO = {
-        'concepts': [
-            {
-                'filter_id':'includeRetired',
-                'filter_name':'Include Retired',
-                'filter_widget':'checkboxes',
-                'option_defs':[
-                    {'option_value':'true', 'option_name':'Include Retired'},
-                ],
-                'attrs':{'show_zeroed_options':True, 'hide_numbers':True},
-            },
-            {
-                'filter_id':'source',
-                'filter_name':'Source',
-                'filter_widget':'checkboxes',
-                'facet_id':'source',
-            },
-            {
-                'filter_id':'conceptClass',
-                'filter_name':'Concept Class',
-                'filter_widget':'checkboxes',
-                'facet_id':'conceptClass',
-            },
-            {
-                'filter_id':'datatype',
-                'filter_name':'Datatype',
-                'filter_widget':'checkboxes',
-                'facet_id':'datatype',
-            },
-            {
-                'filter_id':'retired',
-                'filter_name':'Retired',
-                'filter_widget':'checkboxes',
-                'facet_id':'retired',
-                'minimized':True,
-            },
-            {
-                'filter_id':'owner',
-                'filter_name':'Concept Owner',
-                'filter_widget':'checkboxes',
-                'facet_id':'owner',
-            },
-            {
-                'filter_id':'locale',
-                'filter_name':'Locale',
-                'filter_widget':'checkboxes',
-                'facet_id':'locale',
-            },
-            {
-                'filter_id':'ownerType',
-                'filter_name':'Owner Type',
-                'filter_widget':'checkboxes',
-                'facet_id':'ownerType',
-                'minimized':True,
-            },
-        ],
-        'mappings': [
-            {
-                'filter_id':'includeRetired',
-                'filter_name':'Include Retired',
-                'filter_widget':'include_retired',
-                'option_defs':[
-                    {'option_value':'true', 'option_name':'Include Retired'}
-                ],
-                'attrs':{'show_zeroed_options':True, 'hide_numbers':True},
-            },
-            {
-                'filter_id':'mapType',
-                'filter_name':'Map Type',
-                'filter_widget':'checkboxes',
-                'facet_id':'mapType'
-            },
-            {
-                'filter_id':'source',
-                'filter_name':'Mapping Source',
-                'filter_widget':'checkboxes',
-                'facet_id':'source'
-            },
-            {
-                'filter_id':'retired',
-                'filter_name':'Retired',
-                'filter_widget':'checkboxes',
-                'facet_id':'retired',
-                'minimized':True,
-            },
-            {
-                'filter_id':'conceptOwner',
-                'filter_name':'Concept Owner',
-                'filter_widget':'checkboxes',
-                'facet_id':'conceptOwner',
-            },
-            {
-                'filter_id':'conceptSource',
-                'filter_name':'Concept Source',
-                'filter_widget':'checkboxes',
-                'facet_id':'conceptSource',
-            },
-            {
-                'filter_id':'conceptOwnerType',
-                'filter_name':'Concept Owner Type',
-                'filter_widget':'checkboxes',
-                'facet_id':'conceptOwnerType',
-                'minimized':True,
-            },
-            {
-                'filter_id':'toConceptSource',
-                'filter_name':'To Concept Source',
-                'filter_widget':'checkboxes',
-                'facet_id':'toConceptSource',
-                'minimized':True,
-            },
-            {
-                'filter_id':'toConceptOwner',
-                'filter_name':'To Concept Owner',
-                'filter_widget':'checkboxes',
-                'facet_id':'toConceptOwner',
-                'minimized':True,
-            },
-            {
-                'filter_id':'toConceptOwnerType',
-                'filter_name':'To Concept Owner Type',
-                'filter_widget':'checkboxes',
-                'facet_id':'toConceptOwnerType',
-                'minimized':True,
-            },
-            {
-                'filter_id':'fromConceptSource',
-                'filter_name':'From Concept Source',
-                'filter_widget':'checkboxes',
-                'facet_id':'fromConceptSource',
-                'minimized':True,
-            },
-            {
-                'filter_id':'fromConceptOwnerType',
-                'filter_name':'From Concept Owner Type',
-                'filter_widget':'checkboxes',
-                'facet_id':'fromConceptOwnerType',
-                'minimized':True,
-            },
-            {
-                'filter_id':'fromConceptOwner',
-                'filter_name':'From Concept Owner',
-                'filter_widget':'checkboxes',
-                'facet_id':'fromConceptOwner',
-                'minimized':True,
-            },
-            {
-                'filter_id':'owner',
-                'filter_name':'Mapping Owner',
-                'filter_widget':'checkboxes',
-                'facet_id':'owner',
-                'minimized':True,
-            },
-            {
-                'filter_id':'ownerType',
-                'filter_name':'Mapping Owner Type',
-                'filter_widget':'checkboxes',
-                'facet_id':'ownerType',
-                'minimized':True,
-            },
-        ],
-        'sources': [
-            {
-                'filter_id':'sourceType',
-                'filter_name':'Source Type',
-                'filter_widget':'checkboxes',
-                'facet_id':'sourceType',
-            },
-            {
-                'filter_id':'owner',
-                'filter_name':'Owner',
-                'filter_widget':'checkboxes',
-                'facet_id':'owner',
-            },
-            {
-                'filter_id':'ownerType',
-                'filter_name':'Owner Type',
-                'filter_widget':'checkboxes',
-                'facet_id':'ownerType',
-            },
-            {
-                'filter_id':'locale',
-                'filter_name':'Supported Locale',
-                'filter_widget':'checkboxes',
-                'facet_id':'locale',
-            },
-        ],
-    }
-
-    # Resource type definitions
-    RESOURCE_TYPE_INFO = {
-        'concepts': {'int':CONCEPT_TYPE, 'name':'concept', 'facets':True},
-        'mappings': {'int':MAPPING_TYPE, 'name':'mapping', 'facets':True},
-        'sources': {'int':SOURCE_TYPE, 'name':'source', 'facets':True},
-        'collections': {'int':COLLECTION_TYPE, 'name':'collection', 'facets':True},
-        'orgs': {'int':ORG_TYPE, 'name':'organization', 'facets':False},
-        'users': {'int':USER_TYPE, 'name':'user', 'facets':False},
-        'source_versions': {'int':SOURCE_VERSION_TYPE, 'name':'version', 'facets':False},
-        'concept_versions': {'int':CONCEPT_VERSION_TYPE, 'name':'concept version', 'facets':False},
-    }
 
 
     def __init__(self, search_type=None, params=None):
@@ -407,31 +193,6 @@ class OclSearch(object):
         if params is not None:
             self.parse_search_request(params, search_type=search_type)
 
-    @property
-    def search_resource_id(self):
-        """Get numeric resource identifier."""
-        if self.search_type in self.RESOURCE_TYPE_INFO:
-            return self.RESOURCE_TYPE_INFO[self.search_type]['int']
-        else:
-            return None
-
-    @property
-    def search_resource_name(self):
-        """Get singular display name of the resource."""
-        if self.search_type in self.RESOURCE_TYPE_INFO:
-            return self.RESOURCE_TYPE_INFO[self.search_type]['name']
-        else:
-            return ''
-
-    @property
-    def search_resource_has_facets(self):
-        """Get whether the set resource type supports facets."""
-        if self.search_type in self.RESOURCE_TYPE_INFO:
-            return self.RESOURCE_TYPE_INFO[self.search_type]['facets']
-        else:
-            return False
-
-
     # TODO(paynejd@gmail.com): Develop plan to handle search sort options better
     def get_sort_options(self):
         """
@@ -445,30 +206,29 @@ class OclSearch(object):
             'Name (Desc)',
         ]
 
-
     def get_sort(self):
         """ Returns the current sort option """
         return '' if self.search_sort is None else self.search_sort
-
 
     def get_query(self):
         """ Returns the current query string """
         return '' if self.search_query is None else self.search_query
 
-
     def build_filters(self, resource_type, facets=None):
+        """
+        Builds search filters using filter definitions and facets.
+        """
         self.search_filter_list = None
-        if resource_type not in self.SEARCH_FILTER_INFO:
+        if resource_type not in OclConstants.SEARCH_FILTER_INFO:
             return
         filter_list = SearchFilterList(resource_name=resource_type)
-        for filter_definition in self.SEARCH_FILTER_INFO[resource_type]:
+        for filter_definition in OclConstants.SEARCH_FILTER_INFO[resource_type]:
             if 'facet_id' in filter_definition and filter_definition['facet_id'] in facets:
                 filter_definition['facet_results'] = facets[filter_definition['facet_id']]
             search_filter = SearchFilter(**filter_definition)
             # Do anything that needs to be done to the filter here
             filter_list.add_filter(search_filter)
         self.search_filter_list = filter_list
-
 
     # TODO: Retire process_facets - replaced by build_filters
     def process_facets(self, resource_type='', facets=None):
@@ -496,7 +256,6 @@ class OclSearch(object):
         self.search_filter_list = filter_list
         return filter_list
 
-
     def select_search_filters(self, params):
         """
         Sets the selected attribute to true for the specified filter options.
@@ -511,7 +270,6 @@ class OclSearch(object):
                 if matched_search_filter:
                     matched_search_filter.select_option(params.getlist(key))
                 print '\tMatched search filter:', matched_search_filter
-
 
     def process_search_results(self, search_type=None, search_response=None,
                                search_params=None, create_filters=True):
@@ -545,7 +303,7 @@ class OclSearch(object):
                 self.num_found = 0
 
         # Build filters, sending any facets that were returned
-        if create_filters and search_type in self.SEARCH_FILTER_INFO:
+        if create_filters and search_type in OclConstants.SEARCH_FILTER_INFO:
             self.build_filters(search_type, facets=self.search_facets)
 
         # Select filters based on the search parameters
@@ -582,9 +340,9 @@ class OclSearch(object):
             raise TypeError('Expected QueryDict, dict, or str, but ' + str(request_get) + ' passed')
 
         # Determine the search type - gets the latest occurence of type
-        if 'type' in params and params['type'] in self.RESOURCE_TYPE_INFO:
+        if 'type' in params and params['type'] in OclConstants.RESOURCE_TYPE_INFO:
             self.search_type = params['type']
-        elif search_type and search_type in self.RESOURCE_TYPE_INFO:
+        elif search_type and search_type in OclConstants.RESOURCE_TYPE_INFO:
             self.search_type = search_type
         else:
             self.search_type = self.DEFAULT_SEARCH_TYPE

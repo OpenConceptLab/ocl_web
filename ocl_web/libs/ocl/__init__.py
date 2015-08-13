@@ -8,10 +8,10 @@ import simplejson as json
 
 from django.conf import settings
 from .search import OclSearch
+from .constants import OclConstants
 
 
 SESSION_TOKEN_KEY = 'API_USER_TOKEN'
-
 
 
 class OclApi(object):
@@ -21,58 +21,8 @@ class OclApi(object):
 
         :logging: This class outputs debug level information to the "oclapi" logger.
     """
-    # resource types
-    # TODO(paynejd@gmail.com): These are duplicated in OclSearch class
-    USER_TYPE = 0
-    ORG_TYPE = 1
-    SOURCE_TYPE = 2
-    CONCEPT_TYPE = 3
-    COLLECTION_TYPE = 4
-    MAPPING_TYPE = 5
-    SOURCE_VERSION_TYPE = 6
-    CONCEPT_VERSION_TYPE = 7
 
     logger = logging.getLogger('oclapi')
-
-
-    def debug_result(self, results):
-        """
-        Some serious debug output.
-        """
-        self.logger.debug('API %s' % (results.request.path_url))
-        self.logger.debug('%s RESULT: %s' % (
-            results.request.method, results.status_code))
-        if results.status_code == requests.codes.server_error:
-            self.logger.error(results.content)
-
-        elif len(results.content) > 0:
-            try:
-                self.logger.debug('%s JSON: %s' % (results.request.method,
-                                                   json.dumps(results.json(),
-                                                              sort_keys=True, indent=4,
-                                                              separators=(',', ': '))))
-            except json.JSONDecodeError:
-                self.logger.error('JSON: Error decoding it: %s' % results.content[:40])
-        else:
-            self.logger.debug('%s no content.' % results.request.method)
-
-
-    @classmethod
-    def resource_type_name(cls, type_id):
-        """ Get formal name of a resource type (e.g. 'User Type') """
-        if type_id == cls.USER_TYPE:
-            return 'User Type'
-        if type_id == cls.ORG_TYPE:
-            return 'Organization Type'
-        if type_id == cls.SOURCE_TYPE:
-            return 'Source Type'
-        if type_id == cls.CONCEPT_TYPE:
-            return 'Concept Type'
-        if type_id == cls.COLLECTION_TYPE:
-            return 'Collection Type'
-        if type_id == cls.MAPPING_TYPE:
-            return 'Mapping Type'
-        return 'Unknown type'
 
 
     def __init__(self, request=None, debug=False, admin=False, facets=False):
@@ -107,6 +57,26 @@ class OclApi(object):
                 self.api_key = request.session.get(SESSION_TOKEN_KEY, None)
                 self.headers['Authorization'] = 'Token %s' % key
 
+    def debug_result(self, results):
+        """
+        Some serious debug output.
+        """
+        self.logger.debug('API %s' % (results.request.path_url))
+        self.logger.debug('%s RESULT: %s' % (
+            results.request.method, results.status_code))
+        if results.status_code == requests.codes.server_error:
+            self.logger.error(results.content)
+
+        elif len(results.content) > 0:
+            try:
+                self.logger.debug('%s JSON: %s' % (results.request.method,
+                                                   json.dumps(results.json(),
+                                                              sort_keys=True, indent=4,
+                                                              separators=(',', ': '))))
+            except json.JSONDecodeError:
+                self.logger.error('JSON: Error decoding it: %s' % results.content[:40])
+        else:
+            self.logger.debug('%s no content.' % results.request.method)
 
     @property
     def include_facets(self):
@@ -605,5 +575,5 @@ class OclApi(object):
             :returns: POST result from requests package.
         """
         result = self.put(source_owner_type, source_owner_id,
-                           'sources', source_id, 'mappings', mapping_id, **data)
+                          'sources', source_id, 'mappings', mapping_id, **data)
         return result
