@@ -105,7 +105,8 @@ class SourceReadBaseView(TemplateView):
         # TODO(paynejd@gmail.com): Validate the input parameters
 
         # Perform the search
-        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_MAPPINGS, params=search_params)
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_MAPPINGS,
+                             params=search_params)
         api = OclApi(self.request, debug=True, facets=True)
         if source_version_id:
             search_response = api.get(

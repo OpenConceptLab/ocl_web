@@ -57,6 +57,28 @@ class OrganizationReadBaseView(TemplateView):
             pass
         return members
 
+    def get_org_sources(self, org_id, search_params=None):
+        """
+        Load org sources from the API and return OclSearch instance with results
+        """
+        # TODO(paynejd@gmail.com): Validate the input parameters
+
+        # Perform the search
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_SOURCES,
+                             params=self.request.GET)
+        api = OclApi(self.request, debug=True, facets=True)
+        search_response = api.get('orgs', org_id, 'sources', params=searcher.search_params)
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
+
+        # Process the results
+        searcher.process_search_results(
+            search_type=searcher.search_type, search_response=search_response,
+            search_params=self.request.GET)
+
+        return searcher
 
 
 class OrganizationDetailsView(OrganizationReadBaseView):
@@ -103,26 +125,14 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         org_id = self.kwargs.get('org')
         org = self.get_org_details(org_id)
 
-        # Load the sources in this organization
-        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_SOURCES,
-                             params=self.request.GET)
-        api = OclApi(self.request, debug=True, facets=True)
-        search_response = api.get('orgs', org_id, 'sources', params=searcher.search_params)
-        if search_response.status_code == 404:
-            raise Http404
-        elif search_response.status_code != 200:
-            search_response.raise_for_status()
-
-        # Process the org sources search results
-        searcher.process_search_results(
-            search_type=searcher.search_type, search_response=search_response,
-            search_params=self.request.GET)
-
-        # Setup paginator
+        # Load the sources in this org, applying search parameters
+        searcher = self.get_org_sources(org_id, params=self.request.GET)
         search_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_current_page = search_paginator.page(searcher.current_page)
 
         # Set the context for the sources
+        context['selected_tab'] = 'Sources'
+        context['org'] = org
         context['sources'] = searcher.search_results
         context['source_page'] = search_current_page
         context['source_pagination_url'] = self.request.get_full_path()
@@ -130,21 +140,12 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.search_filter_list
-
-        # Set debug context
         context['search_type'] = searcher.search_type
         context['url_params'] = self.request.GET
-        context['request_url'] = api.url
-        context['request_headers'] = api.headers
         context['search_params'] = searcher.search_params
         context['search_response_headers'] = search_response.headers
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
-
-
-        # Set the context for the org and template
-        context['selected_tab'] = 'Sources'
-        context['org'] = org
 
         return context
 
