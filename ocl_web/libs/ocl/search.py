@@ -100,11 +100,11 @@ class SearchFilter(object):
 
     def __str__(self):
         return "%s (%s):\n%s" % (self.filter_name, self.filter_id,
-                                [str(opt) for opt in self.options])
+                                 [str(opt) for opt in self.options])
 
     def __unicode__(self):
         return u"%s (%s):\n%s" % (self.filter_name, self.filter_id,
-                                 [str(opt) for opt in self.options])
+                                  [str(opt) for opt in self.options])
 
 
 
@@ -582,6 +582,7 @@ class OclSearch(object):
             raise TypeError('Expected QueryDict, dict, or str, but ' + str(request_get) + ' passed')
 
         # Determine the search type - gets the latest occurence of type
+        logger.debug('parsing - search type: ' + str(search_type))
         if 'type' in params and params['type'] in self.RESOURCE_TYPE_INFO:
             self.search_type = params['type']
         elif search_type and search_type in self.RESOURCE_TYPE_INFO:
