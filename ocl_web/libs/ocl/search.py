@@ -431,16 +431,6 @@ class OclSearch(object):
         else:
             return False
 
-    # TODO(paynejd@gmail.com): Use OclSearch.get_search_filters to create SearchFilterList
-    def get_search_filters(self):
-        """
-        Get the search filters applicable for this search object type.
-        The searfch filters returned will have state information of the current search criteria,
-        i.e. checkboxes can stay checked.
-
-        :returns: a list of SearchFilter object for constructing the HTML filter display.
-        """
-        return self.search_filter_list[self.search_type]
 
     # TODO(paynejd@gmail.com): Develop plan to handle search sort options better
     def get_sort_options(self):
@@ -457,9 +447,7 @@ class OclSearch(object):
 
 
     def get_sort(self):
-        """
-        Returns the current sort option
-        """
+        """ Returns the current sort option """
         return '' if self.search_sort is None else self.search_sort
 
 
@@ -482,6 +470,7 @@ class OclSearch(object):
         self.search_filter_list = filter_list
 
 
+    # TODO: Retire process_facets - replaced by build_filters
     def process_facets(self, resource_type='', facets=None):
         """
         Processes facets into a SearchFilterList object as returned by a Solr search.
@@ -571,7 +560,7 @@ class OclSearch(object):
         request_get takes priority over search_type attribute.
 
         :params request_get: request string, dictionary or QueryDict of search inputs/criteria
-        :params search_type: Plural name of search_type (e.g. 'concepts')
+        :params search_type: Plural name of search_type (e.g. 'concepts', 'sources')
         :returns: None
         """
 
