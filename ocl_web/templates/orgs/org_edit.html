@@ -7,10 +7,7 @@
 
 
 {% block content %}
-<h3>{% org_label org %} / &nbsp;&nbsp;Update Organization
-	{# TODO: Only show if admin or owner #}
-	<a href="{% url 'org-retire' org=org.id %}" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
-</h3>
+<h3>{% org_label org %} / &nbsp;&nbsp;Update Organization</h3>
 &nbsp;
 
 <div class="container">
