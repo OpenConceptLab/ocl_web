@@ -582,7 +582,6 @@ class OclSearch(object):
             raise TypeError('Expected QueryDict, dict, or str, but ' + str(request_get) + ' passed')
 
         # Determine the search type - gets the latest occurence of type
-        logger.debug('parsing - search type: ' + str(search_type))
         if 'type' in params and params['type'] in self.RESOURCE_TYPE_INFO:
             self.search_type = params['type']
         elif search_type and search_type in self.RESOURCE_TYPE_INFO:
@@ -591,16 +590,6 @@ class OclSearch(object):
             self.search_type = self.DEFAULT_SEARCH_TYPE
         if 'type' in params:
             del params['type']
-        print 'search type:', self.search_type
-
-        if 'type' in params:
-            if params['type'] in self.RESOURCE_TYPE_INFO:
-                self.search_type = params['type']
-            else:
-                self.search_type = self.DEFAULT_SEARCH_TYPE
-            del params['type']
-        else:
-            self.search_type = self.DEFAULT_SEARCH_TYPE
         print 'search type:', self.search_type
 
         # Paging - gets the latest occurence of type
