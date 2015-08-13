@@ -130,11 +130,11 @@ urlpatterns = patterns(
         SourceVersionsNewView.as_view(), name='source-version-new'),
 
     # /orgs/:org/sources/:source/:version/edit/
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/(?P<source_version>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
         SourceVersionsEditView.as_view(), name='source-version-edit'),
 
     # /orgs/:org/sources/:source/:version/retire/
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/(?P<source_version>[a-zA-Z0-9\-\.]+)/retire/$',    # pylint: disable=C0301
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/retire/$',    # pylint: disable=C0301
         SourceVersionsRetireView.as_view(), name='source-version-retire'),
 
 

@@ -476,7 +476,7 @@ class OclApi(object):
         if 'released' in base_data:
             data['released'] = base_data['released']
         result = self.put(owner_type, owner_id, 'sources', source_id,
-                          'versions', source_version_id, **data)
+                          source_version_id, **data)
         return result
 
 
