@@ -26,10 +26,8 @@ class GlobalSearchView(TemplateView):
 
         context = super(GlobalSearchView, self).get_context_data(*args, **kwargs)
 
-        # Setup the OCL Search helper class
-        searcher = OclSearch(params=self.request.GET)
-
         # Perform the primary search via the API
+        searcher = OclSearch(params=self.request.GET)
         api = OclApi(self.request, debug=True, facets=searcher.search_resource_has_facets)
         search_response = api.get(searcher.search_type, params=searcher.search_params)
         if search_response.status_code == 404:
@@ -82,7 +80,7 @@ class GlobalSearchView(TemplateView):
         context['resource_count'] = resource_count
 
         # Set debug variables
-        context['get_params'] = self.request.GET
+        context['url_params'] = self.request.GET
         context['search_params'] = searcher.search_params
         context['search_response_headers'] = search_response.headers
         context['search_facets_json'] = searcher.search_facets

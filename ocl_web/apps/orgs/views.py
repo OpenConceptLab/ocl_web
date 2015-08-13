@@ -133,11 +133,15 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         context['search_filters'] = searcher.search_filter_list
 
         # Set debug context
+        context['search_type'] = searcher.search_type
         context['url_params'] = self.request.GET
         context['request_url'] = api.url
+        context['request_headers'] = api.headers
         context['search_params'] = searcher.search_params
         context['search_response_headers'] = search_response.headers
         context['search_facets_json'] = searcher.search_facets
+        context['search_filters_debug'] = str(searcher.search_filter_list)
+
 
         # Set the context for the org and template
         context['selected_tab'] = 'Sources'
