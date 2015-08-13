@@ -24,23 +24,8 @@ from apps.core.views import UserOrOrgMixin
 logger = logging.getLogger('oclweb')
 
 
-
 class ConceptReadBaseView(TemplateView):
     """ Base class for Concept Read views. """
-
-    def get_source_details(self, owner_type, owner_id, source_id, source_version_id=None):
-        """
-        Load source details from the API and return as dictionary.
-        """
-        # TODO(paynejd@gmail.com): Load details from source version, if applicable (or remove?)
-        # TODO(paynejd@gmail.com): Validate the input parameters
-        api = OclApi(self.request, debug=True)
-        search_response = api.get(owner_type, owner_id, 'sources', source_id)
-        if search_response.status_code == 404:
-            raise Http404
-        elif search_response.status_code != 200:
-            search_response.raise_for_status()
-        return search_response.json()
 
     def get_concept_details(self, owner_type, owner_id, source_id, concept_id,
                             source_version_id=None, concept_version_id=None,
@@ -131,19 +116,11 @@ class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
             self.owner_type, self.owner_id, self.source_id, self.concept_id,
             source_version_id=self.source_version_id, concept_version_id=self.concept_version_id)
 
-        # Load the source that contains this concept
-        # TODO(paynejd@gmail.com): This is only loaded because of the funky implementation of the
-        # owner and source label tags --- REMOVE IN THE FUTURE
-        source = self.get_source_details(
-            self.owner_type, self.owner_id, self.source_id,
-            source_version_id=self.source_version_id)
-
         # Set the context
         context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Details'
         context['concept'] = concept
-        context['source'] = source
 
         return context
 
@@ -192,13 +169,6 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
             self.owner_type, self.owner_id, self.source_id, self.concept_id,
             source_version_id=self.source_version_id, concept_version_id=self.concept_version_id,
             include_mappings=True, include_inverse_mappings=True)
-
-        # Load the source that contains this concept
-        # TODO(paynejd@gmail.com): This is only loaded because of the funky implementation of the
-        # owner and source label tags --- REMOVE IN THE FUTURE
-        #source = self.get_source_details(
-        #    self.owner_type, self.owner_id, self.source_id,
-        #    source_version_id=self.source_version_id)
 
         # Process mappings relative to current concept
         # TODO(paynejd@gmail.com): Move processing code to concept/mapping class objects
@@ -311,7 +281,6 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Mappings'
         context['concept'] = concept
-        #context['source'] = source
         context['mappings'] = mappings
         context['form'] = ConceptNewMappingForm()
 
@@ -382,13 +351,6 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
             self.owner_type, self.owner_id, self.source_id, self.concept_id,
             source_version_id=self.source_version_id, concept_version_id=self.concept_version_id)
 
-        # Load the source that contains this concept
-        # TODO(paynejd@gmail.com): This is only loaded because of the funky implementation of the
-        # owner and source label tags --- REMOVE IN THE FUTURE
-        source = self.get_source_details(
-            self.owner_type, self.owner_id, self.source_id,
-            source_version_id=self.source_version_id)
-
         # Load the concept version history
         searcher = self.get_concept_history(
             self.owner_type, self.owner_id, self.source_id, self.concept_id)
@@ -400,7 +362,6 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'History'
         context['concept'] = concept
-        context['source'] = source
         context['concept_versions'] = searcher.search_results
         #context['current_page'] = search_results_current_page
         #context['pagination_url'] = self.request.get_full_path()
