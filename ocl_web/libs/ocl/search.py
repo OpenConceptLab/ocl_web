@@ -41,10 +41,10 @@ class SearchFilter(object):
 
     options is a dictionary of SearchFilterOption instances
     """
-    def __init__(
-            self,
-            filter_id='', filter_name='', filter_widget='', options=None,
-            facet_id='', facet_results=None, minimized=False, attrs=None):
+    def __init__(self, filter_id='', filter_name='', filter_widget='',
+                 option_defs=None, facet_id='', facet_results=None,
+                 minimized=False, attrs=None):
+
         self.filter_id = filter_id          # unique ID for query etc
         self.filter_name = filter_name      # for display
         self.filter_widget = filter_widget
@@ -54,19 +54,18 @@ class SearchFilter(object):
         if not attrs:
             attrs = {}
         self.attrs = attrs
-        self.option_defs = options
+        self.option_defs = option_defs
         self.options = []                   # list of search filter options
 
-        if self.option_defs:
-            self.build_options(option_defs=self.option_defs)
+        if option_defs:
+            self.build_options(option_defs=option_defs)
 
-        if self.facet_results:
+        if facet_results:
             self.build_options_from_facets(facet_results=facet_results)
 
 
     def build_options(self, option_defs=None):
         """ Creates filter options from option definitions """
-        self.add_option(option_name="Cool!", option_value='yes')
         for option_def in option_defs:
             self.add_option(**option_def)
 
@@ -209,7 +208,7 @@ class OclSearch(object):
                 'filter_id':'includeRetired',
                 'filter_name':'Include Retired',
                 'filter_widget':'checkboxes',
-                'options':[
+                'option_defs':[
                     {'option_value':True, 'option_name':'Include Retired'}
                 ],
             },
@@ -255,7 +254,7 @@ class OclSearch(object):
                 'filter_id':'includeRetired',
                 'filter_name':'Include Retired',
                 'filter_widget':'include_retired',
-                'options':[
+                'option_defs':[
                     {'option_value':True, 'option_name':'Include Retired'}
                 ],
             },
