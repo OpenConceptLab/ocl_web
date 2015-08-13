@@ -187,6 +187,15 @@ class OclSearch(object):
     SEARCH_FILTER_INFO = {
         'concepts': [
             {
+                'filter_id':'includeRetired',
+                'filter_name':'Include Retired',
+                'filter_widget':'checkboxes',
+                'option_defs':[
+                    {'option_value':1, 'option_name':'Include Retired'},
+                ],
+                'attrs':{'show_zeroed_options':1, 'hide_numbers':True},
+            },
+            {
                 'filter_id':'source',
                 'filter_name':'Source',
                 'filter_widget':'checkboxes',
@@ -203,17 +212,6 @@ class OclSearch(object):
                 'filter_name':'Datatype',
                 'filter_widget':'checkboxes',
                 'facet_id':'datatype',
-            },
-            {
-                'filter_id':'includeRetired',
-                'filter_name':'Include Retired',
-                'filter_widget':'checkboxes',
-                'option_defs':[
-                    {'option_value':True, 'option_name':'Include Retired'}
-                ],
-                'attrs':{
-                    'show_zeroed_options':True,
-                }
             },
             {
                 'filter_id':'retired',
@@ -244,25 +242,25 @@ class OclSearch(object):
         ],
         'mappings': [
             {
-                'filter_id':'mapType',
-                'filter_name':'Map Type',
-                'filter_widget':'checkboxes',
-                'facet_id':'mapType'},
-            {
-                'filter_id':'source',
-                'filter_name':'Mapping Source',
-                'filter_widget':'checkboxes',
-                'facet_id':'source'},
-            {
                 'filter_id':'includeRetired',
                 'filter_name':'Include Retired',
                 'filter_widget':'include_retired',
                 'option_defs':[
                     {'option_value':True, 'option_name':'Include Retired'}
                 ],
-                'attrs':{
-                    'show_zeroed_options':True,
-                }
+                'attrs':{'show_zeroed_options':1, 'hide_numbers':True},
+            },
+            {
+                'filter_id':'mapType',
+                'filter_name':'Map Type',
+                'filter_widget':'checkboxes',
+                'facet_id':'mapType'
+            },
+            {
+                'filter_id':'source',
+                'filter_name':'Mapping Source',
+                'filter_widget':'checkboxes',
+                'facet_id':'source'
             },
             {
                 'filter_id':'retired',
