@@ -99,11 +99,11 @@ class SearchFilter(object):
                 opt.selected = True
 
     def __str__(self):
-        return "%s (%s): %s" % (self.filter_name, self.filter_id,
+        return "%s (%s):\n%s" % (self.filter_name, self.filter_id,
                                 [str(opt) for opt in self.options])
 
     def __unicode__(self):
-        return u"%s (%s): %s" % (self.filter_name, self.filter_id,
+        return u"%s (%s):\n%s" % (self.filter_name, self.filter_id,
                                  [str(opt) for opt in self.options])
 
 
@@ -211,6 +211,9 @@ class OclSearch(object):
                 'option_defs':[
                     {'option_value':True, 'option_name':'Include Retired'}
                 ],
+                'attrs':{
+                    'show_zeroed_options':True,
+                }
             },
             {
                 'filter_id':'retired',
@@ -257,6 +260,9 @@ class OclSearch(object):
                 'option_defs':[
                     {'option_value':True, 'option_name':'Include Retired'}
                 ],
+                'attrs':{
+                    'show_zeroed_options':True,
+                }
             },
             {
                 'filter_id':'retired',
