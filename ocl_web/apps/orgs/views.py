@@ -106,7 +106,7 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         org = self.get_org_details(org_id)
 
         # Load the sources in this organization
-        searcher = OclSearch(search_type=OclSearch.SOURCE_TYPE, params=self.request.GET)
+        searcher = OclSearch(search_type='sources', params=self.request.GET)
         api = OclApi(self.request, debug=True, facets=True)
         search_response = api.get('orgs', org_id, 'sources', params=searcher.search_params)
         if search_response.status_code == 404:
