@@ -33,11 +33,11 @@
 	    			{% if source_version.owner_type == 'Organization' %}
 	    				{% url 'source-version-concepts' org=source_version.owner source=source.id source_version=source_version.id as source_version_concepts_url %}
 	    				{% url 'source-version-edit' org=source_version.owner source=source.id source_version=source_version.id as source_version_edit_url %}
-	    				{% url 'source-version-retire' org=source_version.owner source=source.id source_version=source_version.id as source_version_retire_url %}
+	    				{% comment %}{% url 'source-version-retire' org=source_version.owner source=source.id source_version=source_version.id as source_version_retire_url %}{% endcomment %}
 	    			{% else %}
 	    				{% url 'source-version-concepts' user=source_version.owner source=source.id source_version=source_version.id as source_version_concepts_url %}
 	    				{% url 'source-version-edit' user=source_version.owner source=source.id source_version=source_version.id as source_version_edit_url %}
-	    				{% url 'source-version-retire' user=source_version.owner source=source.id source_version=source_version.id as source_version_retire_url %}
+	    				{% comment %}{% url 'source-version-retire' user=source_version.owner source=source.id source_version=source_version.id as source_version_retire_url %}{% endcomment %}
 	    			{% endif %}
 
 		            <li class="list-group-item">
@@ -47,8 +47,8 @@
 
 		                {% if not source_version.is_processing %}
 		                <div class="pull-right">
-		                    <a href="{{ source_version_edit_url }}" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></a>
-		                    <a href="{{ source_version_retire_url }}" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></a>
+		                    <a href="{{ source_version_edit_url }}" class="btn btn-link" title="Edit Source Version"><span class="glyphicon glyphicon-pencil"></span></a>
+		                    {% comment %}<a href="{{ source_version_retire_url }}" class="btn btn-link" title="Retire Source Version"><span class="glyphicon glyphicon-trash"></span></a>{% endcomment %}
 		                </div>
 		                {% endif %}
 
@@ -80,7 +80,7 @@
 					<p class="small">Create a new <strong>Source Version</strong> to save the state of a source's concepts and
 					mappings at a specific point in time.</p>
 					<p class="small">A <strong>Released</strong> source version indicates to your users that a particular source
-					version is prepared for public consumption.</p>
+					version is prepared for public consumption. Only one source version may be released at a time.</p>
 				</div>
 			</div>
 		</div>

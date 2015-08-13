@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load ocl_tags %}
+
+
+{% block title %}{% trans "Edit Source Version" %} - Open Concept Lab{% endblock %}
+
+
+{% block content %}
+{% if source_version.owner_type == "Organization" %}
+	{% url 'source-versions' org=kwargs.org source=kwargs.source as source_versions_url %}
+	{% url 'source-home' org=kwargs.org source=kwargs.source as source_home_url %}
+{% else %}
+	{% url 'source-versions' user=kwargs.user source=kwargs.source as source_versions_url %}
+	{% url 'source-home' user=kwargs.user source=kwargs.source as source_home_url %}
+{% endif %}
+
+<h3>
+	{% resource_owner_label source_version %} / {% generic_resource_label resource_type='source' resource_id=kwargs.source resource_url=source_home_url label_size='small' %}
+	<span class="small" title="Source Version ID">[ {{ kwargs.source_version }} ]</span>
+	&nbsp;/&nbsp;<span class="glyphicon glyphicon-asterisk" style="color:#e5e5e5;"></span>&nbsp;{% trans 'Edit' %}
+</h3>
+
+<div class="container" style="padding-top:20px;">
+	<div class="row">
+
+		<!-- Form -->
+		<div class="col-lg-8">
+		  	<form class="form-horizontal" id="source_create_form" method="post" action=".">
+				{% csrf_token %}
+				{% bootstrap_form form %}
+				{% buttons %}
+					<button type="submit" class="btn btn-primary">{% trans "Update Source Version" %}</button>
+					<a href="{{ source_versions_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+				{% endbuttons %}
+		  	</form>
+		</div>
+
+	</div> <!-- /row -->
+</div> <!-- /container -->
+{% endblock %}

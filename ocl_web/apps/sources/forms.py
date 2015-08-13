@@ -126,16 +126,11 @@ class SourceVersionsEditForm(SourceVersionsNewForm):
             officially.
         """
         super(SourceVersionsEditForm, self).__init__(*args, **kwargs)
-        #self.fields.pop('id')
-
+        self.fields.pop('id')
 
 
 class SourceVersionsRetireForm(forms.Form):
     """
     Form to retire a source version - empty form
     """
-    required_css_class = 'required'
-
-
-
-
+    # No form fields
