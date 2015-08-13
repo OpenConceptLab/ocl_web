@@ -191,9 +191,9 @@ class OclSearch(object):
                 'filter_name':'Include Retired',
                 'filter_widget':'checkboxes',
                 'option_defs':[
-                    {'option_value':1, 'option_name':'Include Retired'},
+                    {'option_value':'true', 'option_name':'Include Retired'},
                 ],
-                'attrs':{'show_zeroed_options':1, 'hide_numbers':True},
+                'attrs':{'show_zeroed_options':True, 'hide_numbers':True},
             },
             {
                 'filter_id':'source',
@@ -246,9 +246,9 @@ class OclSearch(object):
                 'filter_name':'Include Retired',
                 'filter_widget':'include_retired',
                 'option_defs':[
-                    {'option_value':True, 'option_name':'Include Retired'}
+                    {'option_value':'true', 'option_name':'Include Retired'}
                 ],
-                'attrs':{'show_zeroed_options':1, 'hide_numbers':True},
+                'attrs':{'show_zeroed_options':True, 'hide_numbers':True},
             },
             {
                 'filter_id':'mapType',
