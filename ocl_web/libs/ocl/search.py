@@ -66,6 +66,7 @@ class SearchFilter(object):
 
     def build_options(self, option_defs=None):
         """ Creates filter options from option definitions """
+        self.add_option(option_name="Cool!", option_value='yes')
         for option_def in option_defs:
             self.add_option(**option_def)
 
@@ -83,8 +84,8 @@ class SearchFilter(object):
     def add_option(self, option_value='', option_name='', option_num=0, selected=False):
         """ Add SearchFilterOption to the SearchFilter. """
         self.options.append(SearchFilterOption(
-            search_filter=self, option_value=option_value,
-            option_name=option_name, option_num=option_num, selected=selected))
+            search_filter=self, option_value=option_value, option_name=option_name,
+            option_num=option_num, selected=selected))
 
 
     def select_option(self, option_values):
@@ -152,8 +153,8 @@ class SearchFilterList(object):
                                         [str(f) for f in self.search_filter_list])
 
     def __unicode__(self):
-        return 'Resource %s: %s\n\n' % (self.resource_name,
-                                        [str(f) for f in self.search_filter_list])
+        return u'Resource %s: %s\n\n' % (self.resource_name,
+                                         [str(f) for f in self.search_filter_list])
 
 
 
