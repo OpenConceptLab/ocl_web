@@ -122,7 +122,7 @@ class SourceReadBaseView(TemplateView):
 
         # Process the results
         searcher.process_search_results(
-            search_type=search_type.search_type, search_response=search_response,
+            search_type=searcher.search_type, search_response=search_response,
             search_params=search_params)
 
         return searcher
