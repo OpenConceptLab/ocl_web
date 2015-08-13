@@ -9,11 +9,14 @@
 <div class="container">
 <div class="row">
 <form action="." method="get">
-
     <input type="hidden" name="resource_type" value="source" />
 
-    <!-- Filters -->
+<!-- Start left column -->
+
     <div class="col-md-3">
+
+<!-- Filters -->
+
         {% for search_filter in search_filters %}
         <div class="filter-group">
             <div class="filter-group-header">{{ search_filter.filter_name }}</div>
@@ -26,13 +29,17 @@
             </div>
         </div>
         {% endfor %}
+
+<!-- End left column -->
+
     </div>
 
+<!-- Start right column -->
 
-    <!-- Listing of sources -->
     <div class="col-md-9">
 
-        <!-- Search Toolbar -->
+<!-- Search toolbar -->
+
         <div class="row" style="padding-top:15px;">
             <div class="col-md-12" style="padding-left:0;">
 
@@ -70,7 +77,8 @@
             </div> <!-- /col-md-12-->
         </div> <!-- /row -->
 
-        <!-- Display sources that belong to this org -->
+<!-- Search results -->
+
         {% for result in sources %}
             {% if result.owner_type == 'Organization' %}
                 {% url 'source-home' org=result.owner source=result.short_code as result_home_url %}
@@ -103,15 +111,17 @@
             </div>
         {% endfor %}
 
-        <!-- Pagination -->
+<!-- Pagination -->
+
         {% if sources %}
         <div class="row" style="text-align:center;">
             {% bootstrap_pagination source_page url=source_pagination_url %}
         </div>
         {% endif %}
 
-    </div> {# col-md-9 #}
+<!-- End right column -->
 
+    </div> {# col-md-9 #}
 
 </form>
 </div> {# row #}
@@ -122,11 +132,11 @@
 {% block resource-debug %}
 <h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
 <h4>Organization</h4><pre>{{ org|pprint }}</pre>
-<h4>Search Type:</h4><pre>{{ search_type|pprint }}</pre>
-<h4>Search Request URL:</h4><pre>{{ request_url|pprint }}</pre>
-<h4>Search API Params:</h4><pre>{{ search_params|pprint }}</pre>
-<h4>Search Request Headers:</h4><pre>{{ request_headers|pprint }}</pre>
-<h4>Search Response Headers:</h4><pre>{{ search_response_headers|pprint }}</pre>
+<h4>Search Type</h4><pre>{{ search_type|pprint }}</pre>
+<h4>Search Request URL</h4><pre>{{ request_url|pprint }}</pre>
+<h4>Search API Params</h4><pre>{{ search_params|pprint }}</pre>
+<h4>Search Request Headers</h4><pre>{{ request_headers|pprint }}</pre>
+<h4>Search Response Headers</h4><pre>{{ search_response_headers|pprint }}</pre>
 <h4>Search Results: Sources</h4><pre>{{ sources|pprint }}</pre>
 <h4>Search Filters</h4><pre>{{ search_filters_debug|safe|pprint }}</pre>
 <h4>Search Facets</h4><pre>{{ search_facets_json|pprint }}</pre>

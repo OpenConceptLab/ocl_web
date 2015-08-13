@@ -16,20 +16,18 @@
 
 <!-- Filters -->
 
-		{% for facet in search_facets %}
-		<div class="filter-group">
-			<div class="filter-group-header">{{ facet.search_filter_name }}</div>
-			<div class="filter-group-body">
-				{% for facet_key, facet_option in facet.options.iteritems %}
-					{% if facet_option.option_num > 0 %}
-						<div class="checkbox"><label><input type="checkbox" name="{{ facet.search_filter_name }}" value="{{ facet_option.option_value }}" {% if facet_option.selected %}checked{% endif %}>{{ facet_option.option_name }}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ facet_option.option_num|intcomma }}</span></label></div>
-					{% endif %}
-				{% endfor %}
-			</div>
-		</div>
-		{% empty %}
-		<h3><small>No filters.</small></h3>
-		{% endfor %}
+        {% for search_filter in search_filters %}
+        <div class="filter-group">
+            <div class="filter-group-header">{{ search_filter.filter_name }}</div>
+            <div class="filter-group-body">
+                {% for filter_option in search_filter.options %}
+                    {% if filter_option.option_num > 0 or search_filter.attrs.show_zeroed_options %}
+                        <div class="checkbox"><label><input type="checkbox" name="{{ search_filter.filter_id }}" value="{{ filter_option.option_value }}" {% if filter_option.selected %}checked{% endif %}>{{ filter_option.option_name }}{% if not search_filter.attrs.hide_numbers %}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ filter_option.option_num|intcomma }}</span>{% endif %}</label></div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
 
 <!-- End left column -->
 
@@ -39,7 +37,7 @@
 
 	<div class="col-md-9">
 
-<!-- Search selecters -->
+<!-- Search Toolbar -->
 
 		<div class="row" style="padding:15px 0;">
 			<div class="col-md-12" style="padding-left:0;padding-right:0;">
@@ -161,6 +159,7 @@
 <h4>URL kwargs</h4><pre>{{ kwargs|pprint }}</pre>
 <h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
 <h4>Source</h4><pre>{{ source|pprint }}</pre>
-<h4>Concepts</h4><pre>{{ results|pprint }}</pre>
-<h4>Facets</h4><pre>{{ search_facets|pprint }}</pre>
+<h4>Search Results: Mappings</h4><pre>{{ results|pprint }}</pre>
+<h4>Search Filters</h4><pre>{{ search_filters_debug|pprint }}</pre>
+<h4>Search Facets</h4><pre>{{ search_facets_json|pprint }}</pre>
 {% endblock resource-debug %}
