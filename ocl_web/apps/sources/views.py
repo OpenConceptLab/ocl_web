@@ -433,7 +433,7 @@ class SourceVersionsEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         api = OclApi(self.request, debug=True)
         self.source_version = api.get(self.owner_type, self.owner_id, 'sources', self.source_id,
                                       self.source_version_id).json()
-        return SourceVersionsEditView
+        return SourceVersionsEditForm
 
     def get_initial(self):
         """ Load initial form data """
