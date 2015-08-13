@@ -25,11 +25,8 @@ logger = logging.getLogger('oclweb')
 
 
 
-# CLEAN
 class ConceptReadBaseView(TemplateView):
-    """
-    Base class for Concept Read views.
-    """
+    """ Base class for Concept Read views. """
 
     def get_source_details(self, owner_type, owner_id, source_id, source_version_id=None):
         """
@@ -48,9 +45,7 @@ class ConceptReadBaseView(TemplateView):
     def get_concept_details(self, owner_type, owner_id, source_id, concept_id,
                             source_version_id=None, concept_version_id=None,
                             include_mappings=False, include_inverse_mappings=False):
-        """
-        Get the concept details.
-        """
+        """ Get the concept details. """
 
         # Setup request parameters
         params = {}
@@ -116,7 +111,6 @@ class ConceptReadBaseView(TemplateView):
 
 
 
-# CLEAN
 class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
     """
     Concept details view.
@@ -155,7 +149,6 @@ class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
 
 
 
-# CLEAN
 class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
                           ConceptReadBaseView):
     """
@@ -203,9 +196,9 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
         # Load the source that contains this concept
         # TODO(paynejd@gmail.com): This is only loaded because of the funky implementation of the
         # owner and source label tags --- REMOVE IN THE FUTURE
-        source = self.get_source_details(
-            self.owner_type, self.owner_id, self.source_id,
-            source_version_id=self.source_version_id)
+        #source = self.get_source_details(
+        #    self.owner_type, self.owner_id, self.source_id,
+        #    source_version_id=self.source_version_id)
 
         # Process mappings relative to current concept
         # TODO(paynejd@gmail.com): Move processing code to concept/mapping class objects
@@ -318,7 +311,7 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Mappings'
         context['concept'] = concept
-        context['source'] = source
+        #context['source'] = source
         context['mappings'] = mappings
         context['form'] = ConceptNewMappingForm()
 
