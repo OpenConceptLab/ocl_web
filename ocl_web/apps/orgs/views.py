@@ -1,7 +1,7 @@
 """
 OCL Organization Views
 """
-import requests
+#import requests
 import logging
 
 from django.shortcuts import redirect
@@ -23,7 +23,6 @@ logger = logging.getLogger('oclweb')
 
 
 
-# CLEAN
 class OrganizationReadBaseView(TemplateView):
     """
     Base class for Organization Read views.
@@ -60,7 +59,6 @@ class OrganizationReadBaseView(TemplateView):
 
 
 
-# CLEAN
 class OrganizationDetailsView(OrganizationReadBaseView):
     """
     Organization details view.
@@ -93,18 +91,14 @@ class OrganizationDetailsView(OrganizationReadBaseView):
 
 
 
-# CLEAN
 class OrganizationSourcesView(OrganizationReadBaseView):
-    """
-    Organization Sources view
-    """
+    """ Organization Sources view """
 
     template_name = "orgs/org_sources.html"
 
     def get_context_data(self, *args, **kwargs):
-        """
-        Load sources search results, facets/filters, etc. for the org
-        """
+        """ Load sources search results, facets/filters, etc. for the org """
+
         context = super(OrganizationSourcesView, self).get_context_data(*args, **kwargs)
 
         # Load the organization
@@ -112,55 +106,38 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         org = self.get_org_details(org_id)
 
         # Load the sources in this organization
-        source_searcher = OclSearch(
-            search_type=OclSearch.SOURCE_TYPE, params=self.request.GET)
-        api_sources = OclApi(self.request, debug=True, facets=True)
-        search_result_sources = api_sources.get(
-            'orgs', org_id, 'sources', params=source_searcher.search_params)
-        if search_result_sources.status_code == requests.codes.not_found:
-            sources_response_json = {}
-            sources_facets_json = {}
-            sources_facets = {}
-            sources = []
-            sources_num_found = 0
-            sources_paginator = None
-            sources_current_page = 0
-        else:
-            sources_response_json = search_result_sources.json()
-            sources_facets_json = sources_response_json['facets']
-            sources_facets = source_searcher.process_facets('sources', sources_facets_json)
-            sources = sources_response_json['results']
-            if 'num_found' in search_result_sources.headers:
-                try:
-                    sources_num_found = int(search_result_sources.headers['num_found'])
-                except ValueError:
-                    sources_num_found = 0
-            else:
-                sources_num_found = 0
-            sources_paginator = Paginator(range(sources_num_found), source_searcher.num_per_page)
-            sources_current_page = sources_paginator.page(source_searcher.current_page)
+        searcher = OclSearch(search_type=OclSearch.SOURCE_TYPE, params=self.request.GET)
+        api = OclApi(self.request, debug=True, facets=True)
+        search_response = api.get('orgs', org_id, 'sources', params=searcher.search_params)
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
 
-        # TODO: Setup source filters based on the current search
+        # Process the org sources search results
+        searcher.process_search_results(
+            search_type=searcher.search_type, search_response=search_response,
+            search_params=self.request.GET)
 
-        # Select filters
-        # TODO: This is passing all parameters, but should pass only those relevant to sources
-        source_searcher.select_search_filters(self.request.GET)
+        # Setup paginator
+        search_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        search_current_page = search_paginator.page(searcher.current_page)
 
         # Set the context for the sources
-        context['sources'] = sources
-        context['source_page'] = sources_current_page
+        context['sources'] = searcher.search_results
+        context['source_page'] = search_current_page
         context['source_pagination_url'] = self.request.get_full_path()
-        context['source_q'] = source_searcher.get_query()
-        context['source_facets'] = sources_facets
-        context['search_sort_options'] = source_searcher.get_sort_options()
-        context['search_sort'] = source_searcher.get_sort()
+        context['source_q'] = searcher.get_query()
+        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort'] = searcher.get_sort()
+        context['search_filters'] = searcher.search_filter_list
 
         # Set debug context
         context['url_params'] = self.request.GET
-        context['sources_request_url'] = api_sources.url
-        context['sources_search_params'] = source_searcher.search_params
-        context['sources_search_response_headers'] = search_result_sources.headers
-        context['sources_search_facets_json'] = sources_facets_json
+        context['request_url'] = api.url
+        context['search_params'] = searcher.search_params
+        context['search_response_headers'] = search_response.headers
+        context['search_facets_json'] = searcher.search_facets
 
         # Set the context for the org and template
         context['selected_tab'] = 'Sources'
@@ -170,30 +147,6 @@ class OrganizationSourcesView(OrganizationReadBaseView):
 
 
 
-# TODO(paynejd): Resurrect OrganizationCollectionsView when ready to implement collections
-# class OrganizationCollectionsView(OrganizationReadBaseView):
-#     """
-#     Organization Collections List view
-#     """
-
-#     template_name = "orgs/org_collections.html"
-
-#     def get_context_data(self, *args, **kwargs):
-#         """
-#         Load collection search results, facets/filters, etc. for the org
-#         """
-#         context = super(OrganizationCollectionsView, self).get_context_data(*args, **kwargs)
-
-#         # TODO(paynejd@gmail.com): Implement collections view
-
-#         # Set the context
-#         context['url_params'] = self.request.GET
-#         context['selected_tab'] = 'Collections'
-#         return context
-
-
-
-# CLEAN
 class OrganizationAboutView(OrganizationReadBaseView):
     """
     Organization about page.
@@ -227,7 +180,6 @@ class OrganizationAboutView(OrganizationReadBaseView):
 
 
 
-# CLEAN
 class OrganizationNewView(LoginRequiredMixin, FormView):
     """
     View to create new organization
@@ -273,7 +225,6 @@ class OrganizationRetireView(FormView):
 
 
 
-# CLEAN
 class OrganizationEditView(FormView):
     """
     View to edit organization
