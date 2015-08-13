@@ -126,7 +126,7 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         org = self.get_org_details(org_id)
 
         # Load the sources in this org, applying search parameters
-        searcher = self.get_org_sources(org_id, params=self.request.GET)
+        searcher = self.get_org_sources(org_id, search_params=self.request.GET)
         search_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_current_page = search_paginator.page(searcher.current_page)
 
