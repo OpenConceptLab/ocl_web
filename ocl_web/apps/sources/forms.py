@@ -12,9 +12,7 @@ from apps.core.views import _get_source_type_list, _get_locale_list
 
 
 class SourceNewForm(forms.Form):
-    """
-        source create form
-    """
+    """ source create form """
     required_css_class = 'required'
 
     short_name = forms.CharField(
@@ -78,9 +76,7 @@ class SourceNewForm(forms.Form):
 
 
 class SourceEditForm(SourceNewForm):
-    """
-    Form to edit a source
-    """
+    """ Form to edit a source """
 
     def __init__(self, *args, **kwargs):
         """ Dirty trick to delete one field for edit form. django 1.6 lets you do this
@@ -92,9 +88,7 @@ class SourceEditForm(SourceNewForm):
 
 
 class SourceVersionsNewForm(forms.Form):
-    """
-    Form to create a new source version
-    """
+    """ Form to create a new source version """
     required_css_class = 'required'
 
     id = forms.CharField(
@@ -118,19 +112,16 @@ class SourceVersionsNewForm(forms.Form):
 
 
 class SourceVersionsEditForm(SourceVersionsNewForm):
-    """
-    Form to edit a source version
-    """
+    """ Form to edit a source version """
     def __init__(self, *args, **kwargs):
         """ Dirty trick to delete one field for edit form. django 1.6 lets you do this
             officially.
         """
         super(SourceVersionsEditForm, self).__init__(*args, **kwargs)
         self.fields.pop('id')
+        self.fields.pop('previous_version')
 
 
 class SourceVersionsRetireForm(forms.Form):
-    """
-    Form to retire a source version - empty form
-    """
+    """ Form to retire a source version - empty form """
     # No form fields
