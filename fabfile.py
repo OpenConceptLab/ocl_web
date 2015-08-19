@@ -1,41 +1,38 @@
 """
-    Deployment script for OCL WEB and server setup for both OCL Web and api
+Deployment script for OCL WEB and server setup for both OCL Web and api
 
-    Runs with first task = environment, e.g.
+Always set environment first using one of the environment commands: fab [env] [command].
+For example:
     fab dev deploy
-    fab staging deploy
+    fab staging release_api_app
+    fab production release_web_app
 
-    steps:
-    These are one time:
-    0. install_root_key
-    1. add_deploy_user
-    2. common_install
-    3. setup_environment
-    4. setup_solr
-    5. setup_mongo
-    6. setup_postgres
-    4. setup_supervisor (without keys)
-    5. build_api_app (this will update supervisor)
-    6. build_web_app
-    7. setup_nginx
+Steps to setup a new server (see build_new_server() for the full list)
+    - install_root_key
+    - add_deploy_user
+    - common_install
+    - setup_environment
+    - setup_solr
+    - setup_mongo
+    - setup_postgres
+    - setup_supervisor (without keys)
+    - build_api_app (this will update supervisor)
+    - build_web_app
+    - setup_nginx
 
-    These are for each new release:
-    1. release_web_app
-    2. release_api_app
+For each new code release:
+    - release_web_app
+    - release_api_app
 
-    optional for data:
-    3. rebuild_index
+To entirely rebuild the Solr index based on the mongo data:
+    - rebuild_index
 
-    Useful:
-    4. restart_web
-    5. restart_api
+Server administration commands:
+    - restart_web
+    - restart_api
 
-    Security:
-
-    Note that all access is setup to user your SSH key.
-    There is only a password for root, which you have from the initial
-    server build.
-
+Security: Note that all access is setup to user your SSH key. There is only a password for
+root, which you have from the initial server build.
 """
 from __future__ import with_statement
 import os
@@ -57,21 +54,20 @@ from fabric.colors import blue, yellow
 BACKUP_DIR = '/var/backups/ocl'
 CHECKOUT_DIR = '/var/tmp'
 
-
 #env.user = os.environ['FAB_USER']
 #env.password = os.environ['FAB_PASSWORD']
 #env.hosts = [os.environ['OCL_WEB_HOST']]
 
 
+
+## ENVIRONMENT COMMANDS
+## Use as first command to set the environment for all subsequent commands
+
 @task
 def dev():
     """
     Put as the first task on the command line to select dev environment.
-
-    For example:
-
-        fab dev release_web_app
-
+    For example: fab dev release_web_app
     Put in this task all the environment specific variables and settings.
     """
     env.hosts = ['dev.openconceptlab.com', ]
@@ -89,8 +85,6 @@ def dev():
     env.AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
     env.AWS_STORAGE_BUCKET_NAME = 'ocl-source-export-development'
 
-
-
 @task
 def staging():
     """
@@ -104,11 +98,9 @@ def staging():
     env.OCL_ANON_API_TOKEN = os.environ.get('OCL_ANON_API_TOKEN')
     env.random_string = _random_string(32)
     env.site_spec = 'stage'
-
     env.AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     env.AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
     env.AWS_STORAGE_BUCKET_NAME = 'ocl-source-export-staging'
-
 
 @task
 def production():
@@ -123,21 +115,13 @@ def production():
     env.OCL_API_TOKEN = 'dummy'
     env.OCL_ANON_API_TOKEN = 'dummy'
     env.random_string = _random_string(32)
-
     env.AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     env.AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
     env.AWS_STORAGE_BUCKET_NAME = 'ocl-source-export-production'
 
-@task
-def test_local():
-    """ For OCL_API, from old fabfile """
-    local("./manage.py test users")
-    local("./manage.py test orgs")
-    local("./manage.py test sources")
-    local("./manage.py test collection")
-    local("./manage.py test concepts")
-    local("./manage.py test mappings")
 
+
+## HELPER FUNCTIONS
 
 def _read_key_file(key_file):
     """ Helper function to read user's public key """
@@ -146,7 +130,6 @@ def _read_key_file(key_file):
         raise RuntimeWarning('Trying to push non-public part of key pair')
     with open(key_file) as f:
         return f.read()
-
 
 def _conf_path(file_name):
     """ Helper to build config template file path for uploading.
@@ -157,13 +140,92 @@ def _conf_path(file_name):
     path = join(path, 'conf', file_name)
     return path
 
-
 def _random_string(number_chars):
     """ Generate a random string for settings.
     """
     return ''.join(random.sample(string.ascii_uppercase +
                                  string.ascii_lowercase + string.digits, number_chars))
 
+@task
+def test_local():
+    """ For OCL_API, from old fabfile -- TO TEST THAT ENVIRONMENT IS SETUP """
+    local("./manage.py test users")
+    local("./manage.py test orgs")
+    local("./manage.py test sources")
+    local("./manage.py test collection")
+    local("./manage.py test concepts")
+    local("./manage.py test mappings")
+
+def build_app(app_name, repo_name=None, no_git=False):
+    """ Helper for building a django App environment, virtualenv source code etc.
+    """
+
+    with cd('/opt/virtualenvs'):
+        fastprint('creating virtualenv for %s' % app_name)
+        run('virtualenv %s' % app_name)
+    with cd('/opt/deploy/'):
+        fastprint('creating project root for %s' % app_name)
+        run('mkdir %s' % app_name)
+
+    if no_git:
+        return  # just for API because it does not use git directly
+
+    with cd('/opt/deploy/%s' % app_name):
+        if repo_name is None:
+            repo_name = app_name + '.git'
+        run('git clone https://github.com/OpenConceptLab/%s .' % repo_name)
+
+def create_api_database():
+    """ Helper to create the API mongo database """
+    with cd('/opt/deploy/ocl_api/ocl'):
+        with prefix('source /opt/virtualenvs/ocl_api/bin/activate'):
+            with prefix('export DJANGO_CONFIGURATION="Production"'):
+                with prefix('export DJANGO_SECRET_KEY="blah"'):
+
+                    print yellow('creating API database...')
+                    # no super user
+                    run('./manage.py syncdb --noinput')
+                    put(_conf_path('mongo_setup.js'), '~/mongo_setup.js')
+                    run('mongo ocl ~/mongo_setup.js')
+
+    # now start the server so that we can create base users
+    print yellow('Start up partial API server...')
+    run('supervisorctl start ocl_api')
+
+    with cd('/opt/deploy/ocl_api/ocl'):
+        with prefix('source /opt/virtualenvs/ocl_api/bin/activate'):
+            with prefix('export DJANGO_CONFIGURATION="Production"'):
+                with prefix('export DJANGO_SECRET_KEY="blah"'):
+
+                    print yellow('creating internal users: admin and anon ...')
+                    run('./manage.py create_tokens --create --password password')
+
+    # now grab the token for the web config
+    print yellow('Put tokens into WEB app config...')
+    setup_supervisor()
+    run('supervisorctl reread')
+    run('supervisorctl update')
+    # update shell env setup file with new tokens
+    files.upload_template(_conf_path(
+        'shell_prep.sh'), '~/shell_prep.sh', env)
+
+    # create sysadmin user
+    with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
+        print yellow('creating sysadmin user...')
+        run('source ~/shell_prep.sh;/opt/deploy/ocl_web/ocl_web/manage.py create_sysadmin')
+
+def release(app_name, do_pip):
+    """ Release latest source and dependent files and packages for the named app """
+    with cd('/opt/deploy/%s' % app_name):
+        fastprint('releasing latest source files')
+        run('git pull')
+        if do_pip:
+            with prefix('source /opt/virtualenvs/%s/bin/activate' % app_name):
+                run("pip install -r requirements.txt")
+
+
+
+## SERVER SETUP COMMANDS
 
 @task
 def install_root_key():
@@ -177,7 +239,6 @@ def install_root_key():
             run('chmod 700 %s' % ssh_path)
         key_text = _read_key_file('~/.ssh/id_rsa.pub')
         files.append('%s/authorized_keys' % ssh_path, key_text)
-
 
 @task
 def add_deploy_user():
@@ -209,7 +270,6 @@ def add_deploy_user():
             files.append('%s/authorized_keys' % ssh_path, key_text)
 
             run('chown -R %s:%s %s' % (username, username, ssh_path))
-
 
 @task
 def common_install():
@@ -264,7 +324,6 @@ def setup_supervisor():
     # restart to run as deploy
     sudo('/etc/init.d/supervisor restart')
 
-
 @task
 def setup_nginx():
     """Setup nginx.
@@ -282,7 +341,6 @@ def setup_nginx():
         sudo('ln -s /etc/nginx/sites-available/ocl /etc/nginx/sites-enabled/ocl')
 
     sudo('/etc/init.d/nginx restart')
-
 
 @task
 def setup_environment():
@@ -319,7 +377,6 @@ def setup_postgres():
     sudo("psql --command=\"ALTER USER deploy with PASSWORD 'deploy';\" ", user='postgres')
     run('createdb -O deploy ocl_web')
 
-
 @task
 def setup_mongo():
     """ Setup mongo database """
@@ -327,7 +384,6 @@ def setup_mongo():
     put(_conf_path('mongo.apt'), '/etc/apt/sources.list.d/mongodb.list', use_sudo=True)
     sudo('apt-get update')
     sudo('apt-get install -y -q mongodb-org')
-
 
 @task
 def setup_solr():
@@ -357,14 +413,38 @@ def setup_solr():
         print yellow('creating project root for %s' % 'solr')
         run('mkdir %s' % 'solr')
 
+@task
+def build_web_app():
+    """ Build the web app, one time task. """
+    build_app('ocl_web')
+    release_web_app(do_pip=True)
+
+    # setup DB, no super user.
+    with cd('/opt/deploy/ocl_web'):
+        with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
+            with prefix('export DJANGO_CONFIGURATION="Production"'):
+                with prefix('export DJANGO_SECRET_KEY="blah"'):
+                    print yellow('creating WEB database...')
+                    run('ocl_web/manage.py syncdb --noinput --migrate')
+
+@task
+def build_api_app():
+    """ Build the API app, one time task. """
+    build_app('ocl_api', repo_name='oclapi', no_git=True)
+    checkout_api_app(do_pip=True)
+    create_api_database()
+
+
+
+## OTHER COMMANDS
 
 @task
 def get_api_tokens():
     """
-        Get the API_AUTH_TOKEN and ANON_TOKEN from the API server directly
+    Get the API_AUTH_TOKEN and ANON_TOKEN from the API server directly
 
-        return tuple or None:
-            (api_token, anon_token)
+    return tuple or None:
+        (api_token, anon_token)
     """
     api_token = anon_token = None
     if not files.exists('/opt/deploy/ocl_api/ocl'):
@@ -398,31 +478,10 @@ def get_api_tokens():
                     print 'API Token: %s,  Anon Token: %s' % (api_token, anon_token)
                     return (api_token, anon_token)
 
-
-def build_app(app_name, repo_name=None, no_git=False):
-    """ Helper for building a django App environment, virtualenv source code etc.
-    """
-
-    with cd('/opt/virtualenvs'):
-        fastprint('creating virtualenv for %s' % app_name)
-        run('virtualenv %s' % app_name)
-    with cd('/opt/deploy/'):
-        fastprint('creating project root for %s' % app_name)
-        run('mkdir %s' % app_name)
-
-    if no_git:
-        return  # just for API because it does not use git directly
-
-    with cd('/opt/deploy/%s' % app_name):
-        if repo_name is None:
-            repo_name = app_name + '.git'
-        run('git clone https://github.com/OpenConceptLab/%s .' % repo_name)
-
-
 @task
 def load_site_name():
     """
-        Set the global site object value in the web server, used in outbound emails.
+    Set the global site object value in the web server, used in outbound emails.
     """
     with cd('/opt/deploy/ocl_web'):
         with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
@@ -430,24 +489,6 @@ def load_site_name():
                 with prefix('export DJANGO_SECRET_KEY="blah"'):
                     print yellow('setting site name...')
                     run('ocl_web/manage.py loaddata ocl_web/config/sites.%s.json' % env.site_spec)
-
-
-@task
-def build_web_app():
-    """
-        Build the web app, one time task.
-    """
-    build_app('ocl_web')
-    release_web_app(do_pip=True)
-
-    # setup DB, no super user.
-    with cd('/opt/deploy/ocl_web'):
-        with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
-            with prefix('export DJANGO_CONFIGURATION="Production"'):
-                with prefix('export DJANGO_SECRET_KEY="blah"'):
-                    print yellow('creating WEB database...')
-                    run('ocl_web/manage.py syncdb --noinput --migrate')
-
 
 @task
 def checkout_api_app(do_pip=False):
@@ -487,57 +528,6 @@ def checkout_api_app(do_pip=False):
                         '/opt/deploy/solr/collection1/conf/schema.xml')
     sudo('/etc/init.d/jetty start')
 
-
-def create_api_database():
-    """ Helper to create the API mongo database """
-    with cd('/opt/deploy/ocl_api/ocl'):
-        with prefix('source /opt/virtualenvs/ocl_api/bin/activate'):
-            with prefix('export DJANGO_CONFIGURATION="Production"'):
-                with prefix('export DJANGO_SECRET_KEY="blah"'):
-
-                    print yellow('creating API database...')
-                    # no super user
-                    run('./manage.py syncdb --noinput')
-                    put(_conf_path('mongo_setup.js'), '~/mongo_setup.js')
-                    run('mongo ocl ~/mongo_setup.js')
-
-    # now start the server so that we can create base users
-    print yellow('Start up partial API server...')
-    run('supervisorctl start ocl_api')
-
-    with cd('/opt/deploy/ocl_api/ocl'):
-        with prefix('source /opt/virtualenvs/ocl_api/bin/activate'):
-            with prefix('export DJANGO_CONFIGURATION="Production"'):
-                with prefix('export DJANGO_SECRET_KEY="blah"'):
-
-                    print yellow('creating internal users: admin and anon ...')
-                    run('./manage.py create_tokens --create --password password')
-
-    # now grab the token for the web config
-    print yellow('Put tokens into WEB app config...')
-    setup_supervisor()
-    run('supervisorctl reread')
-    run('supervisorctl update')
-    # update shell env setup file with new tokens
-    files.upload_template(_conf_path(
-        'shell_prep.sh'), '~/shell_prep.sh', env)
-
-    # create sysadmin user
-    with prefix('source /opt/virtualenvs/ocl_web/bin/activate'):
-        print yellow('creating sysadmin user...')
-        run('source ~/shell_prep.sh;/opt/deploy/ocl_web/ocl_web/manage.py create_sysadmin')
-
-
-@task
-def build_api_app():
-    """
-        Build the API app, one time task.
-    """
-    build_app('ocl_api', repo_name='oclapi', no_git=True)
-    checkout_api_app(do_pip=True)
-    create_api_database()
-
-
 @task
 def api_backup():
     """ Backup API server environment """
@@ -548,7 +538,6 @@ def api_backup():
     with cd('/opt/deploy/ocl_api'):
         run("tar -czvf ocl_api_`date +%Y%m%d`.tgz ocl_api solr/collection1/conf")
         run("mv ocl_api_*.tgz %s" % BACKUP_DIR)
-
 
 @task
 def release_api_app(do_pip=False):
@@ -565,34 +554,17 @@ def release_api_app(do_pip=False):
     with cd("/opt/deploy/ocl_api"):
         run('ln -s django-nonrel/ocl ocl')
 
+    # Startup celery and the ocl_api web app
     run('supervisorctl start ocl_api')
     run('supervisorctl start celery')
 
-    # old style
     return
-
-    # TODO(paynejd@gmail.com): Unreachable code -- remove?
-    #checkout_api_app(do_pip)
-    #run('supervisorctl restart ocl_api')
-    #run('supervisorctl restart celery')
-
-
-def release(app_name, do_pip):
-    """ Release latest source and dependent files and packages for the named app """
-    with cd('/opt/deploy/%s' % app_name):
-        fastprint('releasing latest source files')
-        run('git pull')
-        if do_pip:
-            with prefix('source /opt/virtualenvs/%s/bin/activate' % app_name):
-                run("pip install -r requirements.txt")
-
 
 @task
 def release_web_app(do_pip=False):
     """ Release latest version of WEB application """
     release('ocl_web', do_pip)
     run('supervisorctl restart ocl_web')
-
 
 @task
 def clear_databases():
@@ -646,7 +618,6 @@ def rebuild_index():
             sleep(5)
             run("/opt/deploy/ocl_api/ocl/manage.py rebuild_index")
 
-
 @task
 def full_restart():
     """ Restart everything """
@@ -655,7 +626,6 @@ def full_restart():
     sudo('/etc/init.d/supervisor restart')
     sudo('/etc/init.d/mongod restart')
     sudo('/etc/init.d/jetty restart')
-
 
 @task
 def build_new_server():
@@ -686,7 +656,6 @@ def build_new_server():
     setup_nginx()
     full_restart()
 
-
 @task
 def restart_web():
     """ Restart OCL WEB server """
@@ -701,13 +670,6 @@ def restart_api():
 def status():
     """ Displays supervisorctl status """
     run('supervisorctl status')
-
-
-def deploy():
-    """ Releases then restarts server """
-    release()
-    # TODO(paynejd@gmail.com): Undefined method call -- remove this entire method?
-    restart()
 
 @task
 def blah():
@@ -725,7 +687,6 @@ def blah():
 
                     files.upload_template(
                         _conf_path('shell_prep.sh'), '~/shell_prep.sh', env)
-
 
 @task
 def fix_solr():
