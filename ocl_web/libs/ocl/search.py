@@ -338,7 +338,7 @@ class OclSearch(object):
             params = QueryDict('', mutable=True)
             params.update(request_get)
         else:
-            raise TypeError('Expected QueryDict, dict, or str, but ' + str(request_get) + ' passed')
+            raise TypeError('Expected QueryDict, dict, or str.' + str(request_get) + ' passed.')
 
         # Determine the search type - gets the latest occurence of type
         if 'type' in params and params['type'] in OclConstants.RESOURCE_TYPE_INFO:

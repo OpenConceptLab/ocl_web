@@ -6,13 +6,12 @@ import logging
 
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
-from django.http import (HttpResponseRedirect, Http404)
+from django.http import (HttpResponseRedirect, Http404, QueryDict)
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.core.paginator import Paginator
 from braces.views import LoginRequiredMixin
-#from braces.views import JsonRequestResponseMixin
 
 from libs.ocl import OclApi, OclSearch, OclConstants
 from .forms import (
@@ -143,7 +142,7 @@ class SourceReadBaseView(TemplateView):
             params = QueryDict('', mutable=True)
             params.update(search_params)
         else:
-            raise TypeError('Expected QueryDict, dict, or str, but ' + str(search_params) + ' passed')
+            raise TypeError('Expected QueryDict, dict, or str.' + str(search_params) + ' passed.')
 
         # Add additional search params for the extref mappings search
         new_params = {}
