@@ -468,7 +468,7 @@ class SourceVersionsEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
                                            self.source_version_id, data)
 
         # Check if successful
-        if result.status_code == requests.codes.created:
+        if result.status_code == requests.codes.ok:
             messages.add_message(self.request, messages.INFO, _('Source version updated'))
             if self.from_org:
                 return HttpResponseRedirect(reverse('source-versions',
@@ -637,7 +637,6 @@ class SourceEditView(UserOrOrgMixin, FormView):
             print result.json()
 
         messages.add_message(self.request, messages.INFO, _('Source updated'))
-
         if self.from_org:
             return HttpResponseRedirect(reverse('source-details',
                                                 kwargs={'org': self.org_id,
