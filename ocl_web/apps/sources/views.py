@@ -360,6 +360,7 @@ class SourceExternalReferencesView(UserOrOrgMixin, SourceReadBaseView):
         # Set the context
         context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
+        context['search_params'] = searcher.search_params
         context['selected_tab'] = 'External References'
         context['source'] = source
         context['source_version'] = self.source_version_id
