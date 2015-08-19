@@ -404,21 +404,20 @@ class SourceVersionsNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         data = form.cleaned_data
         api = OclApi(self.request, debug=True)
         result = api.create_source_version(self.owner_type, self.owner_id, self.source_id, data)
-        if not result.status_code == requests.codes.created:
+        if result.status_code == requests.codes.created:
+            messages.add_message(self.request, messages.INFO, _('Source version created!'))
+            if self.from_org:
+                return HttpResponseRedirect(reverse('source-versions',
+                                                    kwargs={'org': self.org_id,
+                                                            'source': self.source_id}))
+            else:
+                return HttpResponseRedirect(reverse('source-versions',
+                                                    kwargs={'user': self.user_id,
+                                                            'source': self.source_id}))
+        else:
             error_msg = result.json().get('detail', 'Error')
             messages.add_message(self.request, messages.ERROR, error_msg)
             return HttpResponseRedirect(self.request.path)
-
-        messages.add_message(self.request, messages.INFO, _('Source version created!'))
-
-        if self.from_org:
-            return HttpResponseRedirect(reverse('source-versions',
-                                                kwargs={'org': self.org_id,
-                                                        'source': self.source_id}))
-        else:
-            return HttpResponseRedirect(reverse('source-versions',
-                                                kwargs={'user': self.user_id,
-                                                        'source': self.source_id}))
 
 
 
@@ -480,7 +479,7 @@ class SourceVersionsEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
                                                     kwargs={'user': self.user_id,
                                                             'source': self.source_id}))
         else:
-            emsg = result.json().get('detail', 'Error')
+            emsg = result.text
             messages.add_message(self.request, messages.ERROR, emsg)
             return HttpResponseRedirect(self.request.path)
 
@@ -556,21 +555,20 @@ class SourceNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
         api = OclApi(self.request, debug=True)
         result = api.create_source(self.owner_type, self.owner_id, data)
-        if not result.status_code == requests.codes.created:
+        if result.status_code == requests.codes.created:
+            messages.add_message(self.request, messages.INFO, _('Source created'))
+            if self.from_org:
+                return HttpResponseRedirect(reverse("source-home",
+                                                    kwargs={"org": self.org_id,
+                                                            'source': short_code}))
+            else:
+                return HttpResponseRedirect(reverse("source-home",
+                                                    kwargs={"user": self.user_id,
+                                                            'source': short_code}))
+        else:
             emsg = result.json().get('detail', 'Error')
             messages.add_message(self.request, messages.ERROR, emsg)
             return HttpResponseRedirect(self.request.path)
-
-        messages.add_message(self.request, messages.INFO, _('Source created'))
-
-        if self.from_org:
-            return HttpResponseRedirect(reverse("source-home",
-                                                kwargs={"org": self.org_id,
-                                                        'source': short_code}))
-        else:
-            return HttpResponseRedirect(reverse("source-home",
-                                                kwargs={"user": self.user_id,
-                                                        'source': short_code}))
 
 
 
