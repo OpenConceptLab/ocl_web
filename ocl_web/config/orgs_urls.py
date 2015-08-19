@@ -121,6 +121,10 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/mappings/$',    # pylint: disable=C0301
         SourceMappingsView.as_view(), name='source-version-mappings'),
 
+    # /orgs/:org/sources/:source/extrefs/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/extrefs/$',
+        SourceExternalReferencesView.as_view(), name='source-extrefs'),
+
     # /orgs/:org/sources/:source/versions/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/$',
         SourceVersionsView.as_view(), name='source-versions'),

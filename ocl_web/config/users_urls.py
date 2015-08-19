@@ -70,6 +70,10 @@ urlpatterns = patterns(
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/mappings/$',    # pylint: disable=C0301
         SourceMappingsView.as_view(), name='source-version-mappings'),
 
+    # /users/:user/sources/:source/extrefs/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/extrefs/$',
+        SourceExternalReferencesView.as_view(), name='source-extrefs'),
+
     # /users/:user/sources/:source/versions/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/$',
         SourceVersionsView.as_view(), name='source-versions'),
@@ -245,5 +249,14 @@ urlpatterns = patterns(
     # URL pattern for the UserUpdateView
     url(r'^update/(?P<username>[\w@\.\+\-_]+)/$',
         UserUpdateView.as_view(), name='update')
+
+
+
+    ## SELFISH URLs
+    # NOTE: Placed at the end so that reserved words aren't incorrectly treated like mnemonics
+
+    # /users/:user/sources/:source/:version/ - points to 'source-details'
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        SourceDetailsView.as_view(), name='source-version-home'),
 
 )

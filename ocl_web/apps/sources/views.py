@@ -127,6 +127,50 @@ class SourceReadBaseView(TemplateView):
 
         return searcher
 
+    def get_source_extrefs(self, owner_type, owner_id, source_id,
+                           source_version_id=None, search_params=None):
+        """
+        Load external mappings that reference this source from the API, return OclSearch instance.
+        """
+        # TODO(paynejd@gmail.com): Validate the input parameters
+
+        # Get search_params into a mutable QueryDict format so that I can add values
+        if isinstance(search_params, QueryDict):
+            params = search_params.copy()
+        elif isinstance(search_params, basestring):
+            params = QueryDict(search_params, mutable=True)
+        elif isinstance(search_params, dict) or not search_params:
+            params = QueryDict('', mutable=True)
+            params.update(search_params)
+        else:
+            raise TypeError('Expected QueryDict, dict, or str, but ' + str(search_params) + ' passed')
+
+        # Add additional search params for the extref mappings search
+        new_params = {}
+        new_params['toConceptOwnerType'] = 'Organization' if owner_type == 'orgs' else 'User'
+        new_params['toConceptOwner'] = self.owner_id
+        new_params['toConceptSource'] = self.source_id
+        params.update(new_params)
+
+        # Perform the search
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_MAPPINGS,
+                             params=search_params)
+        api = OclApi(self.request, debug=True, facets=True)
+        search_response = api.get('mappings', params=searcher.search_params)
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
+
+        # Process the results
+        searcher.process_search_results(
+            search_type=searcher.search_type, search_response=search_response,
+            search_params=search_params)
+
+        # TODO: Post-processing on external references results goes here
+        # Maybe remove toConceptOwnerType, toConceptOwner, toConceptSource facets
+
+        return searcher
 
 
 class SourceDetailsView(UserOrOrgMixin, SourceReadBaseView):
@@ -275,6 +319,51 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         context['source'] = source
         context['source_version'] = self.source_version_id
         context['source_versions'] = source_version_searcher.search_results
+        context['results'] = searcher.search_results
+        context['current_page'] = search_results_current_page
+        context['pagination_url'] = self.request.get_full_path()
+        context['search_query'] = searcher.get_query()
+        context['search_filters'] = searcher.search_filter_list
+        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort'] = searcher.get_sort()
+        context['search_facets_json'] = searcher.search_facets
+        context['search_filters_debug'] = str(searcher.search_filter_list)
+
+        return context
+
+
+
+class SourceExternalReferencesView(UserOrOrgMixin, SourceReadBaseView):
+    """ Source External References view. """
+    template_name = "sources/source_extrefs.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads all external mappings that point to a concept code in this source.
+        """
+
+        # Setup the context and args
+        context = super(SourceExternalReferencesView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the source details
+        source = self.get_source_details(
+            self.owner_type, self.owner_id, self.source_id,
+            source_version_id=self.source_version_id)
+
+        # Load external mappings that point to this source, applying search criteria
+        searcher = self.get_source_extrefs(
+            self.owner_type, self.owner_id, self.source_id,
+            source_version_id=self.source_version_id, search_params=self.request.GET)
+        search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        search_results_current_page = search_results_paginator.page(searcher.current_page)
+
+        # Set the context
+        context['kwargs'] = self.kwargs
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'External References'
+        context['source'] = source
+        context['source_version'] = self.source_version_id
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()

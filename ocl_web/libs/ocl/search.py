@@ -9,6 +9,9 @@ from .constants import OclConstants
 logger = logging.getLogger('oclweb')
 
 
+
+## SEARCH FILTER CLASSES
+
 class SearchFilterOption(object):
     """
     Defines a specific search filter option (e.g. English).
@@ -33,8 +36,6 @@ class SearchFilterOption(object):
                                     self.option_name,
                                     self.option_num,
                                     self.selected)
-
-
 
 class SearchFilter(object):
     """
@@ -107,8 +108,6 @@ class SearchFilter(object):
         return u"%s (%s):\n%s" % (self.filter_name, self.filter_id,
                                   [str(opt) for opt in self.options])
 
-
-
 class SearchFilterList(object):
     """
     A list of SearchFilter isntances for a specific resource type (e.g. concept, source, etc.).
@@ -157,6 +156,8 @@ class SearchFilterList(object):
                                          [str(f) for f in self.search_filter_list])
 
 
+
+## OCL SEARCH CLASS
 
 class OclSearch(object):
     """
@@ -231,30 +232,30 @@ class OclSearch(object):
         self.search_filter_list = filter_list
 
     # TODO: Retire process_facets - replaced by build_filters
-    def process_facets(self, resource_type='', facets=None):
-        """
-        Processes facets into a SearchFilterList object as returned by a Solr search.
+    # def process_facets(self, resource_type='', facets=None):
+    #     """
+    #     Processes facets into a SearchFilterList object as returned by a Solr search.
 
-        :params resource_type: Resource type
-        :params facets: Dictionary of the form { 'fields':{ } }
-        :returns: SearchFilterList
-        """
-        filter_list = None
-        if isinstance(facets, dict) and 'fields' in facets and isinstance(facets['fields'], dict):
-            filter_list = SearchFilterList(resource_name=resource_type)
-            for facet in facets['fields']:
-                # TODO: Need method to convert field name to display name
-                facet_name = facet
-                search_filter = filter_list.add_search_filter(
-                    filter_id=facet, filter_name=facet_name)
-                for facet_option in facets['fields'][facet]:
-                    facet_option_name = facet_option[0]
-                    facet_option_num = facet_option[1]
-                    search_filter.add_option(option_value=facet_option_name,
-                                             option_name=facet_option_name,
-                                             option_num=facet_option_num)
-        self.search_filter_list = filter_list
-        return filter_list
+    #     :params resource_type: Resource type
+    #     :params facets: Dictionary of the form { 'fields':{ } }
+    #     :returns: SearchFilterList
+    #     """
+    #     filter_list = None
+    #     if isinstance(facets, dict) and 'fields' in facets and isinstance(facets['fields'], dict):
+    #         filter_list = SearchFilterList(resource_name=resource_type)
+    #         for facet in facets['fields']:
+    #             # TODO: Need method to convert field name to display name
+    #             facet_name = facet
+    #             search_filter = filter_list.add_search_filter(
+    #                 filter_id=facet, filter_name=facet_name)
+    #             for facet_option in facets['fields'][facet]:
+    #                 facet_option_name = facet_option[0]
+    #                 facet_option_num = facet_option[1]
+    #                 search_filter.add_option(option_value=facet_option_name,
+    #                                          option_name=facet_option_name,
+    #                                          option_num=facet_option_num)
+    #     self.search_filter_list = filter_list
+    #     return filter_list
 
     def select_search_filters(self, params):
         """
