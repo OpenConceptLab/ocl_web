@@ -278,24 +278,11 @@ urlpatterns = patterns(
 
 
 
-    # TODO(paynejd@gmail.com): Below Mapping URLs are for JSON Angular and are now invalid
-    # /orgs/:org/sources/:source/concepts/:concept/mappings/ - JSON ANGULAR
-    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/mappings/$',    # pylint: disable=C0301
-    #    ConceptMappingView.as_view(), name='concept-mapping-cl'),
-    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/mappings/ - JSON ANGULAR
-    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/mappings/$',    # pylint: disable=C0301
-    #    ConceptMappingView.as_view(), name='concept-mapping-cl'),
-    # /orgs/:org/sources/:source/concepts/:concept/mappings/:mapping/ - JSON ANGULAR
-    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-    #    ConceptMappingView.as_view(), name='concept-mapping-ud'),
-    # /orgs/:org/sources/:source/mappings/:mapping/ - JSON ANGULAR
-    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-    #    ConceptMappingView.as_view(), name='mapping-ud'),
+    ## SELFISH URLs
+    # NOTE: Placed at the end so that reserved words aren't incorrectly treated like mnemonics
 
+    # /orgs/:org/sources/:source/:version/ - points to 'source-details'
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        SourceDetailsView.as_view(), name='source-version-home'),
 
-
-    # IMPORTANT: we have to move this to the end because the version value - RETIRE
-    # can be misinterpreted as /names/ /descriptions/ etc et. Not great URL design
-    #url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-    #    ConceptDetailView.as_view(), name='concept-details'),
 )
