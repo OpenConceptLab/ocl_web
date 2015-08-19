@@ -203,39 +203,39 @@ urlpatterns = patterns(
 
     ## CONCEPT NAMES - old JSON Angular URLs
 
-    # /orgs/:org/sources/:source/concepts/:concept/names/ - JSON ANGULAR
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/$',    # pylint: disable=C0301
-        ConceptNameView.as_view(), name='concept-name-cl'),
-    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/names/ - JSON ANGULAR
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/names/$',    # pylint: disable=C0301
-        ConceptNameView.as_view(), name='concept-name-cl'),
-    # /orgs/:org/sources/:source/concepts/:concept/names/:concept-name/ - JSON ANGULAR
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/(?P<name>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-        ConceptNameView.as_view(), name='concept-name-ud'),
+    # # /orgs/:org/sources/:source/concepts/:concept/names/ - JSON ANGULAR
+    # url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/$',    # pylint: disable=C0301
+    #     ConceptNameView.as_view(), name='concept-name-cl'),
+    # # /orgs/:org/sources/:source/concepts/:concept/:concept-version/names/ - JSON ANGULAR
+    # url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/names/$',    # pylint: disable=C0301
+    #     ConceptNameView.as_view(), name='concept-name-cl'),
+    # # /orgs/:org/sources/:source/concepts/:concept/names/:concept-name/ - JSON ANGULAR
+    # url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/names/(?P<name>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+    #     ConceptNameView.as_view(), name='concept-name-ud'),
 
     ## CONCEPT DESCRIPTIONS - old json angular URLs
 
-    # /orgs/:org/sources/:source/concepts/:concept/descriptions/ - JSON ANGULAR
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/$',    # pylint: disable=C0301
-        ConceptDescView.as_view(), name='concept-desc-cl'),
-    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/descriptions/ - JSON ANGULAR
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/descriptions/$',    # pylint: disable=C0301
-        ConceptDescView.as_view(), name='concept-desc-cl'),
-    # /orgs/:org/sources/:source/concepts/:concept/descriptions/:description/ - JSON ANGULAR
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/(?P<description>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-        ConceptDescView.as_view(), name='concept-desc-ud'),
+    # # /orgs/:org/sources/:source/concepts/:concept/descriptions/ - JSON ANGULAR
+    # url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/$',    # pylint: disable=C0301
+    #     ConceptDescView.as_view(), name='concept-desc-cl'),
+    # # /orgs/:org/sources/:source/concepts/:concept/:concept-version/descriptions/ - JSON ANGULAR
+    # url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/descriptions/$',    # pylint: disable=C0301
+    #     ConceptDescView.as_view(), name='concept-desc-cl'),
+    # # /orgs/:org/sources/:source/concepts/:concept/descriptions/:description/ - JSON ANGULAR
+    # url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/descriptions/(?P<description>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+    #     ConceptDescView.as_view(), name='concept-desc-ud'),
 
     ## CONCEPT EXTRAS - old json angular URLs
 
-    # /orgs/:org/sources/:source/concepts/:concept/extras/ - JSON ANGULAR
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/extras/$',    # pylint: disable=C0301
-        ExtraJsonView.as_view(), name='concept-extra'),
-    # /orgs/:org/sources/:source/concepts/:concept/:concept-version/extras/ - JSON ANGULAR
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/extras/$',    # pylint: disable=C0301
-        ExtraJsonView.as_view(), name='concept-extra'),
-    # /orgs/:org/sources/:source/concepts/:concept/extras/:extra/ - JSON ANGULAR
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/extras/(?P<extra>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
-        ExtraJsonView.as_view(), name='concept-extra-add'),
+    # # /orgs/:org/sources/:source/concepts/:concept/extras/ - JSON ANGULAR
+    # url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/extras/$',    # pylint: disable=C0301
+    #     ExtraJsonView.as_view(), name='concept-extra'),
+    # # /orgs/:org/sources/:source/concepts/:concept/:concept-version/extras/ - JSON ANGULAR
+    # url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<version>[a-zA-Z0-9\-\.]+)/extras/$',    # pylint: disable=C0301
+    #     ExtraJsonView.as_view(), name='concept-extra'),
+    # # /orgs/:org/sources/:source/concepts/:concept/extras/:extra/ - JSON ANGULAR
+    # url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/extras/(?P<extra>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+    #     ExtraJsonView.as_view(), name='concept-extra-add'),
 
 
     # PERMALINKS FOR CONCEPT SUB-RESOURCES

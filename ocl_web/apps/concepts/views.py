@@ -32,6 +32,7 @@ class ConceptReadBaseView(TemplateView):
                             source_version_id=None, concept_version_id=None,
                             include_mappings=False, include_inverse_mappings=False):
         """ Get the concept details. """
+        # TODO(paynejd@gmail.com): Validate input parameters
 
         # Setup request parameters
         params = {}
@@ -42,28 +43,31 @@ class ConceptReadBaseView(TemplateView):
             params['includeInverseMappings'] = 'true'
             params['verbose'] = 'true'
 
-        # TODO(paynejd@gmail.com): Validate input parameters
+        # Perform the search
         api = OclApi(self.request, debug=True)
         if source_version_id and concept_version_id:
             raise ValueError(
                 'Must specify only a source version or a concept version. Both were specified.')
         elif source_version_id:
             search_response = api.get(
-                owner_type, owner_id, 'sources', source_id, source_version_id,
+                owner_type, owner_id,
+                'sources', source_id, source_version_id,
                 'concepts', concept_id,
                 params=params)
         elif concept_version_id:
             search_response = api.get(
-                owner_type, owner_id, 'sources', source_id,
+                owner_type, owner_id,
+                'sources', source_id,
                 'concepts', concept_id, concept_version_id,
                 params=params)
         else:
             search_response = api.get(
-                owner_type, owner_id, 'sources', source_id,
+                owner_type, owner_id,
+                'sources', source_id,
                 'concepts', concept_id,
                 params=params)
         if search_response.status_code == 404:
-            raise Http404
+            raise Http404(search_response.text)
         elif search_response.status_code != 200:
             search_response.raise_for_status()
         return search_response.json()
