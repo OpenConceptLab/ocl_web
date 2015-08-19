@@ -153,7 +153,7 @@ class SourceReadBaseView(TemplateView):
 
         # Perform the search
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_MAPPINGS,
-                             params=search_params)
+                             params=params)
         api = OclApi(self.request, debug=True, facets=True)
         search_response = api.get('mappings', params=searcher.search_params)
         if search_response.status_code == 404:
