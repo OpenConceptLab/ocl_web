@@ -26,7 +26,7 @@ from apps.orgs.views import (
 
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
-    SourceNewView, SourceEditView, SourceVersionsView,
+    SourceNewView, SourceEditView, SourceVersionsView, SourceExternalReferencesView,
     SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView)
 from apps.concepts.views import (
     ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptEditView,
