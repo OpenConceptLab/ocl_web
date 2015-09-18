@@ -25,17 +25,11 @@ class SearchFilterOption(object):
         self.option_num = option_num
         self.selected = selected
 
-    def __str__(self):
-        return "%s: %s [%s] %s" % (self.search_filter.filter_name,
+    def __repr__(self):
+        return "%r: %r [%r] %r" % (self.search_filter.filter_name,
                                    self.option_name,
                                    self.option_num,
                                    self.selected)
-
-    def __unicode__(self):
-        return u"%s: %s [%s] %s" % (self.search_filter.filter_name,
-                                    self.option_name,
-                                    self.option_num,
-                                    self.selected)
 
 class SearchFilter(object):
     """
@@ -100,13 +94,9 @@ class SearchFilter(object):
             if opt.option_value in option_values:
                 opt.selected = True
 
-    def __str__(self):
-        return "%s (%s):\n%s" % (self.filter_name, self.filter_id,
+    def __repr__(self):
+        return "%r (%r):\n%r" % (self.filter_name, self.filter_id,
                                  [str(opt) for opt in self.options])
-
-    def __unicode__(self):
-        return u"%s (%s):\n%s" % (self.filter_name, self.filter_id,
-                                  [str(opt) for opt in self.options])
 
 class SearchFilterList(object):
     """
@@ -147,13 +137,9 @@ class SearchFilterList(object):
     def __iter__(self):
         return self.search_filter_list.__iter__()
 
-    def __str__(self):
-        return 'Resource %s: %s\n\n' % (self.resource_name,
+    def __repr__(self):
+        return 'Resource %r: %r\n\n' % (self.resource_name,
                                         [str(f) for f in self.search_filter_list])
-
-    def __unicode__(self):
-        return u'Resource %s: %s\n\n' % (self.resource_name,
-                                         [str(f) for f in self.search_filter_list])
 
 
 
@@ -230,32 +216,6 @@ class OclSearch(object):
             # Do anything that needs to be done to the filter here
             filter_list.add_filter(search_filter)
         self.search_filter_list = filter_list
-
-    # TODO: Retire process_facets - replaced by build_filters
-    # def process_facets(self, resource_type='', facets=None):
-    #     """
-    #     Processes facets into a SearchFilterList object as returned by a Solr search.
-
-    #     :params resource_type: Resource type
-    #     :params facets: Dictionary of the form { 'fields':{ } }
-    #     :returns: SearchFilterList
-    #     """
-    #     filter_list = None
-    #     if isinstance(facets, dict) and 'fields' in facets and isinstance(facets['fields'], dict):
-    #         filter_list = SearchFilterList(resource_name=resource_type)
-    #         for facet in facets['fields']:
-    #             # TODO: Need method to convert field name to display name
-    #             facet_name = facet
-    #             search_filter = filter_list.add_search_filter(
-    #                 filter_id=facet, filter_name=facet_name)
-    #             for facet_option in facets['fields'][facet]:
-    #                 facet_option_name = facet_option[0]
-    #                 facet_option_num = facet_option[1]
-    #                 search_filter.add_option(option_value=facet_option_name,
-    #                                          option_name=facet_option_name,
-    #                                          option_num=facet_option_num)
-    #     self.search_filter_list = filter_list
-    #     return filter_list
 
     def select_search_filters(self, params):
         """
