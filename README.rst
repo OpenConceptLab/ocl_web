@@ -4,8 +4,6 @@ ocl_web
 Client interface for Open Concept Lab terminology services API.
 
 
-LICENSE: BSD
-
 # Developer Setup
 
 The OCL web server requires a few environment variables to operate. The easiest
@@ -75,3 +73,9 @@ For getting this running on your local machine:
 
 .. _livereload: https://github.com/gruntjs/grunt-contrib-watch#using-live-reload-with-the-browser-extension
 
+
+
+---------------------------------------------------------------------
+Copyright (C) 2016 Open Concept Lab. Use of this software is subject
+to the terms of the Mozille Public License v2.0.
+---------------------------------------------------------------------
