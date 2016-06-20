@@ -57,6 +57,7 @@ urlpatterns = patterns(
     url(r'^explore/$', TemplateView.as_view(template_name='pages/explore.html'), name="explore"),
     url(r'^terms/$', TemplateView.as_view(template_name='pages/terms.html'), name="terms"),
     url(r'^privacy/$', TemplateView.as_view(template_name='pages/privacy.html'), name="privacy"),
+    url(r'^license/$', TemplateView.as_view(template_name='pages/license.html'), name="license"),
     url(r'^help/$', TemplateView.as_view(template_name='pages/help.html'), name="help"),
 
     # TODO(paynejd@gmail.com): Temporary success page -- remove?
