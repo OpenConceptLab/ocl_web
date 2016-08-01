@@ -19,7 +19,7 @@ class OrganizationNewForm(forms.Form):
                    'https://OpenConceptLab.com/orgs/'
                    '<span id="new_org_id" style="font-weight:bold;">[org-id]</span>/'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. WHO"}))
-    full_name = forms.CharField(
+    name = forms.CharField(
         label=_('Organization Full Name'),
         max_length=256,
         required=True,

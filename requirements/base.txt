@@ -24,7 +24,7 @@ Pillow==2.3.0
 django-allauth==0.15.0
 
 # For the persistance stores
-# psycopg2==2.5.2
+psycopg2==2.5.2
 
 # Unicode slugification
 unicode-slugify==0.1.1
@@ -37,4 +37,6 @@ Fabric==1.9.0
 # Your custom requirements go here
 simplejson==3.4.0
 python-dateutil==2.2
+
+sqlparse==0.1.19
 

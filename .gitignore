@@ -38,3 +38,5 @@ media/
 ocl.db
 
 pylintrc
+
+env
