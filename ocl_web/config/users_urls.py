@@ -26,6 +26,7 @@ from apps.concepts.views import (
 from apps.mappings.views import (
     MappingDetailsView, MappingNewView, MappingEditView, MappingRetireView)
 from apps.core.views import ExtraJsonView
+from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView
 
 
 urlpatterns = patterns(
@@ -259,4 +260,13 @@ urlpatterns = patterns(
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         SourceDetailsView.as_view(), name='source-version-home'),
 
+    ## Collection CORE
+
+    # /users/:user/collections/new/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/new/$',
+        CollectionCreateView.as_view(), name='collection-new'),
+
+    # /users/:user/sources/:source/details/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/details/$',
+        CollectionDetailView.as_view(), name='collection-detail'),
 )
