@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 from django.conf.urls import (patterns, url)
 
 from apps.orgs.views import (
-    OrganizationDetailsView, OrganizationAboutView, OrganizationSourcesView,
+    OrganizationDetailsView, OrganizationAboutView, OrganizationSourcesView,OrganizationCollectionsView,
     OrganizationNewView, OrganizationEditView, OrganizationRetireView,
     OrganizationMemberAddView, OrganizationMemberRemoveView)
 
@@ -33,7 +33,8 @@ from apps.concepts.views import (
     ConceptRetireView, ConceptNewView, ConceptDescView, ConceptNameView)
 from apps.mappings.views import (
     MappingDetailsView, MappingNewView, MappingEditView, MappingRetireView)
-from apps.core.views import ExtraJsonView
+#from apps.core.views import ExtraJsonView
+from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView
 
 
 urlpatterns = patterns(
@@ -288,5 +289,20 @@ urlpatterns = patterns(
     # /orgs/:org/sources/:source/:version/ - points to 'source-details'
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         SourceDetailsView.as_view(), name='source-version-home'),
+
+
+    ## COLLECTIONS CORE
+
+    # /orgs/:org/collections/new/ - create new collection
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/new/$',
+        CollectionCreateView.as_view(), name='collection-new'),
+
+    # /orgs/:org/collections/:collection/ - points to "collection-details"
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/$',
+        CollectionDetailView.as_view(), name='collection-home'),
+    # /orgs/:org/sources/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/$',
+        OrganizationCollectionsView.as_view(), name='org-collections'),
+
 
 )

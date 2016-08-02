@@ -24,12 +24,12 @@
 <form class="form-horizontal" id="collection_create_form" method="post" action=".">
   {% csrf_token %}
 
-  <div class="form-group required"><label class="col-md-2 control-label">Source</label>
+  <div class="form-group required"><label class="col-md-2 control-label">Collection</label>
     <div class="col-md-4">
       {% if org %}
-      {% trans "Create a source for this organization" %} : {{ org.id }}
+      {% trans "Create a collection for this organization" %} : {{ org.id }}
       {% else %}
-      {% trans "Create a source for this user" %} : {{ ocl_user.username }}
+      {% trans "Create a collection for this user" %} : {{ ocl_user.username }}
       {% endif %}
 
 </div></div>

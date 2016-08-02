@@ -38,7 +38,7 @@
 <div class="container">
     <ul class="nav nav-tabs">
         <li role="presentation" {% if selected_tab == "Sources" %}class="active"{% endif %}><a href="{% url 'org-sources' org.id %}">Sources</a></li>
-        {% comment %}<li role="presentation" {% if selected_tab == "Collections" %}class="active"{% endif %}><a href="{% url 'org-collections' org.id %}">Collections</a></li>{% endcomment %}
+        <li role="presentation" {% if selected_tab == "Collections" %}class="active"{% endif %}><a href="{% url 'org-collections' org.id %}">Collections</a></li>
         <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{% url 'org-details' org.id %}">Details</a></li>
         <li role="presentation" {% if selected_tab == "About" %}class="active"{% endif %}><a href="{% url 'org-about' org.id %}">About</a></li>
     </ul>

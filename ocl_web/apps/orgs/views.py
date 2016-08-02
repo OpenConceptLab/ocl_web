@@ -79,6 +79,28 @@ class OrganizationReadBaseView(TemplateView):
 
         return searcher
 
+    def get_org_collections(self, org_id, search_params=None):
+        """
+        Load org sources from the API and return OclSearch instance with results
+        """
+        # TODO(paynejd@gmail.com): Validate the input parameters
+
+        # Perform the search
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_COLLECTIONS, params=search_params)
+        api = OclApi(self.request, debug=True, facets=True)
+        search_response = api.get('orgs', org_id, 'collections', params=searcher.search_params)
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
+
+        # Process the results
+        searcher.process_search_results(
+            search_type=searcher.search_type, search_response=search_response,
+            search_params=self.request.GET)
+
+        return searcher
+
 
 class OrganizationDetailsView(OrganizationReadBaseView):
     """ Organization details view. """
@@ -136,6 +158,43 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         context['source_page'] = search_current_page
         context['source_pagination_url'] = self.request.get_full_path()
         context['source_q'] = searcher.get_query()
+        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort'] = searcher.get_sort()
+        context['search_filters'] = searcher.search_filter_list
+        context['search_type'] = searcher.search_type
+        context['url_params'] = self.request.GET
+        context['search_params'] = searcher.search_params
+        context['search_facets_json'] = searcher.search_facets
+        context['search_filters_debug'] = str(searcher.search_filter_list)
+
+        return context
+
+class OrganizationCollectionsView(OrganizationReadBaseView):
+    """ Organization Sources view """
+
+    template_name = "orgs/org_collections.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """ Load sources search results, facets/filters, etc. for the org """
+
+        context = super(OrganizationCollectionsView, self).get_context_data(*args, **kwargs)
+
+        # Load the organization
+        org_id = self.kwargs.get('org')
+        org = self.get_org_details(org_id)
+
+        # Load the sources in this org, applying search parameters
+        searcher = self.get_org_collections(org_id, search_params=self.request.GET)
+        search_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        search_current_page = search_paginator.page(searcher.current_page)
+
+        # Set the context for the collections
+        context['selected_tab'] = 'Collections'
+        context['org'] = org
+        context['collections'] = searcher.search_results
+        context['collection_page'] = search_current_page
+        context['collection_pagination_url'] = self.request.get_full_path()
+        context['collection_q'] = searcher.get_query()
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.search_filter_list
