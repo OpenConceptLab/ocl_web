@@ -273,7 +273,8 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
 
         # TODO:  Add error messages from API to form.
         else:
-            return super(OrganizationNewView, self).form_invalid(self, *args, **kwargs)
+            messages.add_message(self.request, messages.INFO, result.json()['mnemonic'])
+            return super(OrganizationNewView, self).form_invalid(form)
 
 
 
@@ -386,7 +387,6 @@ class OrganizationMemberAddView(LoginRequiredMixin, FormView):
         # TODO:  Add error messages from API to form.
         else:
             return super(OrganizationMemberAddView, self).form_invalid(form)
-
 
 
 # TODO(paynejd): OrganizationMemberRemoveView only half works -- fix this
