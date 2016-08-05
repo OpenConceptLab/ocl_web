@@ -80,10 +80,6 @@ class OrganizationReadBaseView(TemplateView):
         return searcher
 
     def get_org_collections(self, org_id, search_params=None):
-        """
-        Load org sources from the API and return OclSearch instance with results
-        """
-        # TODO(paynejd@gmail.com): Validate the input parameters
 
         # Perform the search
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_COLLECTIONS, params=search_params)
