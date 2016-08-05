@@ -164,6 +164,10 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ConceptDetailsView.as_view(), name='concept-home'),
 
+    # /orgs/:org/sources/:source/concepts/:concept/:version - points to "concept-details"
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)$',    # pylint: disable=C0301
+        ConceptDetailsView.as_view(), name='concept-home-versioned'),
+
     # /orgs/:org/sources/:source/concepts/:concept/edit/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
         ConceptEditView.as_view(), name='concept-edit'),

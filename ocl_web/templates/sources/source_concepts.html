@@ -102,9 +102,17 @@
 
 		{% for result in results %}
 			{% if source.owner_type == 'Organization' %}
-				{% url 'concept-home' org=result.owner source=result.source concept=result.id as result_url %}
+                {% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
+				    {% url 'concept-home' org=result.owner source=result.source concept=result.id as result_url %}
+    			{% else %}
+				    {% url 'concept-home-versioned' org=result.owner source=result.source concept=result.id concept_version=result.version as result_url %}
+    			{% endif %}
 			{% else %}
-				{% url 'concept-home' user=result.owner source=result.source concept=result.id as result_url %}
+                {% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
+				    {% url 'concept-home' user=result.owner source=result.source concept=result.id as result_url %}
+                {% else %}
+                    {% url 'concept-home-versioned' user=result.owner source=result.source concept=result.id concept_version=result.version as result_url %}
+    			{% endif %}
 			{% endif %}
 
 			<div class="row row-search-result">
