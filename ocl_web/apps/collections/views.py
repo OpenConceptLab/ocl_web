@@ -130,11 +130,11 @@ class CollectionCreateView(UserOrOrgMixin, FormView):
         if self.from_org:
             return HttpResponseRedirect(reverse("collection-detail",
                                                 kwargs={"org": self.org_id,
-                                                        'source': short_code}))
+                                                        'collection': short_code}))
         else:
             return HttpResponseRedirect(reverse("collection-detail",
                                                 kwargs={"user": self.user_id,
-                                                        'source': short_code}))
+                                                        'collection': short_code}))
 
 
 class CollectionEditView(UserOrOrgMixin, FormView):
