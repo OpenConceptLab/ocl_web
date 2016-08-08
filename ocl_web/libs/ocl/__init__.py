@@ -480,6 +480,20 @@ class OclApi(object):
         return result
 
 
+    def update_collection(self, owner_type, owner_id, collection_id, base_data, extras=[]):
+        """
+        Update collection.
+        :param owner_type: 'orgs' or 'users'
+        :param owner_id: ID of the org/user/ owner
+        :param base_data: is a dictionary of fields.
+        :param extras: Extras to save to the resource
+        :returns: response object.
+        """
+        data = {}
+        data.update(base_data)
+        result = self.put(owner_type, owner_id, 'collections', collection_id, **data)
+        return result
+
     def create_mapping_from_concept(self, source_owner_type, source_owner_id,
                                     source_id, from_concept_id, data):
         """

@@ -312,6 +312,10 @@ urlpatterns = patterns(
     # /orgs/:org/collections/:collection/details/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/details/$',
         CollectionDetailView.as_view(), name='collection-detail'),
+
+    # /orgs/:org/sources/:source/edit/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/edit/$',
+        CollectionEditView.as_view(), name='collection-edit'),
 )
 
 

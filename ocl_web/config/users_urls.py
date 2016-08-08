@@ -277,4 +277,7 @@ urlpatterns = patterns(
     # /users/:user/collections/:collection/ - points to "collection-details"
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/$',
         CollectionDetailView.as_view(), name='collection-home'),
+    # /users/:user/collections/:collection/edit/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/edit/$',
+        CollectionEditView.as_view(), name='collection-edit'),
 )

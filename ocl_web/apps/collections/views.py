@@ -219,3 +219,77 @@ class CollectionEditView(UserOrOrgMixin, FormView):
             return HttpResponseRedirect(reverse("source-home",
                                                 kwargs={"user": self.user_id,
                                                         'source': self.source_id}))
+
+class CollectionEditView(UserOrOrgMixin, FormView):
+    """ Edit collection, either for an org or a user. """
+    template_name = "collections/collection_edit.html"
+
+    def get_form_class(self):
+        """ Trick to load initial data """
+        self.get_args()
+        api = OclApi(self.request, debug=True)
+        self.collection = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id).json()
+        return CollectionEditForm
+
+    def get_initial(self):
+        """ Load some useful data, not really for form display but internal use """
+        data = {
+            'org_id': self.org_id,
+            'user_id': self.user_id,
+            'from_org': self.from_org,
+            'from_user': self.from_user,
+            'request': self.request,
+        }
+        data.update(self.collection)
+        # convert supported locales to string
+        supported_locale_list = self.collection.get('supported_locales')
+        if supported_locale_list is None:
+            data['supported_locales'] = ''
+        else:
+            data['supported_locales'] = ','.join(supported_locale_list)
+
+        return data
+
+    def get_context_data(self, *args, **kwargs):
+        """ Get collection details for the edit form """
+        context = super(CollectionEditView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        api = OclApi(self.request, debug=True)
+        org = ocl_user = None
+        if self.from_org:
+            org = api.get('orgs', self.org_id).json()
+        else:
+            ocl_user = api.get('users', self.user_id).json()
+
+        # Set the context
+        context['kwargs'] = self.kwargs
+        context['org'] = org
+        context['ocl_user'] = ocl_user
+        context['from_user'] = self.from_user
+        context['from_org'] = self.from_org
+        context['collection'] = self.collection
+
+        return context
+
+    def form_valid(self, form):
+        """ If Collection input is valid, then update API backend. """
+        self.get_args()
+
+        # Submit updated collection data to the API
+        data = form.cleaned_data
+        api = OclApi(self.request, debug=True)
+        result = api.update_collection(self.owner_type, self.owner_id, self.collection_id, data)
+        print result
+        if len(result.text) > 0:
+            print result.json()
+
+        messages.add_message(self.request, messages.INFO, _('Collection updated'))
+        if self.from_org:
+            return HttpResponseRedirect(reverse('collection-detail',
+                                                kwargs={'org': self.org_id,
+                                                        'collection': self.collection_id}))
+        else:
+            return HttpResponseRedirect(reverse('collection-detail',
+                                                kwargs={'user': self.user_id,
+                                                        'collection': self.collection_id}))
