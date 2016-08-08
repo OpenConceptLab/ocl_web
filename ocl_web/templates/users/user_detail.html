@@ -99,7 +99,7 @@
                                 {% for collection in collections %}
                                     {% url 'collection-home' user=collection.owner collection=collection.short_code as user_collection_url %}
                                     <div class="label-container">
-                                        {% generic_resource_label resource_type='collection' resource_id=collection.short_code resource_name=collection.name resource_url=user_collection_url owner_type='User' owner_id=collection.owner label_size='small' display_breadcrumb=True %}
+                                        {% generic_resource_label resource_type='collection' resource_id=collection.short_code resource_name=collection.name resource_url=user_collection_url  label_size='small' display_breadcrumb=True %}
                                     </div>
                                 {% empty %}
                                     <h3><small>No User Collections</small></h3>

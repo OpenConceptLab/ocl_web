@@ -49,10 +49,11 @@ class SourceReadBaseView(TemplateView):
         # Perform the search
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_SOURCE_VERSIONS,
                              params=search_params)
+
         api = OclApi(self.request, debug=True, facets=False)
-        search_response = api.get(
-            owner_type, owner_id, 'sources', source_id, 'versions',
+        search_response = api.get(owner_type, owner_id, 'sources', source_id, 'versions',
             params=searcher.search_params)
+
         if search_response.status_code == 404:
             raise Http404
         elif search_response.status_code != 200:

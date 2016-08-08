@@ -304,9 +304,14 @@ urlpatterns = patterns(
     # /orgs/:org/collections/:collection/ - points to "collection-details"
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/$',
         CollectionDetailView.as_view(), name='collection-home'),
-    # /orgs/:org/sources/
+
+    # /orgs/:org/collections/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/$',
         OrganizationCollectionsView.as_view(), name='org-collections'),
 
-
+    # /orgs/:org/collections/:collection/details/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/details/$',
+        CollectionDetailView.as_view(), name='collection-detail'),
 )
+
+

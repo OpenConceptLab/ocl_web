@@ -270,9 +270,9 @@ urlpatterns = patterns(
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/new/$',
         CollectionCreateView.as_view(), name='collection-new'),
 
-    # /users/:user/sources/:source/details/
+    # /users/:user/collections/:collection/details/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/details/$',
-        CollectionDetailView.as_view(), name='collection-details'),
+        CollectionDetailView.as_view(), name='collection-detail'),
 
     # /users/:user/collections/:collection/ - points to "collection-details"
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/$',
