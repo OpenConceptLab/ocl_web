@@ -11,7 +11,6 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.core.paginator import Paginator
-#from braces.views import JsonRequestResponseMixin
 
 
 from libs.ocl import OclApi, OclSearch, OclConstants
@@ -24,7 +23,8 @@ logger = logging.getLogger('oclweb')
 class CollectionDetailView(UserOrOrgMixin, TemplateView):
     """ Collection detail views """
 
-    template_name = "collections/collection_detail.html"
+    template_name = "collections/collection_details.html"
+    # template_name = "collections/conceptcollections_detail.html"
 
     def get_context_data(self, *args, **kwargs):
         context = super(CollectionDetailView, self).get_context_data(*args, **kwargs)
@@ -35,32 +35,36 @@ class CollectionDetailView(UserOrOrgMixin, TemplateView):
         searcher = OclSearch(OclConstants.RESOURCE_NAME_COLLECTIONS, params=self.request.GET)
 
         api = OclApi(self.request, debug=True)
-
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
+
         if results.status_code != 200:
             if results.status_code == 404:
                 raise Http404
             else:
                 results.raise_for_status()
-        concept = results.json()
+        collection = results.json()
 
-        results = api.get(self.owner_type, self.owner_id, 'sources', self.source_id, 'concepts',
-                          params=searcher.search_params)
-        if results.status_code != 200:
-            if results.status_code == 404:
-                raise Http404
-            else:
-                results.raise_for_status()
+        # results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id, 'concepts',
+        #                   params=searcher.search_params)
+        # if results.status_code != 200:
+        #     if results.status_code == 404:
+        #         raise Http404
+        #     else:
+        #         results.raise_for_status()
+        #
+        # collection = results.json()
+        # #context['source'] = source
+        context['kwargs'] = self.kwargs
+        context['collection'] = collection
+        context['selected_tab'] = 'Details'
 
-        concept_list = results.json()
-        #context['source'] = source
-        context['concepts'] = concept_list
 
         #context['search_filters'] = searcher.get_search_filters()
-        num_found = int(results.headers['num_found'])
-        pg = Paginator(range(num_found), searcher.num_per_page)
-        context['page'] = pg.page(searcher.current_page)
-        context['pagination_url'] = self.request.get_full_path()
+        # num_found = int(results.headers['num_found'])
+        # pg = Paginator(range(num_found), searcher.num_per_page)
+        # context['page'] = pg.page(searcher.current_page)
+        # context['pagination_url'] = self.request.get_full_path()
+
         return context
 
 
@@ -128,11 +132,11 @@ class CollectionCreateView(UserOrOrgMixin, FormView):
         messages.add_message(self.request, messages.INFO, _('Collection created'))
 
         if self.from_org:
-            return HttpResponseRedirect(reverse("collection-detail",
+            return HttpResponseRedirect(reverse("collection-home",
                                                 kwargs={"org": self.org_id,
                                                         'collection': short_code}))
         else:
-            return HttpResponseRedirect(reverse("collection-detail",
+            return HttpResponseRedirect(reverse("collection-home",
                                                 kwargs={"user": self.user_id,
                                                         'collection': short_code}))
 

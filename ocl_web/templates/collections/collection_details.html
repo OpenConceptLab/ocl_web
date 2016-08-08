@@ -1,0 +1,53 @@
+{% extends "collections/collection_base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+
+{% block tab-content %}
+<div class="container" style="margin-top: 20px;">
+<div class="row">
+
+	<!-- collection attributes -->
+	<div class="col-md-8">
+		<div class="panel panel-default">
+			<div class="panel-heading"><h3 class="panel-title">collection Details</h3></div>
+            <div class="panel-body">
+				{% field_label 'ID' collection.id %}
+				{% field_label 'Name' collection.id %}
+				{% field_label 'Full Name' collection.full_name %}
+				<hr />
+				{% field_label 'Description' collection.description %}
+				{% field_label 'collection Type' collection.collection_type %}
+				{% field_label 'Website' collection.website url=True %}
+				{% field_label 'Public Access' collection.public_access %}
+				<hr />
+				{% field_label 'Default Locale' collection.default_locale %}
+				{% field_label 'Supported Locales' collection.default_locale %}
+				{% if collection.external_id %}<hr />{% field_label 'External ID' collection.external_id %}{% endif %}
+				<hr />
+				{% field_label 'Created by' collection.created_by %}
+				{% field_label 'Created on' collection.created_on|smart_date %}
+				{% field_label 'Updated by' collection.created_by %}
+				{% field_label 'Updated on' collection.created_on|smart_date %}
+            	{% if collection.extras and collection.extras.items %}
+            		<hr />
+            		{% for k, v in collection.extras.items %}
+            			{% field_label k v %}
+            		{% endfor %}
+            	{% endif %}
+            </div>
+		</div>
+	</div>
+
+
+</div>
+</div>
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL kwargs</h4><pre>{{ kwargs|pprint }}</pre>
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>collection</h4><pre>{{ collection|pprint }}</pre>
+{% endblock resource-debug %}

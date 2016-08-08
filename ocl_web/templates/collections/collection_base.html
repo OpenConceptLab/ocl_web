@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load ocl_tags %}
+
+{% block title %}{{ collection.owner }} / {{ collection.id }} - Open Concept Lab{% endblock title %}
+
+{% block content-no-container %}
+
+{% block resource-header %}
+{% if collection.owner_type == 'Organization' %}
+	{% url 'collection-edit' org=collection.owner collection=collection.id as collection_edit_url %}
+{% else %}
+	{% url 'collection-edit' user=collection.owner collection=collection.id as collection_edit_url %}
+{% endif %}
+
+<header class="resource-header resource-header-collection">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="resource-header-icon"><span class="glyphicon glyphicon-th-list"></span></div>
+				<div class="resource-header-label">
+					<div class="label-container">
+						{% resource_owner_label collection %} / {% collection_label collection %}
+						{% if kwargs and "collection_version" in kwargs %}<span class="small" title="collection Version ID">[ {{ kwargs.collection_version }} ]</span>{% endif %}
+						{% if_can_change collection %}
+							<a href="{{ collection_edit_url }}" class="small text-muted" title="Edit collection"><span class="glyphicon glyphicon-cog"></span></a>
+						{% endif_can_change collection %}
+					</div>
+					<p>
+						<em>collection Type:</em> {{ collection.collection_type }}<br />
+						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ collection.updated_on|smart_datetime }})</span>
+						<span class="resource-privacy">{% if collection.public_access == 'View' or org.public_access = 'Edit' %}public{% else %}private{% endif %}</span>
+                	</p>
+				</div> <!-- /resource-header-label -->
+			</div> <!-- /col-md-12 -->
+		</div> <!-- /row -->
+	</div> <!-- /container -->
+</header>
+{% endblock resource-header %}
+
+
+{% block resource-tabs %}
+{% if collection.owner_type == 'Organization' %}
+	{% if kwargs and "collection_version" in kwargs %}
+		{% url 'collection-version-concepts' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
+		{% url 'collection-version-mappings' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_mappings_url %}
+	{% else %}
+		{% url 'collection-concepts' org=collection.owner collection=collection.id as collection_concepts_url %}
+		{% url 'collection-mappings' org=collection.owner collection=collection.id as collection_mappings_url %}
+	{% endif %}
+	{% url 'collection-extrefs' org=collection.owner collection=collection.id as collection_extrefs_url %}
+	{% url 'collection-details' org=collection.owner collection=collection.id as collection_details_url %}
+	{% url 'collection-versions' org=collection.owner collection=collection.id as collection_versions_url %}
+	{% url 'collection-about' org=collection.owner collection=collection.id as collection_about_url %}
+{% else %}
+	{% if kwargs and "collection_version" in kwargs %}
+		{% url 'collection-version-concepts' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
+		{% url 'collection-version-mappings' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_mappings_url %}
+	{% else %}
+		{% url 'collection-concepts' user=collection.owner collection=collection.id as collection_concepts_url %}
+		{% url 'collection-mappings' user=collection.owner collection=collection.id as collection_mappings_url %}
+	{% endif %}
+	{% url 'collection-extrefs' user=collection.owner collection=collection.id as collection_extrefs_url %}
+	{% url 'collection-details' user=collection.owner collection=collection.id as collection_details_url %}
+	{% url 'collection-versions' user=collection.owner collection=collection.id as collection_versions_url %}
+	{% url 'collection-about' user=collection.owner collection=collection.id as collection_about_url %}
+{% endif %}
+<div class="container">
+    <ul class="nav nav-tabs">
+    	{% if collection.collection_type != 'External' %}
+	        <li role="presentation" {% if selected_tab == "Concepts" %}class="active"{% endif %}><a href="{{ collection_concepts_url }}">Concepts</a></li>
+        	<li role="presentation" {% if selected_tab == "Mappings" %}class="active"{% endif %}><a href="{{ collection_mappings_url }}">Mappings</a></li>
+        {% else %}
+	        <li role="presentation" {% if selected_tab == "External References" %}class="active"{% endif %}><a href="{{ collection_extrefs_url }}">External References</a></li>
+        {% endif %}
+        <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ collection_details_url }}">Details</a></li>
+        <li role="presentation" {% if selected_tab == "Versions" %}class="active"{% endif %}><a href="{{ collection_versions_url }}">Versions</a></li>
+        <li role="presentation" {% if selected_tab == "About" %}class="active"{% endif %}><a href="{{ collection_about_url }}">About</a></li>
+    </ul>
+</div>
+{% endblock resource-tabs %}
+
+
+{% block tab-content %}
+{% endblock tab-content %}
+
+
+{% if request.GET.debug %}
+<div class="container" style="margin-top: 30px;">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h4 class="panel-title">Debug</h4></div>
+        <div class="panel-body" style="min-height:140px;">
+        {% block resource-debug %}
+            <h4>Debug Content</h4>
+        {% endblock resource-debug %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock content-no-container %}

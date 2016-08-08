@@ -100,6 +100,21 @@ def source_label(source, label_size=None):
         'label_size':label_size
     }
 
+@register.inclusion_tag('includes/collection_label_incl.html')
+def collection_label(collection, label_size=None):
+    """
+    Displays indepdent collection label (no breadcrumb). Ex:
+
+        [:collection-icon :collection-short-name]
+
+    :param collection: OCL Collection
+    :param label_size: No value is 'medium'; Acceptabel values are 'small' or 'large'
+    """
+    return {
+        'collection':collection,
+        'label_size':label_size
+    }
+
 
 @register.inclusion_tag('includes/concept_label_incl.html')
 def concept_label(concept, label_size=None):

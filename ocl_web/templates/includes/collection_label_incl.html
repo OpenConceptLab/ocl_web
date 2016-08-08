@@ -1,0 +1,7 @@
+{% load ocl_tags %}
+{% if collection.owner_type == 'Organization' %}
+	{% url 'collection-home' org=collection.owner collection=collection.id as resource_url %}
+{% else %}
+	{% url 'collection-home' user=collection.owner collection=collection.id as resource_url %}
+{% endif %}
+{% generic_resource_label resource_type='collection' resource_id=collection.short_code resource_url=resource_url label_size=label_size %}

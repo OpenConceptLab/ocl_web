@@ -166,7 +166,7 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         return context
 
 class OrganizationCollectionsView(OrganizationReadBaseView):
-    """ Organization Sources view """
+    """ Organization Collection view """
 
     template_name = "orgs/org_collections.html"
 
