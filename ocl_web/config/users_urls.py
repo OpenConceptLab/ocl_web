@@ -26,8 +26,9 @@ from apps.concepts.views import (
 from apps.mappings.views import (
     MappingDetailsView, MappingNewView, MappingEditView, MappingRetireView)
 from apps.core.views import ExtraJsonView
-from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView
-
+from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView, CollectionAboutView, \
+    CollectionVersionsView, CollectionConceptsView, CollectionMappingsView, CollectionSourcesView, \
+    CollectionCollectionsView
 
 urlpatterns = patterns(
     '',
@@ -272,7 +273,7 @@ urlpatterns = patterns(
 
     # /users/:user/collections/:collection/details/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/details/$',
-        CollectionDetailView.as_view(), name='collection-detail'),
+        CollectionDetailView.as_view(), name='collection-details'),
 
     # /users/:user/collections/:collection/ - points to "collection-details"
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/$',
@@ -280,4 +281,22 @@ urlpatterns = patterns(
     # /users/:user/collections/:collection/edit/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/edit/$',
         CollectionEditView.as_view(), name='collection-edit'),
+    # /users/:user/collections/:collection/about/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/about/$',
+        CollectionAboutView.as_view(), name='collection-about'),
+    # /users/:user/collections/:collection/versions/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/versions/$',
+        CollectionVersionsView.as_view(), name='collection-versions'),
+    # /users/:user/collections/:collection/concepts/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/concepts/$',
+        CollectionConceptsView.as_view(), name='collection-concepts'),
+    # /users/:user/collections/:collection/mappings/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/mappings/$',
+        CollectionMappingsView.as_view(), name='collection-mappings'),
+    # /users/:user/collections/:collection/sources/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/sources/$',
+        CollectionSourcesView.as_view(), name='collection-sources'),
+    # /users/:user/collections/:collection/collections/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/collections/$',
+        CollectionCollectionsView.as_view(), name='collection-collections'),
 )

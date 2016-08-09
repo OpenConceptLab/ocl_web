@@ -1,0 +1,32 @@
+{% extends "collections/collection_base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+
+{% block tab-content %}
+{% if collection.owner_type == 'Organization' %}
+	{% url 'collection-version-new' org=collection.owner collection=collection.id as collection_version_new_url %}
+{% else %}
+	{% url 'collection-version-new' user=collection.owner collection=collection.id as collection_version_new_url %}
+{% endif %}
+
+<div class="container" style="margin-top: 20px;">
+	<div class="row">
+
+		<div class="col-md-8">
+
+
+		</div>
+
+	</div> <!-- /row -->
+</div> <!-- /container -->
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL kwargs</h4><pre>{{ kwargs|pprint }}</pre>
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Collection</h4><pre>{{ collection|pprint }}</pre>
+<h4>Collection Collections</h4><pre>{{ collection_collections|pprint }}</pre>
+{% endblock resource-debug %}

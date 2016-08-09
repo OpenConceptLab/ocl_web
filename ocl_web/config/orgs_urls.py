@@ -34,8 +34,9 @@ from apps.concepts.views import (
 from apps.mappings.views import (
     MappingDetailsView, MappingNewView, MappingEditView, MappingRetireView)
 #from apps.core.views import ExtraJsonView
-from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView
-
+from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView, CollectionAboutView, \
+    CollectionVersionsView, CollectionConceptsView, CollectionMappingsView, CollectionSourcesView, \
+    CollectionCollectionsView
 
 urlpatterns = patterns(
     '',
@@ -311,11 +312,29 @@ urlpatterns = patterns(
 
     # /orgs/:org/collections/:collection/details/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/details/$',
-        CollectionDetailView.as_view(), name='collection-detail'),
+        CollectionDetailView.as_view(), name='collection-details'),
 
     # /orgs/:org/sources/:source/edit/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/edit/$',
         CollectionEditView.as_view(), name='collection-edit'),
+    # /orgs/:org/sources/:source/about/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/about/$',
+        CollectionAboutView.as_view(), name='collection-about'),
+    # /orgs/:org/collections/:collection/versions/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/versions/$',
+        CollectionVersionsView.as_view(), name='collection-versions'),
+    # /orgs/:org/collections/:collection/concepts/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/concepts/$',
+        CollectionConceptsView.as_view(), name='collection-concepts'),
+    # /orgs/:org/collections/:collection/mappings/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/mappings/$',
+        CollectionMappingsView.as_view(), name='collection-mappings'),
+    # /orgs/:org/collections/:collection/sources/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/sources/$',
+        CollectionSourcesView.as_view(), name='collection-sources'),
+    # /orgs/:org/collections/:collection/collections/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/collections/$',
+        CollectionCollectionsView.as_view(), name='collection-collections'),
 )
 
 

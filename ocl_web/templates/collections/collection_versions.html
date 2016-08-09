@@ -1,0 +1,92 @@
+{% extends "collections/collection_base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+
+{% block tab-content %}
+{% if collection.owner_type == 'Organization' %}
+	{% url 'collection-version-new' org=collection.owner collection=collection.id as collection_version_new_url %}
+{% else %}
+	{% url 'collection-version-new' user=collection.owner collection=collection.id as collection_version_new_url %}
+{% endif %}
+
+<div class="container" style="margin-top: 20px;">
+	<div class="row">
+
+		<div class="col-md-8">
+
+			<!-- Collection version search bar -->
+	        <div class="form-group">
+		        {% simple_pager current_page 'collection version' url=pagination_url %}
+
+				<div style="margin-left:40px;padding-right:10px;">
+					<a href="{{ collection_version_new_url }}" class="small" style="padding-right:10px;"><span class="glyphicon glyphicon-plus"></span> {% trans "New Collection Version" %}</a>&nbsp;&nbsp;&nbsp;
+					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="collection-version-filter" value="released" disabled /> {% trans "Released" %}</label>
+					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="collection-version-filter" value="is_processing" disabled /> {% trans "Processing" %}</label>
+				</div>
+	    	</div>
+
+			<!-- Collection version search results -->
+	        <ul>
+	    		{% for collection_version in collection_versions %}
+	    			{% if collection_version.owner_type == 'Organization' %}
+	    				{% url 'collection-version-concepts' org=collection_version.owner collection=collection.id collection_version=collection_version.id as collection_version_concepts_url %}
+	    				{% url 'collection-version-edit' org=collection_version.owner collection=collection.id collection_version=collection_version.id as collection_version_edit_url %}
+	    			{% else %}
+	    				{% url 'collection-version-concepts' user=collection_version.owner collection=collection.id collection_version=collection_version.id as collection_version_concepts_url %}
+	    				{% url 'collection-version-edit' user=collection_version.owner collection=collection.id collection_version=collection_version.id as collection_version_edit_url %}
+	    			{% endif %}
+
+		            <li class="list-group-item">
+
+		                {% if not collection_version.is_processing %}
+		                <div class="pull-right">
+		                    <a href="{{ collection_version_edit_url }}" class="btn btn-link" title="Edit Collection Version"><span class="glyphicon glyphicon-pencil"></span></a>
+		                </div>
+		                {% endif %}
+
+		                <h4>
+		                	<a href="{{ collection_version_concepts_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ collection_version.owner }} / {{ collection.id }} [ </span><span class="resource-label-id-code">{{ collection_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
+
+		                    {% if collection_version.released %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">{% trans "Released" %}</span></span>{% endif %}
+
+		                    {% if collection_version.is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>{% endif %}
+		                </h4>
+
+		                <p class="small">
+		                    {% if collection_version.description %}<span>{{ collection_version.description }}<br /></span>{% endif %}
+		                    <span class="text-muted"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;{% trans "Created on" %} {{ collection_version.created_on|smart_datetime }}</span>
+		                </p>
+		            </li>
+	            {% empty %}
+		            <li class="list-group-item"><h3><small>{% trans "No collection versions." %}</small></h3></li>
+	            {% endfor %}
+	        </ul>
+		</div>
+
+
+		<!-- Tip -->
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">{% trans "Tip" %}</h3></div>
+				<div class="panel-body">
+					<p class="small">Create a new <strong>Collection Version</strong> to save the state of a collection's concepts and
+					mappings at a specific point in time.</p>
+					<p class="small">A <strong>Released</strong> collection version indicates to your users that a particular collection
+					version is prepared for public consumption. Only one collection version may be released at a time.</p>
+				</div>
+			</div>
+		</div>
+
+	</div> <!-- /row -->
+</div> <!-- /container -->
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL kwargs</h4><pre>{{ kwargs|pprint }}</pre>
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Collection</h4><pre>{{ collection|pprint }}</pre>
+<h4>Collection Versions</h4><pre>{{ collection_versions|pprint }}</pre>
+{% endblock resource-debug %}
