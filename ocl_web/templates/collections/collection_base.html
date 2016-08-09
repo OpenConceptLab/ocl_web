@@ -61,9 +61,14 @@
 	{% if kwargs and "collection_version" in kwargs %}
 		{% url 'collection-version-concepts' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
 		{% url 'collection-version-mappings' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_mappings_url %}
+        {% url 'collection-version-sources' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_sources_url %}
+		{% url 'collection-version-collections' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_collections_url %}
 	{% else %}
 		{% url 'collection-concepts' user=collection.owner collection=collection.id as collection_concepts_url %}
 		{% url 'collection-mappings' user=collection.owner collection=collection.id as collection_mappings_url %}
+        {% url 'collection-sources' user=collection.owner collection=collection.id as collection_sources_url %}
+		{% url 'collection-collections' user=collection.owner collection=collection.id as collection_collections_url %}
+
 	{% endif %}
 	{% url 'collection-extrefs' user=collection.owner collection=collection.id as collection_extrefs_url %}
 	{% url 'collection-details' user=collection.owner collection=collection.id as collection_details_url %}

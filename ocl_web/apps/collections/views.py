@@ -42,7 +42,7 @@ class CollectionCollectionsView(UserOrOrgMixin, TemplateView):
     """ collection concept view. """
     template_name = "collections/collection_collections.html"
     def get_context_data(self, *args, **kwargs):
-        context = super(CollectionMappingsView, self).get_context_data(*args, **kwargs)
+        context = super(CollectionCollectionsView, self).get_context_data(*args, **kwargs)
 
         self.get_args()
         api = OclApi(self.request, debug=True)
