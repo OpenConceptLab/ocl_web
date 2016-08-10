@@ -7,6 +7,7 @@ from django.test import TestCase
 
 from libs.ocl import OclApi
 from users.models import User
+from unittest import skip
 
 class FakeRequest(object):
     """ FakeRequest class """
@@ -19,6 +20,7 @@ class UserTestCase(TestCase):
     username = 'testuser996'
     password = 'pbkdf2_sha256$12000$txd3yUA9l4mv$88BDS8RweS3vGcrQtVdRKkcUcypHVsOZ/NczuPuyQxA='
 
+    @skip("not a valid test case")
     def test_create_user(self):
         """ Test create OCL user """
 
@@ -54,7 +56,7 @@ class UserTestCase(TestCase):
         if len(result.text) > 0:
             print result.json()
 
-
+    @skip("not a valid test case")
     def test_user_login(self):
         """ Note that password is hardcoded for now.
          """
@@ -69,7 +71,7 @@ class UserTestCase(TestCase):
         if len(result.text) > 0:
             print result.json()
 
-
+    @skip("not a valid test case")
     def test_user_update(self):
         """ Test user partial data update.
             Need to login first with hard coded password.
@@ -98,6 +100,7 @@ class UserTestCase(TestCase):
         if len(result.text) > 0:
             print result.json()
 
+    @skip("not a valid test case")
     def test_concept_create(self):
         """ Test concept create
             Need to login first with hard coded password.
@@ -137,7 +140,7 @@ class UserTestCase(TestCase):
         if len(result.text) > 0:
             print result.json()
 
-
+    @skip("not a valid test case")
     def test_concept_names(self):
         """ Test concept names operations
             Need to login first with hard coded password.

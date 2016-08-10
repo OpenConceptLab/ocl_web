@@ -314,10 +314,10 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/details/$',
         CollectionDetailView.as_view(), name='collection-details'),
 
-    # /orgs/:org/sources/:source/edit/
+    # /orgs/:org/collections/:collection/edit/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/edit/$',
         CollectionEditView.as_view(), name='collection-edit'),
-    # /orgs/:org/sources/:source/about/
+    # /orgs/:org/collections/:collection/about/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/about/$',
         CollectionAboutView.as_view(), name='collection-about'),
     # /orgs/:org/collections/:collection/versions/
