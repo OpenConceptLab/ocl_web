@@ -57,14 +57,17 @@ class OrgCollectionViewsTest(TestCase):
 
     @mock.patch.object(OclApi, 'get')
     @mock.patch.object(OclSearch, 'process_search_results')
-    @skip("need to fix this")
     def test_searchParamIsNoneAndResopnseCodeIs200_shouldGetAllCollections(self, mock_api_get, mock_process_search_results):
         org_id = "org_id"
         mock_api_get.return_value = self.search_response
         orgReadBaseView = views.OrganizationReadBaseView()
         orgReadBaseView.request = FakeRequest()
 
-        searcher = orgReadBaseView.get_org_collections(org_id, search_params='sample')
+        searcher = orgReadBaseView.get_org_collections(org_id)
 
-        # self.assertTrue(mock_process_search_results.called)
+        self.assertTrue(mock_process_search_results.called)
         mock_process_search_results.assert_called_with('orgs', org_id, 'collections', params=searcher.search_params)
+
+
+
+

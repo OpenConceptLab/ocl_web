@@ -13,7 +13,7 @@ class OrganizationNewForm(forms.Form):
 
     short_name = forms.CharField(
         label=_('Organization Short Name'),
-        max_length="128",
+        max_length=128,
         required=True,
         help_text=('Your new organization will live at: '
                    'https://OpenConceptLab.com/orgs/'
