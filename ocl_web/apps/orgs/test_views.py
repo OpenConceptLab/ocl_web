@@ -1,10 +1,11 @@
 from unittest import TestCase
 import mock
 from django.http import Http404
+from django_extensions.db.fields import json
 from requests.exceptions import HTTPError
 from requests.models import Response
 from django.http.request import HttpRequest
-from mock import Mock, patch
+from mock import Mock, patch, MagicMock
 from libs.ocl import OclApi, OclSearch, OclConstants
 import views;
 from unittest import skip
@@ -57,7 +58,7 @@ class OrgCollectionViewsTest(TestCase):
 
     @mock.patch.object(OclApi, 'get')
     @mock.patch.object(OclSearch, 'process_search_results')
-    def test_searchParamIsNoneAndResopnseCodeIs200_shouldGetAllCollections(self, mock_api_get, mock_process_search_results):
+    def test_searchParamIsNoneAndResopnseCodeIs200_shouldCallProcessSearchResults(self, mock_api_get, mock_process_search_results):
         org_id = "org_id"
         mock_api_get.return_value = self.search_response
         orgReadBaseView = views.OrganizationReadBaseView()
@@ -67,6 +68,27 @@ class OrgCollectionViewsTest(TestCase):
 
         self.assertTrue(mock_process_search_results.called)
         mock_process_search_results.assert_called_with('orgs', org_id, 'collections', params=searcher.search_params)
+
+    @mock.patch.object(OclApi, 'get')
+    def test_searchParamIsNoneAndResopnseCodeIs200_shouldReturnAllOrgCollections(self, mock_api_get):
+        org_id = "org_id"
+        # self.search_response.
+        result = ['col1','col2','col3']
+        response_mock  = MagicMock(spec=Response, status_code=200, headers={'content-type': "application/json"}
+                                   , text=json.dumps({'status': True,"facets": {
+                "dates": {},
+                "fields": {},
+                "queries": {}
+            },"results": result
+            }))
+        response_mock.json.return_value = result
+        mock_api_get.return_value = response_mock
+        orgReadBaseView = views.OrganizationReadBaseView()
+        orgReadBaseView.request = FakeRequest()
+
+        searcher = orgReadBaseView.get_org_collections(org_id, search_params={'resourceFilter':'col'})
+        self.assertEquals(searcher.search_results, result)
+
 
 
 
