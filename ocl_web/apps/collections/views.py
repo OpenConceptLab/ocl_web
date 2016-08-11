@@ -149,7 +149,6 @@ class CollectionDetailView(UserOrOrgMixin, TemplateView):
 
         self.get_args()
 
-        print 'INPUT PARAMS %s: %s' % (self.request.method, self.request.GET)
         searcher = OclSearch(OclConstants.RESOURCE_NAME_COLLECTIONS, params=self.request.GET)
 
         api = OclApi(self.request, debug=True)
