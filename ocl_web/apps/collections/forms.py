@@ -13,13 +13,19 @@ class CollectionCreateForm(forms.Form):
     """ collection create form """
     required_css_class = 'required'
 
-    short_name = forms.CharField(
-        label=_('Collection Short Name'),
+    short_code = forms.CharField(
+        label=_('Collection Short code'),
         max_length=128,
         required=True,
         help_text=_('Short Name (e.g. ICD-10), Your new collection will live at: '
                     'https://OpenConceptLab.com/[OwnerType]/[Owner]/collections/'
                     '<span id="collection-name">[CollectionName]</span>'))
+    name = forms.CharField(
+        label=_('Collection Name'),
+        max_length=128,
+        required=True,
+        help_text=_('Name (e.g. ICD-10), Your new collection will live at: '))
+
     full_name = forms.CharField(
         label=_('Collection Full Name'),
         required=True,
@@ -47,6 +53,10 @@ class CollectionCreateForm(forms.Form):
         required=True)
 
     description = forms.CharField(max_length=80, label=_('Description'), required=False)
+    external_id = forms.CharField(
+        label=_('External ID'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
 
     def clean_concept_id(self):
         """ concept ID must be unique """
@@ -69,7 +79,7 @@ class CollectionEditForm(CollectionCreateForm):
             officially.
         """
         super(CollectionEditForm, self).__init__(*args, **kwargs)
-        self.fields.pop('short_name')
+        self.fields.pop('short_code')
 
 
 class CollectionVersionAddForm(forms.Form):

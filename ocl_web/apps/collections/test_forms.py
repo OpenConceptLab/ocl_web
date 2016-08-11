@@ -6,7 +6,8 @@ from unittest import skip
 class CollectionCreateTest(TestCase):
     def test_when_all_valid_data_is_provided_then_new_collection_should_be_made(self):
         form_data = {
-            'short_name': 'col',
+            'short_code': 'col',
+            'name': 'col',
             'full_name': 'collection',
             'collection_type': 'Dictionary',
             'public_access': 'Edit',
@@ -29,7 +30,7 @@ class CollectionCreateTest(TestCase):
 
     def test_when_FullName_is_not_provided_then_form_is_not_valid(self):
         form_data = {
-            'short_name': 'col',
+            'name': 'col',
             'collection_type': 'Dictionary',
             'public_access': 'Edit',
             'default_locale': 'en',
@@ -40,7 +41,7 @@ class CollectionCreateTest(TestCase):
 
     def test_when_defaultLocale_is_not_provided_then_form_is_not_valid(self):
         form_data = {
-            'short_name': 'col',
+            'name': 'col',
             'full_name': 'collection',
             'collection_type': 'Dictionary',
             'public_access': 'Edit',
@@ -51,7 +52,8 @@ class CollectionCreateTest(TestCase):
 
     def test_when_defaultLocales_is_not_provided_then_form_is_not_valid(self):
         form_data = {
-            'short_name': 'col',
+            'short_code': 'col',
+            'name': 'col',
             'full_name': 'collection',
             'collection_type': 'Dictionary',
             'public_access': 'Edit',
@@ -67,7 +69,8 @@ class CollectionEditFormTest(TestCase):
 
 
         edit_form = CollectionEditForm()
-        self.assertFalse(edit_form.fields.__contains__('short_name'))
+        self.assertFalse(edit_form.fields.__contains__('short_code'))
+        self.assertTrue(edit_form.fields.__contains__('name'))
         self.assertTrue(edit_form.fields.__contains__('full_name'))
 
 

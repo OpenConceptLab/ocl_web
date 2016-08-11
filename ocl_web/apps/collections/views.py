@@ -216,10 +216,8 @@ class CollectionCreateView(UserOrOrgMixin, FormView):
         self.get_args()
 
         data = form.cleaned_data
-        short_code = data.pop('short_name')
-        data['short_code'] = short_code
+        short_code = data.pop('short_code')
         data['id'] = short_code
-        data['name'] = short_code
 
         api = OclApi(self.request, debug=True)
         result = api.post(self.owner_type, self.owner_id, 'collections', **data)
