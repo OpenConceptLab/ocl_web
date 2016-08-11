@@ -61,8 +61,14 @@ class CollectionCreateTest(TestCase):
         form = CollectionCreateForm(data=form_data)
         self.assertTrue(form.is_valid())
 
+class CollectionEditFormTest(TestCase):
+
+    def test_when_edit_form_called_short_name_should_not_be_present(self):
 
 
+        edit_form = CollectionEditForm()
+        self.assertFalse(edit_form.fields.__contains__('short_name'))
+        self.assertTrue(edit_form.fields.__contains__('full_name'))
 
 
 
