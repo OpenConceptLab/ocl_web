@@ -95,5 +95,65 @@ class CollectionDetailViewTest(TestCase):
 
 
 
+class CollectionCreateViewTest(TestCase):
+
+    def test_getInitialViewOfOrgCol_initialViewWithDataSet(self):
+        collectionCreateView = views.CollectionCreateView()
+        collectionCreateView.request = FakeRequest()
+        collectionCreateView.kwargs = {
+            'org':'testOrgId',
+        }
+        data = collectionCreateView.get_initial();
+        self.assertIsNone(data['user_id'], "for org col , user should be none")
+        self.assertEquals(data['org_id'], 'testOrgId')
+        self.assertFalse(data['from_user'])
+        self.assertTrue(data['from_org'])
+        self.assertEquals(data['request'], collectionCreateView.request)
+
+    def test_getInitialViewOfUserCol_initialViewWithDataSet(self):
+        collectionCreateView = views.CollectionCreateView()
+        collectionCreateView.request = FakeRequest()
+        collectionCreateView.kwargs = {
+            'user':'testUserId',
+        }
+        data = collectionCreateView.get_initial();
+        self.assertIsNone(data['org_id'],"for user col , org should be none")
+        self.assertEquals(data['user_id'], 'testUserId')
+        self.assertFalse(data['from_org'])
+        self.assertTrue(data['from_user'])
+        self.assertEquals(data['request'], collectionCreateView.request)
+
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForOrgCol_contextForOrgReceived(self, mock_get):
+        colResponse = MagicMock(spec = Response)
+        colResponse.json.return_value = "testOrg"
+        mock_get.return_value = colResponse
+        collectionCreateView = views.CollectionCreateView()
+        collectionCreateView.request = FakeRequest()
+        collectionCreateView.kwargs = {
+            'org':'testOrgId',
+        }
+        context = collectionCreateView.get_context_data();
+        self.assertEquals(context['org'], "testOrg")
+        self.assertIsNone(context['ocl_user'])
+        self.assertFalse(context['from_user'])
+        self.assertTrue(context['from_org'])
+
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForOrgUser_contextForUserReceived(self, mock_get):
+        colResponse = MagicMock(spec=Response)
+        colResponse.json.return_value = "testUser"
+        mock_get.return_value = colResponse
+        collectionCreateView = views.CollectionCreateView()
+        collectionCreateView.request = FakeRequest()
+        collectionCreateView.kwargs = {
+            'user': 'testUserId',
+        }
+        context = collectionCreateView.get_context_data();
+        self.assertIsNone(context['org'])
+        self.assertEquals(context['ocl_user'], "testUser")
+        self.assertTrue(context['from_user'])
+        self.assertFalse(context['from_org'])
+
 
 

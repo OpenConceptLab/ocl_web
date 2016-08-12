@@ -223,14 +223,11 @@ class OclSearch(object):
 
         Filter options must be specified in the URL parameter format.
         """
-        print 'Selecting search filters...'
         if isinstance(self.search_filter_list, SearchFilterList):
             for key in params.keys():
-                print 'Attempting to select search filter: %s = %s' % (key, params.getlist(key))
                 matched_search_filter = self.search_filter_list.match_search_filter(key)
                 if matched_search_filter:
                     matched_search_filter.select_option(params.getlist(key))
-                print '\tMatched search filter:', matched_search_filter
 
     def process_search_results(self, search_type=None, search_response=None,
                                search_params=None, create_filters=True):
@@ -289,7 +286,6 @@ class OclSearch(object):
         search_params_dict['verbose'] = 'true'
 
         # Get into QueryDict format if not already and make a copy
-        print 'parsing:', request_get
         if isinstance(request_get, QueryDict):
             params = request_get.copy()
         elif isinstance(request_get, basestring):
@@ -309,7 +305,6 @@ class OclSearch(object):
             self.search_type = self.DEFAULT_SEARCH_TYPE
         if 'type' in params:
             del params['type']
-        print 'search type:', self.search_type
 
         # Paging - gets the latest occurence of type
         if 'page' in params:
@@ -321,7 +316,6 @@ class OclSearch(object):
         else:
             self.current_page = 1
         search_params_dict['page'] = self.current_page
-        print 'page:', self.current_page
 
         # Limit - gets the latest occurence of type
         if 'limit' in params:
@@ -333,7 +327,6 @@ class OclSearch(object):
         else:
             self.num_per_page = self.DEFAULT_NUM_PER_PAGE
         search_params_dict['limit'] = self.num_per_page
-        print 'limit:', self.num_per_page
 
         # Sort - gets the latest occurence of sort
         sort_direction = None
@@ -352,14 +345,12 @@ class OclSearch(object):
                 sort_field = 'name'
             if sort_direction and sort_field:
                 search_params_dict[sort_direction] = sort_field
-        print 'sort:', self.search_sort, sort_direction, ':', sort_field
 
         # Query text
         if 'q' in params:
             self.search_query = params.get('q')
             del params['q']
             search_params_dict['q'] = self.search_query
-        print 'q:', self.search_query
 
         # Apply facets/filters - everything that's left should be a filter/facet
         # NOTE: Quoting and URL encoding parameters before passing on to API
@@ -367,8 +358,5 @@ class OclSearch(object):
             search_filter_value = map(lambda x: '"'+x+'"' if ' ' in x else x,
                                       params.pop(search_filter_key))
             search_params_dict[search_filter_key] = ','.join(search_filter_value)
-            print 'search filter [%s] = %s' % (search_filter_key,
-                                               search_params_dict[search_filter_key])
 
         self.search_params = search_params_dict
-        print 'Searcher %s params: %s' % (self.search_type, search_params_dict)
