@@ -6,6 +6,8 @@ from requests.exceptions import HTTPError
 from requests.models import Response
 from django.http.request import HttpRequest
 from mock import Mock, patch, MagicMock
+
+from apps.collections.forms import CollectionCreateForm
 from libs.ocl import OclApi, OclSearch, OclConstants
 import views;
 from unittest import skip
@@ -155,5 +157,29 @@ class CollectionCreateViewTest(TestCase):
         self.assertTrue(context['from_user'])
         self.assertFalse(context['from_org'])
 
+    @skip('TODO: test showing exception. not able to fix now. will come back')
+    @patch('libs.ocl.OclApi.post')
+    def test_validDataPassedfromOrg_formIsValid(self, mock_post):
+        form_data = {
+            'short_code': 'col',
+            'name': 'col',
+            'full_name': 'collection',
+            'collection_type': 'Dictionary',
+            'public_access': 'Edit',
+            'default_locale': 'en',
+            'supported_locales': 'en'
+        }
+        form = CollectionCreateForm(data=form_data)
+        form.full_clean()
+        colResponse = FakeResponse()
+        colResponse.status_code=201
+        mock_post.return_value = colResponse
+        collectionCreateView = views.CollectionCreateView()
+        collectionCreateView.request = FakeRequest()
+        collectionCreateView.kwargs = {
+            'org': 'testOrgId',
+        }
+        abc = collectionCreateView.form_valid(form)
+        # print abc
 
 
