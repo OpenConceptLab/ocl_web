@@ -7,7 +7,7 @@ from requests.models import Response
 from django.http.request import HttpRequest
 from mock import Mock, patch, MagicMock
 
-from apps.collections.forms import CollectionCreateForm
+from apps.collections.forms import CollectionCreateForm, CollectionEditForm
 from libs.ocl import OclApi, OclSearch, OclConstants
 import views;
 from unittest import skip
@@ -181,5 +181,57 @@ class CollectionCreateViewTest(TestCase):
         }
         abc = collectionCreateView.form_valid(form)
         # print abc
+
+class CollectionEditViewTest(TestCase):
+    @patch('libs.ocl.OclApi.get')
+    def test_getFromClass_getData(self, mock_get):
+        collectionEditView=views.CollectionEditView()
+        collectionEditView.request = FakeRequest()
+        collectionEditView.kwargs = {
+            'org': 'testOrgId',
+        }
+
+        collectionForm = collectionEditView.get_form_class()
+        self.assertEquals(collectionForm.__name__, 'CollectionEditForm')
+
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForUserCol_contextForUserReceived(self, mock_get):
+        colResponse = MagicMock(spec=Response)
+        colResponse.json.return_value = "testUser"
+        mock_get.return_value = colResponse
+        collectionEditView = views.CollectionEditView()
+        collectionEditView.request = FakeRequest()
+        collectionEditView.collection = {'id':'mycolid'}
+        collectionEditView.kwargs = {
+            'user': 'testUserId',
+        }
+        context = collectionEditView.get_context_data();
+        self.assertIsNone(context['org'])
+        self.assertEquals(context['ocl_user'], "testUser")
+        self.assertTrue(context['from_user'])
+        self.assertFalse(context['from_org'])
+
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForOrgCol_contextForOrgReceived(self, mock_get):
+        colResponse = MagicMock(spec=Response)
+        colResponse.json.return_value = "testOrg"
+        mock_get.return_value = colResponse
+        collectionEditView = views.CollectionEditView()
+        collectionEditView.request = FakeRequest()
+        collectionEditView.collection = {'id': 'mycolid'}
+        collectionEditView.kwargs = {
+            'org': 'testOrgId',
+        }
+        context = collectionEditView.get_context_data();
+        self.assertEquals(context['org'], "testOrg")
+        self.assertIsNone(context['ocl_user'])
+        self.assertFalse(context['from_user'])
+        self.assertTrue(context['from_org'])
+
+
+
+
+
+
 
 
