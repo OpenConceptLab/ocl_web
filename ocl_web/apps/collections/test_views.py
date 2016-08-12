@@ -6,8 +6,8 @@ from requests.exceptions import HTTPError
 from requests.models import Response
 from django.http.request import HttpRequest
 from mock import Mock, patch, MagicMock
-
-from apps.collections.forms import CollectionCreateForm, CollectionEditForm
+from django.contrib import messages
+from apps.collections.forms import CollectionCreateForm, CollectionEditForm, CollectionDeleteForm
 from libs.ocl import OclApi, OclSearch, OclConstants
 import views;
 from unittest import skip
@@ -228,10 +228,36 @@ class CollectionEditViewTest(TestCase):
         self.assertFalse(context['from_user'])
         self.assertTrue(context['from_org'])
 
+class CollectionDeleteViewTest(TestCase):
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForCol_contextForCollectionReceived(self, mock_get):
+        colResponse = MagicMock(spec=Response)
+        colResponse.json.return_value = "testCollection"
+        mock_get.return_value = colResponse
+        collectionDeleteView = views.CollectionDeleteView()
+        collectionDeleteView.request = FakeRequest()
+        collectionDeleteView.collection = {'id': 'mycolid'}
+        collectionDeleteView.kwargs = {
+            'collection_id': 'testColId',
+        }
+        context = collectionDeleteView.get_context_data();
+        self.assertEquals(context['collection'],'testCollection')
 
+    @skip("need to fix this test case")
+    @patch('libs.ocl.OclApi.delete')
+    @patch('django.contrib.messages.api')
+    def test_whenDeleteSuccessfull_thenReturnCollectionDeletedMessage(self, mock_delete,mock_message):
+        colResponse = MagicMock(spec=Response, status_code=204)
+        mock_delete.return_value=colResponse
+        form = CollectionDeleteForm()
+        collectionDeleteView= views.CollectionDeleteView()
+        collectionDeleteView.request = FakeRequest()
+        collectionDeleteView.kwargs = {
+            'org': 'testOrgId',
+        }
 
-
-
-
+        result=collectionDeleteView.form_valid(form)
+        mock_message.add_message.asser_called_with("error","Error")
+        print result
 
 

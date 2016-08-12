@@ -107,3 +107,14 @@ class UserUrlsTest(TestCase):
         self.assertEqual(resolver.view_name, 'collection-collections')
         self.assertEqual(resolver.kwargs['user'], 'testuser')
         self.assertEqual(resolver.kwargs['collection'], 'testcol')
+
+    def test_user_collection_delete_viewname_to_url(self):
+        url = reverse('collection-delete', kwargs={"user": "testuser", "collection": "testcol"})
+        self.assertEqual(url, '/users/testuser/collections/testcol/delete/')
+
+
+    def test_user_collection_delete_url_to_viewname(self):
+        resolver = resolve('/users/testuser/collections/testcol/delete/')
+        self.assertEqual(resolver.view_name, 'collection-delete')
+        self.assertEqual(resolver.kwargs['user'], 'testuser')
+        self.assertEqual(resolver.kwargs['collection'], 'testcol')

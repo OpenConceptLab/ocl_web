@@ -240,7 +240,7 @@ class CollectionCreateView(UserOrOrgMixin, FormView):
 
 class CollectionDeleteView(UserOrOrgMixin, FormView):
     """
-    View for retiring a concept.
+    View for deleting Collection.
     """
 
     template_name = "collections/collection_delete.html"
@@ -271,7 +271,7 @@ class CollectionDeleteView(UserOrOrgMixin, FormView):
                            kwargs={"username": self.request.user.username})
 
     def form_valid(self, form, *args, **kwargs):
-        """ Use validated form data to retire the concept """
+        """ Use validated form data to delete the collection"""
 
         self.get_args()
 
@@ -280,7 +280,6 @@ class CollectionDeleteView(UserOrOrgMixin, FormView):
             self.owner_type, self.owner_id, 'collections', self.collection_id, **kwargs)
 
         if result.status_code != 204:
-            print result.status_code
             emsg = result.json().get('detail', 'Error')
             messages.add_message(self.request, messages.ERROR, emsg)
             return HttpResponseRedirect(self.request.path)
