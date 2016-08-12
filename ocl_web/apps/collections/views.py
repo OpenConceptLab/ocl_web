@@ -14,7 +14,7 @@ from django.core.paginator import Paginator
 
 
 from libs.ocl import OclApi, OclSearch, OclConstants
-from .forms import (CollectionCreateForm, CollectionEditForm)
+from .forms import (CollectionCreateForm, CollectionEditForm, CollectionDeleteForm)
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
@@ -236,6 +236,58 @@ class CollectionCreateView(UserOrOrgMixin, FormView):
             return HttpResponseRedirect(reverse("collection-home",
                                                 kwargs={"user": self.user_id,
                                                         'collection': short_code}))
+
+
+class CollectionDeleteView(UserOrOrgMixin, FormView):
+    """
+    View for retiring a concept.
+    """
+
+    template_name = "collections/collection_delete.html"
+    form_class = CollectionDeleteForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CollectionDeleteView, self).get_context_data(*args, **kwargs)
+
+        self.get_args()
+        api = OclApi(self.request, debug=True)
+        results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
+        collection = results.json()
+        # Set the context
+        context['kwargs'] = self.kwargs
+        context['url_params'] = self.request.GET
+        context['collection'] = collection
+
+        return context
+
+    def get_success_url(self):
+        """ Return URL for redirecting browser """
+        if self.from_org:
+            return reverse('org-collections',
+                           kwargs={'org': self.org_id})
+
+        else:
+            return reverse('users:detail',
+                           kwargs={"username": self.request.user.username})
+
+    def form_valid(self, form, *args, **kwargs):
+        """ Use validated form data to retire the concept """
+
+        self.get_args()
+
+        api = OclApi(self.request, debug=True)
+        result = api.delete(
+            self.owner_type, self.owner_id, 'collections', self.collection_id, **kwargs)
+
+        if result.status_code != 204:
+            print result.status_code
+            emsg = result.json().get('detail', 'Error')
+            messages.add_message(self.request, messages.ERROR, emsg)
+            return HttpResponseRedirect(self.request.path)
+
+        else:
+            messages.add_message(self.request, messages.INFO, _('Collection Deleted'))
+            return HttpResponseRedirect(self.get_success_url())
 
 
 class CollectionEditView(UserOrOrgMixin, FormView):

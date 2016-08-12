@@ -10,14 +10,19 @@
 {% block content %}
 {% if collection.owner_type == 'Organization' %}
 	{% url 'collection-home' org=collection.owner collection=collection.id as collection_home_url %}
+    {% url 'collection-delete' org=collection.owner collection=collection.id as collection_delete_url %}
 {% else %}
 	{% url 'collection-home' user=collection.owner collection=collection.id as collection_home_url %}
+    {% url 'collection-delete' user=collection.owner collection=collection.id as collection_delete_url %}
 {% endif %}
 
 <h3>
   {% resource_owner_label collection %} / {% collection_label collection %} / {% trans "Edit Collection" %}
   {# TODO: Only show if admin or owner #}
-  <a href="#" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+    {% if_can_change collection %}
+        <a href="{{ collection_delete_url }}" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+	{% endif_can_change collection %}
+
 </h3>
 
 <div class="container">

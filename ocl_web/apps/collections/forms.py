@@ -70,6 +70,9 @@ class CollectionCreateForm(forms.Form):
             raise forms.ValidationError(_('This Concept ID is already used.'))
         return concept_id
 
+class CollectionDeleteForm(forms.Form):
+    required_css_class = 'required'
+
 
 class CollectionEditForm(CollectionCreateForm):
     """ Form to edit collections """

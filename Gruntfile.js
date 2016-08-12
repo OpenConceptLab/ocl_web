@@ -81,7 +81,7 @@ module.exports = function (grunt) {
         bg: true
       },
       runDjango: {
-        cmd: 'python <%= paths.manageScript %> runserver'
+        cmd: 'python <%= paths.manageScript %> runserver localhost:9000'
       }
     }
   });
