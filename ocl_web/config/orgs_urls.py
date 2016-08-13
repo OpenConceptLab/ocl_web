@@ -27,7 +27,7 @@ from apps.orgs.views import (
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
     SourceNewView, SourceEditView, SourceVersionsView, SourceExternalReferencesView,
-    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView)
+    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView)
 from apps.concepts.views import (
     ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptEditView,
     ConceptRetireView, ConceptNewView, ConceptDescView, ConceptNameView)
@@ -102,6 +102,10 @@ urlpatterns = patterns(
     # /orgs/:org/sources/:source/edit/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/edit/$',
         SourceEditView.as_view(), name='source-edit'),
+
+    # /orgs/:org/sources/:source/delete/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/delete/$',
+        SourceDeleteView.as_view(), name='source-delete'),
 
     # /orgs/:org/sources/:source/about/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/about/$',

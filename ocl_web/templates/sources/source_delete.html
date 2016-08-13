@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load ocl_tags %}
+
+{% block title %}{% trans "Delete Source" %}{% endblock %}
+
+{% block content %}
+{% if source.owner_type == 'Organization' %}
+	{% url 'source-home' org=source.owner source=source.id as source_home_url %}
+{% else %}
+	{% url 'source-home' user=source.owner source=source.id as source_home_url %}
+{% endif %}
+
+<h3>
+    {% resource_owner_label source %} / {% source_label source%} / {% trans "Delete source" %}
+</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>{% trans "source Collection" %}</h1>
+
+            <form class="form-horizontal" id="source_create_form" method="post" action=".">
+                {% csrf_token %}
+                <div class="form-group">
+                    {% field_label 'Short Code' source.short_code %}
+                    {% field_label 'Created By' source.created_by %}
+                    {% field_label 'Created On' source.created_on|smart_date %}
+                </div>
+                {% bootstrap_form form layout="horizontal" %}
+                {% buttons layout="horizontal" %}
+                    <button type="submit" class="btn btn-primary">{% trans "Delete" %}</button>
+                    <a href="{{ source_home_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+                {% endbuttons %}
+            </form>
+
+        </div> {# col-lg-12 #}
+    </div> {# row #}
+</div> {# container #}
+{% endblock %}

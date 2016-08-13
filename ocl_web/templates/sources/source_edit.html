@@ -10,14 +10,19 @@
 {% block content %}
 {% if source.owner_type == 'Organization' %}
 	{% url 'source-home' org=source.owner source=source.id as source_home_url %}
+    {% url 'source-delete' org=source.owner source=source.id as source_delete_url %}
 {% else %}
 	{% url 'source-home' user=source.owner source=source.id as source_home_url %}
+    {% url 'source-delete' user=source.owner source=source.id as source_delete_url %}
+
 {% endif %}
 
 <h3>
   {% resource_owner_label source %} / {% source_label source %} / {% trans "Edit Source" %}
   {# TODO: Only show if admin or owner #}
-  <a href="#" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+    {% if_can_change source %}
+        <a href="{{ source_delete_url }}" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+    {% endif_can_change source %}
 </h3>
 
 <div class="container">

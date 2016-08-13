@@ -19,7 +19,7 @@ from users.views import (
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
     SourceNewView, SourceEditView, SourceVersionsView, SourceExternalReferencesView,
-    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView)
+    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView)
 from apps.concepts.views import (
     ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptEditView,
     ConceptRetireView, ConceptNewView, ConceptDescView, ConceptNameView)
@@ -51,6 +51,10 @@ urlpatterns = patterns(
     # /users/:user/sources/:source/edit/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/edit/$',
         SourceEditView.as_view(), name='source-edit'),
+
+    # /users/:user/sources/:source/delete/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/delete/$',
+        SourceDeleteView.as_view(), name='source-delete'),
 
     # /users/:user/sources/:source/about/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/about/$',

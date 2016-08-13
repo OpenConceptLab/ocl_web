@@ -85,6 +85,8 @@ class SourceEditForm(SourceNewForm):
         super(SourceEditForm, self).__init__(*args, **kwargs)
         self.fields.pop('short_name')
 
+class SourceDeleteForm(forms.Form):
+    required_css_class = 'required'
 
 
 class SourceVersionsNewForm(forms.Form):

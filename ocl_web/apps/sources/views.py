@@ -16,7 +16,7 @@ from braces.views import LoginRequiredMixin
 from libs.ocl import OclApi, OclSearch, OclConstants
 from .forms import (
     SourceNewForm, SourceEditForm,
-    SourceVersionsNewForm, SourceVersionsEditForm, SourceVersionsRetireForm)
+    SourceVersionsNewForm, SourceVersionsEditForm, SourceVersionsRetireForm, SourceDeleteForm)
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
@@ -735,3 +735,55 @@ class SourceEditView(UserOrOrgMixin, FormView):
             return HttpResponseRedirect(reverse('source-details',
                                                 kwargs={'user': self.user_id,
                                                         'source': self.source_id}))
+
+class SourceDeleteView(UserOrOrgMixin, FormView):
+    """
+    View for deleting Source.
+    """
+
+    template_name = "sources/source_delete.html"
+    form_class = SourceDeleteForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(SourceDeleteView, self).get_context_data(*args, **kwargs)
+
+        self.get_args()
+        api = OclApi(self.request, debug=True)
+        results = api.get(self.owner_type, self.owner_id, 'sources', self.source_id)
+        source = results.json()
+        # Set the context
+        context['kwargs'] = self.kwargs
+        context['url_params'] = self.request.GET
+        context['source'] = source
+
+        return context
+
+    def get_success_url(self):
+        """ Return URL for redirecting browser """
+        if self.from_org:
+            return reverse('org-sources',
+                           kwargs={'org': self.org_id})
+
+        else:
+            return reverse('users:detail',
+                           kwargs={"username": self.request.user.username})
+
+    def form_valid(self, form, *args, **kwargs):
+        """ Use validated form data to delete the source"""
+
+        self.get_args()
+
+        api = OclApi(self.request, debug=True)
+        result = api.delete(
+            self.owner_type, self.owner_id, 'sources', self.source_id, **kwargs)
+
+        if result.status_code != 204:
+            emsg = result.json().get('detail', 'Error')
+            messages.add_message(self.request, messages.ERROR, emsg)
+            return HttpResponseRedirect(self.request.path)
+
+        else:
+            messages.add_message(self.request, messages.INFO, _('Source Deleted'))
+            return HttpResponseRedirect(self.get_success_url())
+
+
