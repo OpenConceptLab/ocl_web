@@ -23,7 +23,10 @@
 				{% field_label 'Public Access' collection.public_access %}
 				<hr />
 				{% field_label 'Default Locale' collection.default_locale %}
-				{% field_label 'Supported Locales' collection.default_locale %}
+                {% for supported_locale in collection.supported_locales %}
+    				{% field_label 'Supported Locales' supported_locale  %}
+                {% endfor %}
+
 				{% if collection.external_id %}<hr />{% field_label 'External ID' collection.external_id %}{% endif %}
 				<hr />
 				{% field_label 'Created by' collection.created_by %}
