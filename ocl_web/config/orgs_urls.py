@@ -36,7 +36,7 @@ from apps.mappings.views import (
 #from apps.core.views import ExtraJsonView
 from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView, CollectionAboutView, \
     CollectionVersionsView, CollectionConceptsView, CollectionMappingsView, \
-    CollectionReferencesView, CollectionDeleteView
+    CollectionReferencesView, CollectionDeleteView, CollectionAddReferenceView
 
 urlpatterns = patterns(
     '',
@@ -339,6 +339,9 @@ urlpatterns = patterns(
     # /orgs/:org/collections/:collection/delete/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/delete/$',
         CollectionDeleteView.as_view(), name='collection-delete'),
+    # /orgs/:org/collections/:collection/addreference/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/addreference/$',
+        CollectionAddReferenceView.as_view(), name='collection-addreference'),
 )
 
 

@@ -3,25 +3,25 @@
 {% load bootstrap3 %}
 {% load ocl_tags %}
 
-{% block title %}{% trans "Delete Collection" %}{% endblock %}
+{% block title %}{% trans "Add Reference To Collection" %}{% endblock %}
 
 {% block content %}
 {% if collection.owner_type == 'Organization' %}
-	{% url 'collection-home' org=collection.owner collection=collection.id as collection_home_url %}
+	{% url 'collection-references' org=collection.owner collection=collection.id as collection_references_url %}
 {% else %}
-	{% url 'collection-home' user=collection.owner collection=collection.id as collection_home_url %}
+	{% url 'collection-references' user=collection.owner collection=collection.id as collection_references_url %}
 {% endif %}
 
 <h3>
-    {% resource_owner_label collection %} / {% collection_label collection %} / {% trans "Delete Collection" %}
+    {% resource_owner_label collection %} / {% collection_label collection %} / {% trans "Add Reference" %}
 </h3>
 
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <h1>{% trans "Delete Collection" %}</h1>
+            <h1>{% trans "Add Reference To Collection" %}</h1>
 
-            <form class="form-horizontal" id="collection_delete_form" method="post" action=".">
+            <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
                 {% csrf_token %}
                 <div class="form-group">
                     {% field_label 'Short Code' collection.short_code %}
@@ -31,8 +31,8 @@
                 </div>
                 {% bootstrap_form form layout="horizontal" %}
                 {% buttons layout="horizontal" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Delete" %}</button>
-                    <a href="{{ collection_home_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+                    <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
+                    <a href="{{ collection_references_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
                 {% endbuttons %}
             </form>
 

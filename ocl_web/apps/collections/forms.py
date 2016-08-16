@@ -70,6 +70,17 @@ class CollectionCreateForm(forms.Form):
             raise forms.ValidationError(_('This Concept ID is already used.'))
         return concept_id
 
+class CollectionAddReferenceForm(forms.Form):
+    """
+    Add Reference to a collection
+    """
+    required_css_class = 'required'
+    reference = forms.CharField(
+        label=_('Reference URL'),
+        required=True,
+        help_text=_('URL  (e.g. /orgs/tw/sources/ICD-10-2010/concepts/:conceptid/)'))
+
+
 class CollectionDeleteForm(forms.Form):
     required_css_class = 'required'
 

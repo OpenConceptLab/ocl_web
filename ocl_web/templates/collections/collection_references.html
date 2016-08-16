@@ -7,15 +7,22 @@
 {% block tab-content %}
 {% if collection.owner_type == 'Organization' %}
 	{% url 'collection-version-new' org=collection.owner collection=collection.id as collection_version_new_url %}
+    {% url 'collection-addreference' org=collection.owner collection=collection.id as collection_addreference_url %}
 {% else %}
 	{% url 'collection-version-new' user=collection.owner collection=collection.id as collection_version_new_url %}
+    {% url 'collection-addreference' user=collection.owner collection=collection.id as collection_addreference_url %}
 {% endif %}
 
 <div class="container" style="margin-top: 20px;">
 	<div class="row">
 
 		<div class="col-md-8">
-
+            <div class="pull-left">
+                {% if user.is_authenticated %}
+                    <a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" title="Add Reference to Collection" style="font-weight:300;text-spacing:-0.1pt;">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'Add Reference' %}</a>
+                {% endif %}
+             </div>
 
 		</div>
 

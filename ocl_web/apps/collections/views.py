@@ -14,7 +14,7 @@ from django.core.paginator import Paginator
 
 
 from libs.ocl import OclApi, OclSearch, OclConstants
-from .forms import (CollectionCreateForm, CollectionEditForm, CollectionDeleteForm)
+from .forms import (CollectionCreateForm, CollectionEditForm, CollectionDeleteForm, CollectionAddReferenceForm)
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
@@ -218,6 +218,42 @@ class CollectionCreateView(UserOrOrgMixin, FormView):
                                                 kwargs={"user": self.user_id,
                                                         'collection': short_code}))
 
+
+class CollectionAddReferenceView(UserOrOrgMixin, FormView):
+    template_name = "collections/collection_add_reference.html"
+    form_class = CollectionAddReferenceForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CollectionAddReferenceView, self).get_context_data(*args, **kwargs)
+
+        self.get_args()
+        api = OclApi(self.request, debug=True)
+        results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
+        collection = results.json()
+        # Set the context
+        context['kwargs'] = self.kwargs
+        context['url_params'] = self.request.GET
+        context['collection'] = collection
+
+        return context
+
+    def get_success_url(self):
+        """ Return URL for redirecting browser """
+        if self.from_org:
+            return reverse('collection-references',
+                           kwargs={'org': self.org_id,'collection':self.collection_id})
+
+        else:
+            return reverse('collection-references',
+                           kwargs={"username": self.request.user.username,'collection':self.collection_id})
+
+    def form_valid(self, form, *args, **kwargs):
+        """ Use validated form data to delete the collection"""
+
+        self.get_args()
+
+        api = OclApi(self.request, debug=True)
+        return HttpResponseRedirect(self.request.path)
 
 class CollectionDeleteView(UserOrOrgMixin, FormView):
     """

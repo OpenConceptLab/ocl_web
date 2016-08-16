@@ -261,3 +261,17 @@ class CollectionDeleteViewTest(TestCase):
         print result
 
 
+class CollectionAddReferenceView(TestCase):
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForColReference_contextForCollectionReferenceReceived(self, mock_get):
+        colResponse = MagicMock(spec=Response)
+        colResponse.json.return_value = "testCollection"
+        mock_get.return_value = colResponse
+        collectionAddReferenceView = views.CollectionAddReferenceView()
+        collectionAddReferenceView.request = FakeRequest()
+        collectionAddReferenceView.collection = {'id': 'mycolid'}
+        collectionAddReferenceView.kwargs = {
+            'collection_id': 'testColId',
+        }
+        context = collectionAddReferenceView.get_context_data();
+        self.assertEquals(context['collection'], 'testCollection')

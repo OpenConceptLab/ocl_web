@@ -100,3 +100,23 @@ class OrgUrlsTest(TestCase):
         resolver = resolve('/orgs/myorgs/sources/source1/delete/')
         self.assertEqual(resolver.view_name, 'source-delete')
 
+    def test_org_collection_references_viewname_to_url(self):
+        url = reverse('collection-references', kwargs={"org": "testOrg", "collection": "collection1"})
+        self.assertEqual(url, '/orgs/testOrg/collections/collection1/references/')
+
+    def test_org_collection_references_url_to_viewname(self):
+        resolver = resolve('/orgs/testOrg/collections/collection1/references/')
+        self.assertEqual(resolver.view_name, 'collection-references')
+        self.assertEqual(resolver.kwargs['org'], 'testOrg')
+        self.assertEqual(resolver.kwargs['collection'], 'collection1')
+
+    def test_org_collection_addReferences_viewname_to_url(self):
+        url = reverse('collection-addreference', kwargs={"org": "testOrg", "collection": "collection1"})
+        self.assertEqual(url, '/orgs/testOrg/collections/collection1/addreference/')
+
+    def test_org_collection_addReferences_url_to_viewname(self):
+        resolver = resolve('/orgs/testOrg/collections/collection1/addreference/')
+        self.assertEqual(resolver.view_name, 'collection-addreference')
+        self.assertEqual(resolver.kwargs['org'], 'testOrg')
+        self.assertEqual(resolver.kwargs['collection'], 'collection1')
+
