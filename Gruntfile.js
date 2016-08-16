@@ -81,7 +81,7 @@ module.exports = function (grunt) {
         bg: true
       },
       runDjango: {
-        cmd: 'python <%= paths.manageScript %> runserver 0.0.0.0:7000'
+        cmd: 'python <%= paths.manageScript %> runserver <%= process.env.OCL_WEB_SOCKET_ADDRESS || "0.0.0.0:7000" %>'
       }
     }
   });
