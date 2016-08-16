@@ -8,5 +8,4 @@ npm install
 export OCL_API_HOST='localhost:8000'
 export OCL_API_TOKEN=$1
 export OCL_ANON_API_TOKEN=$1
-pkill -9 -f
 nohup grunt serve > /dev/null 2>&1 &;
