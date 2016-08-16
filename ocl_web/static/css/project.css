@@ -1,11 +1,15 @@
 /* django template tag: field_label */
+.jumbotron {
+  background-color: #e1eba6;
+}
+
 .field-label-key {
   text-align:right;
   font-weight:300;
   color:#aaa;
 }
 .field-label-value {
-  
+
 }
 
 /* line 5, ../sass/project.scss */
@@ -185,11 +189,11 @@ a.resource-label {
 a.resource-label:hover {
   text-decoration: none;
 }
-.resource-label.small { 
+.resource-label.small {
   font-size: 10pt;
   line-height: 16pt;
 }
-.resource-label.large { 
+.resource-label.large {
   font-size: 18px;
   line-height: 1;
 }
@@ -328,7 +332,7 @@ a.resource-label:hover {
   font-size: 10pt;
 }
 
-.form-group.required .control-label:after { 
+.form-group.required .control-label:after {
    content:"*";
    color:red;
 }
