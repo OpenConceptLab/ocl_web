@@ -45,13 +45,11 @@
 	{% if kwargs and "collection_version" in kwargs %}
 		{% url 'collection-version-concepts' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
 		{% url 'collection-version-mappings' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_mappings_url %}
-        {% url 'collection-version-sources' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_sources_url %}
-		{% url 'collection-version-collections' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_collections_url %}
+		{% url 'collection-version-references' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_references_url %}
 	{% else %}
 		{% url 'collection-concepts' org=collection.owner collection=collection.id as collection_concepts_url %}
 		{% url 'collection-mappings' org=collection.owner collection=collection.id as collection_mappings_url %}
-        {% url 'collection-sources' org=collection.owner collection=collection.id as collection_sources_url %}
-		{% url 'collection-collections' org=collection.owner collection=collection.id as collection_collections_url %}
+		{% url 'collection-references' org=collection.owner collection=collection.id as collection_references_url %}
 	{% endif %}
 	{% url 'collection-extrefs' org=collection.owner collection=collection.id as collection_extrefs_url %}
 	{% url 'collection-details' org=collection.owner collection=collection.id as collection_details_url %}
@@ -61,13 +59,11 @@
 	{% if kwargs and "collection_version" in kwargs %}
 		{% url 'collection-version-concepts' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
 		{% url 'collection-version-mappings' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_mappings_url %}
-        {% url 'collection-version-sources' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_sources_url %}
-		{% url 'collection-version-collections' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_collections_url %}
+		{% url 'collection-version-references' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_references_url %}
 	{% else %}
 		{% url 'collection-concepts' user=collection.owner collection=collection.id as collection_concepts_url %}
 		{% url 'collection-mappings' user=collection.owner collection=collection.id as collection_mappings_url %}
-        {% url 'collection-sources' user=collection.owner collection=collection.id as collection_sources_url %}
-		{% url 'collection-collections' user=collection.owner collection=collection.id as collection_collections_url %}
+		{% url 'collection-references' user=collection.owner collection=collection.id as collection_references_url %}
 
 	{% endif %}
 	{% url 'collection-extrefs' user=collection.owner collection=collection.id as collection_extrefs_url %}
@@ -78,10 +74,9 @@
 <div class="container">
     <ul class="nav nav-tabs">
     	{% if collection.collection_type != 'External' %}
-            <li role="presentation" {% if selected_tab == "Sources" %}class="active"{% endif %}><a href="{{ collection_sources_url }}">Sources</a></li>
-        	<li role="presentation" {% if selected_tab == "Collections" %}class="active"{% endif %}><a href="{{ collection_collections_url }}">Collections</a></li>
 	        <li role="presentation" {% if selected_tab == "Concepts" %}class="active"{% endif %}><a href="{{ collection_concepts_url }}">Concepts</a></li>
         	<li role="presentation" {% if selected_tab == "Mappings" %}class="active"{% endif %}><a href="{{ collection_mappings_url }}">Mappings</a></li>
+        	<li role="presentation" {% if selected_tab == "References" %}class="active"{% endif %}><a href="{{ collection_references_url }}">References</a></li>
         {% else %}
 	        <li role="presentation" {% if selected_tab == "External References" %}class="active"{% endif %}><a href="{{ collection_extrefs_url }}">External References</a></li>
         {% endif %}

@@ -19,11 +19,11 @@ from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
 
-class CollectionSourcesView(UserOrOrgMixin, TemplateView):
+class CollectionReferencesView(UserOrOrgMixin, TemplateView):
     """ collection concept view. """
-    template_name = "collections/collection_sources.html"
+    template_name = "collections/collection_references.html"
     def get_context_data(self, *args, **kwargs):
-        context = super(CollectionSourcesView, self).get_context_data(*args, **kwargs)
+        context = super(CollectionReferencesView, self).get_context_data(*args, **kwargs)
 
         self.get_args()
         api = OclApi(self.request, debug=True)
@@ -33,26 +33,7 @@ class CollectionSourcesView(UserOrOrgMixin, TemplateView):
         # Set the context
         context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
-        context['selected_tab'] = 'Sources'
-        context['collection'] = collection
-
-        return context
-
-class CollectionCollectionsView(UserOrOrgMixin, TemplateView):
-    """ collection concept view. """
-    template_name = "collections/collection_collections.html"
-    def get_context_data(self, *args, **kwargs):
-        context = super(CollectionCollectionsView, self).get_context_data(*args, **kwargs)
-
-        self.get_args()
-        api = OclApi(self.request, debug=True)
-        results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
-        collection = results.json()
-
-        # Set the context
-        context['kwargs'] = self.kwargs
-        context['url_params'] = self.request.GET
-        context['selected_tab'] = 'Collections'
+        context['selected_tab'] = 'References'
         context['collection'] = collection
 
         return context

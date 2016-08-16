@@ -85,26 +85,15 @@ class UserUrlsTest(TestCase):
         self.assertEqual(resolver.kwargs['collection'], 'testcol')
 
 
-    def test_user_collection_sources_viewname_to_url(self):
-        url = reverse('collection-sources', kwargs={"user": "testuser", "collection": "testcol"})
-        self.assertEqual(url, '/users/testuser/collections/testcol/sources/')
+
+    def test_user_collection_references_viewname_to_url(self):
+        url = reverse('collection-references', kwargs={"user": "testuser", "collection": "testcol"})
+        self.assertEqual(url, '/users/testuser/collections/testcol/references/')
 
 
-    def test_user_collection_sources_url_to_viewname(self):
-        resolver = resolve('/users/testuser/collections/testcol/sources/')
-        self.assertEqual(resolver.view_name, 'collection-sources')
-        self.assertEqual(resolver.kwargs['user'], 'testuser')
-        self.assertEqual(resolver.kwargs['collection'], 'testcol')
-
-
-    def test_user_collection_collections_viewname_to_url(self):
-        url = reverse('collection-collections', kwargs={"user": "testuser", "collection": "testcol"})
-        self.assertEqual(url, '/users/testuser/collections/testcol/collections/')
-
-
-    def test_user_collection_collections_url_to_viewname(self):
-        resolver = resolve('/users/testuser/collections/testcol/collections/')
-        self.assertEqual(resolver.view_name, 'collection-collections')
+    def test_user_collection_references_url_to_viewname(self):
+        resolver = resolve('/users/testuser/collections/testcol/references/')
+        self.assertEqual(resolver.view_name, 'collection-references')
         self.assertEqual(resolver.kwargs['user'], 'testuser')
         self.assertEqual(resolver.kwargs['collection'], 'testcol')
 

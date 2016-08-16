@@ -35,8 +35,8 @@ from apps.mappings.views import (
     MappingDetailsView, MappingNewView, MappingEditView, MappingRetireView)
 #from apps.core.views import ExtraJsonView
 from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView, CollectionAboutView, \
-    CollectionVersionsView, CollectionConceptsView, CollectionMappingsView, CollectionSourcesView, \
-    CollectionCollectionsView, CollectionDeleteView
+    CollectionVersionsView, CollectionConceptsView, CollectionMappingsView, \
+    CollectionReferencesView, CollectionDeleteView
 
 urlpatterns = patterns(
     '',
@@ -333,12 +333,9 @@ urlpatterns = patterns(
     # /orgs/:org/collections/:collection/mappings/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/mappings/$',
         CollectionMappingsView.as_view(), name='collection-mappings'),
-    # /orgs/:org/collections/:collection/sources/
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/sources/$',
-        CollectionSourcesView.as_view(), name='collection-sources'),
-    # /orgs/:org/collections/:collection/collections/
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/collections/$',
-        CollectionCollectionsView.as_view(), name='collection-collections'),
+    # /orgs/:org/collections/:collection/references/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/references/$',
+        CollectionReferencesView.as_view(), name='collection-references'),
     # /orgs/:org/collections/:collection/delete/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/delete/$',
         CollectionDeleteView.as_view(), name='collection-delete'),
