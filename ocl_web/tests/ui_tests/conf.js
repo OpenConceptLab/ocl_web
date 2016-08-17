@@ -1,5 +1,8 @@
 exports.config = {
-  framework: 'jasmine',
-  seleniumAddress: 'http://localhost:4444/wd/hub',
-  specs: ['home_spec.js']
-}
+    framework: 'jasmine',
+    seleniumAddress: 'http://localhost:9515',
+    specs: ['home_spec.js'],
+    capabilities: {
+        'browserName': 'phantomjs'
+    }
+};
