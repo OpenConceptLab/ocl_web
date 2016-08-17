@@ -37,5 +37,5 @@ media/
 ocl.db
 
 pylintrc
-
+nohup*
 env
