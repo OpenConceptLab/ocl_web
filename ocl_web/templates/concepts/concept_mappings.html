@@ -82,7 +82,7 @@
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3 class="panel-title">Add Mapping</h3></div>
 				<div class="panel-body">
-					<form class="form" name="add_mapping_form" autocomplete="off" method="post">
+					<form class="form" name="add_mapping_form" autocomplete="off" method="post" action=".">
 						{% csrf_token %}
 
 						{{ form.non_field_errors }}
