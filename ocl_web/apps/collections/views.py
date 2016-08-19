@@ -382,7 +382,8 @@ class CollectionAddReferenceView(UserOrOrgMixin, FormView):
                                                 kwargs={'user': self.user_id,
                                                         'collection': self.collection_id}))
 
-class CollectionDeleteView(CollectionsBaseView, FormView):
+
+class CollectionDeleteView(UserOrOrgMixin, FormView):
     """
     View for deleting Collection.
     """
