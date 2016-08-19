@@ -5,7 +5,7 @@ import requests
 import logging
 
 from django.utils.translation import ugettext as _
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse,resolve, Resolver404
 from django.http import (HttpResponseRedirect, Http404)
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -37,6 +37,7 @@ class CollectionReferencesView(UserOrOrgMixin, TemplateView):
         context['collection'] = collection
 
         return context
+
 class CollectionMappingsView(UserOrOrgMixin, TemplateView):
     """ collection concept view. """
     template_name = "collections/collection_mappings.html"
@@ -129,8 +130,6 @@ class CollectionDetailView(UserOrOrgMixin, TemplateView):
         context = super(CollectionDetailView, self).get_context_data(*args, **kwargs)
 
         self.get_args()
-
-        searcher = OclSearch(OclConstants.RESOURCE_NAME_COLLECTIONS, params=self.request.GET)
 
         api = OclApi(self.request, debug=True)
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
@@ -251,9 +250,15 @@ class CollectionAddReferenceView(UserOrOrgMixin, FormView):
         """ Use validated form data to delete the collection"""
 
         self.get_args()
-
+        data = form.cleaned_data
+        # resolver = resolve(data)
         api = OclApi(self.request, debug=True)
+        result = api.put(self.owner_type, self.owner_id, 'collections', self.collection_id, 'references', **data)
+        print "after sending request to api...."
+        # messages.add_message(self.request, messages.INFO, "Functionality not implemented yet.. WIP..")
+
         return HttpResponseRedirect(self.request.path)
+
 
 class CollectionDeleteView(UserOrOrgMixin, FormView):
     """
