@@ -328,7 +328,8 @@ class CollectionCreateView(CollectionsBaseView, FormView):
                                                 kwargs={"user": self.user_id,
                                                         'collection': short_code}))
 
-class CollectionAddReferenceView(CollectionsBaseView, FormView):
+
+class CollectionAddReferenceView(UserOrOrgMixin, FormView):
     template_name = "collections/collection_add_reference.html"
     form_class = CollectionAddReferenceForm
 
@@ -504,76 +505,3 @@ class CollectionEditView(CollectionsBaseView, FormView):
             return HttpResponseRedirect(reverse('collection-details',
                                                 kwargs={'user': self.user_id,
                                                         'collection': self.collection_id}))
-
-class CollectionVersionsNewView(CollectionsBaseView, UserOrOrgMixin, FormView):
-
-        form_class = CollectionVersionAddForm
-        template_name = "collections/collection_versions_new.html"
-
-        def get_initial(self):
-            super(CollectionVersionsNewView, self).get_initial()
-            self.get_args()
-
-            api = OclApi(self.request, debug=True)
-            # source_version = None
-            if self.from_org:
-                collection_version = api.get('orgs', self.org_id, 'collections', self.collection_id,
-                                         'versions', params={'limit': 1}).json()
-            else:
-                collection_version = api.get('users', self.user_id, 'collections', self.collection_id,
-                                         'versions', params={'limit': 1}).json()
-
-            data = {
-                'request': self.request,
-                'from_user': self.from_user,
-                'from_org': self.from_org,
-                'user_id': self.user_id,
-                'org_id': self.org_id,
-                'owner_type': self.owner_type,
-                'owner_id': self.owner_id,
-                'collection_id': self.collection_id,
-                'previous_version': collection_version[0]['id'],
-                'released': False
-            }
-            return data
-
-        def get_context_data(self, *args, **kwargs):
-
-            context = super(CollectionVersionsNewView, self).get_context_data(*args, **kwargs)
-            self.get_args()
-
-            api = OclApi(self.request, debug=True)
-            # source = None
-            if self.from_org:
-                collection = api.get('orgs', self.org_id, 'collections', self.collection_id).json()
-            else:
-                collection = api.get('users', self.user_id, 'collections', self.collection_id).json()
-
-            # Set the context
-            context['kwargs'] = self.kwargs
-            context['collection'] = collection
-
-            return context
-
-        def form_valid(self, form):
-            self.get_args()
-
-            # Submit the new source version
-            data = form.cleaned_data
-            api = OclApi(self.request, debug=True)
-            result = api.create_collection_version(self.owner_type, self.owner_id, self.collection_id, data)
-            if result.status_code == requests.codes.created:
-                messages.add_message(self.request, messages.INFO, _('Collection version created!'))
-                if self.from_org:
-                    return HttpResponseRedirect(reverse('collection-versions',
-                                                        kwargs={'org': self.org_id,
-                                                                'collection': self.collection_id}))
-                else:
-                    return HttpResponseRedirect(reverse('collection-versions',
-                                                        kwargs={'user': self.user_id,
-                                                                'collection': self.collection_id}))
-            else:
-                error_msg = result.json().get('detail', 'Error')
-                messages.add_message(self.request, messages.ERROR, error_msg)
-                return HttpResponseRedirect(self.request.path)
-
