@@ -13,21 +13,116 @@
     {% url 'collection-addreference' user=collection.owner collection=collection.id as collection_addreference_url %}
 {% endif %}
 
-<div class="container" style="margin-top: 20px;">
-	<div class="row">
 
-		<div class="col-md-8">
-            <div class="pull-left">
-                {% if user.is_authenticated %}
-                    <a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" title="Add Reference to Collection" style="font-weight:300;text-spacing:-0.1pt;">
-                        <span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'Add Reference' %}</a>
-                {% endif %}
-             </div>
 
-		</div>
 
-	</div> <!-- /row -->
-</div> <!-- /container -->
+<div class="container">
+<div class="row">
+<form action="." method="get">
+    <input type="hidden" name="resource_type" value="collection" />
+
+<!-- Start left column -->
+
+    <div class="col-md-3">
+
+<!-- Filters -->
+
+        {% for search_filter in search_filters %}
+        <div class="filter-group">
+            <div class="filter-group-header">{{ search_filter.filter_name }}</div>
+            <div class="filter-group-body">
+                {% for filter_option in search_filter.options %}
+                    {% if filter_option.option_num > 0 or search_filter.attrs.show_zeroed_options %}
+                        <div class="checkbox"><label><input type="checkbox" name="{{ search_filter.filter_id }}" value="{{ filter_option.option_value }}" {% if filter_option.selected %}checked{% endif %}>{{ filter_option.option_name }}{% if not search_filter.attrs.hide_numbers %}&nbsp;&nbsp;&nbsp;&nbsp;{% endif %}</label></div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+<!-- End left column -->
+
+    </div>
+
+<!-- Start right column -->
+
+    <div class="col-md-9">
+
+<!-- Search toolbar -->
+
+        <div class="row" style="padding-top:15px;">
+            <div class="col-md-12" style="padding-left:0;">
+
+                <!-- Simple Pager -->
+                {% simple_pager collection_page 'collection' url=collection_pagination_url %}
+
+                <!-- New Organization Button -->
+                <div class="pull-left">
+                    {% if user.is_authenticated %}
+                    {# TBD: need a more complete tag to check for access #}
+                    <a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" title="Add New Collection Reference" style="font-weight:300;text-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'Add New Collection Reference' %}</a>
+                    {% endif %}
+                </div>
+
+                <!-- Org collections Search -->
+                <div class="form-group pull-left">
+                    <div class="input-group input-group-sm" style="width:250px;">
+                        <input name="q" id="resourceFilter" type="text" value="{{ collection_q }}" class="form-control" placeholder="Search collections within organization" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Sort dropdown -->
+                <div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;text-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
+                <div class="btn-group pull-left" style="padding-top:5px;">
+                    <select name="sort" class="btn btn-default btn-sm xdropdown-toggle">
+                        {% for o in search_sort_options %}
+                        <option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </div> <!-- /col-md-12-->
+        </div> <!-- /row -->
+
+<!-- Search results -->
+
+        {% for result in references %}
+
+
+            <div class="row row-search-result">
+                <div class="col-md-1 search-result-col-icon">
+                    <span class="glyphicon glyphicon-th-list search-result-icon"></span>
+                </div>
+                <div class="col-md-11 search-result-col-content">
+                    <div class="pull-left small text-muted" style="padding-top:12px;">
+                        <a href="{{ result.expression }}" title="Collection Reference"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.expression}}</a>
+                    </div>
+
+
+                </div>
+            </div>
+        {% endfor %}
+
+<!-- Pagination -->
+
+        {% if collections %}
+        <div class="row" style="text-align:center;">
+            {% bootstrap_pagination collection_page url=collection_pagination_url %}
+        </div>
+        {% endif %}
+
+<!-- End right column -->
+
+    </div> {# col-md-9 #}
+
+</form>
+</div> {# row #}
+</div> {# container #}
+
+
 {% endblock tab-content %}
 
 

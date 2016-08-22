@@ -28,6 +28,7 @@ class CollectionReferencesView(UserOrOrgMixin, TemplateView):
         self.get_args()
         api = OclApi(self.request, debug=True)
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
+        data = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id,'references').json()
         collection = results.json()
 
         # Set the context
@@ -35,6 +36,7 @@ class CollectionReferencesView(UserOrOrgMixin, TemplateView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'References'
         context['collection'] = collection
+        context['references'] = data.get('references')
 
         return context
 
