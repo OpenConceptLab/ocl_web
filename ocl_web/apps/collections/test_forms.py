@@ -75,7 +75,7 @@ class CollectionAddReferenceFormTest(TestCase):
 
     def test_collectionAddReferenceForm_containesUrl_formIsValid(self):
         form_data = {
-            'reference': '/orgs/tw/sources/ICD-10-2010/concepts/testid/',
+            'expression': '/orgs/tw/sources/ICD-10-2010/concepts/testid/',
         }
         form = CollectionAddReferenceForm(data=form_data)
         self.assertTrue(form.is_valid())
