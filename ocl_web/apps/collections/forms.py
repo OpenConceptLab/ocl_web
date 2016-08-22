@@ -75,8 +75,8 @@ class CollectionAddReferenceForm(forms.Form):
     Add Reference to a collection
     """
     required_css_class = 'required'
-    reference = forms.CharField(
-        label=_('Reference URL'),
+    expression = forms.CharField(
+        label=_('Expression'),
         required=True,
         help_text=_('URL  (e.g. /orgs/tw/sources/ICD-10-2010/concepts/:conceptid/)'))
 

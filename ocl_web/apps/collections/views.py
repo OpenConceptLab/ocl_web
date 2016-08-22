@@ -254,10 +254,25 @@ class CollectionAddReferenceView(UserOrOrgMixin, FormView):
         # resolver = resolve(data)
         api = OclApi(self.request, debug=True)
         result = api.put(self.owner_type, self.owner_id, 'collections', self.collection_id, 'references', **data)
-        print "after sending request to api...."
-        # messages.add_message(self.request, messages.INFO, "Functionality not implemented yet.. WIP..")
 
-        return HttpResponseRedirect(self.request.path)
+        if not result.status_code == requests.codes.all_good:
+            emsg = result.json().get('detail', 'Error')
+            messages.add_message(self.request, messages.ERROR, emsg)
+            return HttpResponseRedirect(self.request.path)
+
+        messages.add_message(self.request, messages.INFO, _('Expression added.'))
+
+        if self.from_org:
+            return HttpResponseRedirect(reverse('collection-references',
+                                                kwargs={'org': self.org_id,
+                                                        'collection': self.collection_id}))
+        else:
+            return HttpResponseRedirect(reverse('collection-references',
+                                                kwargs={'user': self.user_id,
+                                                        'collection': self.collection_id}))
+
+
+
 
 
 class CollectionDeleteView(UserOrOrgMixin, FormView):
