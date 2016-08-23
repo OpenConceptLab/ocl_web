@@ -3,7 +3,7 @@
 cd ocl_web
 virtualenv ocl
 source ocl/bin/activate
-pip install -r requirements/$1.txt
+pip install -r ../requirements/$1.txt
 npm install
 export OCL_API_HOST='http://localhost:8000'
 export OCL_API_TOKEN=$2
