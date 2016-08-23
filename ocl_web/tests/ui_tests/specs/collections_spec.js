@@ -1,11 +1,13 @@
+'use strict';
+
+var LoginPage = require('../pages/login_page.js');
+
 describe('OCL Collections Page', function () {
 
     it('should login', function () {
-        browser.get('http://showcase.openconceptlab.org');
-        element(by.linkText('Sign In')).click();
-        element(by.id('id_login')).sendKeys('awadhwa');
-        element(by.id('id_password')).sendKeys('root123');
-        element(by.buttonText('Sign In')).click();
+        var loginPage = new LoginPage();
+        loginPage.visit();
+        loginPage.login('awadhwa','root123');
 
         expect(element(by.linkText('awadhwa')).getText()).toEqual('awadhwa');
     });

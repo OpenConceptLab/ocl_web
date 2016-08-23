@@ -47,7 +47,7 @@ urlpatterns = patterns(
     # Testing
     url(r'^tests/tags/$', TestTagsView.as_view(), name="test-tags"),
 
-    # Static Pages (some to be moved into Dynamic views later)
+    # Static pages (some to be moved into Dynamic views later)
     url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name="home"),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
     url(r'^features/$', TemplateView.as_view(template_name='pages/features.html'), name="features"),
