@@ -538,3 +538,11 @@ class Production(Common):
         }
     }
     ########## END LOGGING CONFIGURATION
+
+
+class Staging(Production):
+    ########## INSTALLED_APPS
+
+    INSTALLED_APPS = Common.INSTALLED_APPS
+
+    ########## END INSTALLED_APPS
