@@ -17,7 +17,7 @@
 				{% field_label 'Name' collection.name %}
 				{% field_label 'Full Name' collection.full_name %}
 				<hr />
-				{% field_label 'Description' collection.description %}
+				<div id="id_coll_description">{% field_label 'Description' collection.description %}</div>
 				{% field_label 'collection Type' collection.collection_type %}
 				{% field_label 'Website' collection.website url=True %}
 				{% field_label 'Public Access' collection.public_access %}
@@ -27,7 +27,7 @@
     				{% field_label 'Supported Locales' supported_locale  %}
                 {% endfor %}
 
-				{% if collection.external_id %}<hr />{% field_label 'External ID' collection.external_id %}{% endif %}
+				<div id="id_coll_externalId">{% if collection.external_id %}<hr />{% field_label 'External ID' collection.external_id %}{% endif %}</div>
 				<hr />
 				{% field_label 'Created by' collection.created_by %}
 				{% field_label 'Created on' collection.created_on|smart_date %}

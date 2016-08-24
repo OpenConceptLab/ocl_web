@@ -28,6 +28,12 @@ describe('OCL Collections Page', function () {
         element(by.id('id_description')).sendKeys('collection description');
         element(by.id('id_external_id')).sendKeys('123456');
         element(by.buttonText('Update')).click();
+
+        expect(element(by.className('alert-info')).getText()).toEqual('Organization updated.');
+        browser.pause();
+        expect(element(by.id('id_coll_description')).getText()).toEqual('collection description');
+        expect(element(by.id('id_coll_externalId')).getText()).toEqual('123456');
+
     })
 
     it('should delete collection', function () {
