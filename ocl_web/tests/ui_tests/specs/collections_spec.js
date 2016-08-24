@@ -9,7 +9,7 @@ describe('OCL Collections Page', function () {
         loginPage.visit();
         loginPage.login('awadhwa','root123');
 
-        expect(element(by.linkText('awadhwa')).getText()).toEqual('awadhwa');
+        expect(element(by.className('alert-success')).getText()).toEqual('Successfully signed in as awadhwa.');
     });
 
     it('should create collection', function () {
@@ -21,7 +21,7 @@ describe('OCL Collections Page', function () {
         element(by.buttonText('Add')).click();
 
         expect(element(by.className('alert-info')).getText()).toEqual('Collection created');
-    })
+    });
 
     it('should edit collection', function () {
         element(by.css('span.glyphicon-cog')).click();
@@ -33,7 +33,7 @@ describe('OCL Collections Page', function () {
         expect(element(by.id('id_coll_description')).getText()).toContain('collection description');
         expect(element(by.id('id_coll_externalId')).getText()).toContain('123456');
 
-    })
+    });
 
     it('should delete collection', function () {
         element(by.css('span.glyphicon-cog')).click();
@@ -41,7 +41,7 @@ describe('OCL Collections Page', function () {
         element(by.buttonText('Delete')).click();
 
         expect(element(by.className('alert-info')).getText()).toEqual('Collection Deleted');
-    })
+    });
 
     it('should logout', function () {
         element(by.linkText('Logout')).click();
