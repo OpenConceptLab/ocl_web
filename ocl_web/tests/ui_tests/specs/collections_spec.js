@@ -30,8 +30,8 @@ describe('OCL Collections Page', function () {
         element(by.buttonText('Update')).click();
 
         expect(element(by.className('alert-info')).getText()).toEqual('Collection updated');
-        expect(element(by.id('id_coll_description')).getText()).toEqual('Description collection description');
-        expect(element(by.id('id_coll_externalId')).getText()).toEqual('External ID 123456');
+        expect(element(by.id('id_coll_description')).getText()).toContain('collection description');
+        expect(element(by.id('id_coll_externalId')).getText()).toContain('123456');
 
     })
 
