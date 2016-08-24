@@ -9,7 +9,7 @@ var LoginPage = function() {
     browser.get('/');
   };
 
-  this.signin = function () {
+  this.signIn = function () {
       this.signinLink.click();
   };
 
@@ -23,15 +23,15 @@ var LoginPage = function() {
     this.password.sendKeys(password);
   };
 
-  this.login = function() {
+  this.clickLogin = function() {
     this.loginButton.click();
   };
 
    this.login = function(username, password) {
-    this.signinLink.click();
+    this.signIn();
     this.setUsername(username);
     this.setPassword(password);
-    this.login();
+    this.clickLogin();
   };
 };
 module.exports = LoginPage;
