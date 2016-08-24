@@ -78,7 +78,8 @@ class CollectionAddReferenceForm(forms.Form):
     expression = forms.CharField(
         label=_('Expression'),
         required=True,
-        help_text=_('URL  (e.g. /orgs/tw/sources/ICD-10-2010/concepts/:conceptid/)'))
+        help_text=_('Any URL which is valid in OCL'),
+        widget=forms.TextInput(attrs={'placeholder': "e.g. /orgs/WHO/sources/ICD-10/concepts/A15.0/"}))
 
 
 class CollectionDeleteForm(forms.Form):
