@@ -4,6 +4,7 @@ var LoginPage = function() {
   this.password = $('#id_password');
   this.signinLink = element(by.linkText('Sign In'));
   this.loginButton = element(by.buttonText('Sign In'));
+  this.loginStatus = $('.alert-success');
 
   this.visit = function() {
     browser.get('/');

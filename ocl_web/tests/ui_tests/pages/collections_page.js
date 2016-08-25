@@ -3,16 +3,19 @@ var CollectionsPage = function() {
     // create collection locators
     this.newUserCollection = element(by.linkText('New User Collection'));
     this.shortCode = $('#id_short_code');
-    this.col_name = $('#id_name');
+    this.collName = $('#id_name');
     this.fullName = $('#id_full_name');
     this.supportedLocale = $('#id_supported_locales');
     this.addCollectionButton = element(by.buttonText('Add'));
+    this.status = $('.alert-info');
 
     // edit collection locators
     this.editIcon = element(by.css('span.glyphicon-cog'));
     this.description = $('#id_description');
     this.externalId = $('#id_external_id');
     this.updateCollectionButton = element(by.buttonText('Update'));
+    this.updatedDescValue = $('#id_coll_description');
+    this.updatedExtIdValue = $('#id_coll_externalId');
 
     // delete collection locators
     this.deleteIcon = element(by.css('span.glyphicon-trash'));
@@ -22,8 +25,8 @@ var CollectionsPage = function() {
         this.shortCode.sendKeys(code);
     };
 
-    this.setColName = function (name) {
-        this.col_name.sendKeys(name);
+    this.setCollName = function (name) {
+        this.collName.sendKeys(name);
     };
 
     this.setFullName = function (full_name) {
@@ -69,7 +72,7 @@ var CollectionsPage = function() {
     this.createNewUserCollection = function (short_code, name, full_name, locale) {
         this.clickNewCollection();
         this.setShortCode(short_code);
-        this.setColName(name);
+        this.setCollName(name);
         this.setFullName(full_name);
         this.setSupportedLocale(locale);
         this.clickAddCollection();
