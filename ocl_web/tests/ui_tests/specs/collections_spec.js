@@ -3,6 +3,7 @@
 var LoginPage = require('../pages/login_page.js');
 var LogoutPage = require('../pages/logout_page.js');
 var CollectionPage = require('../pages/collections_page.js');
+var data = require('../data/test_data.json');
 
 describe('OCL Collections Page', function () {
 
@@ -18,23 +19,23 @@ describe('OCL Collections Page', function () {
 
     it('should login', function () {
         loginPage.visit();
-        loginPage.login('awadhwa','root123');
+        loginPage.login(data.username,data.password);
 
         expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as awadhwa.');
     });
 
     it('should create collection', function () {
-        collectionPage.createNewUserCollection( 'WHO',
-            'Woreda Health Office',
-            'Woreda Health Office Collection',
-            'en,es,fr'
+        collectionPage.createNewUserCollection( data.short_code,
+            data.col_name,
+            data.full_name,
+            data.supported_locale
         );
 
         expect((collectionPage.status).getText()).toEqual('Collection created');
     });
 
     it('should edit collection', function () {
-        collectionPage.editCollection('collection description', '1.1');
+        collectionPage.editCollection(data.col_desc, data.ext_id);
 
         expect((collectionPage.status).getText()).toEqual('Collection updated');
         expect((collectionPage.updatedDescValue).getText()).toContain('collection description');
