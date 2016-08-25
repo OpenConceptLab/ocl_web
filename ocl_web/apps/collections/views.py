@@ -19,9 +19,44 @@ from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
 
-class CollectionReferencesView(UserOrOrgMixin, TemplateView):
+
+class CollectionsBaseView(UserOrOrgMixin):
+    def get_args(self):
+        super(CollectionsBaseView, self).get_args()
+        self.collection_id = self.kwargs.get('collection')
+        self.collection_version_id = self.kwargs.get('collection_version')
+
+    def get_collection_concepts(self, owner_type, owner_id, collection_id,
+                            collection_version_id=None, search_params=None):
+
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_CONCEPTS, params=search_params)
+        api = OclApi(self.request, debug=True, facets=True)
+
+        if collection_version_id:
+            search_response = api.get(
+                owner_type, owner_id, 'collections', collection_id, collection_version_id, 'concepts',
+                params=searcher.search_params)
+        else:
+            search_response = api.get(
+                owner_type, owner_id, 'collections', collection_id, 'concepts',
+                params=searcher.search_params)
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
+
+        # Process the results
+        searcher.process_search_results(
+            search_type=None, search_response=search_response,
+            search_params=search_params)
+
+        return searcher
+
+
+class CollectionReferencesView(CollectionsBaseView, TemplateView):
     """ collection concept view. """
     template_name = "collections/collection_references.html"
+
     def get_context_data(self, *args, **kwargs):
         context = super(CollectionReferencesView, self).get_context_data(*args, **kwargs)
 
@@ -40,7 +75,7 @@ class CollectionReferencesView(UserOrOrgMixin, TemplateView):
 
         return context
 
-class CollectionMappingsView(UserOrOrgMixin, TemplateView):
+class CollectionMappingsView(CollectionsBaseView, TemplateView):
     """ collection concept view. """
     template_name = "collections/collection_mappings.html"
     def get_context_data(self, *args, **kwargs):
@@ -48,7 +83,7 @@ class CollectionMappingsView(UserOrOrgMixin, TemplateView):
 
         self.get_args()
         api = OclApi(self.request, debug=True)
-        results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
+        results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id, 'mappings')
         collection = results.json()
 
         # Set the context
@@ -59,27 +94,46 @@ class CollectionMappingsView(UserOrOrgMixin, TemplateView):
 
         return context
 
-class CollectionConceptsView(UserOrOrgMixin, TemplateView):
+class CollectionConceptsView(CollectionsBaseView, TemplateView):
     """ collection concept view. """
     template_name = "collections/collection_concepts.html"
-    def get_context_data(self, *args, **kwargs):
-        context = super(CollectionConceptsView, self).get_context_data(*args, **kwargs)
 
+    def get_context_data(self, *args, **kwargs):
+
+        context = super(CollectionConceptsView, self).get_context_data(*args, **kwargs)
         self.get_args()
         api = OclApi(self.request, debug=True)
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
+
+        searcher = self.get_collection_concepts(
+            self.owner_type, self.owner_id, self.collection_id,
+            collection_version_id=self.collection_version_id,
+            search_params=self.request.GET)
+
+        search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        search_results_current_page = search_results_paginator.page(searcher.current_page)
 
         # Set the context
         context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Concepts'
         context['collection'] = collection
+        context['collection_version'] = self.collection_version_id
+        context['results'] = searcher.search_results
+        context['current_page'] = search_results_current_page
+        context['pagination_url'] = self.request.get_full_path()
+        context['search_query'] = searcher.get_query()
+        context['search_filters'] = searcher.search_filter_list
+        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort'] = searcher.get_sort()
+        context['search_facets_json'] = searcher.search_facets
+        context['search_filters_debug'] = str(searcher.search_filter_list)
 
         return context
 
 
-class CollectionVersionsView(UserOrOrgMixin, TemplateView):
+class CollectionVersionsView(CollectionsBaseView, TemplateView):
     """ collection About view. """
     template_name = "collections/collection_versions.html"
     def get_context_data(self, *args, **kwargs):
@@ -98,7 +152,7 @@ class CollectionVersionsView(UserOrOrgMixin, TemplateView):
 
         return context
 
-class CollectionAboutView(UserOrOrgMixin, TemplateView):
+class CollectionAboutView(CollectionsBaseView, TemplateView):
     """ Collection About view. """
     template_name = "collections/collection_about.html"
     def get_context_data(self, *args, **kwargs):
@@ -123,7 +177,7 @@ class CollectionAboutView(UserOrOrgMixin, TemplateView):
         return context
 
 
-class CollectionDetailView(UserOrOrgMixin, TemplateView):
+class CollectionDetailView(CollectionsBaseView, TemplateView):
     """ Collection detail views """
 
     template_name = "collections/collection_details.html"
@@ -149,7 +203,7 @@ class CollectionDetailView(UserOrOrgMixin, TemplateView):
         return context
 
 
-class CollectionCreateView(UserOrOrgMixin, FormView):
+class CollectionCreateView(CollectionsBaseView, FormView):
     """
         Create new Collection, either for an org or a user.
     """
@@ -220,7 +274,7 @@ class CollectionCreateView(UserOrOrgMixin, FormView):
                                                         'collection': short_code}))
 
 
-class CollectionAddReferenceView(UserOrOrgMixin, FormView):
+class CollectionAddReferenceView(CollectionsBaseView, FormView):
     template_name = "collections/collection_add_reference.html"
     form_class = CollectionAddReferenceForm
 
@@ -274,10 +328,7 @@ class CollectionAddReferenceView(UserOrOrgMixin, FormView):
                                                         'collection': self.collection_id}))
 
 
-
-
-
-class CollectionDeleteView(UserOrOrgMixin, FormView):
+class CollectionDeleteView(CollectionsBaseView, FormView):
     """
     View for deleting Collection.
     """
@@ -328,7 +379,7 @@ class CollectionDeleteView(UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.get_success_url())
 
 
-class CollectionEditView(UserOrOrgMixin, FormView):
+class CollectionEditView(CollectionsBaseView, FormView):
     """ Edit collection, either for an org or a user. """
     template_name = "collections/collection_edit.html"
 
