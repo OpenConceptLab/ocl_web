@@ -3,6 +3,7 @@
 var LoginPage = require('../pages/login_page.js');
 var LogoutPage = require('../pages/logout_page.js');
 var OrgPage = require('../pages/organization_page');
+var data = require('../data/test_data.json');
 
 describe('OCL Org Page', function () {
     var loginPage;
@@ -19,7 +20,7 @@ describe('OCL Org Page', function () {
     it('should login', function () {
         var loginPage = new LoginPage();
         loginPage.visit();
-        loginPage.login('awadhwa','root123');
+        loginPage.login(data.username,data.password);
 
         expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as awadhwa.');
     });
@@ -27,19 +28,19 @@ describe('OCL Org Page', function () {
     it('should create organization', function () {
         orgShortCode = orgPage.getRandomString(5);
         orgPage.createNewOrg( orgShortCode,
-            'EthiopiaMoh',
-            'www.moh.gov.et',
-            'Ministry Of Health',
-            'Ethiopia'
+            data.org_name,
+            data.website,
+            data.company,
+            data.location
         );
         expect((orgPage.status).getText()).toEqual('Organization Added');
     });
 
     it('should create collection under org', function () {
-        orgPage.createNewOrgCollection( 'WHO',
-            'Woreda Health Office',
-            'Woreda Health Office Collection',
-            'en,es,fr'
+        orgPage.createNewOrgCollection( data.short_code,
+            data.col_name,
+            data.full_name,
+            data.supported_locale
         );
         expect((orgPage.status).getText()).toEqual('Collection created');
 
@@ -47,26 +48,26 @@ describe('OCL Org Page', function () {
     });
 
     it('should create source', function () {
-        orgPage.createNewSource( 'WHS',
-            'Census/World Health Statistics',
-            'en,es'
+        orgPage.createNewSource( data.src_code,
+            data.src_full_name,
+            data.supported_locale
         );
 
         expect((orgPage.status).getText()).toEqual('Source created');
     });
 
     it('should create source version', function () {
-        orgPage.createNewSourceVersion('V1',
-            'Version 1'
+        orgPage.createNewSourceVersion(data.id,
+            data.description
         );
 
         expect((orgPage.status).getText()).toEqual('Source version created!');
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept( 'C1',
-            'Life Expectancy at Birth (years)',
-            'Fully Specified'
+        orgPage.createNewConcept( data.concept_id,
+            data.concept_name,
+            data.name_type
         );
 
         expect((orgPage.status).getText()).toEqual('Concept created.');
