@@ -20,33 +20,37 @@ describe('OCL Collections Page', function () {
         loginPage.visit();
         loginPage.login('awadhwa','root123');
 
-        expect(element(by.className('alert-success')).getText()).toEqual('Successfully signed in as awadhwa.');
+        expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as awadhwa.');
     });
 
     it('should create collection', function () {
-        collectionPage.createNewUserCollection('C1', 'col1', 'collection 1', 'en,es,fr');
+        collectionPage.createNewUserCollection( 'WHO',
+            'Woreda Health Office',
+            'Woreda Health Office Collection',
+            'en,es,fr'
+        );
 
-        expect(element(by.className('alert-info')).getText()).toEqual('Collection created');
+        expect((collectionPage.status).getText()).toEqual('Collection created');
     });
 
     it('should edit collection', function () {
-        collectionPage.editCollection('collection description', '123456');
+        collectionPage.editCollection('collection description', '1.1');
 
-        expect(element(by.className('alert-info')).getText()).toEqual('Collection updated');
-        expect($('#id_coll_description').getText()).toContain('collection description');
-        expect($('#id_coll_externalId').getText()).toContain('123456');
+        expect((collectionPage.status).getText()).toEqual('Collection updated');
+        expect((collectionPage.updatedDescValue).getText()).toContain('collection description');
+        expect((collectionPage.updatedExtIdValue).getText()).toContain('1.1');
     });
 
     it('should delete collection', function () {
         collectionPage.deleteCollection();
 
-        expect(element(by.className('alert-info')).getText()).toEqual('Collection Deleted');
+        expect((collectionPage.status).getText()).toEqual('Collection Deleted');
     });
 
      it('should logout', function () {
          logoutPage.logout();
 
-         expect(element(by.className('alert-success')).getText()).toEqual('You have signed out.');
+         expect((loginPage.loginStatus).getText()).toEqual('You have signed out.');
      });
 
 });
