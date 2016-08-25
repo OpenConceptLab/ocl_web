@@ -61,9 +61,11 @@ class GlobalSearchView(TemplateView):
             if param in self.request.GET:
                 other_resource_search_params[param] = self.request.GET.get(param)
         context['other_resource_search_params'] = ''
-        if other_resource_search_params:
-            context['other_resource_search_params'] = (
-                '&' + urllib.urlencode(other_resource_search_params))
+
+        #Following code breaks for unicode characters -- couldn't figure out why this code is here -- Sny/Anshu
+        # if other_resource_search_params:
+        #     context['other_resource_search_params'] = (
+        #         '&' + urllib.urlencode(other_resource_search_params))
 
         # Perform the counter searches for the other resources
         resource_count = {}
