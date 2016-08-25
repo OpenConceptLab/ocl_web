@@ -1,8 +1,16 @@
 'use strict';
 
 var LoginPage = require('../pages/login_page.js');
+var LogoutPage = require('../pages/logout_page.js');
 
 describe('OCL Org Page', function () {
+    var loginPage;
+    var logoutPage;
+
+    beforeEach(function () {
+        loginPage = new LoginPage();
+        logoutPage = new LogoutPage();
+    });
 
     it('should login', function () {
         var loginPage = new LoginPage();
@@ -32,6 +40,18 @@ describe('OCL Org Page', function () {
 
         expect(element(by.className('alert-info')).getText()).toEqual('Organization Added');
     });
+
+    // it('should create collection under org', function () {
+    //     element(by.linkText('Collections')).click();
+    //     element(by.linkText(' New Collection')).click();
+    //     element(by.id('id_short_code')).sendKeys('C1');
+    //     element(by.id('id_name')).sendKeys('org col 1');
+    //     element(by.id('id_full_name')).sendKeys('organization collection 1');
+    //     element(by.id('id_supported_locales')).sendKeys('en');
+    //     element(by.buttonText('Add')).click();
+    //
+    //     expect(element(by.className('alert-info')).getText()).toEqual('Collection created');
+    // });
 
     it('should create source', function () {
         element(by.linkText('Sources')).click();
@@ -66,8 +86,8 @@ describe('OCL Org Page', function () {
     });
 
      it('should logout', function () {
-        element(by.linkText('Logout')).click();
-        element(by.buttonText('Sign Out')).click();
+         var logoutPage = new LogoutPage();
+         logoutPage.logout();
 
         expect(element(by.className('alert-success')).getText()).toEqual('You have signed out.');
     });
