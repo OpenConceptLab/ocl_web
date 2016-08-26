@@ -9,7 +9,7 @@ from mock import Mock, patch, MagicMock
 from django.contrib import messages
 from apps.collections.forms import CollectionCreateForm, CollectionEditForm, CollectionDeleteForm
 from libs.ocl import OclApi, OclSearch, OclConstants
-import views;
+import views
 from unittest import skip
 
 class MyDict(dict):
@@ -283,7 +283,8 @@ class CollectionConceptView(TestCase):
     @patch('libs.ocl.OclApi.get')
     def test_getContextForCollectionConcepts_contextRecieved(self, mock_get):
         conceptResponse = MagicMock(spec=Response)
-        conceptResponse.json.return_value = ["Some Results"]
+        collection = ["Some Results"]
+        conceptResponse.json.return_value = collection
         conceptResponse.status_code = 200
         conceptResponse.headers = []
         mock_get.return_value = conceptResponse
@@ -298,7 +299,35 @@ class CollectionConceptView(TestCase):
         self.assertEquals(context['url_params'], {})
         self.assertEquals(context['kwargs'], hash)
         self.assertEquals(context['selected_tab'], 'Concepts')
-        self.assertEquals(context['results'], ['Some Results'])
+        self.assertEquals(context['results'], collection)
+        self.assertEquals(context['pagination_url'], '/foobar')
+        self.assertEquals(context['search_query'], '')
+        self.assertEquals(context['search_filters'], None)
+        self.assertEquals(context['search_sort_options'], ['Best Match', 'Last Update (Desc)', 'Last Update (Asc)', 'Name (Asc)', 'Name (Desc)'])
+        self.assertEquals(context['search_sort'], '')
+        self.assertEquals(context['search_facets_json'], None)
+
+class CollectionMappingsView(TestCase):
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForCollectionMappings_contextRecieved(self, mock_get):
+        mappingResponse = MagicMock(spec=Response)
+        collection = ["Some Results"]
+        mappingResponse.json.return_value = collection
+        mappingResponse.status_code = 200
+        mappingResponse.headers = []
+        mock_get.return_value = mappingResponse
+
+        collectionMappingsView = views.CollectionMappingsView()
+        collectionMappingsView.request = FakeRequest()
+
+        hash = {'collection': 'test', 'org': 'org1'}
+        collectionMappingsView.kwargs = hash
+        context = collectionMappingsView.get_context_data()
+
+        self.assertEquals(context['url_params'], {})
+        self.assertEquals(context['kwargs'], hash)
+        self.assertEquals(context['selected_tab'], 'Mappings')
+        self.assertEquals(context['results'], collection)
         self.assertEquals(context['pagination_url'], '/foobar')
         self.assertEquals(context['search_query'], '')
         self.assertEquals(context['search_filters'], None)

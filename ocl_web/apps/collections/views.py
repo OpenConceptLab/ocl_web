@@ -26,19 +26,19 @@ class CollectionsBaseView(UserOrOrgMixin):
         self.collection_id = self.kwargs.get('collection')
         self.collection_version_id = self.kwargs.get('collection_version')
 
-    def get_collection_concepts(self, owner_type, owner_id, collection_id,
+    def get_collection_data(self, owner_type, owner_id, collection_id, field_name,
                             collection_version_id=None, search_params=None):
 
-        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_CONCEPTS, params=search_params)
+        searcher = OclSearch(search_type=field_name, params=search_params)
         api = OclApi(self.request, debug=True, facets=True)
 
         if collection_version_id:
             search_response = api.get(
-                owner_type, owner_id, 'collections', collection_id, collection_version_id, 'concepts',
+                owner_type, owner_id, 'collections', collection_id, collection_version_id, field_name,
                 params=searcher.search_params)
         else:
             search_response = api.get(
-                owner_type, owner_id, 'collections', collection_id, 'concepts',
+                owner_type, owner_id, 'collections', collection_id, field_name,
                 params=searcher.search_params)
         if search_response.status_code == 404:
             raise Http404
@@ -79,20 +79,39 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
     """ collection concept view. """
     template_name = "collections/collection_mappings.html"
     def get_context_data(self, *args, **kwargs):
-        context = super(CollectionMappingsView, self).get_context_data(*args, **kwargs)
 
+        context = super(CollectionMappingsView, self).get_context_data(*args, **kwargs)
         self.get_args()
         api = OclApi(self.request, debug=True)
-        results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id, 'mappings')
+        results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
+
+        searcher = self.get_collection_data(
+            self.owner_type, self.owner_id, self.collection_id, OclConstants.RESOURCE_NAME_MAPPINGS,
+            collection_version_id=self.collection_version_id,
+            search_params=self.request.GET)
+
+        search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        search_results_current_page = search_results_paginator.page(searcher.current_page)
 
         # Set the context
         context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Mappings'
         context['collection'] = collection
+        context['collection_version'] = self.collection_version_id
+        context['results'] = searcher.search_results
+        context['current_page'] = search_results_current_page
+        context['pagination_url'] = self.request.get_full_path()
+        context['search_query'] = searcher.get_query()
+        context['search_filters'] = searcher.search_filter_list
+        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort'] = searcher.get_sort()
+        context['search_facets_json'] = searcher.search_facets
+        context['search_filters_debug'] = str(searcher.search_filter_list)
 
         return context
+
 
 class CollectionConceptsView(CollectionsBaseView, TemplateView):
     """ collection concept view. """
@@ -106,8 +125,8 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
 
-        searcher = self.get_collection_concepts(
-            self.owner_type, self.owner_id, self.collection_id,
+        searcher = self.get_collection_data(
+            self.owner_type, self.owner_id, self.collection_id, OclConstants.RESOURCE_NAME_CONCEPTS,
             collection_version_id=self.collection_version_id,
             search_params=self.request.GET)
 
