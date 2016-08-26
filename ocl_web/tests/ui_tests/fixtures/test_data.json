@@ -11,22 +11,23 @@
   "col_desc":"collection description",
   "ext_id":"1.1",
 
-  "_comment": "Org data below...",
-  "org_name":"EthiopiaMoh",
-  "website":"http://www.moh.gov.et",
+  "_comment": "Organisation data below...",
+  "org_short_code":"EthiopiaMoH-test-",
+  "org_name":"EthiopiaMoH",
+  "website":"http://www.moh.gov.et/",
   "company":"Ministry Of Health",
-  "Location":"Ethiopia",
+  "org_location":"Addis Ababa,Ethiopia",
 
   "_comment": "Source data below..",
-  "src_code":"WHS",
-  "src_full_name":"Census/World Health Statistics",
+  "src_code":"HSTP-Indicators",
+  "src_full_name":"Health Sector Transformation Plan 2016-2020 Indicators",
 
   "_comment": "Source version data below..",
   "id":"V1",
   "description":"Version 1",
 
   "_comment": "Concept data below..",
-  "concept_id":"C1",
+  "concept_id":"C1.1.1.2",
   "concept_name":"Life Expectancy at Birth (years)",
   "name_type":"Fully Specified"
 }
