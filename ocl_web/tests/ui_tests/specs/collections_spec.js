@@ -3,7 +3,7 @@
 var LoginPage = require('../pages/login_page.js');
 var LogoutPage = require('../pages/logout_page.js');
 var CollectionPage = require('../pages/collections_page.js');
-var data = require('../data/test_data.json');
+var data = require('../fixtures/test_data.json');
 
 describe('OCL Collections Page', function () {
 

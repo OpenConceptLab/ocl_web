@@ -3,7 +3,7 @@
 var LoginPage = require('../pages/login_page.js');
 var LogoutPage = require('../pages/logout_page.js');
 var OrgPage = require('../pages/organization_page');
-var data = require('../data/test_data.json');
+var data = require('../fixtures/test_data.json');
 
 describe('OCL Org Page', function () {
     var loginPage;
@@ -18,7 +18,6 @@ describe('OCL Org Page', function () {
     });
 
     it('should login', function () {
-        var loginPage = new LoginPage();
         loginPage.visit();
         loginPage.login(data.username,data.password);
 
@@ -27,12 +26,13 @@ describe('OCL Org Page', function () {
 
     it('should create organization', function () {
         orgShortCode = orgPage.getRandomString(5);
-        orgPage.createNewOrg( orgShortCode,
+        orgPage.createNewOrg( data.org_short_code+orgShortCode,
             data.org_name,
             data.website,
             data.company,
-            data.location
+            data.org_location
         );
+
         expect((orgPage.status).getText()).toEqual('Organization Added');
     });
 
@@ -44,7 +44,7 @@ describe('OCL Org Page', function () {
         );
         expect((orgPage.status).getText()).toEqual('Collection created');
 
-        element(by.linkText('  '+orgShortCode)).click();
+        element(by.linkText('  '+data.org_short_code+orgShortCode)).click();
     });
 
     it('should create source', function () {
@@ -56,14 +56,6 @@ describe('OCL Org Page', function () {
         expect((orgPage.status).getText()).toEqual('Source created');
     });
 
-    it('should create source version', function () {
-        orgPage.createNewSourceVersion(data.id,
-            data.description
-        );
-
-        expect((orgPage.status).getText()).toEqual('Source version created!');
-    });
-
     it('should create concept', function () {
         orgPage.createNewConcept( data.concept_id,
             data.concept_name,
@@ -71,6 +63,16 @@ describe('OCL Org Page', function () {
         );
 
         expect((orgPage.status).getText()).toEqual('Concept created.');
+
+        element(by.linkText('  '+data.src_code)).click();
+    });
+
+    it('should create source version', function () {
+        orgPage.createNewSourceVersion(data.id,
+            data.description
+        );
+
+        expect((orgPage.status).getText()).toEqual('Source version created!');
     });
 
      it('should logout', function () {
