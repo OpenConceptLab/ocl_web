@@ -9,7 +9,7 @@ from mock import Mock, patch, MagicMock
 from django.contrib import messages
 from apps.collections.forms import CollectionCreateForm, CollectionEditForm, CollectionDeleteForm
 from libs.ocl import OclApi, OclSearch, OclConstants
-import views;
+import views
 from unittest import skip
 
 class MyDict(dict):
@@ -22,6 +22,8 @@ class FakeRequest(object):
     def __init__(self):
         self.session = {}
         self.GET = {}
+    def get_full_path(self):
+        return '/foobar'
 
 class FakeResponse(object):
     """ FakeRequest class """
@@ -244,8 +246,8 @@ class CollectionDeleteViewTest(TestCase):
         self.assertEquals(context['collection'],'testCollection')
 
     @skip("need to fix this test case")
-    @patch('libs.ocl.OclApi.delete')
     @patch('django.contrib.messages.api')
+    @patch('libs.ocl.OclApi.delete')
     def test_whenDeleteSuccessfull_thenReturnCollectionDeletedMessage(self, mock_delete,mock_message):
         colResponse = MagicMock(spec=Response, status_code=204)
         mock_delete.return_value=colResponse
@@ -273,5 +275,62 @@ class CollectionAddReferenceView(TestCase):
         collectionAddReferenceView.kwargs = {
             'collection_id': 'testColId',
         }
-        context = collectionAddReferenceView.get_context_data();
+        context = collectionAddReferenceView.get_context_data()
         self.assertEquals(context['collection'], 'testCollection')
+
+
+class CollectionConceptView(TestCase):
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForCollectionConcepts_contextRecieved(self, mock_get):
+        conceptResponse = MagicMock(spec=Response)
+        collection = ["Some Results"]
+        conceptResponse.json.return_value = collection
+        conceptResponse.status_code = 200
+        conceptResponse.headers = []
+        mock_get.return_value = conceptResponse
+
+        collectionConceptsView = views.CollectionConceptsView()
+        collectionConceptsView.request = FakeRequest()
+
+        hash = {'collection': 'test', 'org': 'org1'}
+        collectionConceptsView.kwargs = hash
+        context = collectionConceptsView.get_context_data()
+
+        self.assertEquals(context['url_params'], {})
+        self.assertEquals(context['kwargs'], hash)
+        self.assertEquals(context['selected_tab'], 'Concepts')
+        self.assertEquals(context['results'], collection)
+        self.assertEquals(context['pagination_url'], '/foobar')
+        self.assertEquals(context['search_query'], '')
+        self.assertEquals(context['search_filters'], None)
+        self.assertEquals(context['search_sort_options'], ['Best Match', 'Last Update (Desc)', 'Last Update (Asc)', 'Name (Asc)', 'Name (Desc)'])
+        self.assertEquals(context['search_sort'], '')
+        self.assertEquals(context['search_facets_json'], None)
+
+class CollectionMappingsView(TestCase):
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForCollectionMappings_contextRecieved(self, mock_get):
+        mappingResponse = MagicMock(spec=Response)
+        collection = ["Some Results"]
+        mappingResponse.json.return_value = collection
+        mappingResponse.status_code = 200
+        mappingResponse.headers = []
+        mock_get.return_value = mappingResponse
+
+        collectionMappingsView = views.CollectionMappingsView()
+        collectionMappingsView.request = FakeRequest()
+
+        hash = {'collection': 'test', 'org': 'org1'}
+        collectionMappingsView.kwargs = hash
+        context = collectionMappingsView.get_context_data()
+
+        self.assertEquals(context['url_params'], {})
+        self.assertEquals(context['kwargs'], hash)
+        self.assertEquals(context['selected_tab'], 'Mappings')
+        self.assertEquals(context['results'], collection)
+        self.assertEquals(context['pagination_url'], '/foobar')
+        self.assertEquals(context['search_query'], '')
+        self.assertEquals(context['search_filters'], None)
+        self.assertEquals(context['search_sort_options'], ['Best Match', 'Last Update (Desc)', 'Last Update (Asc)', 'Name (Asc)', 'Name (Desc)'])
+        self.assertEquals(context['search_sort'], '')
+        self.assertEquals(context['search_facets_json'], None)
