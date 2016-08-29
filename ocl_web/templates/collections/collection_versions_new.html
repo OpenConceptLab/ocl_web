@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load ocl_tags %}
+
+
+{% block title %}{% trans "New Collection Version" %} - Open Concept Lab{% endblock %}
+
+
+{% block content %}
+{% if collection.owner_type == "Organization" %}
+	{% url 'collection-versions' org=collection.owner collection=collection.id as collection_version_url %}
+{% else %}
+	{% url 'collection-versions' user=collection.owner collection=collection.id as collection_version_url %}
+{% endif %}
+
+<h3>
+	{% resource_owner_label collection %} / {% collection_label collection %}
+	&nbsp;/&nbsp;<span class="glyphicon glyphicon-asterisk" style="color:#e5e5e5;"></span>&nbsp;{% trans 'New Collection Version' %}
+</h3>
+
+<div class="container" style="padding-top:20px;">
+	<div class="row">
+
+		<!-- New Collection Version Form -->
+		<div class="col-lg-8">
+		  	<form class="form-horizontal" id="collection_version_create_form" method="post" action=".">
+				{% csrf_token %}
+				{% bootstrap_form form %}
+				{% buttons %}
+					<button type="submit" class="btn btn-primary">{% trans "Create Collection Version" %}</button>
+					<a href="{{ collection_version_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+				{% endbuttons %}
+		  	</form>
+		</div>
+
+		<!-- Tip -->
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+				<div class="panel-body">
+					<h4>Version Naming Suggestions</h4>
+					<p class="small">It is recommended that version names begin with the letter "v". For example: "v2.0" or "v1.0.3".</p>
+					<p class="small">If the tag isn’t meant for public consumption, it is common practice to indicate "alpha" or "beta" following the version name (e.g. "v0.9-beta.2").</p>
+					<h4>Releasing</h4>
+					<p class="small">Releasing a collection version marks it as ready for public consumption. To release a collection version, first create it using this form. After it is done processing, you may tag it as "released". Note that initial processing of a form version may take several hours if there are a many resources to process.</a></p>
+					<h4>Semantic Versioning</h4>
+					<p class="small">If you’re new to versioning releases, we highly recommend reading about <a href="http://semver.org/" target="_blank">semantic versioning.</a></p>
+				</div>
+			</div>
+		</div>
+
+	</div> <!-- /row -->
+</div> <!-- /container -->
+{% endblock %}

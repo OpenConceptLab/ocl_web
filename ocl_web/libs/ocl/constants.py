@@ -33,6 +33,8 @@ class OclConstants(object):
     RESOURCE_NAME_SOURCES = 'sources'
     RESOURCE_NAME_CONCEPTS = 'concepts'
     RESOURCE_NAME_COLLECTIONS = 'collections'
+    RESOURCE_NAME_COLLECTION_VERSIONS = 'collection_versions'
+
     RESOURCE_NAME_MAPPINGS = 'mappings'
     RESOURCE_NAME_SOURCE_VERSIONS = 'source_versions'
     RESOURCE_NAME_CONCEPT_VERSIONS = 'concept_versions'
