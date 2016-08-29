@@ -130,10 +130,33 @@ class UserUrlsTest(TestCase):
 
     def test_user_collection_addReferences_viewname_to_url(self):
         url = reverse('collection-addreference', kwargs={"user": "testuser", "collection": "collection1"})
-        self.assertEqual(url, '/users/testuser/collections/collection1/addreference/')
+        self.assertEqual(url, '/users/testuser/collections/collection1/references/new/')
 
     def test_user_collection_addReferences_url_to_viewname(self):
-        resolver = resolve('/users/testuser/collections/collection1/addreference/')
+        resolver = resolve('/users/testuser/collections/collection1/references/new/')
         self.assertEqual(resolver.view_name, 'collection-addreference')
         self.assertEqual(resolver.kwargs['user'], 'testuser')
         self.assertEqual(resolver.kwargs['collection'], 'collection1')
+
+    def test_user_collection_add_version_url_to_viewname(self):
+        resolver = resolve('/users/testuser/collections/collection1/versions/new/')
+        self.assertEqual(resolver.view_name, 'collection-version-new')
+        self.assertEqual(resolver.kwargs['user'], 'testuser')
+        self.assertEqual(resolver.kwargs['collection'], 'collection1')
+
+    def test_user_collection_add_version_viewname_to_url(self):
+        url = reverse('collection-version-new', kwargs={"user": "testuser", "collection": "collection1"})
+        self.assertEqual(url, '/users/testuser/collections/collection1/versions/new/')
+
+    def test_user_collection_version_url_to_viewname(self):
+        resolver = resolve('/users/testuser/collections/collection1/versions/')
+        self.assertEqual(resolver.view_name, 'collection-versions')
+        self.assertEqual(resolver.kwargs['user'], 'testuser')
+        self.assertEqual(resolver.kwargs['collection'], 'collection1')
+
+    def test_user_collection_version_viewname_to_url(self):
+        url = reverse('collection-versions', kwargs={"user": "testuser", "collection": "collection1"})
+        self.assertEqual(url, '/users/testuser/collections/collection1/versions/')
+
+
+

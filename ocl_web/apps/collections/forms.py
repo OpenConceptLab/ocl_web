@@ -98,12 +98,25 @@ class CollectionEditForm(CollectionCreateForm):
 
 
 class CollectionVersionAddForm(forms.Form):
-    """
-        TODO: Removed. Not used. Now json/angular.
-        Add a collection version form
-    """
-    required_css_class = 'required'
 
-    id = forms.CharField(max_length=30, label=_('ID'), required=True)
-    description = forms.CharField(max_length=80, label=_('Description'), required=False)
-    released = forms.BooleanField(required=False, label=_('Released'))
+    required_css_class = 'required'
+    id = forms.CharField(
+        label=_('ID'),
+        max_length=128,
+        required=True,
+        widget=forms.TextInput(
+            attrs={'style': 'width:480px;',
+                   'placeholder': "Name this Collection version"}))
+
+    description = forms.CharField(
+        label=_('Description'),
+        required=True,
+        widget=forms.Textarea(attrs={'style': 'width:480px;',
+                                     'rows': 5,
+                                     'placeholder': 'Describe this Collection version'}))
+
+    previous_version = forms.CharField(
+        required=True,
+        widget=forms.HiddenInput()),
+
+    # released = forms.BooleanField(required=False, label=_('Released'))

@@ -553,3 +553,12 @@ class OclApi(object):
         result = self.put(source_owner_type, source_owner_id,
                           'sources', source_id, 'mappings', mapping_id, **data)
         return result
+
+
+    def create_collection_version(self, owner_type, org_id, collection_id, base_data):
+
+        data = {}
+        data.update(base_data)
+        result = self.post(owner_type, org_id, 'collections', collection_id, 'versions', **data)
+        return result
+
