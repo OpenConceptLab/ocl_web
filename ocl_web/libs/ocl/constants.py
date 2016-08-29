@@ -16,6 +16,7 @@ class OclConstants(object):
     RESOURCE_ID_MAPPING = 5
     RESOURCE_ID_SOURCE_VERSION = 6
     RESOURCE_ID_CONCEPT_VERSION = 7
+    RESOURCE_ID_COLLECTION_VERSION = 8
 
     # Resource Names - SINGULAR
     RESOURCE_NAME_USER = 'user'
@@ -25,6 +26,7 @@ class OclConstants(object):
     RESOURCE_NAME_COLLECTION = 'collection'
     RESOURCE_NAME_MAPPING = 'mapping'
     RESOURCE_NAME_SOURCE_VERSION = 'source_version'
+    RESOURCE_NAME_COLLECTION_VERSION = 'collection_version'
     RESOURCE_NAME_CONCEPT_VERSION = 'concept_version'
 
     # Resource Names - PLURAL
@@ -266,6 +268,11 @@ class OclConstants(object):
             'name':RESOURCE_NAME_SOURCE_VERSION,
             'display_name':'version',
             'facets':False},
+        RESOURCE_NAME_COLLECTION_VERSIONS: {
+            'int': RESOURCE_ID_COLLECTION_VERSION,
+            'name': RESOURCE_NAME_COLLECTION_VERSION,
+            'display_name': 'version',
+            'facets': False},
         RESOURCE_NAME_CONCEPT_VERSIONS:{
             'int':RESOURCE_ID_CONCEPT_VERSION,
             'mnemonic':RESOURCE_NAME_CONCEPT_VERSION,

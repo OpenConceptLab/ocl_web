@@ -57,7 +57,7 @@ class CollectionsBaseView(UserOrOrgMixin):
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_COLLECTION_VERSIONS,
                              params=search_params)
 
-        api = OclApi(self.request, debug=True, facets=True)
+        api = OclApi(self.request, debug=True, facets=False)
         search_response = api.get(owner_type, owner_id, 'collections', collection_id, 'versions',
             params=searcher.search_params)
 
@@ -184,34 +184,28 @@ class CollectionVersionsView(CollectionsBaseView, TemplateView):
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
 
-        # start
         # Load the source versions
-        # params = self.request.GET.copy()
-        # params['verbose'] = 'true'
-        # params['limit'] = '10'
-        # searcher = self.get_collection_versions(
-        #     self.owner_type, self.owner_id, self.collection_id,
-        #     search_params=params)
-        # search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
-        # search_results_current_page = search_results_paginator.page(searcher.current_page)
-        #
-        # for collection_version in searcher.search_results:
-        #     if '_ocl_processing' in collection_version and collection_version['_ocl_processing']:
-        #         collection_version['is_processing'] = 'True'
+        params = self.request.GET.copy()
+        params['verbose'] = 'true'
+        params['limit'] = '10'
+        searcher = self.get_collection_versions(
+            self.owner_type, self.owner_id, self.collection_id,
+            search_params=params)
+        search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        search_results_current_page = search_results_paginator.page(searcher.current_page)
 
-        # end
-
-
-
+        for collection_version in searcher.search_results:
+            if '_ocl_processing' in collection_version and collection_version['_ocl_processing']:
+                collection_version['is_processing'] = 'True'
 
         # Set the context
         context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
-        # context['current_page'] = search_results_current_page
+        context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
         context['selected_tab'] = 'Versions'
         context['collection'] = collection
-        # context['collection_versions'] = searcher.search_results
+        context['collection_versions'] = searcher.search_results
 
         return context
 
@@ -239,7 +233,6 @@ class CollectionAboutView(CollectionsBaseView, TemplateView):
 
         return context
 
-
 class CollectionDetailView(CollectionsBaseView, TemplateView):
     """ Collection detail views """
 
@@ -264,7 +257,6 @@ class CollectionDetailView(CollectionsBaseView, TemplateView):
         context['collection'] = collection
         context['selected_tab'] = 'Details'
         return context
-
 
 class CollectionCreateView(CollectionsBaseView, FormView):
     """
@@ -336,7 +328,6 @@ class CollectionCreateView(CollectionsBaseView, FormView):
                                                 kwargs={"user": self.user_id,
                                                         'collection': short_code}))
 
-
 class CollectionAddReferenceView(CollectionsBaseView, FormView):
     template_name = "collections/collection_add_reference.html"
     form_class = CollectionAddReferenceForm
@@ -390,7 +381,6 @@ class CollectionAddReferenceView(CollectionsBaseView, FormView):
                                                 kwargs={'user': self.user_id,
                                                         'collection': self.collection_id}))
 
-
 class CollectionDeleteView(CollectionsBaseView, FormView):
     """
     View for deleting Collection.
@@ -440,7 +430,6 @@ class CollectionDeleteView(CollectionsBaseView, FormView):
         else:
             messages.add_message(self.request, messages.INFO, _('Collection Deleted'))
             return HttpResponseRedirect(self.get_success_url())
-
 
 class CollectionEditView(CollectionsBaseView, FormView):
     """ Edit collection, either for an org or a user. """
