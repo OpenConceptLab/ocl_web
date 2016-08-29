@@ -14,7 +14,7 @@ from django.core.paginator import Paginator
 
 
 from libs.ocl import OclApi, OclSearch, OclConstants
-from .forms import (CollectionCreateForm, CollectionEditForm, CollectionDeleteForm, CollectionAddReferenceForm)
+from .forms import (CollectionCreateForm, CollectionEditForm, CollectionDeleteForm, CollectionAddReferenceForm, CollectionVersionAddForm)
 from apps.core.views import UserOrOrgMixin
 
 logger = logging.getLogger('oclweb')
@@ -48,6 +48,27 @@ class CollectionsBaseView(UserOrOrgMixin):
         # Process the results
         searcher.process_search_results(
             search_type=None, search_response=search_response,
+            search_params=search_params)
+
+        return searcher
+
+    def get_collection_versions(self, owner_type, owner_id, collection_id, search_params=None):
+        # Perform the search
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_COLLECTION_VERSIONS,
+                             params=search_params)
+
+        api = OclApi(self.request, debug=True, facets=True)
+        search_response = api.get(owner_type, owner_id, 'collections', collection_id, 'versions',
+            params=searcher.search_params)
+
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
+
+        # Process the results
+        searcher.process_search_results(
+            search_type=searcher.search_type, search_response=search_response,
             search_params=search_params)
 
         return searcher
@@ -163,11 +184,34 @@ class CollectionVersionsView(CollectionsBaseView, TemplateView):
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
 
+        # start
+        # Load the source versions
+        # params = self.request.GET.copy()
+        # params['verbose'] = 'true'
+        # params['limit'] = '10'
+        # searcher = self.get_collection_versions(
+        #     self.owner_type, self.owner_id, self.collection_id,
+        #     search_params=params)
+        # search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        # search_results_current_page = search_results_paginator.page(searcher.current_page)
+        #
+        # for collection_version in searcher.search_results:
+        #     if '_ocl_processing' in collection_version and collection_version['_ocl_processing']:
+        #         collection_version['is_processing'] = 'True'
+
+        # end
+
+
+
+
         # Set the context
         context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
+        # context['current_page'] = search_results_current_page
+        context['pagination_url'] = self.request.get_full_path()
         context['selected_tab'] = 'Versions'
         context['collection'] = collection
+        # context['collection_versions'] = searcher.search_results
 
         return context
 
@@ -471,3 +515,76 @@ class CollectionEditView(CollectionsBaseView, FormView):
             return HttpResponseRedirect(reverse('collection-details',
                                                 kwargs={'user': self.user_id,
                                                         'collection': self.collection_id}))
+
+class CollectionVersionsNewView(CollectionsBaseView, UserOrOrgMixin, FormView):
+
+        form_class = CollectionVersionAddForm
+        template_name = "collections/collection_versions_new.html"
+
+        def get_initial(self):
+            super(CollectionVersionsNewView, self).get_initial()
+            self.get_args()
+
+            api = OclApi(self.request, debug=True)
+            # source_version = None
+            if self.from_org:
+                collection_version = api.get('orgs', self.org_id, 'collections', self.collection_id,
+                                         'versions', params={'limit': 1}).json()
+            else:
+                collection_version = api.get('users', self.user_id, 'collections', self.collection_id,
+                                         'versions', params={'limit': 1}).json()
+
+            data = {
+                'request': self.request,
+                'from_user': self.from_user,
+                'from_org': self.from_org,
+                'user_id': self.user_id,
+                'org_id': self.org_id,
+                'owner_type': self.owner_type,
+                'owner_id': self.owner_id,
+                'collection_id': self.collection_id,
+                'previous_version': collection_version[0]['id'],
+                'released': False
+            }
+            return data
+
+        def get_context_data(self, *args, **kwargs):
+
+            context = super(CollectionVersionsNewView, self).get_context_data(*args, **kwargs)
+            self.get_args()
+
+            api = OclApi(self.request, debug=True)
+            # source = None
+            if self.from_org:
+                collection = api.get('orgs', self.org_id, 'collections', self.collection_id).json()
+            else:
+                collection = api.get('users', self.user_id, 'collections', self.collection_id).json()
+
+            # Set the context
+            context['kwargs'] = self.kwargs
+            context['collection'] = collection
+
+            return context
+
+        def form_valid(self, form):
+            self.get_args()
+
+            # Submit the new source version
+            data = form.cleaned_data
+            api = OclApi(self.request, debug=True)
+            result = api.create_collection_version(self.owner_type, self.owner_id, self.collection_id, data)
+            if result.status_code == requests.codes.created:
+                messages.add_message(self.request, messages.INFO, _('Collection version created!'))
+                if self.from_org:
+                    return HttpResponseRedirect(reverse('collection-versions',
+                                                        kwargs={'org': self.org_id,
+                                                                'collection': self.collection_id}))
+                else:
+                    return HttpResponseRedirect(reverse('collection-versions',
+                                                        kwargs={'user': self.user_id,
+                                                                'collection': self.collection_id}))
+            else:
+                error_msg = result.json().get('detail', 'Error')
+                messages.add_message(self.request, messages.ERROR, error_msg)
+                return HttpResponseRedirect(self.request.path)
+
