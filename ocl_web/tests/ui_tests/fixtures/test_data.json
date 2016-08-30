@@ -4,7 +4,7 @@
   "password":"root123",
 
   "_comment": "Collection data below...",
-  "short_code":"WHO-test-",
+  "short_code":"WHO",
   "col_name":"Woreda Health Office",
   "full_name":"Woreda Health Office Collection",
   "supported_locale":"en,es",
