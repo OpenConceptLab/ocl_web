@@ -33,9 +33,11 @@
 	    			{% if collection_version.owner_type == 'Organization' %}
 	    				{% url 'collection-version-concepts' org=collection_version.owner collection=collection.id collection_version=collection_version.id as collection_version_concepts_url %}
 	    				{% url 'collection-version-edit' org=collection_version.owner collection=collection.id collection_version=collection_version.id as collection_version_edit_url %}
+                        {% url 'collection-version-home' org=collection_version.owner collection=collection.id collection_version=collection_version.id as collection_version_home_url %}
 	    			{% else %}
 	    				{% url 'collection-version-concepts' user=collection_version.owner collection=collection.id collection_version=collection_version.id as collection_version_concepts_url %}
 	    				{% url 'collection-version-edit' user=collection_version.owner collection=collection.id collection_version=collection_version.id as collection_version_edit_url %}
+                        {% url 'collection-version-home' user=collection_version.owner collection=collection.id collection_version=collection_version.id as collection_version_home_url %}
 	    			{% endif %}
 
 		            <li class="list-group-item">
@@ -47,7 +49,7 @@
 		                {% endif %}
 
 		                <h4>
-		                	<a href="{{ collection_version_concepts_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ collection_version.owner }} / {{ collection.id }} [ </span><span class="resource-label-id-code">{{ collection_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
+		                	<a href="{{ collection_version_home_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ collection_version.owner }} / {{ collection.id }} [ </span><span class="resource-label-id-code">{{ collection_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
 
 		                    {% if collection_version.released %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">{% trans "Released" %}</span></span>{% endif %}
 

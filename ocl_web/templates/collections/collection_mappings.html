@@ -58,9 +58,9 @@
 				  	<ul class="dropdown-menu" role="menu">
 				  	{% for collection_version_i in collection_versions %}
 				  		{% if collection.owner_type == 'Organization' %}
-				  			{% url 'collection-version-mappings' org=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
+				  			{% url 'collection-mappings' org=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
 				  		{% else %}
-				  			{% url 'collection-version-mappings' user=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
+				  			{% url 'collection-mappings' user=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
 				  		{% endif %}
 				  		<li {% if collection_version == collection_version_i.id %}class="active"{% endif %}><a href="{{ collection_version_i_url }}">{% if collection_version_i.released %}<strong>{% endif %}{{ collection_version_i.id }}{% if collection_version_i.released %}</strong> <span class="text-muted">(Released)</span>{% endif %}</a></li>
 				    {% endfor %}

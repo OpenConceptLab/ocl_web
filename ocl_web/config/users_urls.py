@@ -300,9 +300,14 @@ urlpatterns = patterns(
     # /users/:user/collections/:collection/mappings/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/mappings/$',
         CollectionMappingsView.as_view(), name='collection-mappings'),
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/mappings/$',
+        CollectionMappingsView.as_view(), name='collection-mappings'),
     # /users/:user/collections/:collection/references/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/references/$',
         CollectionReferencesView.as_view(), name='collection-references'),
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/references/$',
+        CollectionReferencesView.as_view(), name='collection-references'),
+
     # /orgs/:org/collections/:collection/delete/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/delete/$',
         CollectionDeleteView.as_view(), name='collection-delete'),
@@ -312,5 +317,8 @@ urlpatterns = patterns(
     # /users/:user/collections/:collection/versions/new/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/versions/new/$',
         CollectionVersionsNewView.as_view(), name='collection-version-new'),
+    # /users/:user/collections/:collection/:version/ - points to 'collection-details'
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        CollectionDetailView.as_view(), name='collection-version-home')
 
 )

@@ -33,12 +33,11 @@ from apps.concepts.views import (
     ConceptRetireView, ConceptNewView, ConceptDescView, ConceptNameView)
 from apps.mappings.views import (
     MappingDetailsView, MappingNewView, MappingEditView, MappingRetireView)
-#from apps.core.views import ExtraJsonView
 from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView, CollectionAboutView, \
     CollectionVersionsView, CollectionConceptsView, CollectionMappingsView, \
     CollectionReferencesView, CollectionDeleteView, CollectionAddReferenceView, CollectionVersionsNewView
 
-
+#from apps.core.views import ExtraJsonView
 urlpatterns = patterns(
     '',
 
@@ -346,8 +345,17 @@ urlpatterns = patterns(
     # /orgs/:org/collections/:collection/versions/new/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/versions/new/$',
         CollectionVersionsNewView.as_view(), name='collection-version-new'),
-
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/$',
+        CollectionDetailView.as_view(), name='collection-version-home'),
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/concepts/$',
+        CollectionConceptsView.as_view(), name='collection-concepts'),
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/mappings/$',
+        CollectionMappingsView.as_view(), name='collection-mappings'),
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/references/$',
+        CollectionReferencesView.as_view(), name='collection-references'),
 
 )
+
+
 
 

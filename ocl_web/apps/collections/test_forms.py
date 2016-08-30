@@ -86,4 +86,29 @@ class CollectionAddReferenceFormTest(TestCase):
         form = CollectionAddReferenceForm(data=form_data)
         self.assertFalse(form.is_valid())
 
+class CollectionVersionAddFormTest(TestCase):
+
+    def test_collectionVersionAddForm_containesOnlyId_formIsInvalid(self):
+        form_data = {
+            'id': 'v1.0',
+        }
+        form = CollectionVersionAddForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_collectionVersionAddForm_containesOnlyDescription_formIsInvalid(self):
+        form_data = {
+            'description': 'This is version 1.0',
+        }
+        form = CollectionVersionAddForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    #TODO Testcases to check for different id inputs remaining
+
+    def test_collectionVersionAddForm_containesBothIdAndDescription_formIsValid(self):
+        form_data = {
+            'id': 'v1.1',
+            'description': 'This is version 1.1',
+        }
+        form = CollectionVersionAddForm(data=form_data)
+        self.assertTrue(form.is_valid())
 
