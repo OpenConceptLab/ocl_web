@@ -1,10 +1,10 @@
 {
   "_comment": "Login credentials below...",
-  "username":"wadhwa",
+  "username":"awadhwa1",
   "password":"root123",
 
   "_comment": "Collection data below...",
-  "short_code":"WHO",
+  "short_code":"WHO-test",
   "col_name":"Woreda Health Office",
   "full_name":"Woreda Health Office Collection",
   "supported_locale":"en,es",
@@ -27,7 +27,7 @@
   "description":"Version 1",
 
   "_comment": "Concept data below..",
-  "concept_id":"C1.1.1.2",
+  "concept_id":"C1.1.1.2-",
   "concept_name":"Life Expectancy at Birth (years)",
   "name_type":"Fully Specified"
 }

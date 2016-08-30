@@ -9,8 +9,7 @@ describe('OCL Org Page', function () {
     var loginPage;
     var logoutPage;
     var orgPage;
-    var orgShortCode = '';
-    var collShortCode = '';
+    var id = '';
 
     beforeEach(function () {
         loginPage = new LoginPage();
@@ -22,12 +21,12 @@ describe('OCL Org Page', function () {
         loginPage.visit();
         loginPage.login(data.username,data.password);
 
-        expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as wadhwa.');
+        expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as awadhwa1.');
     });
 
     it('should create organization', function () {
-        orgShortCode = orgPage.getRandomString(5);
-        orgPage.createNewOrg( data.org_short_code+orgShortCode,
+        id = orgPage.getRandomString(5);
+        orgPage.createNewOrg( data.org_short_code+id,
             data.org_name,
             data.website,
             data.company,
@@ -63,14 +62,36 @@ describe('OCL Org Page', function () {
         );
 
         expect((orgPage.status).getText()).toEqual('Source version created!');
-
-        element(by.linkText('  '+data.org_short_code+orgShortCode)).click();
     });
 
+    it('should create concept', function () {
+        orgPage.createNewConcept( data.concept_id+id,
+            data.concept_name,
+            data.name_type
+        );
+
+        expect((orgPage.status).getText()).toEqual('Concept created.');
+
+        element(by.linkText('  '+data.src_code)).click();
+    });
+
+    it('should create a mapping', function () {
+        var fromConceptURL= '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
+        var toConceptURL = '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/concepts/C1.1.1.2-'+id+'/';
+
+        orgPage.createNewMapping(
+            fromConceptURL,
+            'SAME-AS',
+            toConceptURL
+        );
+
+        expect((orgPage.status).getText()).toEqual('Mapping created.');
+
+        element(by.linkText('  '+data.org_short_code+id)).click();
+    });
 
     it('should create collection under org', function () {
-        collShortCode = orgPage.getRandomString(2);
-        orgPage.createNewOrgCollection( data.short_code+collShortCode,
+        orgPage.createNewOrgCollection( data.short_code+id,
             data.col_name,
             data.full_name,
             data.supported_locale
@@ -79,9 +100,8 @@ describe('OCL Org Page', function () {
     });
 
     it('should add a reference of concept to a collection', function () {
-        var expression = '/orgs/'+data.org_short_code+orgShortCode+'/sources/HSTP-Indicators/concepts/C1.1.1.2/';
+        var expression = '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
         orgPage.createNewConceptReference(expression);
-
         expect((orgPage.status).getText()).toEqual('Expression added.');
         // expect(element(by.linkText(' '+expression)).isPresent()).toBe(true);
     });

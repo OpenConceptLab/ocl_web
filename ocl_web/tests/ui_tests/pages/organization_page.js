@@ -43,6 +43,14 @@ var OrganizationPage = function() {
     this.conceptNameType = $('#id_name_type');
     this.createConceptButton = element(by.buttonText('Create Concept'));
 
+    //create mapping locators
+    this.newMappingLink = element(by.linkText('Mappings'));
+    this.createMapping = element(by.linkText(' New Mapping'));
+    this.fromConcept = $('#id_from_concept_url');
+    this.mapType = $('#id_map_type');
+    this.toConcept = $('#id_internal_to_concept_url');
+    this.createMappingButton = element(by.buttonText('Create Mapping'));
+
     // for random string as name of org
     this.getRandomString = function(length) {
         var string = '';
@@ -105,5 +113,14 @@ var OrganizationPage = function() {
         this.conceptNameType.sendKeys(name_type);
         this.createConceptButton.click();
     };
+
+    this.createNewMapping = function (from_concept, map_type, to_concept) {
+        this.newMappingLink.click();
+        this.createMapping.click();
+        this.fromConcept.sendKeys(from_concept);
+        this.mapType.sendKeys(map_type);
+        this.toConcept.sendKeys(to_concept);
+        this.createMappingButton.click();
+    }
 };
 module.exports = OrganizationPage;
