@@ -24,7 +24,7 @@ describe('OCL User Source Page', function () {
         loginPage.visit();
         loginPage.login(data.username,data.password);
 
-        expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as awadhwa.');
+        expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as wadhwa.');
     });
 
     it('should create source', function () {
