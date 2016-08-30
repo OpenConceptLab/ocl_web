@@ -88,9 +88,15 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         data = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id,'references').json()
         collection = results.json()
 
+        # searcher = self.get_collection_data(
+        #     self.owner_type, self.owner_id, self.collection_id, 'references',
+        #     collection_version_id=self.collection_version_id,
+        #     search_params=self.request.GET)
+
         versions = self.get_collection_versions(
             self.owner_type, self.owner_id, self.collection_id,
             search_params=None)
+
 
         # Set the context
         context['kwargs'] = self.kwargs

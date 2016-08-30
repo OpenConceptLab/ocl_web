@@ -156,3 +156,15 @@ class OrgUrlsTest(TestCase):
         self.assertEqual(resolver.kwargs['collection'], 'collection1')
         self.assertEqual(resolver.kwargs['collection_version'], 'v1')
 
+
+    def test_collections_version_references_viewname_to_url(self):
+        url = reverse('collection-references', kwargs={'org': 'testOrg', 'collection': 'collection1','collection_version':'v1'})
+        self.assertEqual(url, '/orgs/testOrg/collections/collection1/v1/references/')
+
+    def test_url_to_collections_version_references_viewname(self):
+        resolver = resolve('/orgs/testOrg/collections/collection1/v1/references/')
+        self.assertEqual(resolver.view_name, 'collection-references')
+        self.assertEqual(resolver.kwargs['org'], 'testOrg')
+        self.assertEqual(resolver.kwargs['collection'], 'collection1')
+        self.assertEqual(resolver.kwargs['collection_version'], 'v1')
+
