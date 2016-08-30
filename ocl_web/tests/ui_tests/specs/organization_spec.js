@@ -10,6 +10,7 @@ describe('OCL Org Page', function () {
     var logoutPage;
     var orgPage;
     var orgShortCode = '';
+    var collShortCode = '';
 
     beforeEach(function () {
         loginPage = new LoginPage();
@@ -34,17 +35,6 @@ describe('OCL Org Page', function () {
         );
 
         expect((orgPage.status).getText()).toEqual('Organization Added');
-    });
-
-    it('should create collection under org', function () {
-        orgPage.createNewOrgCollection( data.short_code,
-            data.col_name,
-            data.full_name,
-            data.supported_locale
-        );
-        expect((orgPage.status).getText()).toEqual('Collection created');
-
-        element(by.linkText('  '+data.org_short_code+orgShortCode)).click();
     });
 
     it('should create source', function () {
@@ -73,6 +63,27 @@ describe('OCL Org Page', function () {
         );
 
         expect((orgPage.status).getText()).toEqual('Source version created!');
+
+        element(by.linkText('  '+data.org_short_code+orgShortCode)).click();
+    });
+
+
+    it('should create collection under org', function () {
+        collShortCode = orgPage.getRandomString(2);
+        orgPage.createNewOrgCollection( data.short_code+collShortCode,
+            data.col_name,
+            data.full_name,
+            data.supported_locale
+        );
+        expect((orgPage.status).getText()).toEqual('Collection created');
+    });
+
+    it('should add a reference of concept to a collection', function () {
+        var expression = '/orgs/'+data.org_short_code+orgShortCode+'/sources/HSTP-Indicators/concepts/C1.1.1.2/';
+        orgPage.createNewConceptReference(expression);
+
+        expect((orgPage.status).getText()).toEqual('Expression added.');
+        // expect(element(by.linkText(' '+expression)).isPresent()).toBe(true);
     });
 
      it('should logout', function () {

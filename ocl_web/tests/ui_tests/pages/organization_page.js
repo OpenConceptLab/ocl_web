@@ -18,6 +18,12 @@ var OrganizationPage = function() {
     this.supportedLocale = $('#id_supported_locales');
     this.addOrgCollectionButton = element(by.buttonText('Add'));
 
+    // create reference locators
+    this.references = element(by.linkText('References'));
+    this.addNewReferenceLink = element(by.linkText(' Add New Collection Reference'));
+    this.expression = $('#id_expression');
+    this.addReferenceButton = element(by.buttonText('Add'));
+
     // create source under org locators
     this.newOrgSourceLink = element(by.linkText('Sources'));
     this.createNewOrgSource = element(by.linkText(' New Source'));
@@ -65,6 +71,13 @@ var OrganizationPage = function() {
         this.fullName.sendKeys(full_name);
         this.supportedLocale.sendKeys(locale);
         this.addOrgCollectionButton.click();
+    };
+
+    this.createNewConceptReference = function (expression) {
+        this.references.click();
+        this.addNewReferenceLink.click();
+        this.expression.sendKeys(expression);
+        this.addReferenceButton.click();
     };
 
     this.createNewSource = function (src_shortCode, full_name, locale) {
