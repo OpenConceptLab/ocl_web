@@ -383,7 +383,7 @@ class CollectionAddReferenceView(UserOrOrgMixin, FormView):
                                                         'collection': self.collection_id}))
 
 
-class CollectionDeleteView(UserOrOrgMixin, FormView):
+class CollectionDeleteView(CollectionsBaseView, FormView):
     """
     View for deleting Collection.
     """
