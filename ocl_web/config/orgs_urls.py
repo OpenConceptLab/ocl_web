@@ -346,6 +346,8 @@ urlpatterns = patterns(
     # /orgs/:org/collections/:collection/versions/new/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/versions/new/$',
         CollectionVersionsNewView.as_view(), name='collection-version-new'),
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/$',
+        CollectionDetailView.as_view(), name='collection-version-home'),
 
 
 )

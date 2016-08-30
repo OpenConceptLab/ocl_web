@@ -312,5 +312,9 @@ urlpatterns = patterns(
     # /users/:user/collections/:collection/versions/new/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/versions/new/$',
         CollectionVersionsNewView.as_view(), name='collection-version-new'),
+    # /users/:user/collections/:collection/:version/ - points to 'collection-details'
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        CollectionDetailView.as_view(), name='collection-version-home'),
+
 
 )
