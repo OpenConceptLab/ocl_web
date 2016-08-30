@@ -133,5 +133,26 @@ class OrgUrlsTest(TestCase):
         self.assertEqual(url, '/orgs/testorg/collections/collection1/v1/')
 
 
+    def test_collections_version_mappings_viewname_to_url(self):
+        url = reverse('collection-mappings', kwargs={'org': 'testOrg', 'collection': 'collection1','collection_version':'v1'})
+        self.assertEqual(url, '/orgs/testOrg/collections/collection1/v1/mappings/')
 
+    def test_url_to_collections_version_mappings_viewname(self):
+        resolver = resolve('/orgs/testOrg/collections/collection1/v1/mappings/')
+        self.assertEqual(resolver.view_name, 'collection-mappings')
+        self.assertEqual(resolver.kwargs['org'], 'testOrg')
+        self.assertEqual(resolver.kwargs['collection'], 'collection1')
+        self.assertEqual(resolver.kwargs['collection_version'], 'v1')
+
+
+    def test_collections_version_concepts_viewname_to_url(self):
+        url = reverse('collection-concepts', kwargs={'org': 'testOrg', 'collection': 'collection1','collection_version':'v1'})
+        self.assertEqual(url, '/orgs/testOrg/collections/collection1/v1/concepts/')
+
+    def test_url_to_collections_version_concepts_viewname(self):
+        resolver = resolve('/orgs/testOrg/collections/collection1/v1/concepts/')
+        self.assertEqual(resolver.view_name, 'collection-concepts')
+        self.assertEqual(resolver.kwargs['org'], 'testOrg')
+        self.assertEqual(resolver.kwargs['collection'], 'collection1')
+        self.assertEqual(resolver.kwargs['collection_version'], 'v1')
 

@@ -83,9 +83,14 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
 
         self.get_args()
         api = OclApi(self.request, debug=True)
+
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         data = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id,'references').json()
         collection = results.json()
+
+        versions = self.get_collection_versions(
+            self.owner_type, self.owner_id, self.collection_id,
+            search_params=None)
 
         # Set the context
         context['kwargs'] = self.kwargs
@@ -93,7 +98,7 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         context['selected_tab'] = 'References'
         context['collection'] = collection
         context['references'] = data.get('references')
-
+        context['collection_versions'] = versions.search_results
         return context
 
 class CollectionMappingsView(CollectionsBaseView, TemplateView):
@@ -106,7 +111,9 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
         api = OclApi(self.request, debug=True)
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
-
+        versions = self.get_collection_versions(
+            self.owner_type, self.owner_id, self.collection_id,
+            search_params=None)
         searcher = self.get_collection_data(
             self.owner_type, self.owner_id, self.collection_id, OclConstants.RESOURCE_NAME_MAPPINGS,
             collection_version_id=self.collection_version_id,
@@ -130,6 +137,7 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
         context['search_sort'] = searcher.get_sort()
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
+        context['collection_versions'] = versions.search_results
 
         return context
 
@@ -145,7 +153,9 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         api = OclApi(self.request, debug=True)
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
-
+        versions = self.get_collection_versions(
+            self.owner_type, self.owner_id, self.collection_id,
+            search_params=None)
         searcher = self.get_collection_data(
             self.owner_type, self.owner_id, self.collection_id, OclConstants.RESOURCE_NAME_CONCEPTS,
             collection_version_id=self.collection_version_id,
@@ -169,6 +179,7 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         context['search_sort'] = searcher.get_sort()
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
+        context['collection_versions'] = versions.search_results
 
         return context
 
