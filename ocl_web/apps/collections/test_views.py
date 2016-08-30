@@ -7,7 +7,8 @@ from requests.models import Response
 from django.http.request import HttpRequest
 from mock import Mock, patch, MagicMock
 from django.contrib import messages
-from apps.collections.forms import CollectionCreateForm, CollectionEditForm, CollectionDeleteForm
+from apps.collections.forms import CollectionCreateForm, CollectionEditForm, CollectionDeleteForm, \
+    CollectionVersionAddForm
 from libs.ocl import OclApi, OclSearch, OclConstants
 import views
 from unittest import skip
@@ -263,7 +264,8 @@ class CollectionDeleteViewTest(TestCase):
         print result
 
 
-class CollectionAddReferenceView(TestCase):
+class CollectionAddReferenceViewTest(TestCase):
+
     @patch('libs.ocl.OclApi.get')
     def test_getContextForColReference_contextForCollectionReferenceReceived(self, mock_get):
         colResponse = MagicMock(spec=Response)
@@ -279,7 +281,8 @@ class CollectionAddReferenceView(TestCase):
         self.assertEquals(context['collection'], 'testCollection')
 
 
-class CollectionConceptView(TestCase):
+class CollectionConceptViewTest(TestCase):
+
     @patch('libs.ocl.OclApi.get')
     def test_getContextForCollectionConcepts_contextRecieved(self, mock_get):
         conceptResponse = MagicMock(spec=Response)
@@ -307,7 +310,8 @@ class CollectionConceptView(TestCase):
         self.assertEquals(context['search_sort'], '')
         self.assertEquals(context['search_facets_json'], None)
 
-class CollectionMappingsView(TestCase):
+class CollectionMappingsViewTest(TestCase):
+
     @patch('libs.ocl.OclApi.get')
     def test_getContextForCollectionMappings_contextRecieved(self, mock_get):
         mappingResponse = MagicMock(spec=Response)
@@ -334,3 +338,41 @@ class CollectionMappingsView(TestCase):
         self.assertEquals(context['search_sort_options'], ['Best Match', 'Last Update (Desc)', 'Last Update (Asc)', 'Name (Asc)', 'Name (Desc)'])
         self.assertEquals(context['search_sort'], '')
         self.assertEquals(context['search_facets_json'], None)
+
+class CollectionVersionsNewViewTest(TestCase):
+
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForColVersion_contextForCollectionVersionReceived(self, mock_get):
+        colResponse = MagicMock(spec=Response)
+        colResponse.json.return_value = "testCollection"
+        mock_get.return_value = colResponse
+        collectionVersionNewView = views.CollectionVersionsNewView()
+        collectionVersionNewView.request = FakeRequest()
+        collectionVersionNewView.collection = {'id': 'mycolid'}
+        collectionVersionNewView.kwargs = {
+            'collection_id': 'testColId',
+        }
+        context = collectionVersionNewView.get_context_data()
+        self.assertEquals(context['collection'], 'testCollection')
+
+    @skip("need to fix this test case")
+    @patch('django.contrib.messages.api')
+    @patch('libs.ocl.OclApi.create_collection_version')
+    def test_whenDeleteSuccessfull_thenReturnCollectionDeletedMessage(self, mock_create_version, mock_message):
+        colResponse = MagicMock(spec=Response, status_code=204)
+        mock_create_version.return_value = colResponse
+        form_data = {
+            'id': 'testv1',
+            'description': 'testdescription',
+        }
+        form = CollectionVersionAddForm(form_data)
+        form.full_clean()
+        collectionNewVserionView = views.CollectionVersionsNewView()
+        collectionNewVserionView.request = FakeRequest()
+        collectionNewVserionView.kwargs = {
+            'org': 'testOrgId',
+        }
+
+        result = collectionNewVserionView.form_valid(form)
+        mock_message.add_message.asser_called_with("error", "Error")
+        print result
