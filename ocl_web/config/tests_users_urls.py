@@ -90,6 +90,15 @@ class UserUrlsTest(TestCase):
         url = reverse('collection-references', kwargs={"user": "testuser", "collection": "testcol"})
         self.assertEqual(url, '/users/testuser/collections/testcol/references/')
 
+    def test_user_collection_references_delete_viewname_to_url(self):
+        url = reverse('collection-references-delete', kwargs={"user": "testuser", "collection": "testcol"})
+        self.assertEqual(url, '/users/testuser/collections/testcol/references/delete/')
+
+    def test_user_collection_reference_delete_url_to_viewname(self):
+        resolver = resolve('/users/testuser/collections/coll/references/delete/')
+        self.assertEqual(resolver.view_name, 'collection-references-delete')
+        self.assertEqual(resolver.kwargs['user'], 'testuser')
+        self.assertEqual(resolver.kwargs['collection'], 'coll')
 
     def test_user_collection_references_url_to_viewname(self):
         resolver = resolve('/users/testuser/collections/testcol/references/')

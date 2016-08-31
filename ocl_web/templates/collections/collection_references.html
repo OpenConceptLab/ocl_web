@@ -103,7 +103,9 @@
                         {% endfor %}
                     </select>
                 </div>
-
+                <div class="btn-group">
+                    <a class="btn delete-reference">Delete</a>
+                </div>
             </div> <!-- /col-md-12-->
         </div> <!-- /row -->
 
@@ -112,9 +114,9 @@
         {% for result in references %}
 
 
-            <div class="row row-search-result">
+            <div class="row row-search-result references">
                 <div class="col-md-1 search-result-col-icon">
-                  <span class="glyphicon {% if result.reference_type == 'concepts' %}glyphicon-tag{% else %}glyphicon-link{% endif %} search-result-icon"></span>
+                    <input type="checkbox" name="reference" value="{{ result.expression }}" {% if result.expression %}{% endif %}>
                 </div>
                 <div class="col-md-11 search-result-col-content">
                     <div class="pull-left small text-muted" style="padding-top:12px;">
@@ -123,11 +125,32 @@
                            {{ result.expression}}
                         </a>
                     </div>
-
-
                 </div>
+                </input>
             </div>
         {% endfor %}
+
+        <div id="contact" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Delete1</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="/">
+                        <input type="hidden" name="form-type" value="contact-form" />
+{#                      <!--- Here --- >#}
+                        <input type="submit" value="Send" class="btn btn-success" />
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                       <!-- The Line was here -->
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 <!-- Pagination -->
 

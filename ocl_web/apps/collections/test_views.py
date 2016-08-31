@@ -280,6 +280,24 @@ class CollectionAddReferenceViewTest(TestCase):
         context = collectionAddReferenceView.get_context_data()
         self.assertEquals(context['collection'], 'testCollection')
 
+class CollectionReferencesDeleteViewTest(TestCase):
+    @patch('libs.ocl.OclApi.delete')
+    def test_delete(self, mock_delete):
+        colResponse = MagicMock(spec=Response)
+        colResponse.json.return_value = "foobar"
+        mock_delete.return_value = colResponse
+        collectionAddReferenceView = views.CollectionReferencesDeleteView()
+        fake_request = FakeRequest()
+        fake_request.GET['references'] = 'ref1,ref2'
+        collectionAddReferenceView.request = fake_request
+        collectionAddReferenceView.collection = {'id': 'mycolid'}
+        collectionAddReferenceView.kwargs = {
+            'collection_id': 'testColId',
+        }
+        collectionAddReferenceView.delete(fake_request)
+        self.assertTrue(mock_delete.called)
+
+
 
 class CollectionConceptViewTest(TestCase):
 

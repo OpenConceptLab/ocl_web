@@ -3,7 +3,7 @@ OCL Collection views
 """
 import requests
 import logging
-
+from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse,resolve, Resolver404
 from django.http import (HttpResponseRedirect, Http404)
@@ -11,7 +11,6 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.core.paginator import Paginator
-
 
 from libs.ocl import OclApi, OclSearch, OclConstants
 from .forms import (CollectionCreateForm, CollectionEditForm, CollectionDeleteForm, CollectionAddReferenceForm, CollectionVersionAddForm)
@@ -397,6 +396,15 @@ class CollectionAddReferenceView(CollectionsBaseView, FormView):
             return HttpResponseRedirect(reverse('collection-references',
                                                 kwargs={'user': self.user_id,
                                                         'collection': self.collection_id}))
+
+class CollectionReferencesDeleteView(CollectionsBaseView, TemplateView):
+    def delete(self, request, *args, **kwargs):
+        self.get_args()
+        references = request.GET.get('references').split(',')
+        api = OclApi(self.request, debug=True)
+        data = {'references': references}
+        res = api.delete(self.owner_type, self.owner_id, 'collections', self.collection_id, 'references', **data)
+        return HttpResponse(res.content, status=200)
 
 class CollectionDeleteView(CollectionsBaseView, FormView):
     """
