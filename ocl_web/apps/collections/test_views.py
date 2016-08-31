@@ -339,6 +339,30 @@ class CollectionMappingsViewTest(TestCase):
         self.assertEquals(context['search_sort'], '')
         self.assertEquals(context['search_facets_json'], None)
 
+class CollectionReferencesViewTest(TestCase):
+    # todo improve below test case by testing vesrions too
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForCollectionReferences_contextRecieved(self, mock_get):
+        referenceResponse = MagicMock(spec=Response)
+        references = ["Some Results"]
+        referenceResponse.json.return_value = references
+        referenceResponse.status_code = 200
+        referenceResponse.headers = []
+
+        mock_get.return_value = referenceResponse
+
+        collectionReferencesView = views.CollectionReferencesView()
+        collectionReferencesView.request = FakeRequest()
+
+        hash = {'collection': 'test', 'org': 'org1'}
+        collectionReferencesView.kwargs = hash
+        context = collectionReferencesView.get_context_data()
+
+        self.assertEquals(context['kwargs'], hash)
+        self.assertEquals(context['selected_tab'], 'References')
+        self.assertEquals(context['collection'], references)
+
+
 class CollectionVersionsNewViewTest(TestCase):
 
     @patch('libs.ocl.OclApi.get')
