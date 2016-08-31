@@ -85,13 +85,13 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         api = OclApi(self.request, debug=True)
 
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
-        data = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id,'references').json()
         collection = results.json()
+        # data = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id,'references').json()
 
-        # searcher = self.get_collection_data(
-        #     self.owner_type, self.owner_id, self.collection_id, 'references',
-        #     collection_version_id=self.collection_version_id,
-        #     search_params=self.request.GET)
+        searcher = self.get_collection_data(
+            self.owner_type, self.owner_id, self.collection_id, 'references',
+            collection_version_id=self.collection_version_id,
+            search_params=self.request.GET)
 
         versions = self.get_collection_versions(
             self.owner_type, self.owner_id, self.collection_id,
@@ -103,7 +103,7 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'References'
         context['collection'] = collection
-        context['references'] = data.get('references')
+        context['references'] = searcher.search_results.get('references')
         context['collection_versions'] = versions.search_results
         return context
 
