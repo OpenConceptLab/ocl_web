@@ -10,6 +10,7 @@ describe('OCL Org Page', function () {
     var logoutPage;
     var orgPage;
     var id = '';
+    var mapping_id;
 
     beforeEach(function () {
         loginPage = new LoginPage();
@@ -87,6 +88,8 @@ describe('OCL Org Page', function () {
 
         expect((orgPage.status).getText()).toEqual('Mapping created.');
 
+        // mapping_id = element(by.css('#mapping_id .row .field-label-value')).getText();
+        // console.log(mapping_id);
         element(by.linkText('  '+data.org_short_code+id)).click();
     });
 
@@ -100,11 +103,20 @@ describe('OCL Org Page', function () {
     });
 
     it('should add a reference of concept to a collection', function () {
-        var expression = '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
-        orgPage.createNewConceptReference(expression);
+        var concept_expression = '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
+        orgPage.createNewReference(concept_expression);
         expect((orgPage.status).getText()).toEqual('Expression added.');
         // expect(element(by.linkText(' '+expression)).isPresent()).toBe(true);
     });
+
+    // it('should add a reference of mapping to a collection', function () {
+    //     var mapping_expression = '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/mappings/'+mapping_id+'/';
+    //     orgPage.createNewReference(mapping_expression);
+    //     console.log(mapping_expression);
+    //
+    //     expect((orgPage.status).getText()).toEqual('Expression added.');
+    //     // expect(element(by.linkText(' '+expression)).isPresent()).toBe(true);
+    // });
 
      it('should logout', function () {
          logoutPage.logout();
