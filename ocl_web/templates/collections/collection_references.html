@@ -56,13 +56,15 @@
             <!-- Simple Pager -->
                 {% simple_pager collection_page 'collection' url=collection_pagination_url %}
 
-                <!-- New Organization Button -->
+            {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
+                <!-- New collection reference button -->
                 <div class="pull-left">
                     {% if user.is_authenticated %}
                     {# TBD: need a more complete tag to check for access #}
                     <a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" title="Add New Reference[s]" style="font-weight:300;text-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'Add New Reference[s]' %}</a>
                     {% endif %}
                 </div>
+            {% endif %}
 
                 <!-- Collection Version Dropdown -->
 				<div class="btn-group pull-left" style="padding-right:5px;">

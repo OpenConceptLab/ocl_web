@@ -23,10 +23,13 @@
 					<div class="label-container">
 						{% resource_owner_label collection %} / {% collection_label collection %}
 						{% if kwargs and "collection_version" in kwargs %}<span class="small" title="collection Version ID">[ {{ kwargs.collection_version }} ]</span>{% endif %}
-						{% if_can_change collection %}
-							<a href="{{ collection_edit_url }}" class="small text-muted" title="Edit collection"><span class="glyphicon glyphicon-cog"></span></a>
-						{% endif_can_change collection %}
-					</div>
+						{% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
+                            {% if_can_change collection %}
+                                <a href="{{ collection_edit_url }}" class="small text-muted" title="Edit collection"><span class="glyphicon glyphicon-cog"></span></a>
+                            {% endif_can_change collection %}
+                        {% endif %}
+
+                    </div>
 					<p>
 						<em>collection Type:</em> {{ collection.collection_type }}<br />
 						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ collection.updated_on|smart_datetime }})</span>
