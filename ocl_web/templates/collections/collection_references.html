@@ -114,11 +114,14 @@
 
             <div class="row row-search-result">
                 <div class="col-md-1 search-result-col-icon">
-                    <span class="glyphicon glyphicon-th-list search-result-icon"></span>
+                  <span class="glyphicon {% if result.reference_type == 'concepts' %}glyphicon-tag{% else %}glyphicon-link{% endif %} search-result-icon"></span>
                 </div>
                 <div class="col-md-11 search-result-col-content">
                     <div class="pull-left small text-muted" style="padding-top:12px;">
-                        <a href="{{ result.expression }}" title="Collection Reference"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.expression}}</a>
+                        <span class="glyphicon {% if result.reference_type == 'concepts' %}glyphicon-tag{% else %}glyphicon-link{% endif %}"></span>
+                        <a href="{{ result.expression }}" title="Collection Reference">
+                           {{ result.expression}}
+                        </a>
                     </div>
 
 
