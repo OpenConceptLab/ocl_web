@@ -103,7 +103,7 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'References'
         context['collection'] = collection
-        context['references'] = searcher.search_results.get('references')
+        context['references'] = searcher.search_results
         context['collection_versions'] = versions.search_results
         return context
 
