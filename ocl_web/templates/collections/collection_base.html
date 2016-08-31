@@ -23,10 +23,13 @@
 					<div class="label-container">
 						{% resource_owner_label collection %} / {% collection_label collection %}
 						{% if kwargs and "collection_version" in kwargs %}<span class="small" title="collection Version ID">[ {{ kwargs.collection_version }} ]</span>{% endif %}
-						{% if_can_change collection %}
-							<a href="{{ collection_edit_url }}" class="small text-muted" title="Edit collection"><span class="glyphicon glyphicon-cog"></span></a>
-						{% endif_can_change collection %}
-					</div>
+						{% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
+                            {% if_can_change collection %}
+                                <a href="{{ collection_edit_url }}" class="small text-muted" title="Edit collection"><span class="glyphicon glyphicon-cog"></span></a>
+                            {% endif_can_change collection %}
+                        {% endif %}
+
+                    </div>
 					<p>
 						<em>collection Type:</em> {{ collection.collection_type }}<br />
 						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ collection.updated_on|smart_datetime }})</span>
@@ -43,9 +46,9 @@
 {% block resource-tabs %}
 {% if collection.owner_type == 'Organization' %}
 	{% if kwargs and "collection_version" in kwargs %}
-		{% url 'collection-version-concepts' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
-		{% url 'collection-version-mappings' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_mappings_url %}
-		{% url 'collection-version-references' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_references_url %}
+		{% url 'collection-concepts' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
+		{% url 'collection-mappings' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_mappings_url %}
+		{% url 'collection-references' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_references_url %}
 	{% else %}
 		{% url 'collection-concepts' org=collection.owner collection=collection.id as collection_concepts_url %}
 		{% url 'collection-mappings' org=collection.owner collection=collection.id as collection_mappings_url %}
@@ -57,9 +60,9 @@
 	{% url 'collection-about' org=collection.owner collection=collection.id as collection_about_url %}
 {% else %}
 	{% if kwargs and "collection_version" in kwargs %}
-		{% url 'collection-version-concepts' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
-		{% url 'collection-version-mappings' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_mappings_url %}
-		{% url 'collection-version-references' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_references_url %}
+		{% url 'collection-concepts' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
+		{% url 'collection-mappings' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_mappings_url %}
+		{% url 'collection-references' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_references_url %}
 	{% else %}
 		{% url 'collection-concepts' user=collection.owner collection=collection.id as collection_concepts_url %}
 		{% url 'collection-mappings' user=collection.owner collection=collection.id as collection_mappings_url %}

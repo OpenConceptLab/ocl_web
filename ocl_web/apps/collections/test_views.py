@@ -280,6 +280,24 @@ class CollectionAddReferenceViewTest(TestCase):
         context = collectionAddReferenceView.get_context_data()
         self.assertEquals(context['collection'], 'testCollection')
 
+class CollectionReferencesDeleteViewTest(TestCase):
+    @patch('libs.ocl.OclApi.delete')
+    def test_delete(self, mock_delete):
+        colResponse = MagicMock(spec=Response)
+        colResponse.json.return_value = "foobar"
+        mock_delete.return_value = colResponse
+        collectionAddReferenceView = views.CollectionReferencesDeleteView()
+        fake_request = FakeRequest()
+        fake_request.GET['references'] = 'ref1,ref2'
+        collectionAddReferenceView.request = fake_request
+        collectionAddReferenceView.collection = {'id': 'mycolid'}
+        collectionAddReferenceView.kwargs = {
+            'collection_id': 'testColId',
+        }
+        collectionAddReferenceView.delete(fake_request)
+        self.assertTrue(mock_delete.called)
+
+
 
 class CollectionConceptViewTest(TestCase):
 
@@ -338,6 +356,30 @@ class CollectionMappingsViewTest(TestCase):
         self.assertEquals(context['search_sort_options'], ['Best Match', 'Last Update (Desc)', 'Last Update (Asc)', 'Name (Asc)', 'Name (Desc)'])
         self.assertEquals(context['search_sort'], '')
         self.assertEquals(context['search_facets_json'], None)
+
+class CollectionReferencesViewTest(TestCase):
+    # todo improve below test case by testing vesrions too
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForCollectionReferences_contextRecieved(self, mock_get):
+        referenceResponse = MagicMock(spec=Response)
+        references = ["Some Results"]
+        referenceResponse.json.return_value = references
+        referenceResponse.status_code = 200
+        referenceResponse.headers = []
+
+        mock_get.return_value = referenceResponse
+
+        collectionReferencesView = views.CollectionReferencesView()
+        collectionReferencesView.request = FakeRequest()
+
+        hash = {'collection': 'test', 'org': 'org1'}
+        collectionReferencesView.kwargs = hash
+        context = collectionReferencesView.get_context_data()
+
+        self.assertEquals(context['kwargs'], hash)
+        self.assertEquals(context['selected_tab'], 'References')
+        self.assertEquals(context['collection'], references)
+
 
 class CollectionVersionsNewViewTest(TestCase):
 

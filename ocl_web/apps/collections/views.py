@@ -3,7 +3,7 @@ OCL Collection views
 """
 import requests
 import logging
-
+from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse,resolve, Resolver404
 from django.http import (HttpResponseRedirect, Http404)
@@ -11,7 +11,6 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.core.paginator import Paginator
-
 
 from libs.ocl import OclApi, OclSearch, OclConstants
 from .forms import (CollectionCreateForm, CollectionEditForm, CollectionDeleteForm, CollectionAddReferenceForm, CollectionVersionAddForm)
@@ -85,13 +84,13 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         api = OclApi(self.request, debug=True)
 
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
-        data = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id,'references').json()
         collection = results.json()
+        # data = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id,'references').json()
 
-        # searcher = self.get_collection_data(
-        #     self.owner_type, self.owner_id, self.collection_id, 'references',
-        #     collection_version_id=self.collection_version_id,
-        #     search_params=self.request.GET)
+        searcher = self.get_collection_data(
+            self.owner_type, self.owner_id, self.collection_id, 'references',
+            collection_version_id=self.collection_version_id,
+            search_params=self.request.GET)
 
         versions = self.get_collection_versions(
             self.owner_type, self.owner_id, self.collection_id,
@@ -103,7 +102,7 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'References'
         context['collection'] = collection
-        context['references'] = data.get('references')
+        context['references'] = searcher.search_results
         context['collection_versions'] = versions.search_results
         return context
 
@@ -397,6 +396,15 @@ class CollectionAddReferenceView(CollectionsBaseView, FormView):
             return HttpResponseRedirect(reverse('collection-references',
                                                 kwargs={'user': self.user_id,
                                                         'collection': self.collection_id}))
+
+class CollectionReferencesDeleteView(CollectionsBaseView, TemplateView):
+    def delete(self, request, *args, **kwargs):
+        self.get_args()
+        references = request.GET.get('references').split(',')
+        api = OclApi(self.request, debug=True)
+        data = {'references': references}
+        res = api.delete(self.owner_type, self.owner_id, 'collections', self.collection_id, 'references', **data)
+        return HttpResponse(res.content, status=200)
 
 class CollectionDeleteView(CollectionsBaseView, FormView):
     """

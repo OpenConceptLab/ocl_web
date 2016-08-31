@@ -440,7 +440,7 @@ app.controller('ConceptController', function($scope, $http, $location) {
 
 /*
     Controller to handle Mapping CRUD.
-    
+
 */
 app.controller('MappingController', function($scope, $http, $location) {
 
@@ -715,4 +715,35 @@ app.directive('textField', function() {
         'placeholder="{{ placeholder}}" title="" type="text" ' +
         'ng-model="bindTo" /></div>'
     };
+});
+
+$('a.delete-reference').on('click', function () {
+    var selectedReferences = $("input[name='reference']:checked"),
+
+        references = _.map(selectedReferences, function (el) { return el.value; }),
+
+        confirmSuccess = function () {
+            $.ajax({
+                type: "DELETE",
+                url: window.location.pathname + 'delete/' + '?references=' + references,
+                headers: {
+                    'X-CSRFToken': $.cookie('csrftoken'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                dataType: 'json'
+            }).done(function () {
+                _.each($(".references input[type=checkbox]:checked"), function (el) {
+                    $(el).parent().parent().remove();
+                });
+
+                alertify.success('Successfully removed.', 3);
+                $('.alert.alert-info').parent().remove();
+            }).fail(function (err) {
+                alertify.error('Something unexpected happened!', 3);
+                console.log(err)
+            });
+        };
+
+    alertify.confirm('Delete Reference', 'Are you sure?', confirmSuccess, function () {
+    });
 });
