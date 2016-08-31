@@ -20,7 +20,7 @@ var OrganizationPage = function() {
 
     // create reference locators
     this.references = element(by.linkText('References'));
-    this.addNewReferenceLink = element(by.linkText(' Add New Collection Reference'));
+    this.addNewReferenceLink = element(by.linkText(' Add New Reference[s]'));
     this.expression = $('#id_expression');
     this.addReferenceButton = element(by.buttonText('Add'));
 
@@ -81,7 +81,7 @@ var OrganizationPage = function() {
         this.addOrgCollectionButton.click();
     };
 
-    this.createNewConceptReference = function (expression) {
+    this.createNewReference = function (expression) {
         this.references.click();
         this.addNewReferenceLink.click();
         this.expression.sendKeys(expression);
