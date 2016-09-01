@@ -259,7 +259,7 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         # Load the source versions
         source_version_searcher = self.get_source_versions(
             self.owner_type, self.owner_id, self.source_id,
-            search_params={'limit': '10'})
+            search_params={'limit': '0'})
 
         # Set the context
         context['kwargs'] = self.kwargs
@@ -310,7 +310,7 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         # Load the source versions
         source_version_searcher = self.get_source_versions(
             self.owner_type, self.owner_id, self.source_id,
-            search_params={'limit': '10'})
+            search_params={'limit': '0'})
 
         # Set the context
         context['kwargs'] = self.kwargs
