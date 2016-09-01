@@ -105,9 +105,11 @@
                         {% endfor %}
                     </select>
                 </div>
+            {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
                 <div class="btn-group">
                     <a class="btn delete-reference">Delete</a>
                 </div>
+            {% endif %}
             </div> <!-- /col-md-12-->
         </div> <!-- /row -->
 
