@@ -722,10 +722,12 @@ $('a.delete-reference').on('click', function () {
 
         references = _.map(selectedReferences, function (el) { return el.value; }),
 
+        url = '/' + window.location.pathname.split('/').slice(1,5).join('/') + '/references/delete/' + '?references=' + references,
+
         confirmSuccess = function () {
             $.ajax({
                 type: "DELETE",
-                url: window.location.pathname + 'delete/' + '?references=' + references,
+                url: url,
                 headers: {
                     'X-CSRFToken': $.cookie('csrftoken'),
                     'X-Requested-With': 'XMLHttpRequest'
