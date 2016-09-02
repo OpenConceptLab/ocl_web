@@ -103,7 +103,8 @@
 {#			{% endif %}#}
 
         {% for result in results %}
-			{% if source.owner_type == 'Organization' %}
+			{% if result.owner_type == 'Organization' %}
+
                 {% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
 				    {% url 'concept-home' org=result.owner source=result.source concept=result.id as result_url %}
     			{% else %}
@@ -116,7 +117,6 @@
                     {% url 'concept-home-versioned' user=result.owner source=result.source concept=result.id concept_version=result.version as result_url %}
     			{% endif %}
 			{% endif %}
-
 			<div class="row row-search-result">
 				<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 				<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-tag search-result-icon"></span></div>
