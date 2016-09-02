@@ -92,11 +92,11 @@
 <!-- Search results -->
 
         {% for result in results %}
-			{% if result.owner_type == 'Organization' %}
-				{% url 'mapping-home' org=result.owner collection=result.collection mapping=result.id as mapping_url %}
-			{% else %}
-				{% url 'mapping-home' user=result.owner collection=result.collection mapping=result.id as mapping_url %}
-			{% endif %}
+{#			{% if result.owner_type == 'Organization' %}#}
+{#				{% url 'mapping-home' org=result.owner collection=result.collection mapping=result.id as mapping_url %}#}
+{#			{% else %}#}
+{#				{% url 'mapping-home' user=result.owner collection=result.collection mapping=result.id as mapping_url %}#}
+{#			{% endif %}#}
 
 			<div class="row row-search-result">
 				<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
@@ -104,7 +104,8 @@
 				<div class="col-md-10 search-result-col-content">
 					<div class="label-container">
 						<!-- map_type label -->
-						{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=mapping_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.collection label_size='small' display_breadcrumb=True %}
+{#						{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type     resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.collection label_size='small' display_breadcrumb=True %}#}
+                        {% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.display_name resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
 
 						<!-- from_concept label -->
 						{# TODO: we do not know if this concept is retired #}
