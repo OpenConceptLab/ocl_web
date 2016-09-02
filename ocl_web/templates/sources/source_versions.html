@@ -61,11 +61,13 @@
 		                </h4>
 
                         <div class='pull-right release_unrelease_section' style="font-size: small;">
+                        {% if not source_version.id == 'HEAD' %}
                             {% if source_version.released %}
                                 <input id="id_release" type="checkbox" name="release" value="{{ source_version.id }}" checked='checked'> Release </input>
                             {% else %}
                                 <input id="id_release" type="checkbox" name="release"  value="{{ source_version.id }}"> Release </input>
                             {% endif %}
+                        {% endif %}
                         </div>
 
 		                <p class="small">
