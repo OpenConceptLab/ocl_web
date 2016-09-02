@@ -1,12 +1,11 @@
+import json
 from unittest import TestCase
-from requests.exceptions import HTTPError
-from requests.models import Response
-from mock import Mock, patch, MagicMock
-from django.contrib import messages
-from apps.sources.forms import  SourceDeleteForm
-from libs.ocl import OclApi, OclSearch, OclConstants
-import views;
 from unittest import skip
+from apps.sources.forms import  SourceDeleteForm
+from mock import patch, MagicMock
+from requests.models import Response
+import views
+
 
 class FakeRequest(object):
     """ FakeRequest class """
@@ -44,3 +43,17 @@ class DeleteViewTest(TestCase):
         result=sourceDeleteView.form_valid(form)
         mock_message.add_message.asser_called_with("error","Error")
         print result
+
+class SourceVersionEditJsonViewTest(TestCase):
+    @patch('libs.ocl.OclApi.update_resource_version')
+    def test_put(self, mock_update_resource_version):
+        colResponse = MagicMock(spec=Response)
+        colResponse.json.return_value = "foobar"
+        mock_update_resource_version.return_value = colResponse
+        sourceVersionEditView = views.SourceVersionEditJsonView()
+        fake_request = FakeRequest()
+        fake_request.body = json.dumps({'released':True})
+        sourceVersionEditView.request = fake_request
+        sourceVersionEditView.put(fake_request, {}, **{'org': 'org', 'source': 'sourceId', 'source_version': 'v1'})
+        self.assertTrue(mock_update_resource_version.called)
+

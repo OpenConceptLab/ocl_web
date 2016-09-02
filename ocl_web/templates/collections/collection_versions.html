@@ -22,8 +22,8 @@
 
 				<div style="margin-left:40px;padding-right:10px;">
 					<a href="{{ collection_version_new_url }}" class="small" style="padding-right:10px;"><span class="glyphicon glyphicon-plus"></span> {% trans "New Collection Version" %}</a>&nbsp;&nbsp;&nbsp;
-					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="collection-version-filter" value="released" disabled /> {% trans "Released" %}</label>
-					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="collection-version-filter" value="is_processing" disabled /> {% trans "Processing" %}</label>
+{#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="collection-version-filter" value="released" disabled /> {% trans "Released" %}</label>#}
+{#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="collection-version-filter" value="is_processing" disabled /> {% trans "Processing" %}</label>#}
 				</div>
 	    	</div>
 
@@ -49,12 +49,22 @@
 		                {% endif %}
 
 		                <h4>
+
 		                	<a href="{{ collection_version_home_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ collection_version.owner }} / {{ collection.id }} [ </span><span class="resource-label-id-code">{{ collection_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
+                            <span class="release-label-container">&nbsp;&nbsp;&nbsp;&nbsp;{% if collection_version.released %}<span class="label label-primary release-label">{% trans "Released" %}</span>{% endif %}</span>
 
-		                    {% if collection_version.released %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">{% trans "Released" %}</span></span>{% endif %}
-
-		                    {% if collection_version.is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>{% endif %}
+{##}
+{#		                    {% if collection_version.is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>{% endif %}#}
 		                </h4>
+
+                        <div class='pull-right release_unrelease_section' style="font-size: small;">
+                            {% if collection_version.released %}
+                                <input id="id_release" type="checkbox" name="release" value="{{ collection_version.id }}" checked='checked'> Release </input>
+                            {% else %}
+                                <input id="id_release" type="checkbox" name="release"  value="{{ collection_version.id }}"> Release </input>
+                            {% endif %}
+                        </div>
+
 
 		                <p class="small">
 		                    {% if collection_version.description %}<span>{{ collection_version.description }}<br /></span>{% endif %}

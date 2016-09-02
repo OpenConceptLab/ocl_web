@@ -27,7 +27,7 @@ from apps.orgs.views import (
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
     SourceNewView, SourceEditView, SourceVersionsView, SourceExternalReferencesView,
-    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView)
+    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView, SourceVersionEditJsonView)
 from apps.concepts.views import (
     ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptEditView,
     ConceptRetireView, ConceptNewView, ConceptDescView, ConceptNameView)
@@ -35,7 +35,7 @@ from apps.mappings.views import (
     MappingDetailsView, MappingNewView, MappingEditView, MappingRetireView)
 from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView, CollectionAboutView, \
     CollectionVersionsView, CollectionConceptsView, CollectionMappingsView, \
-    CollectionReferencesView, CollectionDeleteView, CollectionAddReferenceView, CollectionVersionsNewView, CollectionReferencesDeleteView
+    CollectionReferencesView, CollectionDeleteView, CollectionAddReferenceView, CollectionVersionsNewView, CollectionReferencesDeleteView, CollectionVersionEditJsonView
 
 #from apps.core.views import ExtraJsonView
 urlpatterns = patterns(
@@ -142,6 +142,10 @@ urlpatterns = patterns(
     # /orgs/:org/sources/:source/:version/edit/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
         SourceVersionsEditView.as_view(), name='source-version-edit'),
+
+    # /orgs/:org/sources/:source/:version/json/edit/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/json/edit/$',    # pylint: disable=C0301
+        SourceVersionEditJsonView.as_view(), name='source-version-json-edit'),
 
     # /orgs/:org/sources/:source/:version/retire/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/retire/$',    # pylint: disable=C0301
@@ -327,6 +331,9 @@ urlpatterns = patterns(
     # /orgs/:org/collections/:collection/versions/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/versions/$',
         CollectionVersionsView.as_view(), name='collection-versions'),
+    # /users/:user/collections/:collection/:collection_version/edit
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/json/edit/$',
+        CollectionVersionEditJsonView.as_view(), name='collection-version-json-edit'),
     # /orgs/:org/collections/:collection/concepts/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/concepts/$',
         CollectionConceptsView.as_view(), name='collection-concepts'),

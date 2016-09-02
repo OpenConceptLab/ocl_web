@@ -84,21 +84,31 @@ class UserUrlsTest(TestCase):
         self.assertEqual(resolver.kwargs['user'], 'testuser')
         self.assertEqual(resolver.kwargs['collection'], 'testcol')
 
-
-
     def test_user_collection_references_viewname_to_url(self):
         url = reverse('collection-references', kwargs={"user": "testuser", "collection": "testcol"})
         self.assertEqual(url, '/users/testuser/collections/testcol/references/')
 
-    def test_user_collection_references_delete_viewname_to_url(self):
-        url = reverse('collection-references-delete', kwargs={"user": "testuser", "collection": "testcol"})
-        self.assertEqual(url, '/users/testuser/collections/testcol/references/delete/')
+    def test_user_collection_version_json_edit_viewname_to_url(self):
+        url = reverse('collection-version-json-edit', kwargs={"user": "testuser", "collection": "testcol", "collection_version": "v1"})
+        self.assertEqual(url, '/users/testuser/collections/testcol/v1/json/edit/')
 
-    def test_user_collection_reference_delete_url_to_viewname(self):
-        resolver = resolve('/users/testuser/collections/coll/references/delete/')
-        self.assertEqual(resolver.view_name, 'collection-references-delete')
+    def test_user_collection_version_edit_url_to_viewname(self):
+        resolver = resolve('/users/testuser/collections/coll/v1/json/edit/')
+        self.assertEqual(resolver.view_name, 'collection-version-json-edit')
         self.assertEqual(resolver.kwargs['user'], 'testuser')
         self.assertEqual(resolver.kwargs['collection'], 'coll')
+        self.assertEqual(resolver.kwargs['collection_version'], 'v1')
+
+    def test_user_source_version_json_edit_viewname_to_url(self):
+        url = reverse('source-version-json-edit', kwargs={"user": "testuser", "source": "source", "source_version": "v1"})
+        self.assertEqual(url, '/users/testuser/sources/source/v1/json/edit/')
+
+    def test_user_source_version_edit_url_to_viewname(self):
+        resolver = resolve('/users/testuser/sources/source/v1/json/edit/')
+        self.assertEqual(resolver.view_name, 'source-version-json-edit')
+        self.assertEqual(resolver.kwargs['user'], 'testuser')
+        self.assertEqual(resolver.kwargs['source'], 'source')
+        self.assertEqual(resolver.kwargs['source_version'], 'v1')
 
     def test_user_collection_references_url_to_viewname(self):
         resolver = resolve('/users/testuser/collections/testcol/references/')

@@ -59,6 +59,28 @@ class OrgUrlsTest(TestCase):
         resolver = resolve('/orgs/myorgs/collections/collection1/versions/')
         self.assertEqual(resolver.view_name, 'collection-versions')
 
+    def test_org_collection_version_json_edit_viewname_to_url(self):
+        url = reverse('collection-version-json-edit', kwargs={"org": "org", "collection": "testcol", "collection_version": "v1"})
+        self.assertEqual(url, '/orgs/org/collections/testcol/v1/json/edit/')
+
+    def test_org_collection_version_edit_url_to_viewname(self):
+        resolver = resolve('/orgs/org/collections/coll/v1/json/edit/')
+        self.assertEqual(resolver.view_name, 'collection-version-json-edit')
+        self.assertEqual(resolver.kwargs['org'], 'org')
+        self.assertEqual(resolver.kwargs['collection'], 'coll')
+        self.assertEqual(resolver.kwargs['collection_version'], 'v1')
+
+    def test_org_source_version_json_edit_viewname_to_url(self):
+        url = reverse('source-version-json-edit', kwargs={"org": "org", "source": "source", "source_version": "v1"})
+        self.assertEqual(url, '/orgs/org/sources/source/v1/json/edit/')
+
+    def test_org_source_version_edit_url_to_viewname(self):
+        resolver = resolve('/orgs/org/sources/source/v1/json/edit/')
+        self.assertEqual(resolver.view_name, 'source-version-json-edit')
+        self.assertEqual(resolver.kwargs['org'], 'org')
+        self.assertEqual(resolver.kwargs['source'], 'source')
+        self.assertEqual(resolver.kwargs['source_version'], 'v1')
+
     def test_collections_concepts_viewname_to_url(self):
         url = reverse('collection-concepts', kwargs={'org': 'myorgs', 'collection': 'collection1'})
         self.assertEqual(url, '/orgs/myorgs/collections/collection1/concepts/')

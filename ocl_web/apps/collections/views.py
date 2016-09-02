@@ -1,6 +1,8 @@
 """
 OCL Collection views
 """
+import json
+
 import requests
 import logging
 from django.http import HttpResponse
@@ -15,6 +17,7 @@ from django.core.paginator import Paginator
 from libs.ocl import OclApi, OclSearch, OclConstants
 from .forms import (CollectionCreateForm, CollectionEditForm, CollectionDeleteForm, CollectionAddReferenceForm, CollectionVersionAddForm)
 from apps.core.views import UserOrOrgMixin
+from django.http import QueryDict
 
 logger = logging.getLogger('oclweb')
 
@@ -603,4 +606,17 @@ class CollectionVersionsNewView(CollectionsBaseView, UserOrOrgMixin, FormView):
                 error_msg = result.json().get('detail', 'Error')
                 messages.add_message(self.request, messages.ERROR, error_msg)
                 return HttpResponseRedirect(self.request.path)
+
+class CollectionVersionEditJsonView(CollectionsBaseView, TemplateView):
+    def put(self, request, *args, **kwargs):
+        self.get_args()
+        api = OclApi(self.request, debug=True)
+        data = json.loads(request.body)
+        res = api.update_resource_version(self.owner_type,
+                                          self.owner_id,
+                                          self.collection_id,
+                                          self.collection_version_id,
+                                          'collections',
+                                          data)
+        return HttpResponse(res.content, status=200)
 

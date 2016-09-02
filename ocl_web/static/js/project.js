@@ -722,7 +722,7 @@ $('a.delete-reference').on('click', function () {
 
         references = _.map(selectedReferences, function (el) { return el.value; }),
 
-        url = '/' + window.location.pathname.split('/').slice(1,5).join('/') + '/references/delete/' + '?references=' + references,
+        url = ' /' + window.location.pathname.split('/').slice(1,5).join('/') + '/references/delete/' + '?references=' + references,
 
         confirmSuccess = function () {
             $.ajax({
@@ -745,7 +745,41 @@ $('a.delete-reference').on('click', function () {
                 console.log(err)
             });
         };
+    if(_.size(references) > 0) {
+        alertify.confirm('Delete Reference', 'Do you want to remove the selected Reference(s) and associated values from Concepts and Mappings tab?', confirmSuccess, function () {});
+    } else {
+        alertify.warning('Please select references!')
+    }
+});
 
-    alertify.confirm('Delete Reference', 'Are you sure?', confirmSuccess, function () {
+$('div.release_unrelease_section #id_release').on('click', function (el) {
+    var $el = $(el.toElement),
+        version = $el.val(),
+        released = $el.prop('checked'),
+        url = ' /' + window.location.pathname.split('/').slice(1,5).join('/') + '/'+version+'/json/edit/';
+    $.ajax({
+        type: "PUT",
+        url: url,
+        headers: {
+            'X-CSRFToken': $.cookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        data: JSON.stringify({released: released}),
+        dataType: 'json',
+        contentType: 'application/json'
+    }).done(function (data) {
+        if (released) {
+            var dom = "<span class='label label-primary release-label'>Released</span>";
+            $el.parents('li').find('.release-label-container').append(dom);
+            alertify.success('Successfully Released.', 3);
+        } else {
+            alertify.success('Successfully Un-Released.', 3);
+            $el.parents('li').find('.release-label-container .release-label').remove();
+        }
+    }).fail(function (err) {
+        alertify.error('Something unexpected happened!', 3);
+        console.log(err)
     });
+
+
 });

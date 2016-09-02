@@ -4,6 +4,7 @@ Views for OCL Sources and Source Versions.
 import requests
 import logging
 
+from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.http import (HttpResponseRedirect, Http404, QueryDict)
@@ -18,6 +19,7 @@ from .forms import (
     SourceNewForm, SourceEditForm,
     SourceVersionsNewForm, SourceVersionsEditForm, SourceVersionsRetireForm, SourceDeleteForm)
 from apps.core.views import UserOrOrgMixin
+import json
 
 logger = logging.getLogger('oclweb')
 
@@ -554,8 +556,8 @@ class SourceVersionsEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             'description':form.cleaned_data.get('description')
         }
         api = OclApi(self.request, debug=True)
-        result = api.update_source_version(self.owner_type, self.owner_id, self.source_id,
-                                           self.source_version_id, data)
+        result = api.update_resource_version(self.owner_type, self.owner_id, self.source_id,
+                                             self.source_version_id, 'sources', data)
 
         # Check if successful
         if result.status_code == requests.codes.ok:
@@ -787,3 +789,22 @@ class SourceDeleteView(UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.get_success_url())
 
 
+class SourceVersionEditJsonView(UserOrOrgMixin, TemplateView):
+    def put(self, request, *args, **kwargs):
+        api = OclApi(self.request, debug=True)
+        data = json.loads(request.body)
+
+        if 'org' in kwargs:
+            owner_type = 'orgs'
+            owner_id = kwargs['org']
+        else:
+            owner_type = 'users'
+            owner_id = kwargs['org']
+
+        res = api.update_resource_version(owner_type,
+                                          owner_id,
+                                          kwargs['source'],
+                                          kwargs['source_version'],
+                                          'sources',
+                                          data)
+        return HttpResponse(res.content, status=200)

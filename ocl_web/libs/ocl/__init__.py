@@ -459,14 +459,15 @@ class OclApi(object):
         return result
 
 
-    def update_source_version(self, owner_type, owner_id,
-                              source_id, source_version_id, base_data):
+    def update_resource_version(self, owner_type, owner_id,
+                                resource_id, version_id, resource_type, base_data):
         """
         Update source version. Limits update to only the description and released fields for now.
         :param owner_type: 'orgs' or 'users'
         :param owner_id: ID of the org/user owner
-        :param source_id: ID of the source
-        :param source_version_id: ID of the source_version
+        :param resource_id: ID of the source/collection
+        :param version_id: ID of the source/collection_version
+        :param resource_type: 'source' or 'collection'
         :param base_data: Dictionary of fields to update
         :returns: response object
         """
@@ -475,8 +476,7 @@ class OclApi(object):
             data['description'] = base_data['description']
         if 'released' in base_data:
             data['released'] = base_data['released']
-        result = self.put(owner_type, owner_id, 'sources', source_id,
-                          source_version_id, **data)
+        result = self.put(owner_type, owner_id, resource_type, resource_id, version_id, **data)
         return result
 
 

@@ -19,11 +19,15 @@ class MyDict(dict):
 
 
 class FakeRequest(object):
+
     """ FakeRequest class """
     def __init__(self):
         self.session = {}
         self.GET = {}
+        self.body = None
+
     def get_full_path(self):
+
         return '/foobar'
 
 class FakeResponse(object):
@@ -286,15 +290,15 @@ class CollectionReferencesDeleteViewTest(TestCase):
         colResponse = MagicMock(spec=Response)
         colResponse.json.return_value = "foobar"
         mock_delete.return_value = colResponse
-        collectionAddReferenceView = views.CollectionReferencesDeleteView()
+        collectionReferenceDeleteView = views.CollectionReferencesDeleteView()
         fake_request = FakeRequest()
         fake_request.GET['references'] = 'ref1,ref2'
-        collectionAddReferenceView.request = fake_request
-        collectionAddReferenceView.collection = {'id': 'mycolid'}
-        collectionAddReferenceView.kwargs = {
+        collectionReferenceDeleteView.request = fake_request
+        collectionReferenceDeleteView.collection = {'id': 'mycolid'}
+        collectionReferenceDeleteView.kwargs = {
             'collection_id': 'testColId',
         }
-        collectionAddReferenceView.delete(fake_request)
+        collectionReferenceDeleteView.delete(fake_request)
         self.assertTrue(mock_delete.called)
 
 
@@ -418,3 +422,21 @@ class CollectionVersionsNewViewTest(TestCase):
         result = collectionNewVserionView.form_valid(form)
         mock_message.add_message.asser_called_with("error", "Error")
         print result
+
+class CollectionVersionEditJsonViewTest(TestCase):
+    @patch('libs.ocl.OclApi.update_resource_version')
+    def test_put(self, mock_update_resource_version):
+        colResponse = MagicMock(spec=Response)
+        colResponse.json.return_value = "foobar"
+        mock_update_resource_version.return_value = colResponse
+        collectionVersionEditView = views.CollectionVersionEditJsonView()
+        fake_request = FakeRequest()
+        fake_request.body = json.dumps({'released':True})
+        collectionVersionEditView.request = fake_request
+        collectionVersionEditView.collection = {'id': 'mycolid'}
+        collectionVersionEditView.kwargs = {
+            'collection_id': 'testColId',
+        }
+        collectionVersionEditView.put(fake_request)
+        self.assertTrue(mock_update_resource_version.called)
+
