@@ -799,7 +799,7 @@ class SourceVersionEditJsonView(UserOrOrgMixin, TemplateView):
             owner_id = kwargs['org']
         else:
             owner_type = 'users'
-            owner_id = kwargs['org']
+            owner_id = kwargs['user']
 
         res = api.update_resource_version(owner_type,
                                           owner_id,
