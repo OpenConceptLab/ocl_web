@@ -124,6 +124,14 @@ class OrgUrlsTest(TestCase):
         resolver = resolve('/orgs/myorgs/collections/collection1/delete/')
         self.assertEqual(resolver.view_name, 'collection-delete')
 
+    def test_collections_version_delete_viewname_to_url(self):
+        url = reverse('collection-delete', kwargs={'org': 'myorgs', 'collection': 'collection1','collection_version': 'testcolver'})
+        self.assertEqual(url, '/orgs/myorgs/collections/collection1/testcolver/delete/')
+
+    def test_url_to_collection_version_delete_viewname(self):
+        resolver = resolve('/orgs/myorgs/collections/collection1/testcolver/delete/')
+        self.assertEqual(resolver.view_name, 'collection-delete')
+
     def test_sources_delete_viewname_to_url(self):
         url = reverse('source-delete', kwargs={'org': 'myorgs', 'source': 'source1'})
         self.assertEqual(url, '/orgs/myorgs/sources/source1/delete/')

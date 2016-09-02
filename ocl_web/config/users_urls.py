@@ -312,18 +312,23 @@ urlpatterns = patterns(
     # /users/:user/collections/:collection/references/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/references/$',
         CollectionReferencesView.as_view(), name='collection-references'),
-    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/references/$',
-        CollectionReferencesView.as_view(), name='collection-references'),
-
-    # /orgs/:org/collections/:collection/delete/
-    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/delete/$',
-        CollectionDeleteView.as_view(), name='collection-delete'),
-    # /orgs/:org/collections/:collection/addreference/
-    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/references/new/$',
-        CollectionAddReferenceView.as_view(), name='collection-addreference'),
     # /users/:user/collections/:collection/references/delete
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/references/delete/$',
         CollectionReferencesDeleteView.as_view(), name='collection-references-delete'),
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/references/$',
+        CollectionReferencesView.as_view(), name='collection-references'),
+
+    # /orgs/:org/collections/:collection/:collection_version/delete/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/delete/$',
+        CollectionDeleteView.as_view(), name='collection-delete'),
+    # /orgs/:org/collections/:collection/delete/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/delete/$',
+        CollectionDeleteView.as_view(), name='collection-delete'),
+
+    # /orgs/:org/collections/:collection/addreference/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/references/new/$',
+        CollectionAddReferenceView.as_view(), name='collection-addreference'),
+
     # /users/:user/collections/:collection/versions/new/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/versions/new/$',
         CollectionVersionsNewView.as_view(), name='collection-version-new'),

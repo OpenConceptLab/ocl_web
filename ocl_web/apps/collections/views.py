@@ -435,13 +435,25 @@ class CollectionDeleteView(CollectionsBaseView, FormView):
 
     def get_success_url(self):
         """ Return URL for redirecting browser """
-        if self.from_org:
-            return reverse('org-collections',
-                           kwargs={'org': self.org_id})
+        if self.collection_version_id:
+            if self.from_org:
+                return reverse('collection-details',
+                                                    kwargs={'org': self.org_id,
+                                                            'collection': self.collection_id})
+            else:
+                return reverse('collection-details',
+                                                    kwargs={'user': self.user_id,
+                                                            'collection': self.collection_id})
+        else :
+            if self.from_org:
+                return reverse('org-collections',
+                               kwargs={'org': self.org_id})
 
-        else:
-            return reverse('users:detail',
-                           kwargs={"username": self.request.user.username})
+            else:
+                return reverse('users:detail',
+                               kwargs={"username": self.request.user.username})
+
+
 
     def form_valid(self, form, *args, **kwargs):
         """ Use validated form data to delete the collection"""
@@ -449,9 +461,11 @@ class CollectionDeleteView(CollectionsBaseView, FormView):
         self.get_args()
 
         api = OclApi(self.request, debug=True)
-        result = api.delete(
-            self.owner_type, self.owner_id, 'collections', self.collection_id, **kwargs)
-
+        if self.collection_version_id:
+            result = api.delete(self.owner_type, self.owner_id, 'collections', self.collection_id, self.collection_version_id, **kwargs)
+        else :
+            result = api.delete(
+                self.owner_type, self.owner_id, 'collections', self.collection_id,  **kwargs)
         if result.status_code != 204:
             emsg = result.json().get('detail', 'Error')
             messages.add_message(self.request, messages.ERROR, emsg)
@@ -459,6 +473,7 @@ class CollectionDeleteView(CollectionsBaseView, FormView):
 
         else:
             messages.add_message(self.request, messages.INFO, _('Collection Deleted'))
+
             return HttpResponseRedirect(self.get_success_url())
 
 class CollectionEditView(CollectionsBaseView, FormView):
