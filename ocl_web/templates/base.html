@@ -30,7 +30,6 @@
 	{% endblock %}
 
     <script src="/static/js/jquery-3.1.0.min.js"></script>
-    <script src="/static/js/jquery.cookie.js"></script>
 
     {% block angular %}
 	{# was 1.2.9 #}
@@ -90,6 +89,7 @@
 	{% block extrajavascript %}
 	{% endblock %}
     <script type="text/javascript">
+        $.getScript('https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js')
         alertify.defaults = {
         // dialogs defaults
         autoReset:true,
