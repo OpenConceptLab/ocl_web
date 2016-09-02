@@ -41,11 +41,12 @@
 	    			{% endif %}
 
 		            <li class="list-group-item">
-
-		                {% if not collection_version.is_processing %}
-		                <div class="pull-right">
-		                    <a href="{{ collection_version_edit_url }}" class="btn btn-link" title="Edit Collection Version"><span class="glyphicon glyphicon-pencil"></span></a>
-		                </div>
+                        {% if request.user.is_authenticated %}
+                            {% if not collection_version.is_processing %}
+                                <div class="pull-right">
+                                    <a href="{{ collection_version_edit_url }}" class="btn btn-link" title="Edit Collection Version"><span class="glyphicon glyphicon-pencil"></span></a>
+                                </div>
+                            {% endif %}
 		                {% endif %}
 
 		                <h4>
@@ -56,16 +57,17 @@
 {##}
 {#		                    {% if collection_version.is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>{% endif %}#}
 		                </h4>
-
-                        <div class='pull-right release_unrelease_section' style="font-size: small;">
-                            {% if not collection_version.id == 'HEAD' %}
-                                {% if collection_version.released %}
-                                    <input id="id_release" type="checkbox" name="release" value="{{ collection_version.id }}" checked='checked'> Release </input>
-                                {% else %}
-                                    <input id="id_release" type="checkbox" name="release"  value="{{ collection_version.id }}"> Release </input>
+                        {% if request.user.is_authenticated %}
+                            <div class='pull-right release_unrelease_section' style="font-size: small;">
+                                {% if not collection_version.id == 'HEAD' %}
+                                    {% if collection_version.released %}
+                                        <input id="id_release" type="checkbox" name="release" value="{{ collection_version.id }}" checked='checked'> Release </input>
+                                    {% else %}
+                                        <input id="id_release" type="checkbox" name="release"  value="{{ collection_version.id }}"> Release </input>
+                                    {% endif %}
                                 {% endif %}
-                            {% endif %}
-                        </div>
+                            </div>
+                        {% endif %}
 
 
 		                <p class="small">

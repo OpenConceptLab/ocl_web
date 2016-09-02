@@ -45,12 +45,14 @@
 		                <div class="search-result-col-icon pull-left" style="padding-top:0;padding-right:14px;margin-bottom:20px;"><span class="search-result-icon"><span class="glyphicon glyphicon-asterisk"></span></span></div>
 		                {% endcomment %}
 
-		                {% if not source_version.is_processing %}
-		                <div class="pull-right">
-		                    <a href="{{ source_version_edit_url }}" class="btn btn-link" title="Edit Source Version"><span class="glyphicon glyphicon-pencil"></span></a>
-		                    {% comment %}<a href="{{ source_version_retire_url }}" class="btn btn-link" title="Retire Source Version"><span class="glyphicon glyphicon-trash"></span></a>{% endcomment %}
-		                </div>
-		                {% endif %}
+                        {% if request.user.is_authenticated %}
+                            {% if not source_version.is_processing %}
+                            <div class="pull-right">
+                                <a href="{{ source_version_edit_url }}" class="btn btn-link" title="Edit Source Version"><span class="glyphicon glyphicon-pencil"></span></a>
+                                {% comment %}<a href="{{ source_version_retire_url }}" class="btn btn-link" title="Retire Source Version"><span class="glyphicon glyphicon-trash"></span></a>{% endcomment %}
+                            </div>
+                            {% endif %}
+                        {% endif %}
 
 		                <h4>
 		                	<a href="{{ source_version_concepts_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} [ </span><span class="resource-label-id-code">{{ source_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
@@ -60,15 +62,17 @@
 {#		                    {% if source_version.is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>{% endif %}#}
 		                </h4>
 
-                        <div class='pull-right release_unrelease_section' style="font-size: small;">
-                        {% if not source_version.id == 'HEAD' %}
-                            {% if source_version.released %}
-                                <input id="id_release" type="checkbox" name="release" value="{{ source_version.id }}" checked='checked'> Release </input>
-                            {% else %}
-                                <input id="id_release" type="checkbox" name="release"  value="{{ source_version.id }}"> Release </input>
-                            {% endif %}
+                        {% if request.user.is_authenticated %}
+                            <div class='pull-right release_unrelease_section' style="font-size: small;">
+                                {% if not source_version.id == 'HEAD' %}
+                                    {% if source_version.released %}
+                                        <input id="id_release" type="checkbox" name="release" value="{{ source_version.id }}" checked='checked'> Release </input>
+                                    {% else %}
+                                        <input id="id_release" type="checkbox" name="release"  value="{{ source_version.id }}"> Release </input>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
                         {% endif %}
-                        </div>
 
 		                <p class="small">
 		                    {% if source_version.description %}<span>{{ source_version.description }}<br /></span>{% endif %}
