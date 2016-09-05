@@ -13,30 +13,187 @@
 {% endif %}
 
 <h3>
-    {% resource_owner_label collection %} / {% collection_label collection %} / {% trans "Add Reference" %}
+    {% resource_owner_label collection %} / {% collection_label collection %} / {% trans "Add Reference[s]" %}
 </h3>
 
 <div class="container">
     <div class="row">
+        <div class="form-group">
+            {% field_label 'Short Code' collection.short_code %}
+            {% field_label 'Created By' collection.created_by %}
+            {% field_label 'Created On' collection.created_on|smart_date %}
+            {% field_label 'Owner' collection.owner %}
+         </div>
+    </div>
+    <div class="row">
         <div class="col-lg-12">
-            <h1>{% trans "Add Reference To Collection" %}</h1>
+            <ul class="nav nav-tabs">
+              <li ><a data-toggle="tab" href="#home">Add Single Reference</a></li>
+              <li class="active"><a data-toggle="tab" href="#menu1">Add Multiple References</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="tab-content">
+      <div id="home" class="tab-pane fade ">
+        <div class="row">
+            <div class="col-lg-12">
+            <br/>
 
-            <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
-                {% csrf_token %}
-                <div class="form-group">
-                    {% field_label 'Short Code' collection.short_code %}
-                    {% field_label 'Created By' collection.created_by %}
-                    {% field_label 'Created On' collection.created_on|smart_date %}
-                    {% field_label 'Owner' collection.owner %}
-                </div>
-                {% bootstrap_form form layout="horizontal" %}
-                {% buttons layout="horizontal" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
-                    <a href="{{ collection_references_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
-                {% endbuttons %}
-            </form>
+                <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
+                    {% csrf_token %}
 
-        </div> {# col-lg-12 #}
-    </div> {# row #}
+
+                    {% bootstrap_form form layout="horizontal" %}
+                    {% buttons layout="horizontal" %}
+                        <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
+                        <a href="{{ collection_references_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+                    {% endbuttons %}
+                </form>
+
+            </div> {# col-lg-12 #}
+        </div> {# row #}
+      </div>
+      <div id="menu1" class="tab-pane fade in active">
+
+
+       <div class="row">
+            <div class="col-lg-2">
+                <br/>
+                <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="radio-inline">
+                            <input checked type="radio" name="owner_radio">Organization
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="owner_radio">User
+                        </label>
+                      <select class="form-control" id="sel1">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                      </select>
+                    </div>
+
+
+                </form>
+
+            </div> {# col-lg-2 #}
+            <div class="col-lg-2">
+                <br/>
+                <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="radio-inline">
+                            <input checked type="radio" name="src_col_radio">Source
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="src_col_radio">Collection
+                        </label>
+                      <select class="form-control" id="sel1">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                      </select>
+                    </div>
+                </form>
+            </div> {# col-lg-12 #}
+           <div class="col-lg-2">
+                <br/>
+                <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>
+                            Version
+                        </label>
+                      <select class="form-control" id="sel1">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                      </select>
+                    </div>
+                </form>
+            </div> {# col-lg-12 #}
+           <div class="col-lg-2">
+                <br/>
+                <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
+                    {% csrf_token %}
+
+                      <div class="form-group has-feedback">
+                        <label class="control-label">Search</label>
+                        <input type="text" class="form-control" placeholder="Username" />
+                        <i class="glyphicon glyphicon-search form-control-feedback"></i>
+                    </div>
+                </form>
+            </div> {# col-lg-12 #}
+           <div class="col-lg-2">
+                <br/>
+                <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
+                    {% csrf_token %}
+
+                      <div class="form-group">
+                          <label class="control-label">Action</label>
+                          <br/>
+                          <button type="button" class="btn btn-primary">Add</button>
+                          <button type="button" class="btn btn-primary">Cancel</button>
+                    </div>
+                </form>
+            </div> {# col-lg-12 #}
+        </div> {# row #}
+        <div class="row">
+            <div class="col-lg-6">
+                <h4 class="checkbox">
+                    <label><input type="checkbox" name="optradio">All Concepts</label>
+                </h4>
+                <ul class="list-group">
+                  <li class="list-group-item checkbox">
+                      <label><input type="checkbox" name="optradio">Option 1</label>
+                  </li>
+                  <li class="list-group-item checkbox">
+                      <label><input type="checkbox" name="optradio">Option 1</label>
+                  </li>
+                  <li class="list-group-item checkbox">
+                      <label><input type="checkbox" name="optradio">Option 1</label>
+                  </li>
+                  <li class="list-group-item checkbox">
+                      <label><input type="checkbox" name="optradio">Option 1</label>
+                  </li>
+                  <li class="list-group-item checkbox">
+                      <label><input type="checkbox" name="optradio">Option 1</label>
+                  </li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <h4 class="checkbox">
+                    <label><input type="checkbox" name="optradio">All Mappings</label>
+                </h4>
+                <ul class="list-group">
+                  <li class="list-group-item checkbox">
+                      <label><input type="checkbox" name="optradio">Option 1</label>
+                  </li>
+                  <li class="list-group-item checkbox">
+                      <label><input type="checkbox" name="optradio">Option 1</label>
+                  </li>
+                  <li class="list-group-item checkbox">
+                      <label><input type="checkbox" name="optradio">Option 1</label>
+                  </li>
+                  <li class="list-group-item checkbox">
+                      <label><input type="checkbox" name="optradio">Option 1</label>
+                  </li>
+                  <li class="list-group-item checkbox">
+                      <label><input type="checkbox" name="optradio">Option 1</label>
+                  </li>
+                </ul>
+            </div>
+
+        </div>
+
+
+      </div>
+    </div>
+
 </div> {# container #}
 {% endblock %}
