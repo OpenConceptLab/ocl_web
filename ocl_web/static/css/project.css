@@ -333,3 +333,11 @@ a.resource-label:hover {
    content:"*";
    color:red;
 }
+.search-container {
+  width: 175px;
+}
+
+.search-container .input-group.input-group-sm {
+  width: 100%;
+}
+

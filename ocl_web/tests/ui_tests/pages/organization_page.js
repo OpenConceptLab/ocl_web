@@ -20,7 +20,7 @@ var OrganizationPage = function() {
 
     // create reference locators
     this.references = element(by.linkText('References'));
-    this.addNewReferenceLink = element(by.linkText(' Add New Reference[s]'));
+    this.addNewReferenceLink = element(by.linkText(' Reference'));
     this.expression = $('#id_expression');
     this.addReferenceButton = element(by.buttonText('Add'));
 

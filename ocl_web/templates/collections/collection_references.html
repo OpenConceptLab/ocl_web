@@ -61,7 +61,7 @@
                 <div class="pull-left">
                     {% if user.is_authenticated %}
                     {# TBD: need a more complete tag to check for access #}
-                    <a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" title="Add New Reference[s]" style="font-weight:300;text-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'Add New Reference[s]' %}</a>
+                    <a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" title="Add New Reference" style="font-weight:300;text-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'Reference' %}</a>
                     {% endif %}
                 </div>
             {% endif %}
@@ -69,7 +69,7 @@
                 <!-- Collection Version Dropdown -->
 				<div class="btn-group pull-left" style="padding-right:5px;">
 					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" style="white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:clip;">
-						<span class="text-muted" style="letter-spacing:-0.1pt;font-weight:300;">Collection Version:</span>
+						<span class="text-muted" style="letter-spacing:-0.1pt;font-weight:300;">Version:</span>
 						<span style="font-weight:400;text-spacing:-0.1pt;">{% if collection_version %}{{ collection_version }}{% else %}head{% endif %}</span>
 						<span class="caret"></span>
 					</button>
@@ -87,9 +87,9 @@
 
 
                 <!-- Org collections Search -->
-                <div class="form-group pull-left">
-                    <div class="input-group input-group-sm" style="width:250px;">
-                        <input name="q" id="resourceFilter" type="text" value="{{ collection_q }}" class="form-control" placeholder="Search collections within organization" />
+                <div class="form-group pull-left search-container">
+                    <div class="input-group input-group-sm">
+                        <input name="q" id="resourceFilter" type="text" value="{{ collection_q }}" class="form-control" placeholder="Search" />
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
                         </span>
