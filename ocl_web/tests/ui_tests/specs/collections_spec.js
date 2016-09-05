@@ -47,11 +47,11 @@ describe('OCL Collections Page', function () {
         expect((collectionPage.updatedExtIdValue).getText()).toContain('1.1');
     });
 
-    // it('should delete collection', function () {
-    //     collectionPage.deleteCollection();
-    //
-    //     expect((collectionPage.status).getText()).toEqual('Collection Deleted');
-    // });
+    it('should delete collection', function () {
+        collectionPage.deleteCollection();
+
+        expect((collectionPage.status).getText()).toEqual('Collection Deleted');
+    });
 
      it('should logout', function () {
          logoutPage.logout();
