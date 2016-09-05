@@ -12,15 +12,26 @@
 	{% url 'collection-home' user=collection.owner collection=collection.id as collection_home_url %}
 {% endif %}
 
+{% if  kwargs and "collection_version" in kwargs  and kwargs.collection_version != 'HEAD' %}
+    {% trans 'Retire Collection Version'  as delete_label%}
+{% else %}
+    {% trans  "Delete Collection" as delete_label %}
+ {% endif %}
+
 <h3>
-    {% resource_owner_label collection %} / {% collection_label collection %} / {% trans "Delete Collection" %}
+{% if  kwargs and "collection_version" in kwargs  and kwargs.collection_version != 'HEAD' %}
+    {% resource_owner_label collection %} / {% collection_label collection %} / [{% trans kwargs.collection_version %}]
+{% else %}
+    {% resource_owner_label collection %} / {% collection_label collection %}
+ {% endif %}
+
+
 </h3>
 
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <h1>{% trans "Delete Collection" %}</h1>
-
+            <h1>{% trans delete_label %}</h1>
             <form class="form-horizontal" id="collection_delete_form" method="post" action=".">
                 {% csrf_token %}
                 <div class="form-group">
@@ -31,7 +42,13 @@
                 </div>
                 {% bootstrap_form form layout="horizontal" %}
                 {% buttons layout="horizontal" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Delete" %}</button>
+                    <button type="submit" class="btn btn-primary">
+                        {% if  kwargs and "collection_version" in kwargs  and kwargs.collection_version != 'HEAD' %}
+                            {% trans "Retire" %}
+                        {% else %}
+                            {% trans "Delete" %}
+                        {% endif %}
+                    </button>
                     <a href="{{ collection_home_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
                 {% endbuttons %}
             </form>
