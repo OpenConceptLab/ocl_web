@@ -196,7 +196,7 @@
 			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="{{ result_concepts_url }}" title="Active concepts in collection"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>
-					{% comment %}&nbsp;&nbsp;&nbsp;&nbpsp;<a href="{{ result_mappings_url }}" title="Active mappings in source"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>{% endcomment %}
+					{% comment %}&nbsp;&nbsp;&nbsp;&nbpsp;<a href="{{ result_mappings_url }}" title="Active mappings in collections"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>{% endcomment %}
 				</div>
 				<div class="label-container">
 					{% generic_resource_label resource_type='source' resource_id=result.short_code resource_name=result.name resource_url=result_home_url owner_type=result.owner_type owner_id=result.owner label_size='small' display_breadcrumb=True %}

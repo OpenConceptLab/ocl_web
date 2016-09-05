@@ -9,6 +9,7 @@ import logging
 from django.views.generic import TemplateView
 from django.http import Http404
 from django.core.paginator import Paginator
+from django.utils.http import urlencode
 import urllib
 from libs.ocl import (OclApi, OclSearch, OclConstants)
 
@@ -60,13 +61,14 @@ class GlobalSearchView(TemplateView):
         for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
             if param in self.request.GET:
                 other_resource_search_params[param] = self.request.GET.get(param)
+
         context['other_resource_search_params'] = ''
 
-        #Following code breaks for unicode characters -- couldn't figure out why this code is here -- Sny/Anshu
-        # if other_resource_search_params:
-        #     context['other_resource_search_params'] = (
-        #         '&' + urllib.urlencode(other_resource_search_params))
-
+        # Following code breaks for unicode characters -- couldn't figure out why this code is here -- Sny/Anshu
+        if other_resource_search_params:
+            context['other_resource_search_params'] = (
+                '&' + urlencode(other_resource_search_params))
+        #
         # Perform the counter searches for the other resources
         resource_count = {}
         for resource_type in OclConstants.RESOURCE_TYPE_INFO:
