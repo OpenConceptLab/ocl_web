@@ -126,7 +126,7 @@ var OrganizationPage = function() {
 
     this.releaseVersion = function () {
       this.releaseButton.click();
-      browser.sleep('1000');
+      browser.sleep('750');
     };
 
     this.createNewConcept = function (id, name, name_type) {

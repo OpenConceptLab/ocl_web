@@ -78,6 +78,7 @@ describe('OCL Org Page', function () {
 
     it('should un-release a source version', function () {
         orgPage.releaseVersion();
+        browser.sleep('200');
 
         expect(orgPage.message.getText()).toEqual('Successfully Un-Released.');
 
@@ -146,10 +147,11 @@ describe('OCL Org Page', function () {
 
     it('should un-release a collection version', function () {
         orgPage.releaseVersion();
+        browser.sleep('200');
 
         expect(orgPage.message.getText()).toEqual('Successfully Un-Released.');
 
-        browser.sleep('500');
+        // browser.sleep('500');
         orgPage.message.click();
         browser.sleep('500');
     });
