@@ -410,7 +410,7 @@ class CollectionAddReferenceView(CollectionsBaseView, FormView):
 
         if not result.status_code == requests.codes.all_good:
             emsg = result.json().get('detail', 'Error')
-            messages.add_message(self.request, messages.ERROR, emsg)
+            messages.add_message(self.request, messages.ERROR, "\n".join(emsg))
             return HttpResponseRedirect(self.request.path)
 
         messages.add_message(self.request, messages.INFO, _('Expression added.'))
