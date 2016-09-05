@@ -82,32 +82,39 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(CollectionReferencesView, self).get_context_data(*args, **kwargs)
-
         self.get_args()
-        api = OclApi(self.request, debug=True)
 
+        api = OclApi(self.request, debug=True)
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
-        # data = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id,'references').json()
+
+        params = self.request.GET.copy()
+        params['verbose'] = 'true'
+        params['limit'] = '10'
 
         searcher = self.get_collection_data(
             self.owner_type, self.owner_id, self.collection_id, 'references',
             collection_version_id=self.collection_version_id,
-            search_params=self.request.GET)
-        # to fetch all , set limit to 0
-        versions = self.get_collection_versions(
-            self.owner_type, self.owner_id, self.collection_id,
-            search_params={'limit': '0'})
+            search_params=params)
+        search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        search_results_current_page = search_results_paginator.page(searcher.current_page)
 
-
-        # Set the context
         context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'References'
         context['collection'] = collection
         context['references'] = searcher.search_results
-        context['collection_versions'] = versions.search_results
+        context['results'] = searcher.search_results
+        context['current_page'] = search_results_current_page
+        context['pagination_url'] = self.request.get_full_path()
+        context['search_query'] = searcher.get_query()
+        context['search_filters'] = searcher.search_filter_list
+        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort'] = searcher.get_sort()
+        context['search_facets_json'] = searcher.search_facets
+        context['search_filters_debug'] = str(searcher.search_filter_list)
         return context
+
 
 class CollectionMappingsView(CollectionsBaseView, TemplateView):
     """ collection concept view. """
@@ -278,6 +285,8 @@ class CollectionDetailView(CollectionsBaseView, TemplateView):
         context['collection'] = collection
         context['selected_tab'] = 'Details'
         return context
+
+
 
 class CollectionCreateView(CollectionsBaseView, FormView):
     """
