@@ -56,6 +56,27 @@ describe('OCL User Source Page', function () {
         expect((orgPage.status).getText()).toEqual('Source version created!');
     });
 
+    it('should release a user source version', function () {
+        orgPage.releaseVersion();
+
+        expect(orgPage.releaseLabel.getText()).toEqual('Released');
+        expect(orgPage.message.getText()).toEqual('Successfully Released.');
+
+        browser.sleep('500');
+        orgPage.message.click();
+        browser.sleep('750');
+    });
+
+    it('should un-release a user source version', function () {
+        orgPage.releaseVersion();
+
+        expect(orgPage.message.getText()).toEqual('Successfully Un-Released.');
+
+        browser.sleep('500');
+        orgPage.message.click();
+        browser.sleep('500');
+    });
+
     it('should logout', function () {
          logoutPage.logout();
 
