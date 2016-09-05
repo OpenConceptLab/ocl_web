@@ -65,6 +65,27 @@ describe('OCL Org Page', function () {
         expect((orgPage.status).getText()).toEqual('Source version created!');
     });
 
+    it('should release a source version', function () {
+        orgPage.releaseVersion();
+
+        expect(orgPage.releaseLabel.getText()).toEqual('Released');
+        expect(orgPage.message.getText()).toEqual('Successfully Released.');
+
+        browser.sleep('500');
+        orgPage.message.click();
+        browser.sleep('750');
+    });
+
+    it('should un-release a source version', function () {
+        orgPage.releaseVersion();
+
+        expect(orgPage.message.getText()).toEqual('Successfully Un-Released.');
+
+        browser.sleep('500');
+        orgPage.message.click();
+        browser.sleep('500');
+    });
+
     it('should create concept', function () {
         orgPage.createNewConcept( data.concept_id+id,
             data.concept_name,
@@ -107,6 +128,27 @@ describe('OCL Org Page', function () {
         orgPage.createNewReference(concept_expression);
         expect((orgPage.status).getText()).toEqual('Expression added.');
         // expect(element(by.linkText(' '+expression)).isPresent()).toBe(true);
+    });
+
+    it('should delete without selecting reference', function () {
+        $('.delete-reference').click();
+        browser.sleep('500');
+
+        expect(orgPage.warning.getText()).toEqual('Please select references!');
+
+        // browser.sleep('500');
+        orgPage.warning.click();
+        browser.sleep('500');
+    });
+
+    it('should delete a reference of concept from org collection', function () {
+        orgPage.deleteReference();
+
+        expect(orgPage.message.getText()).toEqual('Successfully removed.');
+
+        browser.sleep('500');
+        orgPage.message.click();
+        browser.sleep('500');
     });
 
     // it('should add a reference of mapping to a collection', function () {

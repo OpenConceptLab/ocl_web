@@ -36,6 +36,17 @@ var OrganizationPage = function() {
     this.srcVersionDescription = $('#id_description');
     this.createSrcVersionButton = element(by.buttonText('Create Source Version'));
 
+    // Release / Un-release version locators
+    this.releaseButton = $('#id_release');
+    this.message = $('.ajs-success');
+    this.releaseLabel = $('.release-label');
+
+    // Delete reference locators
+    this.deleteLink = $('.delete-reference');
+    this.warning = $('.ajs-warning');
+    this.checkReference = element(by.name('reference'));
+    this.okButton = element(by.buttonText('OK'));
+
     // create concept locators
     this.newConceptLink = element(by.linkText('Concepts'));
     this.createConcept = element(by.linkText(' New Concept'));
@@ -88,6 +99,14 @@ var OrganizationPage = function() {
         this.addReferenceButton.click();
     };
 
+    this.deleteReference = function () {
+        this.checkReference.click();
+        this.deleteLink.click();
+        browser.sleep('250');
+        this.okButton.click();
+        browser.sleep('1000');
+    };
+
     this.createNewSource = function (src_shortCode, full_name, locale) {
         this.newOrgSourceLink.click();
         this.createNewOrgSource.click();
@@ -103,6 +122,11 @@ var OrganizationPage = function() {
         this.srcVersionId.sendKeys(id);
         this.srcVersionDescription.sendKeys(description);
         this.createSrcVersionButton.click();
+    };
+
+    this.releaseVersion = function () {
+      this.releaseButton.click();
+      browser.sleep('1000');
     };
 
     this.createNewConcept = function (id, name, name_type) {
@@ -121,6 +145,12 @@ var OrganizationPage = function() {
         this.mapType.sendKeys(map_type);
         this.toConcept.sendKeys(to_concept);
         this.createMappingButton.click();
-    }
+    };
+
+    // this.acceptNotification = function () {
+    //     // browser.sleep('250');
+    //     $('.ajs-success').click();
+    //     browser.sleep('500');
+    // };
 };
 module.exports = OrganizationPage;
