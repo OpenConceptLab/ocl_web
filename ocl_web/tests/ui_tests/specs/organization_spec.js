@@ -123,6 +123,37 @@ describe('OCL Org Page', function () {
         expect((orgPage.status).getText()).toEqual('Collection created');
     });
 
+    it('should create collection version', function () {
+       element(by.linkText('Versions')).click();
+       element(by.linkText('New Collection Version')).click();
+       $('#id_id').sendKeys('V1');
+       $('#id_description').sendKeys('version 1');
+       element(by.buttonText('Create Collection Version')).click();
+
+       expect((orgPage.status).getText()).toEqual('Collection version created!');
+    });
+
+    it('should release a collection version', function () {
+        orgPage.releaseVersion();
+
+        expect(orgPage.releaseLabel.getText()).toEqual('Released');
+        expect(orgPage.message.getText()).toEqual('Successfully Released.');
+
+        browser.sleep('500');
+        orgPage.message.click();
+        browser.sleep('750');
+    });
+
+    it('should un-release a collection version', function () {
+        orgPage.releaseVersion();
+
+        expect(orgPage.message.getText()).toEqual('Successfully Un-Released.');
+
+        browser.sleep('500');
+        orgPage.message.click();
+        browser.sleep('500');
+    });
+
     it('should add a reference of concept to a collection', function () {
         var concept_expression = '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
         orgPage.createNewReference(concept_expression);
