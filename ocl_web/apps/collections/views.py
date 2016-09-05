@@ -92,6 +92,10 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         params['verbose'] = 'true'
         params['limit'] = '10'
 
+        versions = self.get_collection_versions(
+            self.owner_type, self.owner_id, self.collection_id,
+            search_params={'limit': '0'})
+
         searcher = self.get_collection_data(
             self.owner_type, self.owner_id, self.collection_id, 'references',
             collection_version_id=self.collection_version_id,
@@ -113,6 +117,7 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         context['search_sort'] = searcher.get_sort()
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
+        context['collection_versions'] = versions.search_results
         return context
 
 
@@ -127,13 +132,17 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
         # to fetch all , set limit to 0
+        params = self.request.GET.copy()
+        params['verbose'] = 'true'
+        params['limit'] = '10'
+
         versions = self.get_collection_versions(
             self.owner_type, self.owner_id, self.collection_id,
             search_params={'limit': '0'})
         searcher = self.get_collection_data(
             self.owner_type, self.owner_id, self.collection_id, OclConstants.RESOURCE_NAME_MAPPINGS,
             collection_version_id=self.collection_version_id,
-            search_params=self.request.GET)
+            search_params=params)
 
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
@@ -169,6 +178,10 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         api = OclApi(self.request, debug=True)
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
+        params = self.request.GET.copy()
+        params['verbose'] = 'true'
+        params['limit'] = '10'
+
         # to fetch all , set limit to 0
         versions = self.get_collection_versions(
             self.owner_type, self.owner_id, self.collection_id,
@@ -176,7 +189,7 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         searcher = self.get_collection_data(
             self.owner_type, self.owner_id, self.collection_id, OclConstants.RESOURCE_NAME_CONCEPTS,
             collection_version_id=self.collection_version_id,
-            search_params=self.request.GET)
+            search_params=params)
 
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
