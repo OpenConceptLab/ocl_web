@@ -282,6 +282,16 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
 
         return context
 
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            api = OclApi(self.request, debug=True)
+            if kwargs.get("source_version") :
+                result = api.get('orgs', kwargs.get("org"), "sources", kwargs.get("source"), kwargs.get("source_version"), "concepts")
+            else:
+                result = api.get('orgs', kwargs.get("org"), "sources", kwargs.get("source"), "concepts")
+            return HttpResponse(json.dumps(result.json()), content_type="application/json")
+        return super(SourceConceptsView, self).get(self, *args, **kwargs)
+
 
 
 class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
@@ -332,6 +342,17 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         context['search_filters_debug'] = str(searcher.search_filter_list)
 
         return context
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            api = OclApi(self.request, debug=True)
+            if kwargs.get("source_version") :
+                result = api.get('orgs', kwargs.get("org"), "sources", kwargs.get("source"), kwargs.get("source_version"), "mappings")
+            else:
+                result = api.get('orgs', kwargs.get("org"), "sources", kwargs.get("source"), "mappings")
+
+            return HttpResponse(json.dumps(result.json()), content_type="application/json")
+        return super(SourceMappingsView, self).get(self, *args, **kwargs)
 
 
 
@@ -424,6 +445,13 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
         context['source_versions'] = searcher.search_results
 
         return context
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            api = OclApi(self.request, debug=True)
+            result = api.get('orgs', kwargs.get('org'), 'sources', kwargs.get('source'), 'versions')
+            return HttpResponse(json.dumps(result.json()), content_type="application/json")
+        return super(SourceVersionsView, self).get(self, *args, **kwargs)
 
 
 
@@ -808,15 +836,3 @@ class SourceVersionEditJsonView(UserOrOrgMixin, TemplateView):
                                           'sources',
                                           data)
         return HttpResponse(res.content, status=200)
-
-class OrgSourcesJsonView(View):
-    def get(self, request, *args, **kwargs):
-        api = OclApi(self.request, debug=True)
-        result = api.get('orgs',kwargs.get('org'),'sources')
-        return HttpResponse(json.dumps(result.json()), content_type="application/json")
-
-class OrgSourceVersionsJsonView(View):
-    def get(self, request, *args, **kwargs):
-        api = OclApi(self.request, debug=True)
-        result = api.get('orgs',kwargs.get('org'),'sources',kwargs.get('source'),'versions')
-        return HttpResponse(json.dumps(result.json()), content_type="application/json")

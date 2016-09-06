@@ -27,8 +27,7 @@ from apps.orgs.views import (
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
     SourceNewView, SourceEditView, SourceVersionsView, SourceExternalReferencesView,
-    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView, SourceVersionEditJsonView, OrgSourcesJsonView,
-    OrgSourceVersionsJsonView)
+    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView, SourceVersionEditJsonView)
 from apps.concepts.views import (
     ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptEditView,
     ConceptRetireView, ConceptNewView, ConceptDescView, ConceptNameView)
@@ -41,6 +40,9 @@ from apps.collections.views import CollectionDetailView, CollectionCreateView, C
 #from apps.core.views import ExtraJsonView
 urlpatterns = patterns(
     '',
+
+    # /orgs/
+    url(r'^$', OrgJsonView.as_view(), name='orgs-json-view'),
 
 
     ## ORGANIZATION
@@ -91,12 +93,6 @@ urlpatterns = patterns(
     # /orgs/:org/sources/new/ - create new source
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/new/$',
         SourceNewView.as_view(), name='source-new'),
-
-    # /orgs/orgid/sources/json/
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/json/$', OrgSourcesJsonView.as_view(), name='orgs-sources-json-view'),
-
-    # /orgs/orgid/sources/sourceID/json/
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/json/$', OrgSourceVersionsJsonView.as_view(), name='orgs-sources-version-json-view'),
 
     # /orgs/:org/sources/:source/ - points to "source-details"
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/$',
@@ -377,7 +373,6 @@ urlpatterns = patterns(
 
     # /orgs/json/
     url(r'^json$', OrgJsonView.as_view(), name='orgs-json-view'),
-
 
 )
 
