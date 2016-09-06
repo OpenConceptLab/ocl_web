@@ -3,6 +3,7 @@ OCL Organization Views
 """
 #import requests
 import logging
+import json
 
 from django.shortcuts import redirect
 from django.http import Http404
@@ -14,6 +15,7 @@ from django.utils.translation import ugettext as _
 from django.core.paginator import Paginator
 from braces.views import LoginRequiredMixin
 from braces.views import JsonRequestResponseMixin
+from django.http import HttpResponse
 
 from .forms import (OrganizationNewForm, OrganizationEditForm)
 from .forms import (OrganizationMemberAddForm)
@@ -407,3 +409,10 @@ class OrganizationMemberRemoveView(LoginRequiredMixin,
         #    return self.render_json_response({'message':'Member removed'})
         #else:
         #    return self.render_bad_request_response({'message': result.status_code})
+
+
+class OrgJsonView(View):
+    def get(self, request, *args, **kwargs):
+        api = OclApi(self.request, debug=True)
+        result = api.get('orgs')
+        return HttpResponse(json.dumps(result.json()), content_type="application/json")

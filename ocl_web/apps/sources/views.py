@@ -3,12 +3,12 @@ Views for OCL Sources and Source Versions.
 """
 import requests
 import logging
-
+import json
 from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.http import (HttpResponseRedirect, Http404, QueryDict)
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -808,3 +808,15 @@ class SourceVersionEditJsonView(UserOrOrgMixin, TemplateView):
                                           'sources',
                                           data)
         return HttpResponse(res.content, status=200)
+
+class OrgSourcesJsonView(View):
+    def get(self, request, *args, **kwargs):
+        api = OclApi(self.request, debug=True)
+        result = api.get('orgs',kwargs.get('org'),'sources')
+        return HttpResponse(json.dumps(result.json()), content_type="application/json")
+
+class OrgSourceVersionsJsonView(View):
+    def get(self, request, *args, **kwargs):
+        api = OclApi(self.request, debug=True)
+        result = api.get('orgs',kwargs.get('org'),'sources',kwargs.get('source'),'versions')
+        return HttpResponse(json.dumps(result.json()), content_type="application/json")

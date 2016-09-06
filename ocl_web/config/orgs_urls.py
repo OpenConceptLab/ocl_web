@@ -22,12 +22,13 @@ from django.conf.urls import (patterns, url)
 from apps.orgs.views import (
     OrganizationDetailsView, OrganizationAboutView, OrganizationSourcesView,OrganizationCollectionsView,
     OrganizationNewView, OrganizationEditView, OrganizationRetireView,
-    OrganizationMemberAddView, OrganizationMemberRemoveView)
+    OrganizationMemberAddView, OrganizationMemberRemoveView, OrgJsonView)
 
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
     SourceNewView, SourceEditView, SourceVersionsView, SourceExternalReferencesView,
-    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView, SourceVersionEditJsonView)
+    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView, SourceVersionEditJsonView, OrgSourcesJsonView,
+    OrgSourceVersionsJsonView)
 from apps.concepts.views import (
     ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptEditView,
     ConceptRetireView, ConceptNewView, ConceptDescView, ConceptNameView)
@@ -90,6 +91,12 @@ urlpatterns = patterns(
     # /orgs/:org/sources/new/ - create new source
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/new/$',
         SourceNewView.as_view(), name='source-new'),
+
+    # /orgs/orgid/sources/json/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/json/$', OrgSourcesJsonView.as_view(), name='orgs-sources-json-view'),
+
+    # /orgs/orgid/sources/sourceID/json/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/versions/json/$', OrgSourceVersionsJsonView.as_view(), name='orgs-sources-version-json-view'),
 
     # /orgs/:org/sources/:source/ - points to "source-details"
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/$',
@@ -295,7 +302,6 @@ urlpatterns = patterns(
         MappingRetireView.as_view(), name='mapping-retire'),
 
 
-
     ## SELFISH URLs
     # NOTE: Placed at the end so that reserved words aren't incorrectly treated like mnemonics
 
@@ -368,6 +374,10 @@ urlpatterns = patterns(
         CollectionMappingsView.as_view(), name='collection-mappings'),
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/references/$',
         CollectionReferencesView.as_view(), name='collection-references'),
+
+    # /orgs/json/
+    url(r'^json$', OrgJsonView.as_view(), name='orgs-json-view'),
+
 
 )
 
