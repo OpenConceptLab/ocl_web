@@ -170,7 +170,7 @@ class OrganizationSourcesView(OrganizationReadBaseView):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             api = OclApi(self.request, debug=True)
-            result = api.get('orgs', kwargs.get("org"), "sources")
+            result = api.get('orgs', kwargs.get("org"), "sources",params={'limit': '0'})
             return HttpResponse(json.dumps(result.json()), content_type="application/json")
         return super(OrganizationSourcesView, self).get(self, *args, **kwargs)
 
@@ -421,5 +421,5 @@ class OrganizationMemberRemoveView(LoginRequiredMixin,
 class OrgJsonView(View):
     def get(self, request, *args, **kwargs):
         api = OclApi(self.request, debug=True)
-        result = api.get('orgs')
+        result = api.get('orgs',params={'limit': '0'})
         return HttpResponse(json.dumps(result.json()), content_type="application/json")

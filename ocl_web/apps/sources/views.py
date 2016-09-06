@@ -449,7 +449,7 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             api = OclApi(self.request, debug=True)
-            result = api.get('orgs', kwargs.get('org'), 'sources', kwargs.get('source'), 'versions')
+            result = api.get('orgs', kwargs.get('org'), 'sources', kwargs.get('source'), 'versions',params={'limit': '0'})
             return HttpResponse(json.dumps(result.json()), content_type="application/json")
         return super(SourceVersionsView, self).get(self, *args, **kwargs)
 

@@ -16,7 +16,7 @@
     {% resource_owner_label collection %} / {% collection_label collection %} / {% trans "Add Reference[s]" %}
 </h3>
 
-<div class="container">
+<div class="container" ng-controller="AddReferencesController">
     <div class="row">
         <div class="form-group">
             {% field_label 'Short Code' collection.short_code %}
@@ -57,7 +57,7 @@
 
 
        <div class="row">
-            <div class="col-lg-2">
+            <div class="col-lg-2" ng-init="getOrgs()">
                 <br/>
                 <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
                     {% csrf_token %}
@@ -68,15 +68,11 @@
                         <label class="radio-inline">
                             <input type="radio" name="owner_radio">User
                         </label>
-                      <select class="form-control" id="sel1">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                      </select>
+                      <select class="form-control"
+                              ng-options="org as org.name for org in orgs"
+                              ng-change="getOrgSources()"
+                              ng-model="org"></select>
                     </div>
-
-
                 </form>
 
             </div> {# col-lg-2 #}
@@ -91,12 +87,11 @@
                         <label class="radio-inline">
                             <input type="radio" name="src_col_radio">Collection
                         </label>
-                      <select class="form-control" id="sel1">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                      </select>
+                      <select class="form-control"
+                              ng-options="source as source.name for source in sources"
+                              ng-change="getSourceVersions()"
+                              ng-disabled="!org"
+                              ng-model="source"></select>
                     </div>
                 </form>
             </div> {# col-lg-12 #}
@@ -108,12 +103,11 @@
                         <label>
                             Version
                         </label>
-                      <select class="form-control" id="sel1">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                      </select>
+                      <select class="form-control"
+                              ng-options="sv.id as sv.id for sv in sourceVersions"
+                              ng-disabled="!source"
+                              ng-change="getSourceData()"
+                              ng-model="sourceVersion"></select>
                     </div>
                 </form>
             </div> {# col-lg-12 #}
@@ -124,7 +118,7 @@
 
                       <div class="form-group has-feedback">
                         <label class="control-label">Search</label>
-                        <input type="text" class="form-control" placeholder="Username" />
+                        <input type="text" class="form-control" placeholder="search" />
                         <i class="glyphicon glyphicon-search form-control-feedback"></i>
                     </div>
                 </form>
@@ -146,45 +140,31 @@
         <div class="row">
             <div class="col-lg-6">
                 <h4 class="checkbox">
-                    <label><input type="checkbox" name="optradio">All Concepts</label>
+                    <label><input ng-model="allconcepts" type="checkbox" name="allconceptcheckbox">All Concepts</label>
                 </h4>
+                <div class="alert alert-warning" ng-if="!loading && org && source && !sourceData.concepts.length">
+                  No concepts found!
+                </div>
                 <ul class="list-group">
-                  <li class="list-group-item checkbox">
-                      <label><input type="checkbox" name="optradio">Option 1</label>
-                  </li>
-                  <li class="list-group-item checkbox">
-                      <label><input type="checkbox" name="optradio">Option 1</label>
-                  </li>
-                  <li class="list-group-item checkbox">
-                      <label><input type="checkbox" name="optradio">Option 1</label>
-                  </li>
-                  <li class="list-group-item checkbox">
-                      <label><input type="checkbox" name="optradio">Option 1</label>
-                  </li>
-                  <li class="list-group-item checkbox">
-                      <label><input type="checkbox" name="optradio">Option 1</label>
+                  <li class="list-group-item checkbox" ng-repeat="concept in sourceData.concepts">
+                      <label><input ng-checked="allconcepts" type="checkbox" name="optradio">
+                          <span ng-bind="concept.id"></span>
+                      </label>
                   </li>
                 </ul>
             </div>
             <div class="col-lg-6">
                 <h4 class="checkbox">
-                    <label><input type="checkbox" name="optradio">All Mappings</label>
+                    <label><input ng-model="allmappings" type="checkbox" name="allmappingcheckbox">All Mappings</label>
                 </h4>
+                <div class="alert alert-warning" ng-if="!loading && org && source && !sourceData.mappings.length">
+                  No mappings found!
+                </div>
                 <ul class="list-group">
-                  <li class="list-group-item checkbox">
-                      <label><input type="checkbox" name="optradio">Option 1</label>
-                  </li>
-                  <li class="list-group-item checkbox">
-                      <label><input type="checkbox" name="optradio">Option 1</label>
-                  </li>
-                  <li class="list-group-item checkbox">
-                      <label><input type="checkbox" name="optradio">Option 1</label>
-                  </li>
-                  <li class="list-group-item checkbox">
-                      <label><input type="checkbox" name="optradio">Option 1</label>
-                  </li>
-                  <li class="list-group-item checkbox">
-                      <label><input type="checkbox" name="optradio">Option 1</label>
+                  <li class="list-group-item checkbox" ng-repeat="concept in sourceData.mappings">
+                      <label><input ng-checked="allmappings" type="checkbox" name="optradio">
+                          <span ng-bind="concept.url"></span>
+                      </label>
                   </li>
                 </ul>
             </div>

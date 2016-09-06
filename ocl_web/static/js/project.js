@@ -697,6 +697,115 @@ app.controller('MemberRemoveController', function($scope, $modal,
     };
 });
 
+app.controller('AddReferencesController', function($scope, ReferenceFactory) {
+
+    $scope.getOrgs = function() {
+        $scope.sources = [];
+        ReferenceFactory.getOrgs()
+            .success(function(result) {
+                $scope.orgs = result;
+            })
+            .error(function(error) {
+                window.alert(error);
+            })
+    };
+
+    $scope.getOrgSources = function() {
+        if(!$scope.org) {
+            return;
+        }
+        $scope.sourceVersions = [];
+        ReferenceFactory.getOrgSources($scope.org.id)
+            .success(function(result) {
+                $scope.sources = result;
+                $scope.getSourceData();
+            })
+            .error(function(error) {
+                window.alert(error);
+            });
+    };
+
+     $scope.getSourceVersions = function() {
+        if(!$scope.org || !$scope.source) {
+            return;
+        }
+        ReferenceFactory.getOrgSourceVersions($scope.org.id, $scope.source.short_code)
+            .success(function(result) {
+                $scope.sourceVersions = result;
+                $scope.getSourceData();
+            })
+            .error(function(error) {
+                window.alert(error);
+            });
+    }
+
+    $scope.getSourceData = function() {
+        if(!$scope.org || !$scope.source) {
+            return;
+        }
+        $scope.loading = true;
+        var sourceVersionId = $scope.sourceVersion ? $scope.sourceVersion.id : null;
+        ReferenceFactory.getOrgSourceData($scope.org.id, $scope.source.short_code, sourceVersionId)
+            .then(function(result) {
+                $scope.sourceData = result;
+            })
+            .catch(function(error) {
+                window.alert(error);
+            })
+            .finally(function() {
+                $scope.loading = false;
+            });
+    }
+
+});
+
+app.factory('ReferenceFactory', function($http) {
+    var ReferenceFactory = this;
+
+    ReferenceFactory.getOrgs = function() {
+        return $http.get('/orgs/');
+    };
+
+    ReferenceFactory.getOrgSources = function(orgId) {
+        return $http.get('/orgs/' + orgId + '/sources/');
+    };
+
+    ReferenceFactory.getOrgSourceVersions = function(orgId, sourceId) {
+        return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/versions/');
+    };
+
+    ReferenceFactory.getOrgSourceVersionConcepts = function(orgId, sourceId, sourceVersionId) {
+        if(sourceVersionId){
+            return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/' + sourceVersionId + '/concepts/');
+        }
+        return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/concepts/');
+
+    };
+
+    ReferenceFactory.getOrgSourceVersionMappings = function(orgId, sourceId, sourceVersionId) {
+        if(sourceVersionId){
+            return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/' + sourceVersionId + '/mappings/');
+        }
+        return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/mappings/');
+    };
+
+    ReferenceFactory.getOrgSourceData = function(orgId, sourceId, sourceVersionId) {
+        var data = {};
+        return ReferenceFactory.getOrgSourceVersionConcepts(orgId, sourceId, sourceVersionId)
+            .then(function(result) {
+                data.concepts = angular.isArray(result.data) ? result.data : [];
+                return ReferenceFactory.getOrgSourceVersionMappings(orgId, sourceId, sourceVersionId);
+            })
+            .then(function(result) {
+                data.mappings = angular.isArray(result.data) ? result.data : [];
+                return data;
+            });
+    };
+
+
+    return this;
+});
+
 // WORK IN PROGRESS. DO NOT USE
 app.directive('textField', function() {
     return {
