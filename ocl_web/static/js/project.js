@@ -698,6 +698,7 @@ app.controller('MemberRemoveController', function($scope, $modal,
 });
 
 app.controller('AddReferencesController', function($scope, ReferenceFactory) {
+    $scope.pageObj = {};
 
     $scope.getOrgs = function() {
         $scope.sources = [];
@@ -783,6 +784,24 @@ app.controller('AddReferencesController', function($scope, ReferenceFactory) {
                 $scope.loading = false;
             });
     };
+
+    $scope.selectAllReferencesChanged = function(allReferences, selectAllModel) {
+      angular.forEach(allReferences, function(reference) {
+        reference.isSelected = selectAllModel;
+      });
+    };
+
+    $scope.referenceSelectionChanged = function(reference, allReferences) {
+      if(!reference.isSelected) {
+        return false;
+      }
+      var selectedReferences = allReferences.filter(function(ref) {
+        return ref.isSelected;
+      });
+      if(selectedReferences.length === allReferences.length) {
+        return true;
+      }
+    }
 
 });
 

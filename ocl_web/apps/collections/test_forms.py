@@ -1,5 +1,5 @@
 from django.test import TestCase
-from forms import CollectionCreateForm, CollectionEditForm, CollectionVersionAddForm, CollectionAddReferenceForm
+from forms import CollectionCreateForm, CollectionEditForm, CollectionVersionAddForm
 from unittest import skip
 
 
@@ -70,21 +70,6 @@ class CollectionEditFormTest(TestCase):
         self.assertFalse(edit_form.fields.__contains__('short_code'))
         self.assertTrue(edit_form.fields.__contains__('name'))
         self.assertTrue(edit_form.fields.__contains__('full_name'))
-
-class CollectionAddReferenceFormTest(TestCase):
-
-    def test_collectionAddReferenceForm_containesUrl_formIsValid(self):
-        form_data = {
-            'expression': '/orgs/tw/sources/ICD-10-2010/concepts/testid/',
-        }
-        form = CollectionAddReferenceForm(data=form_data)
-        self.assertTrue(form.is_valid())
-
-    def test_collectionAddReferenceForm_urlIsMissing_formIsInValid(self):
-        form_data = {
-        }
-        form = CollectionAddReferenceForm(data=form_data)
-        self.assertFalse(form.is_valid())
 
 class CollectionVersionAddFormTest(TestCase):
 

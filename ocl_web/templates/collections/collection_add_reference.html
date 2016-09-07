@@ -135,10 +135,15 @@
             </div> {# col-lg-12 #}
         </div> {# row #}
 
-        <div class="row">
+        <div class="row" ng-if="sourceData.mappings.length || sourceData.concepts.length">
             <div class="col-lg-6">
                 <h4 class="checkbox">
-                    <label><input type="checkbox" name="allconceptcheckbox">All Concepts</label>
+                    <label>
+                      <input type="checkbox"
+                             ng-change="selectAllReferencesChanged(sourceData.concepts, pageObj.selectAllConcepts)"
+                             ng-model="pageObj.selectAllConcepts">
+                      All Concepts
+                    </label>
                 </h4>
                 <div class="alert alert-warning" ng-if="!loading && org && source && sourceVersion && !sourceData.concepts.length">
                   No concepts found!
@@ -146,7 +151,9 @@
                 <ul class="list-group">
                   <li class="list-group-item checkbox" ng-repeat="concept in sourceData.concepts">
                       <label>
-                          <input type="checkbox" name="optradio" ng-model="concept.isSelected">
+                          <input type="checkbox"
+                                 ng-change="pageObj.selectAllConcepts = referenceSelectionChanged(concept, sourceData.concepts)"
+                                 ng-model="concept.isSelected">
                           <span ng-bind="concept.id"></span>
                       </label>
                   </li>
@@ -154,7 +161,13 @@
             </div>
             <div class="col-lg-6">
                 <h4 class="checkbox">
-                    <label><input type="checkbox" name="allmappingcheckbox">All Mappings</label>
+                    <label>
+                      <input type="checkbox"
+                             ng-change="selectAllReferencesChanged(sourceData.mappings, pageObj.selectAllMappings)"
+                             ng-model="pageObj.selectAllMappings"
+                             name="allmappingcheckbox">
+                      All Mappings
+                    </label>
                 </h4>
                 <div class="alert alert-warning" ng-if="!loading && org && source && sourceVersion && !sourceData.mappings.length">
                   No mappings found!
@@ -162,7 +175,9 @@
                 <ul class="list-group">
                   <li class="list-group-item checkbox" ng-repeat="mapping in sourceData.mappings">
                       <label>
-                          <input type="checkbox" name="optradio" ng-model="mapping.isSelected">
+                          <input type="checkbox"
+                                 ng-change="pageObj.selectAllMappings = referenceSelectionChanged(mapping, sourceData.mappings)"
+                                 ng-model="mapping.isSelected">
                           <span ng-bind="mapping.url"></span>
                       </label>
                   </li>
