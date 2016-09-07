@@ -756,6 +756,14 @@ app.controller('AddReferencesController', function($scope, ReferenceFactory) {
     }
 
     $scope.addMultipleReferences = function() {
+      references = [];
+
+      references = references.concat(
+        $scope.sourceData.concepts.filter(function(concept) { return concept.isSelected; })
+      ).concat(
+        $scope.sourceData.mappings.filter(function(mapping) { return mapping.isSelected; })
+      ).map(function(reference) { return reference.url });
+
       $scope.addReferences(references);
     };
 

@@ -138,14 +138,15 @@
         <div class="row">
             <div class="col-lg-6">
                 <h4 class="checkbox">
-                    <label><input ng-model="allconcepts" type="checkbox" name="allconceptcheckbox">All Concepts</label>
+                    <label><input type="checkbox" name="allconceptcheckbox">All Concepts</label>
                 </h4>
                 <div class="alert alert-warning" ng-if="!loading && org && source && sourceVersion && !sourceData.concepts.length">
                   No concepts found!
                 </div>
                 <ul class="list-group">
                   <li class="list-group-item checkbox" ng-repeat="concept in sourceData.concepts">
-                      <label><input ng-checked="allconcepts" type="checkbox" name="optradio">
+                      <label>
+                          <input type="checkbox" name="optradio" ng-model="concept.isSelected">
                           <span ng-bind="concept.id"></span>
                       </label>
                   </li>
@@ -153,15 +154,16 @@
             </div>
             <div class="col-lg-6">
                 <h4 class="checkbox">
-                    <label><input ng-model="allmappings" type="checkbox" name="allmappingcheckbox">All Mappings</label>
+                    <label><input type="checkbox" name="allmappingcheckbox">All Mappings</label>
                 </h4>
                 <div class="alert alert-warning" ng-if="!loading && org && source && sourceVersion && !sourceData.mappings.length">
                   No mappings found!
                 </div>
                 <ul class="list-group">
-                  <li class="list-group-item checkbox" ng-repeat="concept in sourceData.mappings">
-                      <label><input ng-checked="allmappings" type="checkbox" name="optradio">
-                          <span ng-bind="concept.url"></span>
+                  <li class="list-group-item checkbox" ng-repeat="mapping in sourceData.mappings">
+                      <label>
+                          <input type="checkbox" name="optradio" ng-model="mapping.isSelected">
+                          <span ng-bind="mapping.url"></span>
                       </label>
                   </li>
                 </ul>
