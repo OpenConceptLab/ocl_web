@@ -1,7 +1,7 @@
 """
 OCL Collection views
 """
-import json
+import simplejson as json
 
 import requests
 import logging
@@ -15,7 +15,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 
 from libs.ocl import OclApi, OclSearch, OclConstants
-from .forms import (CollectionCreateForm, CollectionEditForm, CollectionDeleteForm, CollectionAddReferenceForm, CollectionVersionAddForm)
+from .forms import (CollectionCreateForm, CollectionEditForm, CollectionDeleteForm, CollectionVersionAddForm)
 from apps.core.views import UserOrOrgMixin
 from django.http import QueryDict
 
@@ -371,9 +371,8 @@ class CollectionCreateView(CollectionsBaseView, FormView):
                                                 kwargs={"user": self.user_id,
                                                         'collection': short_code}))
 
-class CollectionAddReferenceView(CollectionsBaseView, FormView):
+class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
     template_name = "collections/collection_add_reference.html"
-    form_class = CollectionAddReferenceForm
 
     def get_context_data(self, *args, **kwargs):
         context = super(CollectionAddReferenceView, self).get_context_data(*args, **kwargs)
@@ -386,8 +385,10 @@ class CollectionAddReferenceView(CollectionsBaseView, FormView):
         context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
         context['collection'] = collection
+        print '>>>>>>>>>>', context
 
         return context
+
 
     def get_success_url(self):
         """ Return URL for redirecting browser """
@@ -399,30 +400,35 @@ class CollectionAddReferenceView(CollectionsBaseView, FormView):
             return reverse('collection-references',
                            kwargs={"username": self.request.user.username,'collection':self.collection_id})
 
-    def form_valid(self, form, *args, **kwargs):
-        """ Use validated form data to delete the collection"""
-
+    def post(self, request, *args, **kwargs):
         self.get_args()
-        data = form.cleaned_data
-        # resolver = resolve(data)
+        expressions = json.loads(request.body)
         api = OclApi(self.request, debug=True)
-        result = api.put(self.owner_type, self.owner_id, 'collections', self.collection_id, 'references', **data)
 
-        if not result.status_code == requests.codes.all_good:
-            emsg = result.json().get('detail', 'Error')
-            messages.add_message(self.request, messages.ERROR, "\n".join(emsg))
-            return HttpResponseRedirect(self.request.path)
+        errors = []
+        # XXX: This should be a bulk operation rather than separate requests
+        for expression in expressions:
+            result = api.put(
+                self.owner_type,
+                self.owner_id, 'collections',
+                self.collection_id,
+                'references',
+                expression=expression
+            )
+            if not result.status_code == requests.codes.all_good:
+                error_message = result.json().get('detail', 'Error')
+                errors.append(
+                    "\n".join(error_message)
+                )
 
-        messages.add_message(self.request, messages.INFO, _('Expression added.'))
+        return HttpResponse(
+            json.dumps({
+                'success_url': self.get_success_url(),
+                'errors': errors
+            }),
+            content_type="application/json"
+        )
 
-        if self.from_org:
-            return HttpResponseRedirect(reverse('collection-references',
-                                                kwargs={'org': self.org_id,
-                                                        'collection': self.collection_id}))
-        else:
-            return HttpResponseRedirect(reverse('collection-references',
-                                                kwargs={'user': self.user_id,
-                                                        'collection': self.collection_id}))
 
 class CollectionReferencesDeleteView(CollectionsBaseView, TemplateView):
     def delete(self, request, *args, **kwargs):

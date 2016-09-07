@@ -70,17 +70,6 @@ class CollectionCreateForm(forms.Form):
             raise forms.ValidationError(_('This Concept ID is already used.'))
         return concept_id
 
-class CollectionAddReferenceForm(forms.Form):
-    """
-    Add Reference to a collection
-    """
-    required_css_class = 'required'
-    expression = forms.CharField(
-        label=_('Expression'),
-        required=True,
-        help_text=_('Any URL which is valid in OCL'),
-        widget=forms.TextInput(attrs={'placeholder': "e.g. /orgs/WHO/sources/ICD-10/concepts/A15.0/"}))
-
 
 class CollectionDeleteForm(forms.Form):
     required_css_class = 'required'

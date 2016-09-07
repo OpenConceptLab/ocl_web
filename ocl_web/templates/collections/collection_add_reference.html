@@ -28,34 +28,31 @@
     <div class="row">
         <div class="col-lg-12">
             <ul class="nav nav-tabs">
-              <li class="active"><a data-toggle="tab" href="#addsinglereftab">Add Single Reference</a></li>
-              <li ><a data-toggle="tab" href="#addmultiplereftab">Add Multiple References</a></li>
+              <li><a data-toggle="tab" href="#addsinglereftab">Add Single Reference</a></li>
+              <li class="active"><a data-toggle="tab" href="#addmultiplereftab">Add Multiple References</a></li>
             </ul>
         </div>
     </div>
     <div class="tab-content">
-      <div id="addsinglereftab" class="tab-pane fade in active">
+      <div id="addsinglereftab" class="tab-pane fade">
         <div class="row">
             <div class="col-lg-12">
-            <br/>
-
-                <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
-                    {% csrf_token %}
-
-
-                    {% bootstrap_form form layout="horizontal" %}
-                    {% buttons layout="horizontal" %}
-                        <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
-                        <a href="{{ collection_references_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
-                    {% endbuttons %}
-                </form>
-
+              <br/>
+              <div class="form-group col-lg-4">
+                <label for="expression">Expression</label>
+                <input type="text"
+                       class="form-control"
+                       id="expression"
+                       ng-model="singleReference"
+                       placeholder="e.g. /orgs/WHO/sources/ICD-10/concepts/A15.0/" required>
+                <span class="help-block">Any URL which is valid in OCL</span> <br />
+                <button type="submit" class="btn btn-primary" ng-click="addReferences([singleReference])">{% trans "Add" %}</button>
+                <a href="{{ collection_references_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+              </div>
             </div> {# col-lg-12 #}
         </div> {# row #}
       </div>
-      <div id="addmultiplereftab" class="tab-pane fade">
-
-
+      <div id="addmultiplereftab" class="tab-pane fade in active">
        <div class="row">
             <div class="col-lg-2" ng-init="getOrgs()">
                 <br/>
@@ -69,7 +66,7 @@
                             <input type="radio" name="owner_radio">User
                         </label>
                       <select class="form-control"
-                              ng-options="org as org.name for org in orgs"
+                              ng-options="org as org.id for org in orgs"
                               ng-change="getOrgSources()"
                               ng-model="org"></select>
                     </div>
@@ -131,18 +128,19 @@
                       <div class="form-group">
                           <label class="control-label">Action</label>
                           <br/>
-                          <button type="button" class="btn btn-primary">Add</button>
+                          <button type="button" class="btn btn-primary" ng-click="addMultipleReferences()">Add</button>
                           <button type="button" class="btn btn-primary">Cancel</button>
                     </div>
                 </form>
             </div> {# col-lg-12 #}
         </div> {# row #}
+
         <div class="row">
             <div class="col-lg-6">
                 <h4 class="checkbox">
                     <label><input ng-model="allconcepts" type="checkbox" name="allconceptcheckbox">All Concepts</label>
                 </h4>
-                <div class="alert alert-warning" ng-if="!loading && org && source && !sourceData.concepts.length">
+                <div class="alert alert-warning" ng-if="!loading && org && source && sourceVersion && !sourceData.concepts.length">
                   No concepts found!
                 </div>
                 <ul class="list-group">
@@ -157,7 +155,7 @@
                 <h4 class="checkbox">
                     <label><input ng-model="allmappings" type="checkbox" name="allmappingcheckbox">All Mappings</label>
                 </h4>
-                <div class="alert alert-warning" ng-if="!loading && org && source && !sourceData.mappings.length">
+                <div class="alert alert-warning" ng-if="!loading && org && source && sourceVersion && !sourceData.mappings.length">
                   No mappings found!
                 </div>
                 <ul class="list-group">
@@ -168,9 +166,7 @@
                   </li>
                 </ul>
             </div>
-
         </div>
-
 
       </div>
     </div>

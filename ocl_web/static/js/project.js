@@ -718,7 +718,6 @@ app.controller('AddReferencesController', function($scope, ReferenceFactory) {
         ReferenceFactory.getOrgSources($scope.org.id)
             .success(function(result) {
                 $scope.sources = result;
-                $scope.getSourceData();
             })
             .error(function(error) {
                 window.alert(error);
@@ -732,7 +731,6 @@ app.controller('AddReferencesController', function($scope, ReferenceFactory) {
         ReferenceFactory.getOrgSourceVersions($scope.org.id, $scope.source.short_code)
             .success(function(result) {
                 $scope.sourceVersions = result;
-                $scope.getSourceData();
             })
             .error(function(error) {
                 window.alert(error);
@@ -756,6 +754,27 @@ app.controller('AddReferencesController', function($scope, ReferenceFactory) {
                 $scope.loading = false;
             });
     }
+
+    $scope.addMultipleReferences = function() {
+      $scope.addReferences(references);
+    };
+
+    $scope.addReferences = function(references) {
+        ReferenceFactory.addReferences(references)
+            .success(function(result) {
+              if(!result.errors.length) {
+                location.pathname = result.success_url;
+                return;
+              }
+              window.alert(result.errors.join('\n'));
+            })
+            .error(function(error) {
+                window.alert(error);
+            })
+            .finally(function() {
+                $scope.loading = false;
+            });
+    };
 
 });
 
@@ -802,6 +821,9 @@ app.factory('ReferenceFactory', function($http) {
             });
     };
 
+    ReferenceFactory.addReferences = function(references) {
+        return $http.post(location.href, references);
+    };
 
     return this;
 });
