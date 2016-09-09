@@ -405,22 +405,14 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
         expressions = json.loads(request.body)
         api = OclApi(self.request, debug=True)
 
-        errors = []
-        # XXX: This should be a bulk operation rather than separate requests
-        for expression in expressions:
-            result = api.put(
-                self.owner_type,
-                self.owner_id, 'collections',
-                self.collection_id,
-                'references',
-                expression=expression
-            )
-            if not result.status_code == requests.codes.all_good:
-                error_message = result.json().get('detail', 'Error')
-                errors.append(
-                    "\n".join(error_message)
-                )
-
+        result = api.put(
+            self.owner_type,
+            self.owner_id, 'collections',
+            self.collection_id,
+            'references',
+            expressions=expressions
+        )
+        errors = result.json().get('__all__') if result.status_code == requests.codes.bad else []
         return HttpResponse(
             json.dumps({
                 'success_url': self.get_success_url(),
