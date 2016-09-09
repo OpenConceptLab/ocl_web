@@ -412,7 +412,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
             'references',
             expressions=expressions
         )
-        errors = result.json().get('__all__') if result.status_code == requests.codes.bad else []
+        errors = result.json() if result.status_code == requests.codes.bad else []
         return HttpResponse(
             json.dumps({
                 'success_url': self.get_success_url(),

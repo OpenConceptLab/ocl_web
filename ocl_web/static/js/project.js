@@ -771,11 +771,11 @@ app.controller('AddReferencesController', function($scope, ReferenceFactory) {
     $scope.addReferences = function(references) {
         ReferenceFactory.addReferences(references)
             .success(function(result) {
-              if(!result.errors.length) {
+              if(!_.size(result.errors)) {
                 location.pathname = result.success_url;
                 return;
               }
-              window.alert(result.errors.join('\n'));
+              window.alert(JSON.stringify(result.errors));
             })
             .error(function(error) {
                 window.alert(error);
