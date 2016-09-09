@@ -106,6 +106,6 @@ class CollectionVersionAddForm(forms.Form):
 
     previous_version = forms.CharField(
         required=True,
-        widget=forms.HiddenInput()),
+        widget=forms.HiddenInput())
 
     # released = forms.BooleanField(required=False, label=_('Released'))

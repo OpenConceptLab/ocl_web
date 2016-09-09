@@ -89,11 +89,20 @@ class CollectionVersionAddFormTest(TestCase):
 
     #TODO Testcases to check for different id inputs remaining
 
-    def test_collectionVersionAddForm_containesBothIdAndDescription_formIsValid(self):
+    def test_collectionVersionAddForm_containesBothIdAndDescription_version_missing_formIsValid(self):
         form_data = {
             'id': 'v1.1',
             'description': 'This is version 1.1',
         }
         form = CollectionVersionAddForm(data=form_data)
-        self.assertTrue(form.is_valid())
+        self.assertFalse(form.is_valid())
 
+
+    def test_collectionVersionAddForm_containesBothIdAndDescription_formIsValid(self):
+        form_data = {
+            'id': 'v1.1',
+            'description': 'This is version 1.1',
+            'previous_version': 'HEAD'
+        }
+        form = CollectionVersionAddForm(data=form_data)
+        self.assertTrue(form.is_valid())

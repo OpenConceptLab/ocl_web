@@ -67,6 +67,9 @@ class UserOrOrgMixin(object):
         # Set the source, concept, and their versions
         self.source_id = self.kwargs.get('source')
         self.source_version_id = self.kwargs.get('source_version')
+        # Set the source, concept, and their versions
+        self.collection_id = self.kwargs.get('collection')
+        self.collection_version_id = self.kwargs.get('collection_version')
         self.concept_id = self.kwargs.get('concept')
         self.concept_version_id = self.kwargs.get('concept_version')
         self.mapping_id = self.kwargs.get('mapping')
