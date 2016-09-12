@@ -404,7 +404,8 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
 
         result = api.put(
             self.owner_type,
-            self.owner_id, 'collections',
+            self.owner_id,
+            'collections',
             self.collection_id,
             'references',
             expressions=expressions

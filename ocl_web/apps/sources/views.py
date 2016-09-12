@@ -285,13 +285,29 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             api = OclApi(self.request, debug=True)
-            if kwargs.get("source_version") :
-                result = api.get('orgs', kwargs.get("org"), "sources", kwargs.get("source"), kwargs.get("source_version"), "concepts")
+            if kwargs.get("source_version"):
+                result = api.get(
+                    'orgs',
+                    kwargs.get("org"),
+                    "sources",
+                    kwargs.get("source"),
+                    kwargs.get("source_version"),
+                    "concepts",
+                    params={'verbose': 'true'}
+                )
             else:
-                result = api.get('orgs', kwargs.get("org"), "sources", kwargs.get("source"), "concepts")
-            return HttpResponse(json.dumps(result.json()), content_type="application/json")
+                result = api.get(
+                    'orgs',
+                    kwargs.get("org"),
+                    "sources",
+                    kwargs.get("source"),
+                    "concepts"
+                )
+            return HttpResponse(
+                json.dumps(result.json()),
+                content_type="application/json"
+            )
         return super(SourceConceptsView, self).get(self, *args, **kwargs)
-
 
 
 class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
@@ -346,14 +362,31 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             api = OclApi(self.request, debug=True)
-            if kwargs.get("source_version") :
-                result = api.get('orgs', kwargs.get("org"), "sources", kwargs.get("source"), kwargs.get("source_version"), "mappings")
+            if kwargs.get("source_version"):
+                result = api.get(
+                    'orgs',
+                    kwargs.get("org"),
+                    "sources",
+                    kwargs.get("source"),
+                    kwargs.get("source_version"),
+                    "mappings",
+                    params={'verbose': 'true'}
+                )
             else:
-                result = api.get('orgs', kwargs.get("org"), "sources", kwargs.get("source"), "mappings")
+                result = api.get(
+                    'orgs',
+                    kwargs.get("org"),
+                    "sources",
+                    kwargs.get("source"),
+                    "mappings",
+                    params={'verbose': 'true'}
+                )
 
-            return HttpResponse(json.dumps(result.json()), content_type="application/json")
+            return HttpResponse(
+                json.dumps(result.json()),
+                content_type="application/json"
+            )
         return super(SourceMappingsView, self).get(self, *args, **kwargs)
-
 
 
 class SourceExternalReferencesView(UserOrOrgMixin, SourceReadBaseView):
