@@ -101,7 +101,7 @@
                             Version
                         </label>
                       <select class="form-control"
-                              ng-options="sv.id as sv.id for sv in sourceVersions"
+                              ng-options="sv as sv.id for sv in sourceVersions"
                               ng-disabled="!source"
                               ng-change="getSourceData()"
                               ng-model="sourceVersion"></select>
