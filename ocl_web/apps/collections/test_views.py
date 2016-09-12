@@ -25,6 +25,7 @@ class FakeRequest(object):
         self.session = {}
         self.GET = {}
         self.body = None
+        self.user = MyDict('tempuser')
 
     def get_full_path(self):
 
@@ -283,6 +284,52 @@ class CollectionAddReferenceViewTest(TestCase):
         }
         context = collectionAddReferenceView.get_context_data()
         self.assertEquals(context['collection'], 'testCollection')
+
+    @patch('libs.ocl.OclApi.put')
+    def test_add_references__positive(self, mock_put):
+        colResponse = MagicMock(spec=Response)
+        mock_put.return_value = colResponse
+        colResponse.status_code = 200
+
+        collectionAddReferenceView = views.CollectionAddReferenceView()
+        collectionAddReferenceView.kwargs = {
+            'collection': '1',
+        }
+        request = FakeRequest()
+        request.body = json.dumps({
+            'expressions': []
+        })
+        collectionAddReferenceView.request = request
+        response = json.loads(
+            collectionAddReferenceView.post(request).content
+        )
+        self.assertEquals(response['errors'], [])
+        self.assertEquals(
+            response['success_url'],
+            '/users/tempuser/collections/1/references/'
+        )
+
+    @patch('libs.ocl.OclApi.put')
+    def test_add_references__negative(self, mock_put):
+        colResponse = MagicMock(spec=Response)
+        mock_put.return_value = colResponse
+        colResponse.json.return_value = {
+            '/foobar/': ['Reference not valid']
+        }
+        colResponse.status_code = 400
+
+        collectionAddReferenceView = views.CollectionAddReferenceView()
+        collectionAddReferenceView.kwargs = {}
+        request = FakeRequest()
+        request.body = json.dumps({
+            'expressions': []
+        })
+        collectionAddReferenceView.request = request
+        response = json.loads(
+            collectionAddReferenceView.post(request).content
+        )
+        self.assertEquals(response['errors'], colResponse.json.return_value)
+
 
 class CollectionReferencesDeleteViewTest(TestCase):
     @patch('libs.ocl.OclApi.delete')

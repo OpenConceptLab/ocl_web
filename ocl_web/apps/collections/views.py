@@ -345,8 +345,6 @@ class CollectionCreateView(CollectionsBaseView, FormView):
         """
             collection input is good, update API backend.
         """
-        print form.cleaned_data
-
         self.get_args()
 
         data = form.cleaned_data
@@ -385,7 +383,6 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
         context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
         context['collection'] = collection
-        print '>>>>>>>>>>', context
 
         return context
 
@@ -398,7 +395,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
 
         else:
             return reverse('collection-references',
-                           kwargs={"username": self.request.user.username,'collection':self.collection_id})
+                           kwargs={"user": self.request.user.username,'collection':self.collection_id})
 
     def post(self, request, *args, **kwargs):
         self.get_args()
@@ -556,9 +553,6 @@ class CollectionEditView(CollectionsBaseView, FormView):
         data = form.cleaned_data
         api = OclApi(self.request, debug=True)
         result = api.update_collection(self.owner_type, self.owner_id, self.collection_id, data)
-        print result
-        if len(result.text) > 0:
-            print result.json()
 
         messages.add_message(self.request, messages.INFO, _('Collection updated'))
         if self.from_org:
