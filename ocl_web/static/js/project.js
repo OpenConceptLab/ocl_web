@@ -785,9 +785,9 @@ app.controller('AddReferencesController', function($scope, ReferenceFactory) {
       references = [];
 
       references = references.concat(
-        $scope.concepts.filter(function(concept) { return concept.isSelected; })
+        $scope.concepts.items.filter(function(concept) { return concept.isSelected; })
       ).concat(
-        $scope.mappings.filter(function(mapping) { return mapping.isSelected; })
+        $scope.mappings.items.filter(function(mapping) { return mapping.isSelected; })
       ).map(function(reference) { return reference.url });
 
       $scope.addReferences(references);
