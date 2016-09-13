@@ -17,6 +17,7 @@
 </h3>
 
 <div class="container" ng-controller="AddReferencesController">
+
     <div class="row">
         <div class="form-group">
             {% field_label 'Short Code' collection.short_code %}
@@ -103,7 +104,7 @@
                       <select class="form-control"
                               ng-options="sv as sv.id for sv in sourceVersions"
                               ng-disabled="!source"
-                              ng-change="getSourceData()"
+                              ng-change="getSourceConcepts(); getSourceMappings()"
                               ng-model="sourceVersion"></select>
                     </div>
                 </form>
@@ -135,24 +136,24 @@
             </div> {# col-lg-12 #}
         </div> {# row #}
 
-        <div class="row" ng-if="sourceData.mappings.length || sourceData.concepts.length">
+        <div class="row" ng-if="mappings.length || concepts.items.length">
             <div class="col-lg-6">
                 <h4 class="checkbox">
                     <label>
                       <input type="checkbox"
-                             ng-change="selectAllReferencesChanged(sourceData.concepts, pageObj.selectAllConcepts)"
+                             ng-change="selectAllReferencesChanged(concepts.items, pageObj.selectAllConcepts)"
                              ng-model="pageObj.selectAllConcepts">
                       All Concepts
                     </label>
                 </h4>
-                <div class="alert alert-warning" ng-if="!loading && org && source && sourceVersion && !sourceData.concepts.length">
+                <div class="alert alert-warning" ng-if="!loading && org && source && sourceVersion && !concepts.items.length">
                   No concepts found!
                 </div>
                 <ul class="list-group">
-                  <li class="list-group-item checkbox" ng-repeat="concept in sourceData.concepts">
+                  <li class="list-group-item checkbox" ng-repeat="concept in concepts.items">
                       <label class="overflow-hidden">
                           <input type="checkbox"
-                                 ng-change="pageObj.selectAllConcepts = referenceSelectionChanged(concept, sourceData.concepts)"
+                                 ng-change="pageObj.selectAllConcepts = referenceSelectionChanged(concept, concepts.items)"
                                  ng-model="concept.isSelected">
                           <span class="resource-label concept small">
                             <span class="resource-label-id">
@@ -173,25 +174,31 @@
                       </label>
                   </li>
                 </ul>
+                <uib-pagination
+                        total-items="concepts.total"
+                        ng-model="currentConceptPage"
+                        items-per-page="REFERENCE_LIMIT"
+                        ng-change="getSourceConcepts(currentConceptPage)">
+                </uib-pagination>
             </div>
             <div class="col-lg-6">
               <h4 class="checkbox">
                 <label>
                       <input type="checkbox"
-                             ng-change="selectAllReferencesChanged(sourceData.mappings, pageObj.selectAllMappings)"
+                             ng-change="selectAllReferencesChanged(mappings.items, pageObj.selectAllMappings)"
                              ng-model="pageObj.selectAllMappings"
                              name="allmappingcheckbox">
                       All Mappings
                     </label>
                 </h4>
-                <div class="alert alert-warning" ng-if="!loading && org && source && sourceVersion && !sourceData.mappings.length">
+                <div class="alert alert-warning" ng-if="!loading && org && source && sourceVersion && !mappings.items.length">
                   No mappings found!
                 </div>
                 <ul class="list-group">
-                  <li class="list-group-item checkbox" ng-repeat="mapping in sourceData.mappings">
+                  <li class="list-group-item checkbox" ng-repeat="mapping in mappings.items">
                       <label>
                         <input type="checkbox"
-                               ng-change="pageObj.selectAllMappings = referenceSelectionChanged(mapping, sourceData.mappings)"
+                               ng-change="pageObj.selectAllMappings = referenceSelectionChanged(mapping, mappings.items)"
                                ng-model="mapping.isSelected">
                         <div class="col-md-10 search-result-col-content">
                           <div class="label-container">
@@ -247,6 +254,12 @@
                       </label>
                   </li>
                 </ul>
+                <uib-pagination
+                        total-items="mappings.total"
+                        ng-model="currentMappingPage"
+                        items-per-page="REFERENCE_LIMIT"
+                        ng-change="getSourceMappings(currentMappingPage)">
+                </uib-pagination>
             </div>
         </div>
 
@@ -255,3 +268,4 @@
 
 </div> {# container #}
 {% endblock %}
+

@@ -649,8 +649,8 @@ function removeMember(orgId, memId) {
     alert(memId);
 };
 
-app.controller('MemberRemoveController', function($scope, $modal,
-    $location, $http, $log) {
+app.controller('MemberRemoveController', function($scope, $uibModal,
+                                                  $location, $http, $log) {
 
     $scope.alerts = [];
 
@@ -680,7 +680,7 @@ app.controller('MemberRemoveController', function($scope, $modal,
     $scope.removeMember = function(org, username) {
         $scope.org = org;
         $scope.username = username;
-        var modalInstance = $modal.open({
+        var modalInstance = $uibModal.open({
             templateUrl: 'myModalContent.html',
             // controller: 'MemberRemoveModalController',
             size: 'sm',
@@ -699,6 +699,7 @@ app.controller('MemberRemoveController', function($scope, $modal,
 
 app.controller('AddReferencesController', function($scope, ReferenceFactory) {
     $scope.pageObj = {};
+    $scope.REFERENCE_LIMIT = 10;
 
     $scope.getOrgs = function() {
         $scope.sources = [];
@@ -736,33 +737,57 @@ app.controller('AddReferencesController', function($scope, ReferenceFactory) {
             .error(function(error) {
                 window.alert(error);
             });
-    }
+    };
 
-    $scope.getSourceData = function() {
+    $scope.getSourceConcepts = function(page) {
         if(!$scope.org || !$scope.source) {
             return;
         }
         $scope.loading = true;
+
+        var params = {limit: $scope.REFERENCE_LIMIT, page: page};
         var sourceVersionId = $scope.sourceVersion ? $scope.sourceVersion.id : null;
-        ReferenceFactory.getOrgSourceData($scope.org.id, $scope.source.short_code, sourceVersionId)
-            .then(function(result) {
-                $scope.sourceData = result;
+
+        ReferenceFactory.getOrgSourceVersionConcepts($scope.org.id, $scope.source.short_code, sourceVersionId, params)
+            .success(function(result) {
+                $scope.concepts = result;
             })
-            .catch(function(error) {
+            .error(function(error) {
                 window.alert(error);
             })
             .finally(function() {
                 $scope.loading = false;
             });
-    }
+    };
+
+    $scope.getSourceMappings = function(page) {
+        if(!$scope.org || !$scope.source) {
+            return;
+        }
+        $scope.loading = true;
+
+        var params = {limit: $scope.REFERENCE_LIMIT, page: page};
+        var sourceVersionId = $scope.sourceVersion ? $scope.sourceVersion.id : null;
+
+        ReferenceFactory.getOrgSourceVersionMappings($scope.org.id, $scope.source.short_code, sourceVersionId, params)
+            .success(function(result) {
+                $scope.mappings = result;
+            })
+            .error(function(error) {
+                window.alert(error);
+            })
+            .finally(function() {
+                $scope.loading = false;
+            });
+    };
 
     $scope.addMultipleReferences = function() {
       references = [];
 
       references = references.concat(
-        $scope.sourceData.concepts.filter(function(concept) { return concept.isSelected; })
+        $scope.concepts.filter(function(concept) { return concept.isSelected; })
       ).concat(
-        $scope.sourceData.mappings.filter(function(mapping) { return mapping.isSelected; })
+        $scope.mappings.filter(function(mapping) { return mapping.isSelected; })
       ).map(function(reference) { return reference.url });
 
       $scope.addReferences(references);
@@ -801,12 +826,13 @@ app.controller('AddReferencesController', function($scope, ReferenceFactory) {
       if(selectedReferences.length === allReferences.length) {
         return true;
       }
-    }
+    };
 
 });
 
 app.factory('ReferenceFactory', function($http) {
     var ReferenceFactory = this;
+    var DEFAULT_PER_PAGE = 10;
 
     ReferenceFactory.getOrgs = function() {
         return $http.get('/orgs/');
@@ -820,32 +846,25 @@ app.factory('ReferenceFactory', function($http) {
         return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/versions/');
     };
 
-    ReferenceFactory.getOrgSourceVersionConcepts = function(orgId, sourceId, sourceVersionId) {
+    ReferenceFactory.getOrgSourceVersionConcepts = function(orgId, sourceId, sourceVersionId, params) {
+        params = params || {
+            limit: DEFAULT_PER_PAGE
+        };
         if(sourceVersionId){
-            return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/' + sourceVersionId + '/concepts/');
+            return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/' + sourceVersionId + '/concepts/', {params: params});
         }
-        return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/concepts/');
+        return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/concepts/', {params: params});
 
     };
 
-    ReferenceFactory.getOrgSourceVersionMappings = function(orgId, sourceId, sourceVersionId) {
+    ReferenceFactory.getOrgSourceVersionMappings = function(orgId, sourceId, sourceVersionId, params) {
+        params = params || {
+            limit: DEFAULT_PER_PAGE
+        };
         if(sourceVersionId){
-            return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/' + sourceVersionId + '/mappings/');
+            return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/' + sourceVersionId + '/mappings/', {params: params});
         }
-        return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/mappings/');
-    };
-
-    ReferenceFactory.getOrgSourceData = function(orgId, sourceId, sourceVersionId) {
-        var data = {};
-        return ReferenceFactory.getOrgSourceVersionConcepts(orgId, sourceId, sourceVersionId)
-            .then(function(result) {
-                data.concepts = angular.isArray(result.data) ? result.data : [];
-                return ReferenceFactory.getOrgSourceVersionMappings(orgId, sourceId, sourceVersionId);
-            })
-            .then(function(result) {
-                data.mappings = angular.isArray(result.data) ? result.data : [];
-                return data;
-            });
+        return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/mappings/', {params: params});
     };
 
     ReferenceFactory.addReferences = function(references) {

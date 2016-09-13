@@ -284,27 +284,22 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
 
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
-            api = OclApi(self.request, debug=True)
-            if kwargs.get("source_version"):
-                result = api.get(
-                    'orgs',
-                    kwargs.get("org"),
-                    "sources",
-                    kwargs.get("source"),
-                    kwargs.get("source_version"),
-                    "concepts",
-                    params={'verbose': 'true'}
-                )
-            else:
-                result = api.get(
-                    'orgs',
-                    kwargs.get("org"),
-                    "sources",
-                    kwargs.get("source"),
-                    "concepts"
-                )
+            self.get_args()
+            # Load the concepts in this source, applying search parameters
+            searcher = self.get_source_concepts(
+                self.owner_type, self.owner_id, self.source_id,
+                source_version_id=self.source_version_id,
+                search_params=self.request.GET
+            )
+
+            response = {
+                'items': searcher.search_results,
+                'per_page': searcher.num_per_page,
+                'total': searcher.num_found,
+            }
+
             return HttpResponse(
-                json.dumps(result.json()),
+                json.dumps(response),
                 content_type="application/json"
             )
         return super(SourceConceptsView, self).get(self, *args, **kwargs)
@@ -361,29 +356,22 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
 
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
-            api = OclApi(self.request, debug=True)
-            if kwargs.get("source_version"):
-                result = api.get(
-                    'orgs',
-                    kwargs.get("org"),
-                    "sources",
-                    kwargs.get("source"),
-                    kwargs.get("source_version"),
-                    "mappings",
-                    params={'verbose': 'true'}
-                )
-            else:
-                result = api.get(
-                    'orgs',
-                    kwargs.get("org"),
-                    "sources",
-                    kwargs.get("source"),
-                    "mappings",
-                    params={'verbose': 'true'}
-                )
+            self.get_args()
+
+            searcher = self.get_source_mappings(
+                self.owner_type, self.owner_id, self.source_id,
+                source_version_id=self.source_version_id,
+                search_params=self.request.GET
+            )
+
+            response = {
+                'items': searcher.search_results,
+                'per_page': searcher.num_per_page,
+                'total': searcher.num_found,
+            }
 
             return HttpResponse(
-                json.dumps(result.json()),
+                json.dumps(response),
                 content_type="application/json"
             )
         return super(SourceMappingsView, self).get(self, *args, **kwargs)
