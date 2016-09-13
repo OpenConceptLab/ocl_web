@@ -162,10 +162,10 @@
                                 <span class="breadcrumb_part" ng-bind="concept.owner"></span>
                                 <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="concept.source"></span>
                                 <span class="breadcrumb_divider"> / </span>
-                                <span class="breadcrumb_part breadcrumb_part_focus" ng-bind="concept.display_name"></span>
+                                <span class="breadcrumb_part breadcrumb_part_focus" ng-bind="concept.version"></span>
                               </span>
                             </span>
-                            <span class="resource-label-name" ng-bind="concept.version"></span>
+                            <span class="resource-label-name" ng-bind="concept.display_name"></span>
                             <p>
                               <em>Class:</em> <span ng-bind="concept.concept_class"></span> <em>Datatype:</em> <span ng-bind="concept.datatype"></span>
                               <br><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on <span ng-bind="concept.updated_on | date"></span></span>
