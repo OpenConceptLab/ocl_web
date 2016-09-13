@@ -649,8 +649,8 @@ function removeMember(orgId, memId) {
     alert(memId);
 };
 
-app.controller('MemberRemoveController', function($scope, $modal,
-    $location, $http, $log) {
+app.controller('MemberRemoveController', function($scope, $uibModal,
+                                                  $location, $http, $log) {
 
     $scope.alerts = [];
 
@@ -680,7 +680,7 @@ app.controller('MemberRemoveController', function($scope, $modal,
     $scope.removeMember = function(org, username) {
         $scope.org = org;
         $scope.username = username;
-        var modalInstance = $modal.open({
+        var modalInstance = $uibModal.open({
             templateUrl: 'myModalContent.html',
             // controller: 'MemberRemoveModalController',
             size: 'sm',
