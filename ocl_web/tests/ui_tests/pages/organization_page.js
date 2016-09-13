@@ -21,7 +21,7 @@ var OrganizationPage = function() {
     // create reference locators
     this.references = element(by.linkText('References'));
     this.addNewReferenceLink = element(by.linkText(' Reference'));
-    this.expression = $('#id_expression');
+    this.expression = $('#expression');
     this.addReferenceButton = element(by.buttonText('Add'));
 
     // create source under org locators
@@ -147,10 +147,13 @@ var OrganizationPage = function() {
         this.createMappingButton.click();
     };
 
-    // this.acceptNotification = function () {
-    //     // browser.sleep('250');
-    //     $('.ajs-success').click();
-    //     browser.sleep('500');
-    // };
+    //
+    // this.waitForAjax = function () {
+    //     setInterval(function () {
+    //         if ($.active == 0) {
+    //             return;
+    //         }
+    //     }, 1000)
+    // }
 };
 module.exports = OrganizationPage;

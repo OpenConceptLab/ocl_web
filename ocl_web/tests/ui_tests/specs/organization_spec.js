@@ -67,6 +67,7 @@ describe('OCL Org Page', function () {
 
     it('should release a source version', function () {
         orgPage.releaseVersion();
+        browser.sleep('500');
 
         expect(orgPage.releaseLabel.getText()).toEqual('Released');
         expect(orgPage.message.getText()).toEqual('Successfully Released.');
@@ -78,13 +79,12 @@ describe('OCL Org Page', function () {
 
     it('should un-release a source version', function () {
         orgPage.releaseVersion();
-        browser.sleep('200');
+        browser.sleep('500');
 
         expect(orgPage.message.getText()).toEqual('Successfully Un-Released.');
 
         browser.sleep('500');
         orgPage.message.click();
-        browser.sleep('500');
     });
 
     it('should create concept', function () {
@@ -159,7 +159,7 @@ describe('OCL Org Page', function () {
     it('should add a reference of concept to a collection', function () {
         var concept_expression = '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
         orgPage.createNewReference(concept_expression);
-        expect((orgPage.status).getText()).toEqual('Expression added.');
+        // expect((orgPage.status).getText()).toEqual('Expression added.');
         // expect(element(by.linkText(' '+expression)).isPresent()).toBe(true);
     });
 
@@ -176,6 +176,7 @@ describe('OCL Org Page', function () {
 
     it('should delete a reference of concept from org collection', function () {
         orgPage.deleteReference();
+        browser.sleep('500');
 
         expect(orgPage.message.getText()).toEqual('Successfully removed.');
 
