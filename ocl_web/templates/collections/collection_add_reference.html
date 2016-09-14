@@ -39,17 +39,19 @@
         <div class="row">
             <div class="col-lg-12">
               <br/>
-              <div class="form-group col-lg-4">
-                <label for="expression">Expression</label>
-                <input type="text"
-                       class="form-control"
-                       id="expression"
-                       ng-model="singleReference"
-                       placeholder="e.g. /orgs/WHO/sources/ICD-10/concepts/A15.0/" required>
-                <span class="help-block">Any URL which is valid in OCL</span> <br />
-                <button type="submit" class="btn btn-primary" ng-click="addReferences([singleReference])">{% trans "Add" %}</button>
-                <a href="{{ collection_references_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
-              </div>
+              <form ng-submit="addReferences([singleReference])">
+                <div class="form-group col-lg-4">
+                  <label for="expression">Expression</label>
+                  <input type="text"
+                         class="form-control"
+                         id="expression"
+                         ng-model="singleReference"
+                         placeholder="e.g. /orgs/WHO/sources/ICD-10/concepts/A15.0/" required>
+                  <span class="help-block">Any URL which is valid in OCL</span> <br />
+                  <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
+                  <a href="{{ collection_references_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+                </div>
+              </form>
             </div> {# col-lg-12 #}
         </div> {# row #}
       </div>
