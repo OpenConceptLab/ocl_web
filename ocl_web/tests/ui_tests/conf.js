@@ -8,5 +8,8 @@ exports.config = {
         // 'browserName': 'chrome'
 
     },
-    baseUrl: 'http://showcase.openconceptlab.org'
+    'onPrepare' : function () {
+        browser.driver.manage().window().setSize(1280, 1024);
+    },
+    baseUrl: 'http://showcase.openconceptlab.org/'
 };

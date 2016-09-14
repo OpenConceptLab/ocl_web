@@ -44,7 +44,7 @@ var OrganizationPage = function() {
     // Delete reference locators
     this.deleteLink = $('.delete-reference');
     this.warning = $('.ajs-warning');
-    this.checkReference = element(by.name('reference'));
+    this.checkReference = $('#check_reference');
     this.okButton = element(by.buttonText('OK'));
 
     // create concept locators

@@ -33,7 +33,7 @@
             <div class="filter-group-body">
                 {% for filter_option in search_filter.options %}
                     {% if filter_option.option_num > 0 or search_filter.attrs.show_zeroed_options %}
-                        <div class="checkbox"><label><input type="checkbox" id="check_reference" name="{{ search_filter.filter_id }}" value="{{ filter_option.option_value }}" {% if filter_option.selected %}checked{% endif %}>{{ filter_option.option_name }}{% if not search_filter.attrs.hide_numbers %}&nbsp;&nbsp;&nbsp;&nbsp;{% endif %}</label></div>
+                        <div class="checkbox"><label><input type="checkbox" name="{{ search_filter.filter_id }}" value="{{ filter_option.option_value }}" {% if filter_option.selected %}checked{% endif %}>{{ filter_option.option_name }}{% if not search_filter.attrs.hide_numbers %}&nbsp;&nbsp;&nbsp;&nbsp;{% endif %}</label></div>
                     {% endif %}
                 {% endfor %}
             </div>
@@ -121,7 +121,7 @@
             <div class="row row-search-result references">
             {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
                 <div class="col-md-1 search-result-col-icon">
-                    <input type="checkbox" name="reference" value="{{ result.expression }}" {% if result.expression %}{% endif %}>
+                    <input type="checkbox" name="reference" id="check_reference" value="{{ result.expression }}" {% if result.expression %}{% endif %}>
                 </div>
             {% endif %}
                 <div class="col-md-11 search-result-col-content">
