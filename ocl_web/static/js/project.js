@@ -844,8 +844,9 @@ app.factory('Reference', function($http) {
     };
 
     Reference.getResourceContainerVersions = function(ownerType, resourceContainerType, owner, resourceContainer) {
-        var id = ownerType === 'orgs' ? owner.id : owner.username;
-        return $http.get('/' + ownerType + '/' + id + '/' + resourceContainerType + '/' + resourceContainer.name+ '/versions/');
+        var ownerIdentifier = ownerType === 'orgs' ? owner.id : owner.username;
+        var resourceIdentifier = resourceContainerType === 'sources' ? resourceContainer.name : resourceContainer.id;
+        return $http.get('/' + ownerType + '/' + ownerIdentifier + '/' + resourceContainerType + '/' + resourceIdentifier + '/versions/');
     };
 
     Reference.getResourceContainerVersionConcepts = function(ownerType, resourceContainerType, owner, resourceContainer, resourceContainerVersion, params) {
@@ -854,8 +855,10 @@ app.factory('Reference', function($http) {
         };
         var id = ownerType === 'orgs' ? owner.id : owner.username;
         var resourceContainerVersionId = resourceContainerVersion ? resourceContainerVersion.id : 'HEAD';
+        var ownerIdentifier = ownerType === 'orgs' ? owner.id : owner.username;
+        var resourceIdentifier = resourceContainerType === 'sources' ? resourceContainer.name : resourceContainer.id;
 
-        return $http.get('/' + ownerType +'/' + id + '/' + resourceContainerType +'/' + resourceContainer.name + '/' + resourceContainerVersionId + '/concepts/', {params: params});
+        return $http.get('/' + ownerType +'/' + ownerIdentifier + '/' + resourceContainerType +'/' + resourceIdentifier + '/' + resourceContainerVersionId + '/concepts/', {params: params});
     };
 
     Reference.getResourceContainerVersionMappings = function(ownerType, resourceContainerType, owner, resourceContainer, resourceContainerVersion, params) {
@@ -864,8 +867,10 @@ app.factory('Reference', function($http) {
         };
         var id = ownerType === 'orgs' ? owner.id : owner.username;
         var resourceContainerVersionId = resourceContainerVersion ? resourceContainerVersion.id : 'HEAD';
+        var ownerIdentifier = ownerType === 'orgs' ? owner.id : owner.username;
+        var resourceIdentifier = resourceContainerType === 'sources' ? resourceContainer.name : resourceContainer.id;
 
-        return $http.get('/' + ownerType +'/' + id + '/' + resourceContainerType +'/' + resourceContainer.name + '/' + resourceContainerVersionId + '/mappings/', {params: params});
+        return $http.get('/' + ownerType +'/' + ownerIdentifier + '/' + resourceContainerType +'/' + resourceIdentifier + '/' + resourceContainerVersionId + '/mappings/', {params: params});
     };
 
     Reference.addReferences = function(references) {
