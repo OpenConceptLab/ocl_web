@@ -131,12 +131,18 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         self.mapping_id = self.kwargs.get('mapping')
 
         api = OclApi(self.request, debug=True)
-
-        self.source = api.get(
-            self.owner_type, self.org_id, 'sources', self.source_id).json()
-        self.mapping = api.get(
-            self.owner_type, self.org_id, 'sources', self.source_id,
-            'mappings', self.mapping_id).json()
+        if self.from_org:
+            self.source = api.get(
+                self.owner_type, self.org_id, 'sources', self.source_id).json()
+            self.mapping = api.get(
+                self.owner_type, self.org_id, 'sources', self.source_id,
+                'mappings', self.mapping_id).json()
+        else:
+            self.source = api.get(
+                self.owner_type, self.user_id, 'sources', self.source_id).json()
+            self.mapping = api.get(
+                self.owner_type, self.user_id, 'sources', self.source_id,
+                'mappings', self.mapping_id).json()
 
         return MappingEditForm
 
