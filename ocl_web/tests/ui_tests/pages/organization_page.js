@@ -22,7 +22,7 @@ var OrganizationPage = function() {
     this.references = element(by.linkText('References'));
     this.addNewReferenceLink = element(by.linkText(' Reference'));
     this.expression = $('#expression');
-    this.addReferenceButton = element(by.css('[ng-click="addReferences([singleReference])"]'));
+    this.addReferenceButton = element(by.buttonText('Add'));
 
     // create source under org locators
     this.newOrgSourceLink = element(by.linkText('Sources'));

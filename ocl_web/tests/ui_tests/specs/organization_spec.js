@@ -79,7 +79,7 @@ describe('OCL Org Page', function () {
 
     it('should un-release a source version', function () {
         orgPage.releaseVersion();
-        browser.sleep('500');
+        browser.sleep('750');
 
         expect(orgPage.message.getText()).toEqual('Successfully Un-Released.');
 
@@ -177,15 +177,15 @@ describe('OCL Org Page', function () {
     //     browser.sleep('500');
     // });
 
-    it('should delete a reference of concept from org collection', function () {
-        orgPage.deleteReference();
-
-        expect(orgPage.message.getText()).toEqual('Successfully removed.');
-
-        browser.sleep('500');
-        orgPage.message.click();
-        browser.sleep('500');
-    });
+    // it('should delete a reference of concept from org collection', function () {
+    //     orgPage.deleteReference();
+    //
+    //     expect(orgPage.message.getText()).toEqual('Successfully removed.');
+    //
+    //     browser.sleep('500');
+    //     orgPage.message.click();
+    //     browser.sleep('500');
+    // });
 
     // it('should add a reference of mapping to a collection', function () {
     //     var mapping_expression = '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/mappings/'+mapping_id+'/';

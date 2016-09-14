@@ -70,7 +70,7 @@ describe('OCL User Source Page', function () {
 
     it('should un-release a user source version', function () {
         orgPage.releaseVersion();
-        browser.sleep('200');
+        browser.sleep('750');
 
         expect(orgPage.message.getText()).toEqual('Successfully Un-Released.');
 
