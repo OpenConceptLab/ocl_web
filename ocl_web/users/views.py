@@ -1,6 +1,8 @@
 """OCL Users
 """
 
+import simplejson as json
+
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -15,11 +17,15 @@ from django.contrib import messages
 from braces.views import LoginRequiredMixin
 
 # Import the form from users/forms.py
+from django.views.generic import View
+
 from .forms import UserForm
 
 # Import the customized User model
 from .models import User
 from libs.ocl import OclApi
+from django.http import HttpResponse
+
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -126,3 +132,23 @@ class UserListView(LoginRequiredMixin, ListView):
     # These next two lines tell the view to index lookups by username
     slug_field = "username"
     slug_url_kwarg = "username"
+
+
+class UserJsonView(View):
+    def get(self, request, *args, **kwargs):
+        api = OclApi(self.request, debug=True)
+        result = api.get('users',params={'limit': '0'})
+        return HttpResponse(json.dumps(result.json()), content_type="application/json")
+
+
+class UserSourcesView(View):
+    def get(self, request, *args, **kwargs):
+        api = OclApi(self.request, debug=True)
+        result = api.get('users', kwargs.get("user"), "sources",params={'limit': '0'})
+        return HttpResponse(json.dumps(result.json()), content_type="application/json")
+
+class UserCollectionsView(View):
+    def get(self, request, *args, **kwargs):
+        api = OclApi(self.request, debug=True)
+        result = api.get('users', kwargs.get("user"), "collections",params={'limit': '0'})
+        return HttpResponse(json.dumps(result.json()), content_type="application/json")

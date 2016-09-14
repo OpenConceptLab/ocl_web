@@ -166,6 +166,28 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
 
         return context
 
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            self.get_args()
+
+            searcher = self.get_collection_data(
+                self.owner_type, self.owner_id, self.collection_id, OclConstants.RESOURCE_NAME_MAPPINGS,
+                collection_version_id=self.collection_version_id,
+                search_params=self.request.GET
+            )
+
+            response = {
+                'items': searcher.search_results,
+                'per_page': searcher.num_per_page,
+                'total': searcher.num_found,
+            }
+
+            return HttpResponse(
+                json.dumps(response),
+                content_type="application/json"
+            )
+        return super(CollectionMappingsView, self).get(self, *args, **kwargs)
+
 
 class CollectionConceptsView(CollectionsBaseView, TemplateView):
     """ collection concept view. """
@@ -213,6 +235,28 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
 
         return context
 
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            self.get_args()
+            # Load the concepts in this source, applying search parameters
+            searcher = self.get_collection_data(
+                self.owner_type, self.owner_id, self.collection_id, OclConstants.RESOURCE_NAME_CONCEPTS,
+                collection_version_id=self.collection_version_id,
+                search_params=self.request.GET
+            )
+
+            response = {
+                'items': searcher.search_results,
+                'per_page': searcher.num_per_page,
+                'total': searcher.num_found,
+            }
+
+            return HttpResponse(
+                json.dumps(response),
+                content_type="application/json"
+            )
+        return super(CollectionConceptsView, self).get(self, *args, **kwargs)
+
 
 class CollectionVersionsView(CollectionsBaseView, TemplateView):
     """ collection About view. """
@@ -249,6 +293,14 @@ class CollectionVersionsView(CollectionsBaseView, TemplateView):
         context['collection_versions'] = searcher.search_results
 
         return context
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            api = OclApi(self.request, debug=True)
+            result = api.get('orgs', kwargs.get('org'), 'collections', kwargs.get('collection'), 'versions',params={'limit': '0'})
+            return HttpResponse(json.dumps(result.json()), content_type="application/json")
+        return super(CollectionVersionsView, self).get(self, *args, **kwargs)
+
 
 class CollectionAboutView(CollectionsBaseView, TemplateView):
     """ Collection About view. """

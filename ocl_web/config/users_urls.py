@@ -14,7 +14,7 @@ from __future__ import unicode_literals
 from django.conf.urls import (patterns, url)
 
 from users.views import (
-    UserListView, UserRedirectView, UserDetailView, UserUpdateView)
+    UserListView, UserRedirectView, UserDetailView, UserUpdateView, UserJsonView, UserSourcesView, UserCollectionsView)
 
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
@@ -32,6 +32,16 @@ from apps.collections.views import CollectionDetailView, CollectionCreateView, C
 
 urlpatterns = patterns(
     '',
+
+    url(r'^$', UserJsonView.as_view(), name='users-json-view'),
+
+    # /users/:user/sources/"
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/$',
+        UserSourcesView.as_view(), name='user-sources'),
+
+    # /users/:user/collections/"
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/$',
+        UserCollectionsView.as_view(), name='user-collections'),
 
 
     ## SOURCES CORE

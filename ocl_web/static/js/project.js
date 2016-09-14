@@ -697,58 +697,59 @@ app.controller('MemberRemoveController', function($scope, $uibModal,
     };
 });
 
-app.controller('AddReferencesController', function($scope, ReferenceFactory) {
+app.controller('AddReferencesController', function($scope, Reference) {
     $scope.pageObj = {};
+    $scope.ownerType = 'orgs';
+    $scope.resourceContainerType = 'sources';
     $scope.REFERENCE_LIMIT = 10;
 
-    $scope.getOrgs = function() {
-        $scope.sources = [];
-        ReferenceFactory.getOrgs()
+    $scope.getOwners = function() {
+        $scope.resourceContainers = [];
+        Reference.getOwners($scope.ownerType)
             .success(function(result) {
-                $scope.orgs = result;
+                $scope.owners = result;
             })
             .error(function(error) {
                 window.alert(error);
             })
     };
 
-    $scope.getOrgSources = function() {
-        if(!$scope.org) {
+    $scope.getResourceContainers = function() {
+        if(!$scope.owner) {
             return;
         }
-        $scope.sourceVersions = [];
-        ReferenceFactory.getOrgSources($scope.org.id)
+        $scope.resourceContainerVersions = [];
+        $scope.resourceContainer = null;
+        Reference.getResourceContainers($scope.ownerType, $scope.resourceContainerType, $scope.owner)
             .success(function(result) {
-                $scope.sources = result;
+                $scope.resourceContainers = result;
             })
             .error(function(error) {
                 window.alert(error);
             });
     };
 
-     $scope.getSourceVersions = function() {
-        if(!$scope.org || !$scope.source) {
+     $scope.getResourceContainerVersions = function() {
+        if(!$scope.resourceContainer) {
             return;
         }
-        ReferenceFactory.getOrgSourceVersions($scope.org.id, $scope.source.short_code)
+        Reference.getResourceContainerVersions($scope.ownerType, $scope.resourceContainerType, $scope.owner, $scope.resourceContainer)
             .success(function(result) {
-                $scope.sourceVersions = result;
+                $scope.resourceContainerVersions = result;
             })
             .error(function(error) {
                 window.alert(error);
             });
     };
 
-    $scope.getSourceConcepts = function(page) {
-        if(!$scope.org || !$scope.source) {
+    $scope.getResourceContainerConcepts = function(page) {
+        if(!$scope.owner || !$scope.resourceContainer) {
             return;
         }
         $scope.loading = true;
 
         var params = {limit: $scope.REFERENCE_LIMIT, page: page};
-        var sourceVersionId = $scope.sourceVersion ? $scope.sourceVersion.id : null;
-
-        ReferenceFactory.getOrgSourceVersionConcepts($scope.org.id, $scope.source.short_code, sourceVersionId, params)
+        Reference.getResourceContainerVersionConcepts($scope.ownerType, $scope.resourceContainerType, $scope.owner, $scope.resourceContainer, $scope.resourceContainerVersion, params)
             .success(function(result) {
                 $scope.concepts = result;
             })
@@ -760,16 +761,15 @@ app.controller('AddReferencesController', function($scope, ReferenceFactory) {
             });
     };
 
-    $scope.getSourceMappings = function(page) {
-        if(!$scope.org || !$scope.source) {
+    $scope.getResourceContainerMappings = function(page) {
+        if(!$scope.owner || !$scope.resourceContainer) {
             return;
         }
         $scope.loading = true;
 
         var params = {limit: $scope.REFERENCE_LIMIT, page: page};
-        var sourceVersionId = $scope.sourceVersion ? $scope.sourceVersion.id : null;
 
-        ReferenceFactory.getOrgSourceVersionMappings($scope.org.id, $scope.source.short_code, sourceVersionId, params)
+        Reference.getResourceContainerVersionMappings($scope.ownerType, $scope.resourceContainerType, $scope.owner, $scope.resourceContainer, $scope.resourceContainerVersion, params)
             .success(function(result) {
                 $scope.mappings = result;
             })
@@ -794,7 +794,7 @@ app.controller('AddReferencesController', function($scope, ReferenceFactory) {
     };
 
     $scope.addReferences = function(references) {
-        ReferenceFactory.addReferences(references)
+        Reference.addReferences(references)
             .success(function(result) {
               if(!_.size(result.errors)) {
                 location.pathname = result.success_url;
@@ -830,44 +830,45 @@ app.controller('AddReferencesController', function($scope, ReferenceFactory) {
 
 });
 
-app.factory('ReferenceFactory', function($http) {
-    var ReferenceFactory = this;
+app.factory('Reference', function($http) {
+    var Reference = this;
     var DEFAULT_PER_PAGE = 10;
 
-    ReferenceFactory.getOrgs = function() {
-        return $http.get('/orgs/');
+    Reference.getOwners = function(ownerType) {
+        return $http.get('/' + ownerType + '/');
     };
 
-    ReferenceFactory.getOrgSources = function(orgId) {
-        return $http.get('/orgs/' + orgId + '/sources/');
+    Reference.getResourceContainers = function(ownerType, resourceContainerType, owner) {
+        var id = ownerType === 'orgs' ? owner.id : owner.username;
+        return $http.get('/' + ownerType + '/' + id + '/' + resourceContainerType + '/');
     };
 
-    ReferenceFactory.getOrgSourceVersions = function(orgId, sourceId) {
-        return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/versions/');
+    Reference.getResourceContainerVersions = function(ownerType, resourceContainerType, owner, resourceContainer) {
+        var id = ownerType === 'orgs' ? owner.id : owner.username;
+        return $http.get('/' + ownerType + '/' + id + '/' + resourceContainerType + '/' + resourceContainer.name+ '/versions/');
     };
 
-    ReferenceFactory.getOrgSourceVersionConcepts = function(orgId, sourceId, sourceVersionId, params) {
+    Reference.getResourceContainerVersionConcepts = function(ownerType, resourceContainerType, owner, resourceContainer, resourceContainerVersion, params) {
         params = params || {
             limit: DEFAULT_PER_PAGE
         };
-        if(sourceVersionId){
-            return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/' + sourceVersionId + '/concepts/', {params: params});
-        }
-        return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/concepts/', {params: params});
+        var id = ownerType === 'orgs' ? owner.id : owner.username;
+        var resourceContainerVersionId = resourceContainerVersion ? resourceContainerVersion.id : 'HEAD';
 
+        return $http.get('/' + ownerType +'/' + id + '/' + resourceContainerType +'/' + resourceContainer.name + '/' + resourceContainerVersionId + '/concepts/', {params: params});
     };
 
-    ReferenceFactory.getOrgSourceVersionMappings = function(orgId, sourceId, sourceVersionId, params) {
+    Reference.getResourceContainerVersionMappings = function(ownerType, resourceContainerType, owner, resourceContainer, resourceContainerVersion, params) {
         params = params || {
             limit: DEFAULT_PER_PAGE
         };
-        if(sourceVersionId){
-            return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/' + sourceVersionId + '/mappings/', {params: params});
-        }
-        return $http.get('/orgs/' + orgId + '/sources/' + sourceId + '/mappings/', {params: params});
+        var id = ownerType === 'orgs' ? owner.id : owner.username;
+        var resourceContainerVersionId = resourceContainerVersion ? resourceContainerVersion.id : 'HEAD';
+
+        return $http.get('/' + ownerType +'/' + id + '/' + resourceContainerType +'/' + resourceContainer.name + '/' + resourceContainerVersionId + '/mappings/', {params: params});
     };
 
-    ReferenceFactory.addReferences = function(references) {
+    Reference.addReferences = function(references) {
         return $http.post(location.href, references);
     };
 

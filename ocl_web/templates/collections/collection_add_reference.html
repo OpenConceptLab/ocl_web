@@ -55,21 +55,30 @@
       </div>
       <div id="addmultiplereftab" class="tab-pane fade">
        <div class="row">
-            <div class="col-lg-2" ng-init="getOrgs()">
+            <div class="col-lg-2" ng-init="getOwners()">
                 <br/>
                 <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
                     {% csrf_token %}
                     <div class="form-group">
                         <label class="radio-inline">
-                            <input checked type="radio" name="owner_radio">Organization
+                            <input type="radio"
+                                   ng-change="getOwners()"
+                                   ng-model="ownerType"
+                                   value="orgs">
+                            Organization
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="owner_radio">User
+                            <input type="radio"
+                                   ng-change="getOwners()"
+                                   ng-model="ownerType"
+                                   value="users">
+                            User
                         </label>
                       <select class="form-control"
-                              ng-options="org as org.id for org in orgs"
-                              ng-change="getOrgSources()"
-                              ng-model="org"></select>
+                              ng-options="owner as (ownerType === 'orgs' ? owner.id : owner.username) for owner in owners"
+                              ng-change="getResourceContainers()"
+                              ng-model="owner"></select>
+
                     </div>
                 </form>
 
@@ -80,16 +89,26 @@
                     {% csrf_token %}
                     <div class="form-group">
                         <label class="radio-inline">
-                            <input checked type="radio" name="src_col_radio">Source
+                            <input type="radio"
+                                   ng-disabled="!owner"
+                                   ng-change="getResourceContainers()"
+                                   ng-model="resourceContainerType"
+                                   value="sources">
+                            Source
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="src_col_radio">Collection
+                            <input type="radio"
+                                   ng-disabled="!owner"
+                                   ng-change="getResourceContainers()"
+                                   ng-model="resourceContainerType"
+                                   value="collections">
+                            Collection
                         </label>
                       <select class="form-control"
-                              ng-options="source as source.name for source in sources"
-                              ng-change="getSourceVersions()"
-                              ng-disabled="!org"
-                              ng-model="source"></select>
+                              ng-options="rc as rc.name for rc in resourceContainers"
+                              ng-change="getResourceContainerVersions()"
+                              ng-disabled="!owner"
+                              ng-model="resourceContainer"></select>
                     </div>
                 </form>
             </div> {# col-lg-12 #}
@@ -102,10 +121,10 @@
                             Version
                         </label>
                       <select class="form-control"
-                              ng-options="sv as sv.id for sv in sourceVersions"
-                              ng-disabled="!source"
-                              ng-change="getSourceConcepts(); getSourceMappings()"
-                              ng-model="sourceVersion"></select>
+                              ng-options="rcv as rcv.id for rcv in resourceContainerVersions"
+                              ng-disabled="!owner || !resourceContainer"
+                              ng-change="getResourceContainerConcepts(); getResourceContainerMappings()"
+                              ng-model="resourceContainerVersion"></select>
                     </div>
                 </form>
             </div> {# col-lg-12 #}
@@ -146,7 +165,7 @@
                       All Concepts
                     </label>
                 </h4>
-                <div class="alert alert-warning" ng-if="!loading && org && source && sourceVersion && !concepts.items.length">
+                <div class="alert alert-warning" ng-if="!loading && owner && resourceContainer && resourceContainerVersion && !concepts.items.length">
                   No concepts found!
                 </div>
                 <ul class="list-group">
@@ -175,6 +194,7 @@
                   </li>
                 </ul>
                 <uib-pagination
+                        ng-if="concepts.length"
                         total-items="concepts.total"
                         ng-model="currentConceptPage"
                         items-per-page="REFERENCE_LIMIT"
@@ -191,7 +211,7 @@
                       All Mappings
                     </label>
                 </h4>
-                <div class="alert alert-warning" ng-if="!loading && org && source && sourceVersion && !mappings.items.length">
+                <div class="alert alert-warning" ng-if="!loading && owner && resourceContainer && resourceContainerVersion && !mappings.items.length">
                   No mappings found!
                 </div>
                 <ul class="list-group">
@@ -255,6 +275,7 @@
                   </li>
                 </ul>
                 <uib-pagination
+                        ng-if="mappings.length"
                         total-items="mappings.total"
                         ng-model="currentMappingPage"
                         items-per-page="REFERENCE_LIMIT"

@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 from django.conf.urls import (patterns, url)
 
 from apps.orgs.views import (
-    OrganizationDetailsView, OrganizationAboutView, OrganizationSourcesView,OrganizationCollectionsView,
+    OrganizationDetailsView, OrganizationAboutView, OrganizationSourcesView, OrganizationCollectionsView,
     OrganizationNewView, OrganizationEditView, OrganizationRetireView,
     OrganizationMemberAddView, OrganizationMemberRemoveView, OrgJsonView)
 
@@ -43,6 +43,14 @@ urlpatterns = patterns(
 
     # /orgs/
     url(r'^$', OrgJsonView.as_view(), name='orgs-json-view'),
+
+    # /orgs/:org/sources/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/$',
+        OrganizationSourcesView.as_view(), name='org-sources'),
+
+     # /orgs/:org/collections/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/$',
+        OrganizationCollectionsView.as_view(), name='org-collections'),
 
 
     ## ORGANIZATION
@@ -333,6 +341,7 @@ urlpatterns = patterns(
     # /orgs/:org/collections/:collection/versions/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/versions/$',
         CollectionVersionsView.as_view(), name='collection-versions'),
+
     # /users/:user/collections/:collection/:collection_version/edit
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/json/edit/$',
         CollectionVersionEditJsonView.as_view(), name='collection-version-json-edit'),
