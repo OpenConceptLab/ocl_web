@@ -295,9 +295,10 @@ class CollectionVersionsView(CollectionsBaseView, TemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
+        self.get_args()
         if request.is_ajax():
             api = OclApi(self.request, debug=True)
-            result = api.get('orgs', kwargs.get('org'), 'collections', kwargs.get('collection'), 'versions',params={'limit': '0'})
+            result = api.get(self.owner_type, self.owner_id, 'collections', kwargs.get('collection'), 'versions',params={'limit': '0'})
             return HttpResponse(json.dumps(result.json()), content_type="application/json")
         return super(CollectionVersionsView, self).get(self, *args, **kwargs)
 
