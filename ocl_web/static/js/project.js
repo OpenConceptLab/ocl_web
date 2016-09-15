@@ -963,6 +963,26 @@ $('div.release_unrelease_section #id_release').on('click', function (el) {
         alertify.error('Something unexpected happened!', 3);
         console.log(err)
     });
-
-
 });
+
+
+if ($('#new_concept_base_url').length > 0) {
+    var urlParts = _.compact(window.location.pathname.split('/')),
+        conceptIdPlaceholder = '[concept-id]',
+        titleFor = function (reference) {
+            return 'Your new concept will live at: ' + reference;
+        };
+
+    urlParts.pop();
+
+    var conceptReference = window.location.origin + "/" + urlParts.join('/') + "/";
+
+    $('#new_concept_base_url').text(conceptReference);
+    $('#id_concept_id').attr('title', titleFor(conceptReference + conceptIdPlaceholder) );
+    $('#id_concept_id').keyup(function () {
+        var conceptId = $(this).val(),
+            conceptIdText = conceptId || conceptIdPlaceholder;
+        $('#new_concept_id').text(conceptIdText);
+        $('#id_concept_id').attr('title', titleFor(conceptReference + conceptIdText));
+    });
+}
