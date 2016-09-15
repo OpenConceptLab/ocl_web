@@ -21,6 +21,7 @@ from braces.views import (LoginRequiredMixin, JsonRequestResponseMixin)
 from .forms import (ConceptNewForm, ConceptEditForm, ConceptNewMappingForm, ConceptRetireForm)
 from libs.ocl import OclApi, OclSearch, OclConstants
 from apps.core.views import UserOrOrgMixin
+from itertools import chain
 
 logger = logging.getLogger('oclweb')
 
@@ -470,8 +471,9 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
                                                 'source': self.source_id,
                                                 'concept': concept_id}))
         else:
+            errors = list(chain.from_iterable(json.loads(result.content).values()))
             messages.add_message(self.request, messages.ERROR,
-                                 _('Error occurred: ' + result.content))
+                                 _('Error occurred: ' + "\n".join(errors)))
             logger.warning('Concept create POST failed: %s' % result.content)
             return super(ConceptNewView, self).form_invalid(form)
 
