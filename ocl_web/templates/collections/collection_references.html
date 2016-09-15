@@ -89,7 +89,7 @@
                 <!-- Org collections Search -->
                 <div class="form-group pull-left search-container">
                     <div class="input-group input-group-sm">
-                        <input name="q" id="resourceFilter" type="text" value="{{ collection_q }}" class="form-control" placeholder="Search" />
+                        <input name="q" id="resourceFilter" type="text" value="{{ search_query }}" class="form-control" placeholder="Search" />
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
                         </span>
@@ -125,6 +125,8 @@
                 </div>
                 </input>
             </div>
+            {% empty %}
+            <h3><small>{% trans 'No references found' %}</small></h3>
         {% endfor %}
 
         <div id="contact" class="modal fade" role="dialog">
