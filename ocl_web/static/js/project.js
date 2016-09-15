@@ -840,12 +840,14 @@ app.factory('Reference', function($http) {
 
     Reference.getResourceContainers = function(ownerType, resourceContainerType, owner) {
         var id = ownerType === 'orgs' ? owner.id : owner.username;
+
         return $http.get('/' + ownerType + '/' + id + '/' + resourceContainerType + '/');
     };
 
     Reference.getResourceContainerVersions = function(ownerType, resourceContainerType, owner, resourceContainer) {
         var ownerIdentifier = ownerType === 'orgs' ? owner.id : owner.username;
         var resourceIdentifier = resourceContainerType === 'sources' ? resourceContainer.name : resourceContainer.id;
+
         return $http.get('/' + ownerType + '/' + ownerIdentifier + '/' + resourceContainerType + '/' + resourceIdentifier + '/versions/');
     };
 
@@ -853,22 +855,20 @@ app.factory('Reference', function($http) {
         params = params || {
             limit: DEFAULT_PER_PAGE
         };
-        var id = ownerType === 'orgs' ? owner.id : owner.username;
-        var resourceContainerVersionId = resourceContainerVersion ? resourceContainerVersion.id : 'HEAD';
         var ownerIdentifier = ownerType === 'orgs' ? owner.id : owner.username;
         var resourceIdentifier = resourceContainerType === 'sources' ? resourceContainer.name : resourceContainer.id;
+        var resourceContainerVersionId = resourceContainerVersion ? resourceContainerVersion.id : 'HEAD';
 
-        return $http.get('/' + ownerType +'/' + ownerIdentifier + '/' + resourceContainerType +'/' + resourceIdentifier + '/' + resourceContainerVersionId + '/concepts/', {params: params});
+        return $http.get('/' + ownerType +'/' + ownerIdentifier + '/' + resourceContainerType + '/' + resourceIdentifier + '/' + resourceContainerVersionId + '/concepts/', {params: params});
     };
 
     Reference.getResourceContainerVersionMappings = function(ownerType, resourceContainerType, owner, resourceContainer, resourceContainerVersion, params) {
         params = params || {
             limit: DEFAULT_PER_PAGE
         };
-        var id = ownerType === 'orgs' ? owner.id : owner.username;
-        var resourceContainerVersionId = resourceContainerVersion ? resourceContainerVersion.id : 'HEAD';
         var ownerIdentifier = ownerType === 'orgs' ? owner.id : owner.username;
         var resourceIdentifier = resourceContainerType === 'sources' ? resourceContainer.name : resourceContainer.id;
+        var resourceContainerVersionId = resourceContainerVersion ? resourceContainerVersion.id : 'HEAD';
 
         return $http.get('/' + ownerType +'/' + ownerIdentifier + '/' + resourceContainerType +'/' + resourceIdentifier + '/' + resourceContainerVersionId + '/mappings/', {params: params});
     };
