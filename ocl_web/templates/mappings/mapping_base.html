@@ -8,14 +8,27 @@
 {% block content-no-container %}
 
 {% block resource-header %}
-{% if mapping.owner_type == 'Organization' %}
-	{% url 'mapping-home' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_home_url %}
-	{% url 'mapping-edit' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_edit_url %}
-	{% url 'source-home' org=mapping.owner source=mapping.source as source_url %}
+{% if kwargs.mapping_version %}
+    {% if mapping.owner_type == 'Organization' %}
+        {% url 'mapping-home' org=mapping.owner source=mapping.source mapping=mapping.versioned_object_id as mapping_home_url %}
+        {% url 'mapping-edit' org=mapping.owner source=mapping.source mapping=mapping.versioned_object_id as mapping_edit_url %}
+        {% url 'source-home' org=mapping.owner source=mapping.source as source_url %}
+    {% else %}
+        {% url 'mapping-home' user=mapping.owner source=mapping.source mapping=mapping.versioned_object_id as mapping_home_url %}
+        {% url 'mapping-edit' user=mapping.owner source=mapping.source mapping=mapping.versioned_object_id as mapping_edit_url %}
+        {% url 'source-home' user=mapping.owner source=mapping.source as source_url %}
+    {% endif %}
+
 {% else %}
-	{% url 'mapping-home' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_home_url %}
-	{% url 'mapping-edit' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_edit_url %}
-	{% url 'source-home' user=mapping.owner source=mapping.source as source_url %}
+    {% if mapping.owner_type == 'Organization' %}
+        {% url 'mapping-home' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_home_url %}
+        {% url 'mapping-edit' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_edit_url %}
+        {% url 'source-home' org=mapping.owner source=mapping.source as source_url %}
+    {% else %}
+        {% url 'mapping-home' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_home_url %}
+        {% url 'mapping-edit' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_edit_url %}
+        {% url 'source-home' user=mapping.owner source=mapping.source as source_url %}
+    {% endif %}
 {% endif %}
 
 <header class="resource-header resource-header-mapping">
@@ -27,10 +40,19 @@
 
 					<!-- mapping label -->
 					<div class="label-container">
-						{% resource_owner_label mapping label_size='large' %} / {% generic_resource_label resource_type='source' resource_id=mapping.source resource_url=source_url label_size='large' %} / {% generic_resource_label resource_type='mapping' resource_id=mapping.id resource_name=mapping.map_type resource_url=mapping_home_url label_size='large' resource_retired=mapping.retired %}
-						{% if_can_change mapping %}
-							&nbsp;<a href="{{ mapping_edit_url }}" class="text-muted small" title="Edit Mapping"><span class="glyphicon glyphicon-cog"></span></a>
-						{% endif_can_change mapping %}
+                        {% if kwargs.mapping_version %}
+                            {% resource_owner_label mapping label_size='large' %} / {% generic_resource_label resource_type='source' resource_id=mapping.source resource_url=source_url label_size='large' %} /
+                            {% generic_resource_label resource_type='mapping' resource_id=mapping.versioned_object_id resource_name=mapping.map_type resource_url=mapping_home_url label_size='large' resource_retired=mapping.retired %}/ [ {{ kwargs.mapping_version }} ]
+{#                            {% if_can_change mapping %}#}
+{#                                &nbsp;<a href="{{ mapping_edit_url }}" class="text-muted small" title="Edit Mapping"><span class="glyphicon glyphicon-cog"></span></a>#}
+{#                            {% endif_can_change mapping %}#}
+                        {% else %}
+                            {% resource_owner_label mapping label_size='large' %} / {% generic_resource_label resource_type='source' resource_id=mapping.source resource_url=source_url label_size='large' %} /
+                            {% generic_resource_label resource_type='mapping' resource_id=mapping.id resource_name=mapping.map_type resource_url=mapping_home_url label_size='large' resource_retired=mapping.retired %}
+                            {% if_can_change mapping %}
+                                &nbsp;<a href="{{ mapping_edit_url }}" class="text-muted small" title="Edit Mapping"><span class="glyphicon glyphicon-cog"></span></a>
+                            {% endif_can_change mapping %}
+                        {% endif %}
 					</div>
 
 					<!-- from_concept label -->
@@ -59,23 +81,24 @@
 </header> <!-- /resource-header-mapping -->
 {% endblock resource-header %}
 
+{% if not kwargs.mapping_version %}
+    {% block resource-tabs %}
+        {% if mapping.owner_type == 'Organization' %}
+            {% url 'mapping-details' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_details_url %}
+            {% url 'mapping-versions' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_history_url %}
+        {% else %}
+            {% url 'mapping-details' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_details_url %}
+            {% url 'mapping-versions' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_history_url %}
+        {% endif %}
 
-{% block resource-tabs %}
-{% if mapping.owner_type == 'Organization' %}
-	{% url 'mapping-details' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_details_url %}
-	{% url 'mapping-versions' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_history_url %}
-{% else %}
-    {% url 'mapping-details' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_details_url %}
-    {% url 'mapping-versions' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_history_url %}
+    <div class="container">
+        <ul class="nav nav-tabs">
+            <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ mapping_details_url }}">Details</a></li>
+            <li role="presentation" {% if selected_tab == "History" %}class="active"{% endif %}><a href="{{ mapping_history_url }}">History</a></li>
+        </ul>
+    </div>
+    {% endblock resource-tabs %}
 {% endif %}
-<div class="container">
-    <ul class="nav nav-tabs">
-        <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ mapping_details_url }}">Details</a></li>
-        <li role="presentation" {% if selected_tab == "History" %}class="active"{% endif %}><a href="{{ mapping_history_url }}">History</a></li>
-    </ul>
-</div>
-{% endblock resource-tabs %}
-
 
 {% block tab-content %}
 {% endblock tab-content %}

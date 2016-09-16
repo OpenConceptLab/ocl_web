@@ -11,7 +11,11 @@
 		<!-- Mapping Details -->
 		<div class="col-md-8">
 			<div class="panel panel-default">
-				<div class="panel-heading"><h3 class="panel-title">Mapping Details</h3></div>
+                {% if not kwargs.mapping_version %}
+				    <div class="panel-heading"><h3 class="panel-title">Mapping Details</h3></div>
+                {% else %}
+                    <div class="panel-heading"><h3 class="panel-title">Mapping Version Details</h3></div>
+                {% endif %}
 				<div class="panel-body">
 					<div id="mapping_id">{% field_label 'ID' mapping.id %}</div>
 					{% field_label 'Retired' mapping.retired %}
