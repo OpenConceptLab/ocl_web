@@ -13,6 +13,8 @@ from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 import json
 
+from libs.ocl import OclConstants
+from libs.ocl import OclSearch
 from .forms import (MappingNewForm, MappingEditForm, MappingRetireForm)
 from braces.views import LoginRequiredMixin
 from libs.ocl import OclApi
@@ -56,6 +58,29 @@ class MappingReadBaseView(TemplateView):
         elif search_response.status_code != 200:
             search_response.raise_for_status()
         return search_response.json()
+
+    def get_mapping_versions(self, owner_type, owner_id, source_id, mapping_id, search_params=None):
+        """
+        Load mapping details from the API and return as dictionary.
+        """
+        # TODO(paynejd@gmail.com): Validate the input parameters
+
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_MAPPING_VERSIONS,
+                             params=search_params)
+
+        api = OclApi(self.request, debug=True, facets=False)
+        search_response = api.get(
+            owner_type, owner_id, 'sources', source_id, 'mappings', mapping_id, 'versions')
+
+        if search_response.status_code == 404:
+            raise Http404
+        elif search_response.status_code != 200:
+            search_response.raise_for_status()
+        searcher.process_search_results(
+            search_type=searcher.search_type, search_response=search_response,
+            search_params=search_params)
+
+        return searcher
 
 
 
@@ -109,6 +134,37 @@ class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Details'
         context['mapping'] = mapping
+
+        return context
+
+class MappingVersionsView(UserOrOrgMixin, MappingReadBaseView):
+    """
+    Mapping Details view.
+    """
+    template_name = "mappings/mapping_history.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Loads the mapping details.
+        """
+
+        # Setup the context and args
+        context = super(MappingVersionsView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the mapping details
+        mapping = self.get_mapping_details(
+            self.owner_type, self.owner_id, self.source_id, self.mapping_id)
+
+        searcher = self.get_mapping_versions(
+            self.owner_type, self.owner_id, self.source_id, self.mapping_id)
+
+        # Set the context
+        context['kwargs'] = self.kwargs
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'History'
+        context['mapping'] = mapping
+        context['mapping_versions'] = searcher.search_results
 
         return context
 

@@ -24,7 +24,7 @@ from apps.concepts.views import (
     ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptEditView,
     ConceptRetireView, ConceptNewView, ConceptDescView, ConceptNameView)
 from apps.mappings.views import (
-    MappingDetailsView, MappingNewView, MappingEditView, MappingRetireView)
+    MappingDetailsView, MappingNewView, MappingEditView, MappingRetireView, MappingVersionsView)
 from apps.core.views import ExtraJsonView
 from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView, CollectionAboutView, \
     CollectionVersionsView, CollectionConceptsView, CollectionMappingsView, \
@@ -245,6 +245,10 @@ urlpatterns = patterns(
     # /users/:user/sources/:source/mappings/:mapping/details/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/details/$',    # pylint: disable=C0301
         MappingDetailsView.as_view(), name='mapping-details'),
+
+    # /users/:user/sources/:source/mappings/:mapping/history/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/history/$',    # pylint: disable=C0301
+        MappingVersionsView.as_view(), name='mapping-versions'),
 
     # /users/:user/sources/:source/mappings/:mapping/edit/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301

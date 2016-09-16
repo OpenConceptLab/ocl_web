@@ -17,6 +17,7 @@ class OclConstants(object):
     RESOURCE_ID_SOURCE_VERSION = 6
     RESOURCE_ID_CONCEPT_VERSION = 7
     RESOURCE_ID_COLLECTION_VERSION = 8
+    RESOURCE_ID_MAPPING_VERSION = 9
 
     # Resource Names - SINGULAR
     RESOURCE_NAME_USER = 'user'
@@ -28,6 +29,7 @@ class OclConstants(object):
     RESOURCE_NAME_SOURCE_VERSION = 'source_version'
     RESOURCE_NAME_COLLECTION_VERSION = 'collection_version'
     RESOURCE_NAME_CONCEPT_VERSION = 'concept_version'
+    RESOURCE_NAME_MAPPING_VERSION = 'mapping_version'
 
     # Resource Names - PLURAL
     RESOURCE_NAME_USERS = 'users'
@@ -40,6 +42,7 @@ class OclConstants(object):
     RESOURCE_NAME_MAPPINGS = 'mappings'
     RESOURCE_NAME_SOURCE_VERSIONS = 'source_versions'
     RESOURCE_NAME_CONCEPT_VERSIONS = 'concept_versions'
+    RESOURCE_NAME_MAPPING_VERSIONS = 'mapping_versions'
 
     # Search filter definitions for each resource
     SEARCH_FILTER_INFO = {
@@ -277,6 +280,11 @@ class OclConstants(object):
             'int':RESOURCE_ID_CONCEPT_VERSION,
             'mnemonic':RESOURCE_NAME_CONCEPT_VERSION,
             'display_name':'concept version',
+            'facets':False},
+        RESOURCE_NAME_MAPPING_VERSIONS:{
+            'int':RESOURCE_ID_MAPPING_VERSION,
+            'mnemonic':RESOURCE_NAME_MAPPING_VERSION,
+            'display_name':'mapping version',
             'facets':False},
     }
 

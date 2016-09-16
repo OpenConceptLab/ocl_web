@@ -61,18 +61,19 @@
 
 
 {% block resource-tabs %}
-{% comment Removing because currently no need for tabs on mapping page %}
 {% if mapping.owner_type == 'Organization' %}
 	{% url 'mapping-details' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_details_url %}
+	{% url 'mapping-versions' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_history_url %}
 {% else %}
-	{% url 'mapping-details' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_details_url %}
+    {% url 'mapping-details' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_details_url %}
+    {% url 'mapping-versions' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_history_url %}
 {% endif %}
 <div class="container">
     <ul class="nav nav-tabs">
         <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ mapping_details_url }}">Details</a></li>
+        <li role="presentation" {% if selected_tab == "History" %}class="active"{% endif %}><a href="{{ mapping_history_url }}">History</a></li>
     </ul>
 </div>
-{% endcomment %}
 {% endblock resource-tabs %}
 
 

@@ -1,0 +1,65 @@
+{% extends "mappings/mapping_base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+
+{% block tab-content %}
+<div class="container" style="margin-top: 20px;">
+	<div class="row">
+
+		<div class="col-md-8">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Mapping Version History</h3></div>
+				<div class="panel-body">
+
+				{% for mapping_version in mapping_versions %}
+					{% if mapping.owner_type == 'Organization' %}
+						{% url 'mapping-version-details' org=mapping.owner source=mapping.source mapping=mapping.id mapping_version=mapping_version.version as mapping_version_url %}
+					{% else %}
+						{% url 'mapping-version-details' user=mapping.owner source=mapping.source mapping=mapping.id mapping_version=mapping_version.version as mapping_version_url %}
+					{% endif %}
+
+					<div class="row">
+						<div class="col-md-9">
+                                <span class="text-muted small"><em>version : </em></span> {{ mapping_version.version }}
+                            <br />
+							<span class="text-muted small">
+								<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Updated by {{ mapping_version.created_by }}
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Updated on {{ mapping_version.created_at|smart_datetime }}
+							</span>
+						</div>
+						<div class="col-md-3" style="text-align:right;">
+							<a href="{{ mapping_version_url }}"><span class="glyphicon glyphicon-search"></span></a>
+						</div>
+					</div>
+					{% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ mapping_version|pprint }}</pre></div></div>{% endif %}
+					{% if not forloop.last %}<hr />{% endif %}
+				{% empty %}
+					<h3><small>None</small></h3>
+				{% endfor %}
+
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+				<div class="panel-body">
+					<p class="small">All changes to a mapping are automatically saved to its
+						<strong>Mapping Version History</strong>.</p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL kwargs</h4><pre>{{ kwargs|pprint }}</pre>
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Mapping</h4><pre>{{ mapping|pprint }}</pre>
+{% endblock resource-debug %}
