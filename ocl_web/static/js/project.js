@@ -978,6 +978,7 @@ if ($('#new_concept_base_url').length > 0) {
         updateHelpText = function () {
             var conceptId = $('#id_concept_id').val(),
                 conceptIdText = conceptId || conceptIdPlaceholder;
+            $('#new_concept_base_url').text(conceptReference);
             $('#new_concept_id').text(conceptIdText);
             $('#id_concept_id').attr('title', titleFor(conceptReference + conceptIdText));
         };
