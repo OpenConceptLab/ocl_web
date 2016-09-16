@@ -208,3 +208,28 @@ class OrgUrlsTest(TestCase):
         self.assertEqual(resolver.kwargs['collection'], 'collection1')
         self.assertEqual(resolver.kwargs['collection_version'], 'v1')
 
+    def test_org_mapping_versions_mappings_to_viewname(self):
+        resolver = resolve('/orgs/org1/sources/s1/mappings/m1/history/')
+        self.assertEqual(resolver.view_name, 'mapping-versions')
+        self.assertEqual(resolver.kwargs['org'], 'org1')
+        self.assertEqual(resolver.kwargs['source'], 's1')
+        self.assertEqual(resolver.kwargs['mapping'], 'm1')
+
+
+    def test_org_mapping_versions_mappings_viewname_to_url(self):
+        url = reverse('mapping-versions', kwargs={"org": "org1", "source": "s1","mapping":"m1"})
+        self.assertEqual(url, '/orgs/org1/sources/s1/mappings/m1/history/')
+
+    def test_org_mapping_version_mappings_to_viewname(self):
+        resolver = resolve('/orgs/org1/sources/s1/mappings/m1/1/')
+        self.assertEqual(resolver.view_name, 'mapping-version-home')
+        self.assertEqual(resolver.kwargs['org'], 'org1')
+        self.assertEqual(resolver.kwargs['source'], 's1')
+        self.assertEqual(resolver.kwargs['mapping'], 'm1')
+        self.assertEqual(resolver.kwargs['mapping_version'], '1')
+
+
+    def test_org_mapping_version_mappings_viewname_to_url(self):
+        url = reverse('mapping-version-home', kwargs={"org": "org1", "source": "s1","mapping":"m1","mapping_version":"1"})
+        self.assertEqual(url, '/orgs/org1/sources/s1/mappings/m1/1/')
+

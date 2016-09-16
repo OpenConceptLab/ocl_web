@@ -228,4 +228,28 @@ class UserUrlsTest(TestCase):
         url = reverse('collection-mappings', kwargs={"user": "testuser", "collection": "collection1","collection_version":"v1"})
         self.assertEqual(url, '/users/testuser/collections/collection1/v1/mappings/')
 
+    def test_user_mapping_versions_mappings_to_viewname(self):
+        resolver = resolve('/users/testuser/sources/s1/mappings/m1/history/')
+        self.assertEqual(resolver.view_name, 'mapping-versions')
+        self.assertEqual(resolver.kwargs['user'], 'testuser')
+        self.assertEqual(resolver.kwargs['source'], 's1')
+        self.assertEqual(resolver.kwargs['mapping'], 'm1')
+
+
+    def test_user_mapping_versions_mappings_viewname_to_url(self):
+        url = reverse('mapping-versions', kwargs={"user": "testuser", "source": "s1","mapping":"m1"})
+        self.assertEqual(url, '/users/testuser/sources/s1/mappings/m1/history/')
+
+    def test_user_mapping_version_mappings_to_viewname(self):
+        resolver = resolve('/users/testuser/sources/s1/mappings/m1/1/')
+        self.assertEqual(resolver.view_name, 'mapping-version-home')
+        self.assertEqual(resolver.kwargs['user'], 'testuser')
+        self.assertEqual(resolver.kwargs['source'], 's1')
+        self.assertEqual(resolver.kwargs['mapping'], 'm1')
+        self.assertEqual(resolver.kwargs['mapping_version'], '1')
+
+
+    def test_user_mapping_version_mappings_viewname_to_url(self):
+        url = reverse('mapping-version-home', kwargs={"user": "testuser", "source": "s1","mapping":"m1","mapping_version":"1"})
+        self.assertEqual(url, '/users/testuser/sources/s1/mappings/m1/1/')
 
