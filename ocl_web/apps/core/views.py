@@ -73,6 +73,7 @@ class UserOrOrgMixin(object):
         self.concept_id = self.kwargs.get('concept')
         self.concept_version_id = self.kwargs.get('concept_version')
         self.mapping_id = self.kwargs.get('mapping')
+        self.mapping_version_id = self.kwargs.get('mapping_version')
 
     def args_string(self):
         """

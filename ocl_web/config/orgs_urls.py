@@ -308,6 +308,10 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/retire/$',    # pylint: disable=C0301
         MappingRetireView.as_view(), name='mapping-retire'),
 
+    # /orgs/:org/sources/:source/mappings/:mapping/ - points to "mapping-details"
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/(?P<mapping_version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
+        MappingDetailsView.as_view(), name='mapping-version-home'),
+
 
     ## SELFISH URLs
     # NOTE: Placed at the end so that reserved words aren't incorrectly treated like mnemonics

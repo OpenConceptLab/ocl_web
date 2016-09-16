@@ -45,14 +45,18 @@ class MappingReadBaseView(TemplateView):
         return search_response.json()
 
 
-    def get_mapping_details(self, owner_type, owner_id, source_id, mapping_id):
+    def get_mapping_details(self, owner_type, owner_id, source_id, mapping_id, mapping_version_id = None):
         """
         Load mapping details from the API and return as dictionary.
         """
         # TODO(paynejd@gmail.com): Validate the input parameters
         api = OclApi(self.request, debug=True)
-        search_response = api.get(
-            owner_type, owner_id, 'sources', source_id, 'mappings', mapping_id)
+        if mapping_version_id :
+            search_response = api.get(
+                owner_type, owner_id, 'sources', source_id, 'mappings', mapping_id, mapping_version_id)
+        else :
+            search_response = api.get(
+                owner_type, owner_id, 'sources', source_id, 'mappings', mapping_id)
         if search_response.status_code == 404:
             raise Http404
         elif search_response.status_code != 200:
@@ -120,14 +124,17 @@ class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
         """
         Loads the mapping details.
         """
-
         # Setup the context and args
         context = super(MappingDetailsView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
         # Load the mapping details
-        mapping = self.get_mapping_details(
-            self.owner_type, self.owner_id, self.source_id, self.mapping_id)
+        if self.mapping_version_id:
+            mapping = self.get_mapping_details(
+                self.owner_type, self.owner_id, self.source_id, self.mapping_id, mapping_version_id = self.mapping_version_id)
+        else :
+            mapping = self.get_mapping_details(
+                self.owner_type, self.owner_id, self.source_id, self.mapping_id)
 
         # Set the context
         context['kwargs'] = self.kwargs
@@ -138,7 +145,7 @@ class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
         return context
 
 class MappingVersionsView(UserOrOrgMixin, MappingReadBaseView):
-    """
+    """`
     Mapping Details view.
     """
     template_name = "mappings/mapping_history.html"
