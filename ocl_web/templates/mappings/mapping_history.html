@@ -14,12 +14,6 @@
 				<div class="panel-body">
 
 				{% for mapping_version in mapping_versions %}
-					{% if mapping.owner_type == 'Organization' %}
-						{% url 'mapping-version-details' org=mapping.owner source=mapping.source mapping=mapping.id mapping_version=mapping_version.version as mapping_version_url %}
-					{% else %}
-						{% url 'mapping-version-details' user=mapping.owner source=mapping.source mapping=mapping.id mapping_version=mapping_version.version as mapping_version_url %}
-					{% endif %}
-
 					<div class="row">
 						<div class="col-md-9">
                                 <span class="text-muted small"><em>version : </em></span> {{ mapping_version.version }}
@@ -31,7 +25,7 @@
 							</span>
 						</div>
 						<div class="col-md-3" style="text-align:right;">
-							<a href="{{ mapping_version_url }}"><span class="glyphicon glyphicon-search"></span></a>
+							<a href="{{ mapping_version.url }}"><span class="glyphicon glyphicon-search"></span></a>
 						</div>
 					</div>
 					{% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ mapping_version|pprint }}</pre></div></div>{% endif %}
