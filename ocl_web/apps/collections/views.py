@@ -114,7 +114,7 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         context['search_query'] = searcher.get_query()
         context['search_filters'] = searcher.search_filter_list
         context['search_sort_options'] = searcher.get_sort_options()
-        context['search_sort'] = searcher.get_sort()
+        context['search_sort'] = self.request.GET.get('search_sort', 'ASC')
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
         context['collection_versions'] = versions.search_results

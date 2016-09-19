@@ -96,6 +96,15 @@
                     </div>
                 </div>
 
+                <!-- Sort dropdown -->
+                <div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;text-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
+                <div class="btn-group pull-left" style="padding-top:5px;">
+                    <select name="search_sort" class="btn btn-default btn-sm xdropdown-toggle">
+                        <option {% if search_sort == 'ASC' %}selected{% endif %} value="ASC">Last Created (Asc)</option>
+                        <option {% if search_sort == 'DESC' %}selected{% endif %} value="DESC">Last Created (Desc)</option>
+                    </select>
+                </div>
+
             {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
                 <div class="btn-group">
                     <a class="btn delete-reference">Delete</a>
