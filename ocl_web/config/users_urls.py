@@ -142,7 +142,7 @@ urlpatterns = patterns(
 
     # /users/:user/sources/:source/concepts/:concept/retire/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/retire/$',    # pylint: disable=C0301
-        ConceptRetireView.as_view(), name='concept-edit'),
+        ConceptRetireView.as_view(), name='concept-retire'),
 
     # /users/:user/sources/:source/concepts/:concept/details/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/details/$',    # pylint: disable=C0301

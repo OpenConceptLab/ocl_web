@@ -636,10 +636,10 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
 
         api = OclApi(self.request, debug=True)
         source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
-        context['source'] = source
         concept = api.get(
             self.owner_type, self.owner_id, 'sources', self.source_id,
             'concepts', self.concept_id).json()
+        context['source'] = source
         context['concept'] = concept
         context['kwargs'] = self.kwargs
         return context
@@ -701,11 +701,18 @@ class ConceptEditView(UserOrOrgMixin, FormView):
 
         api = OclApi(self.request, debug=True)
 
-        self.source = api.get(
-            self.owner_type, self.org_id, 'sources', self.source_id).json()
-        self.concept = api.get(
-            self.owner_type, self.org_id, 'sources', self.source_id,
-            'concepts', self.concept_id).json()
+        if self.from_org:
+            self.source = api.get(
+                self.owner_type, self.org_id, 'sources', self.source_id).json()
+            self.concept = api.get(
+                self.owner_type, self.org_id, 'sources', self.source_id,
+                'concepts', self.concept_id).json()
+        else :
+            self.source = api.get(
+                self.owner_type, self.user_id, 'sources', self.source_id).json()
+            self.concept = api.get(
+                self.owner_type, self.user_id, 'sources', self.source_id,
+                'concepts', self.concept_id).json()
 
         return ConceptEditForm
 

@@ -12,14 +12,16 @@
 {% block content %}
 {% if concept.owner_type == 'Organization' %}
 	{% url 'concept-home' org=concept.owner source=concept.source concept=concept.id as concept_url %}
+    {% url 'concept-retire' org=source.owner source=source.id concept=concept.id as concept_retire_url%}
 {% else %}
 	{% url 'concept-home' user=concept.owner source=concept.source concept=concept.id as concept_url %}
+    {% url 'concept-retire' user=source.owner source=source.id concept=concept.id as concept_retire_url%}
 {% endif %}
 
 <h3>
 	{% resource_owner_label concept %} / {% source_label source %} / {% concept_label concept %} / {% trans 'Update Concept' %}
 	{% if not concept.retired %}
-		&nbsp;&nbsp;&nbsp;<a href="{% url 'concept-retire' org=source.owner source=source.id concept=concept.id %}" title="Retire Concept" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+		&nbsp;&nbsp;&nbsp;<a href="{{ concept_retire_url }}" title="Retire Concept" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
 	{% endif %}
 </h3>
 
