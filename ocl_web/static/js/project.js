@@ -4,9 +4,11 @@ var app = angular.module('ConceptApp', ['ui.bootstrap']);
 /* Add CSRF token for the web site. Note that we are setting the common defaults
    instead of post, because we need it for delete as well?
 */
-app.config(function($httpProvider) {
+app.config(function($httpProvider, $interpolateProvider) {
     $httpProvider.defaults.headers.common['X-CSRFToken'] = $('input[name=csrfmiddlewaretoken]').val();
     $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    $interpolateProvider.startSymbol('[[');
+    $interpolateProvider.endSymbol(']]');
 });
 
 function endsWith(str, suffix) {

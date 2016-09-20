@@ -176,23 +176,23 @@
                           <input type="checkbox"
                                  ng-change="pageObj.selectAllConcepts = referenceSelectionChanged(concept, concepts.items)"
                                  ng-model="concept.isSelected">
-                          <span class="resource-label concept small">
-                            <span class="resource-label-id">
-                              <span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;
-                              <span class="resource-label-id-breadcrumb">
-                                <span class="breadcrumb_part" ng-bind="concept.owner"></span>
-                                <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="concept.source"></span>
-                                <span class="breadcrumb_divider"> / </span>
-                                <span class="breadcrumb_part breadcrumb_part_focus" ng-bind="concept.id"></span>
-                              </span>
-                            </span>
-                            <span class="resource-label-name" ng-bind="concept.display_name"></span>
-                            <p>
-                              <em>Class:</em> <span ng-bind="concept.concept_class"></span> <em>Datatype:</em> <span ng-bind="concept.datatype"></span>
-                              <br><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on <span ng-bind="concept.updated_on | date"></span></span>
-                            </p>
-                          </span>
                       </label>
+                      <a class="resource-label concept small" href="[[ concept.url ]]" target="_blank">
+                        <span class="resource-label-id">
+                          <span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;
+                          <span class="resource-label-id-breadcrumb">
+                            <span class="breadcrumb_part" ng-bind="concept.owner"></span>
+                            <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="concept.source"></span>
+                            <span class="breadcrumb_divider"> / </span>
+                            <span class="breadcrumb_part breadcrumb_part_focus" ng-bind="concept.id"></span>
+                          </span>
+                        </span>
+                        <span class="resource-label-name" ng-bind="concept.display_name"></span>
+                      </a>
+                      <p>
+                        <em>Class:</em> <span ng-bind="concept.concept_class"></span> <em>Datatype:</em> <span ng-bind="concept.datatype"></span>
+                        <br><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on <span ng-bind="concept.updated_on | date"></span></span>
+                      </p>
                   </li>
                 </ul>
                 <uib-pagination
@@ -223,38 +223,40 @@
                                ng-model="mapping.isSelected">
                         <div class="col-md-10 search-result-col-content">
                           <div class="label-container">
-                            <span class="resource-label mapping small">
-                              <span class="resource-label-id">
-                                <span class="resource-label-id-icon"><span class="glyphicon glyphicon-link"></span></span>&nbsp;&nbsp;
-                                <span class="resource-label-id-breadcrumb">
-                                  <span class="breadcrumb_part" ng-bind="mapping.owner"></span>
-                                  <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="mapping.source"></span>
-                                  <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part breadcrumb_part_focus" ng-bind="mapping.id"></span>
+                            <a class="resource-label mapping small" href="[[ mapping.url ]]" target="_blank">
+                                <span class="resource-label-id">
+                                  <span class="resource-label-id-icon"><span class="glyphicon glyphicon-link"></span></span>&nbsp;&nbsp;
+                                  <span class="resource-label-id-breadcrumb">
+                                    <span class="breadcrumb_part" ng-bind="mapping.owner"></span>
+                                    <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="mapping.source"></span>
+                                    <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part breadcrumb_part_focus" ng-bind="mapping.id"></span>
+                                  </span>
                                 </span>
-                              </span>
-                              <span class="resource-label-name" ng-bind="mapping.map_type"></span>
+                                <span class="resource-label-name" ng-bind="mapping.map_type"></span>
+                              </a>
                             </span>
 
                             <!-- from_concept label -->
                             <div style="padding: 8px 0 8px 20px;">
                               <span class="text-muted small">From:</span>&nbsp;&nbsp;
-                              <span class="resource-label concept small">
-                                <span class="resource-label-id">
-                                  <span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;
-                                  <span class="resource-label-id-breadcrumb">
-                                    <span class="breadcrumb_part" ng-bind="mapping.from_source_owner"></span>
-                                    <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="mapping.from_source_name"></span>
-                                    <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part breadcrumb_part_focus" ng-bind="mapping.from_concept_code"></span>
+                              <a href="[[ mapping.from_concept_url ]]" target="_blank" class="resource-label concept small">
+                                  <span class="resource-label-id">
+                                    <span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;
+                                    <span class="resource-label-id-breadcrumb">
+                                      <span class="breadcrumb_part" ng-bind="mapping.from_source_owner"></span>
+                                      <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="mapping.from_source_name"></span>
+                                      <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part breadcrumb_part_focus" ng-bind="mapping.from_concept_code"></span>
+                                    </span>
                                   </span>
+                                  <span class="resource-label-name" ng-bind="mapping.from_concept_name"></span>
                                 </span>
-                                <span class="resource-label-name" ng-bind="mapping.from_concept_name"></span>
-                              </span>
+                              </a>
                             </div>
 
                             <!-- to_concept label -->
                             <div style="padding: 8px 0 8px 20px;">
                               <span class="text-muted small">To:</span>&nbsp;&nbsp;
-                              <span class="resource-label concept small">
+                              <a href="[[ mapping.to_concept_url ]]" target="_blank" class="resource-label concept small">
                                 <span class="resource-label-id">
                                   <span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;
                                   <span class="resource-label-id-breadcrumb">
@@ -264,7 +266,7 @@
                                   </span>
                                 </span>
                                 <span class="resource-label-name" ng-bind="mapping.to_concept_name"></span>
-                              </span>
+                              </a>
                             </div>
 
                           </div>
