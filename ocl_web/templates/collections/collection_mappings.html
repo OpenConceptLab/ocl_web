@@ -104,9 +104,12 @@
 				<div class="col-md-10 search-result-col-content">
 					<div class="label-container">
 						<!-- map_type label -->
+                        {% if kwargs.collection_version and kwargs.collection_version != 'HEAD' %}
 {#						{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type     resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.collection label_size='small' display_breadcrumb=True %}#}
-                        {% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
-
+                            {% generic_resource_label resource_type='mapping' resource_id=result.versioned_object_id resource_name=result.map_type resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}/[{{ result.version }}]
+                        {% else %}
+                            {% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+                        {% endif %}
 						<!-- from_concept label -->
 						{# TODO: we do not know if this concept is retired #}
 						<div style="padding: 8px 0 8px 20px;">
