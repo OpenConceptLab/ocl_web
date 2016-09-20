@@ -95,9 +95,9 @@
 				<div class="col-md-10 search-result-col-content">
                     <div class="label-container">
                         {% if kwargs.collection_version == 'HEAD' or kwargs.collection_version == None %}
-						    {% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.collection label_size='small' display_breadcrumb=True %}
+						    {% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
                         {% else %}
-						    {% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.version_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.collection label_size='small' display_breadcrumb=True %}
+						    {% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.version_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
             			{% endif %}
 					</div>
 					<p>
