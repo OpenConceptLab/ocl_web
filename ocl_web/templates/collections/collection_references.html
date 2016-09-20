@@ -54,7 +54,7 @@
             <div class="col-md-12" style="padding-left:0;">
 
             <!-- Simple Pager -->
-                {% simple_pager current_page 'collection reference' url=pagination_url %}
+                {% simple_pager current_page 'reference' url=pagination_url %}
 
             {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
                 <!-- New collection reference button -->
