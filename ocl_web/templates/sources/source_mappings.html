@@ -108,14 +108,18 @@
 				{% url 'mapping-home' user=result.owner source=result.source mapping=result.id as mapping_url %}
 			{% endif %}
 
-			<div class="row row-search-result"> 
+			<div class="row row-search-result">
 				<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 				<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-link search-result-icon"></span></div>
 				<div class="col-md-10 search-result-col-content">
 					<div class="label-container">
 						<!-- map_type label -->
-						{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=mapping_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
-
+{#						{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=mapping_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}#}
+                        {% if kwargs.source_version and kwargs.source_version != 'HEAD' %}
+                            {% generic_resource_label resource_type='mapping' resource_id=result.versioned_object_id resource_name=result.map_type resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}/[{{ result.version }}]
+                        {% else %}
+                            {% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+                        {% endif %}
 						<!-- from_concept label -->
 						{# TODO: we do not know if this concept is retired #}
 						<div style="padding: 8px 0 8px 20px;">
@@ -125,7 +129,7 @@
 						<!-- to_concept label -->
 						<div style="padding: 0 0 8px 20px;">
 							<span class="text-muted small">To:</span>&nbsp;&nbsp;{% mapping_to_concept_label result label_size="small" %}
-						</div>						
+						</div>
 					</div>
 					<p>
 						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>
