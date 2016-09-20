@@ -705,6 +705,8 @@ app.controller('AddReferencesController', function($scope, Reference) {
 
     $scope.getOwners = function() {
         $scope.resourceContainers = [];
+        $scope.concepts = null;
+        $scope.mappings = null;
         Reference.getOwners($scope.ownerType)
             .success(function(result) {
                 $scope.owners = result;
@@ -720,6 +722,8 @@ app.controller('AddReferencesController', function($scope, Reference) {
         }
         $scope.resourceContainerVersions = [];
         $scope.resourceContainer = null;
+        $scope.concepts = null;
+        $scope.mappings = null;
         Reference.getResourceContainers($scope.ownerType, $scope.resourceContainerType, $scope.owner)
             .success(function(result) {
                 $scope.resourceContainers = result;
@@ -768,7 +772,6 @@ app.controller('AddReferencesController', function($scope, Reference) {
         $scope.loading = true;
 
         var params = {limit: $scope.REFERENCE_LIMIT, page: page};
-
         Reference.getResourceContainerVersionMappings($scope.ownerType, $scope.resourceContainerType, $scope.owner, $scope.resourceContainer, $scope.resourceContainerVersion, params)
             .success(function(result) {
                 $scope.mappings = result;
