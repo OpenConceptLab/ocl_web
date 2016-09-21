@@ -44,7 +44,9 @@
                         {% if request.user.is_authenticated %}
                             {% if not collection_version.is_processing %}
                                 <div class="pull-right">
-                                    <a href="{{ collection_version_edit_url }}" class="btn btn-link" title="Edit Collection Version"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a href="{{ collection_version_edit_url }}" title="Edit Collection Version">
+                                      <span class="glyphicon glyphicon-pencil"></span>
+                                    </a>
                                 </div>
                             {% endif %}
 		                {% endif %}
@@ -52,7 +54,14 @@
 		                <h4>
 
 		                	<a href="{{ collection_version_home_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ collection_version.owner }} / {{ collection.id }} [ </span><span class="resource-label-id-code">{{ collection_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
-                            <span class="release-label-container">&nbsp;&nbsp;&nbsp;&nbsp;{% if collection_version.released %}<span class="label label-primary release-label">{% trans "Released" %}</span>{% endif %}</span>
+                            <span class="release-label-container">
+                              &nbsp;&nbsp;&nbsp;&nbsp;
+                              <span class="label label-primary release-label {% if not collection_version.released or collection_version.retired %}hide{% endif %}">
+                                {% trans "Released" %}
+                              </span>
+                              &nbsp;&nbsp;&nbsp;&nbsp;
+                              <span class="label label-danger retire-label {% if not collection_version.retired %}hide{% endif %}">{% trans "Retired" %}</span>
+                            </span>
 
 {##}
 {#		                    {% if collection_version.is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>{% endif %}#}
@@ -60,11 +69,18 @@
                         {% if request.user.is_authenticated %}
                             <div class='pull-right release_unrelease_section' style="font-size: small;">
                                 {% if not collection_version.id == 'HEAD' %}
-                                    {% if collection_version.released %}
-                                        <input id="id_release" type="checkbox" name="release" value="{{ collection_version.id }}" checked='checked'> Release </input>
-                                    {% else %}
-                                        <input id="id_release" type="checkbox" name="release"  value="{{ collection_version.id }}"> Release </input>
-                                    {% endif %}
+                                    <input id="id_release"
+                                           type="checkbox"
+                                           name="release"
+                                           value="{{ collection_version.id }}"
+                                           {% if collection_version.retired %}disabled{% endif %}
+                                           {% if collection_version.released %}checked{% endif %} /> Release
+
+                                    <input class="collection_retire"
+                                          type="checkbox"
+                                          name="release"
+                                          value="{{ collection_version.id }}"
+                                          {% if collection_version.retired %}checked{% endif %} /> Retire
                                 {% endif %}
                             </div>
                         {% endif %}
