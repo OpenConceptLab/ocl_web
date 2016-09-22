@@ -30,9 +30,6 @@
                                 <a href="{{ collection_edit_url }}" class="small text-muted" title="Edit collection"><span class="glyphicon glyphicon-cog"></span></a>
                             {% endif_can_change collection %}
                         {% else %}
-                            {% if_can_change collection %}
-                                <a href="{{ collection_delete_url }}" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
-	                        {% endif_can_change collection %}
                         {% endif %}
 
                     </div>
