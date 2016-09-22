@@ -60,7 +60,7 @@ describe('OCL User Source Page', function () {
         orgPage.releaseVersion();
         browser.sleep('600');
 
-        expect(orgPage.releaseLabel.getText()).toEqual('Released');
+        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
         expect(orgPage.message.getText()).toEqual('Successfully Released.');
 
         browser.sleep('500');
