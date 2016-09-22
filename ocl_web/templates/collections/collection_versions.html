@@ -42,11 +42,13 @@
 
 		            <li class="list-group-item">
                         {% if request.user.is_authenticated %}
-                            {% if not collection_version.is_processing %}
+                            {% if not collection_version.is_processing and collection_version.id != 'HEAD' %}
                                 <div class="pull-right">
-                                    <a href="{{ collection_version_edit_url }}" title="Edit Collection Version">
+                                    <a href="{{ collection_version_edit_url }}" title="Edit Collection Version" class="no-text-decoration">
                                       <span class="glyphicon glyphicon-pencil"></span>
                                     </a>
+                                    <button class="btn btn-link collection_version_delete glyphicon glyphicon-trash no-text-decoration" title="Delete Collection Version" data-id="{{ collection_version.id }}">
+                                    </button>
                                 </div>
                             {% endif %}
 		                {% endif %}

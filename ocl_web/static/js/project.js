@@ -1012,6 +1012,31 @@ $('div.release_unrelease_section .collection_retire').on('click', function(ev) {
     });
 });
 
+$('button.collection_version_delete').on('click', function(ev) {
+    var button = $(ev.toElement);
+    var version = button.data('id');
+
+    var url = ' /' + window.location.pathname.split('/').slice(1,5).join('/') + '/' + version + '/delete/';
+    if(!window.confirm('Are you sure you want to remove ' + version + '?')) {
+      return;
+    }
+    $.ajax({
+        type: "DELETE",
+        url: url,
+        headers: {
+            'X-CSRFToken': $.cookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        dataType: 'json',
+        contentType: 'application/json'
+    }).done(function (data) {
+        button.closest('.list-group-item').remove();
+        alertify.success('Successfully removed collection version.', 3);
+    }).fail(function () {
+        alertify.error('Something unexpected happened!', 3);
+    });
+});
+
 
 if ($('#new_concept_base_url').length > 0) {
     var urlParts = _.compact(window.location.pathname.split('/')),
