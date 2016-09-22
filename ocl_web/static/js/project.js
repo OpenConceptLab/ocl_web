@@ -977,6 +977,7 @@ $('div.release_unrelease_section .collection_retire').on('click', function(ev) {
                       .find('.release-label-container .retire-label');
     var releaseLable = releaseCheckboxElem.parents('li')
                       .find('.release-label-container .release-label');
+    var breadCrumbLabel = retireCheckboxElem.closest('.list-group-item').find('.resource-label-id-code');
     var retired = retireCheckboxElem.prop('checked');
     var version = retireCheckboxElem.val();
 
@@ -996,9 +997,11 @@ $('div.release_unrelease_section .collection_retire').on('click', function(ev) {
       if(data.retired) {
         setTimeout(function() {releaseLable.addClass('hide')}, 0); // 0 timeout to tell the browser to execute it in the end.
         retireLable.removeClass('hide');
+        breadCrumbLabel.addClass('strikethrough');
         alertify.success('Successfully retired.', 3);
       } else {
         retireLable.addClass('hide');
+        breadCrumbLabel.removeClass('strikethrough');
         alertify.success('Successfully un-retired.', 3);
       }
 

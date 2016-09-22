@@ -348,3 +348,7 @@ a.resource-label:hover {
 .no-text-decoration, .no-text-decoration:hover {
   text-decoration: none;
 }
+
+.strikethrough {
+  text-decoration: line-through
+}
