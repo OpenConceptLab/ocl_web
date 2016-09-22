@@ -997,11 +997,11 @@ $('div.release_unrelease_section .collection_retire').on('click', function(ev) {
         setTimeout(function() {releaseLable.addClass('hide')}, 0); // 0 timeout to tell the browser to execute it in the end.
         retireLable.removeClass('hide');
         breadCrumbLabel.addClass('strikethrough');
-        alertify.success('Successfully retired.', 3);
+        alertify.success('Successfully Retired.', 3);
       } else {
         retireLable.addClass('hide');
         breadCrumbLabel.removeClass('strikethrough');
-        alertify.success('Successfully un-retired.', 3);
+        alertify.success('Successfully Un-Retired.', 3);
       }
 
       if(data.released) {
