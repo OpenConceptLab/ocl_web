@@ -58,9 +58,7 @@
                       <a href="{{ collection_version_home_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ collection_version.owner }} / {{ collection.id }} [ </span><span class="resource-label-id-code {% if collection_version.retired %}strikethrough{% endif %}">{{ collection_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
                             <span class="release-label-container">
                               &nbsp;&nbsp;&nbsp;&nbsp;
-                              <span class="label label-primary release-label {% if not collection_version.released or collection_version.retired %}hide{% endif %}">
-                                {% trans "Released" %}
-                              </span>
+                              <span class="label label-primary release-label {% if not collection_version.released or collection_version.retired %}hide{% endif %}">{% trans "Released" %}</span>
                               &nbsp;&nbsp;&nbsp;&nbsp;
                               <span class="label label-danger retire-label {% if not collection_version.retired %}hide{% endif %}">{% trans "Retired" %}</span>
                             </span>
