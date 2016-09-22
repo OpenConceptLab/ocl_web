@@ -62,7 +62,16 @@
 				  		{% else %}
 				  			{% url 'collection-mappings' user=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
 				  		{% endif %}
-				  		<li {% if collection_version == collection_version_i.id %}class="active"{% endif %}><a href="{{ collection_version_i_url }}">{% if collection_version_i.released %}<strong>{% endif %}{{ collection_version_i.id }}{% if collection_version_i.released %}</strong> <span class="text-muted">(Released)</span>{% endif %}</a></li>
+						<li {% if collection_version == collection_version_i.id %}class="active"{% endif %}>
+              <a href="{{ collection_version_i_url }}">
+                <span {% if collection_version_i.retired %}class="strikethrough"{% endif %}>
+                  {% if collection_version_i.released and not collection_version_i.retired %}
+                  <strong>{% endif %}{{ collection_version_i.id }}</strong>
+                </span>
+                {% if collection_version_i.released and not collection_version_i.retired %}<span class="text-muted">(Released)</span>{% endif %}
+                {% if collection_version_i.retired %}<span class="text-muted">(Retired)</span>{% endif %}
+              </a>
+            </li>
 				    {% endfor %}
 				  	</ul>
 				</div>

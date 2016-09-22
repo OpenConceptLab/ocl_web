@@ -958,16 +958,89 @@ $('div.release_unrelease_section #id_release').on('click', function (el) {
     }).done(function (data) {
         if (released) {
             var dom = "<span class='label label-primary release-label'>Released</span>";
-            $el.parents('li').find('.release-label-container').append(dom);
+            $el.parents('li').find('.release-label-container .release-label').removeClass('hide');
             alertify.success('Successfully Released.', 3);
         } else {
             alertify.success('Successfully Un-Released.', 3);
-            $el.parents('li').find('.release-label-container .release-label').remove();
+            $el.parents('li').find('.release-label-container .release-label').addClass('hide');
         }
     }).fail(function (err) {
         alertify.error('Something unexpected happened!', 3);
         console.log(err)
     });
+});
+
+$('div.release_unrelease_section .collection_retire').on('click', function(ev) {
+    var retireCheckboxElem = $(ev.toElement);
+    var releaseCheckboxElem = retireCheckboxElem.siblings('#id_release');
+    var retireLable = retireCheckboxElem.parents('li')
+                      .find('.release-label-container .retire-label');
+    var releaseLable = releaseCheckboxElem.parents('li')
+                      .find('.release-label-container .release-label');
+    var breadCrumbLabel = retireCheckboxElem.closest('.list-group-item').find('.resource-label-id-code');
+    var retired = retireCheckboxElem.prop('checked');
+    var version = retireCheckboxElem.val();
+
+    var url = ' /' + window.location.pathname.split('/').slice(1,5).join('/') + '/' + version + '/json/edit/';
+    $.ajax({
+        type: "PUT",
+        url: url,
+        headers: {
+            'X-CSRFToken': $.cookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        data: JSON.stringify({retired: retired}),
+        dataType: 'json',
+        contentType: 'application/json'
+    }).done(function (data) {
+      releaseCheckboxElem.prop({disabled: data.retired});
+      if(data.retired) {
+        setTimeout(function() {releaseLable.addClass('hide')}, 0); // 0 timeout to tell the browser to execute it in the end.
+        retireLable.removeClass('hide');
+        breadCrumbLabel.addClass('strikethrough');
+        alertify.success('Successfully retired.', 3);
+      } else {
+        retireLable.addClass('hide');
+        breadCrumbLabel.removeClass('strikethrough');
+        alertify.success('Successfully un-retired.', 3);
+      }
+
+      if(data.released) {
+        releaseLable.removeClass('hide');
+      } else {
+        releaseLable.addClass('hide');
+      }
+    }).fail(function () {
+        alertify.error('Something unexpected happened!', 3);
+    });
+});
+
+$('button.collection_version_delete').on('click', function(ev) {
+    var button = $(ev.toElement);
+    var version = button.data('id');
+
+    var url = ' /' + window.location.pathname.split('/').slice(1,5).join('/') + '/' + version + '/delete/';
+    alertify.confirm(
+      'Delete collection version',
+      'Do you want to remove the collection version <b>' + version + '</b> and associated values from References tab?',
+      function() {
+        $.ajax({
+            type: "DELETE",
+            url: url,
+            headers: {
+                'X-CSRFToken': $.cookie('csrftoken'),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            dataType: 'json',
+            contentType: 'application/json'
+        }).done(function (data) {
+            button.closest('.list-group-item').remove();
+            alertify.success('Successfully removed collection version.', 3);
+        }).fail(function () {
+            alertify.error('Something unexpected happened!', 3);
+        });
+      }, function () {}
+    );
 });
 
 

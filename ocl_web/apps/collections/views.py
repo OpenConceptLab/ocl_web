@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse,resolve, Resolver404
 from django.http import (HttpResponseRedirect, Http404)
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -703,3 +703,26 @@ class CollectionVersionEditJsonView(CollectionsBaseView, TemplateView):
                                           data)
         return HttpResponse(res.content, status=200)
 
+
+class CollectionVersionDeleteView(CollectionsBaseView, View):
+    """ collection version delete view"""
+
+    def delete(self, request, *args, **kwargs):
+        self.get_args()
+        api = OclApi(self.request, debug=True)
+
+        if request.is_ajax():
+            result = api.delete(
+                self.owner_type,
+                self.owner_id,
+                'collections',
+                self.collection_id,
+                self.collection_version_id,
+                **kwargs
+            )
+
+            return HttpResponse(
+                json.dumps({}),
+                content_type="application/json"
+            )
+        return super(CollectionVersionDeleteView, self).delete(self, *args, **kwargs)
