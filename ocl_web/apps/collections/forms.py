@@ -6,7 +6,7 @@ from django import forms
 
 from libs.ocl import OclApi
 
-from apps.core.views import _get_source_type_list, _get_locale_list
+from apps.core.views import _get_collection_type_list, _get_locale_list
 
 
 class CollectionCreateForm(forms.Form):
@@ -14,28 +14,29 @@ class CollectionCreateForm(forms.Form):
     required_css_class = 'required'
 
     short_code = forms.CharField(
-        label=_('Collection Short code'),
+        label=_('Collection Short Code'),
         max_length=128,
         required=True,
-        help_text=_('Short Name (e.g. ICD-10), Your new collection will live at: '
-                    'https://OpenConceptLab.com/[OwnerType]/[Owner]/collections/'
-                    '<span id="collection-name">[CollectionName]</span>'))
+        help_text=_('Your new collection will live at: https://www.openconceptlab.org'
+                    '<span id="new_repository_base_url">[OwnerType]/[Owner]/collections/</span>'
+                    '<span id="new_repository_id" style>[CollectionCode]</span>'),
+        widget=forms.TextInput(attrs={'placeholder': "e.g. c80-practice-codes"}))
     name = forms.CharField(
         label=_('Collection Name'),
         max_length=128,
-        required=True,
-        help_text=_('Name (e.g. ICD-10), Your new collection will live at: '))
-
+        required=True)
     full_name = forms.CharField(
         label=_('Collection Full Name'),
         required=True,
-        help_text=_('Full Name (e.g. International Classification for Diseases v10)'))
+        widget=forms.TextInput(
+            attrs={'placeholder': "e.g. HL7 FHIR Practice Setting Code Value Set"}))
     website = forms.URLField(
         label=_('Website'),
         required=False,
-        help_text=_('Website (e.g. http://apps.who.int/classifications/icd10)'))
+        widget=forms.TextInput(
+            attrs={'placeholder': "e.g. https://www.hl7.org/fhir/valueset-c80-practice-codes.html"}))
     collection_type = forms.ChoiceField(
-        choices=[(v, v) for v in _get_source_type_list()],
+        choices=[(v, v) for v in _get_collection_type_list()],
         label=_('Collection Type'),
         required=False)
     public_access = forms.ChoiceField(
@@ -44,15 +45,18 @@ class CollectionCreateForm(forms.Form):
         initial='View',
         choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
     default_locale = forms.ChoiceField(
-        choices=[(d['code'], d['name']) for d in _get_locale_list()],
-        label=_('Locale'),
+        label=_('Default Locale'),
+        choices=[(d['code'], d['name']+' ('+d['code']+')') for d in _get_locale_list()],
         required=True)
     supported_locales = forms.CharField(
         max_length=30,
         label=_('Supported Locales'),
-        required=True)
-
-    description = forms.CharField(max_length=80, label=_('Description'), required=False)
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': "e.g. en,fr,es"}))
+    description = forms.CharField(
+        max_length=512,
+        label=_('Description'),
+        required=False)
     external_id = forms.CharField(
         label=_('External ID'),
         required=False,
@@ -72,6 +76,7 @@ class CollectionCreateForm(forms.Form):
 
 
 class CollectionDeleteForm(forms.Form):
+    """ Form to delete a collection """
     required_css_class = 'required'
 
 
@@ -87,6 +92,7 @@ class CollectionEditForm(CollectionCreateForm):
 
 
 class CollectionVersionAddForm(forms.Form):
+    """ Form to add a collection version """
 
     required_css_class = 'required'
     id = forms.CharField(

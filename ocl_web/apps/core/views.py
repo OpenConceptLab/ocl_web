@@ -286,8 +286,20 @@ def _get_source_type_list():
         'Dictionary',
         'Interface Terminology',
         'Indicator Registry',
-        'Reference',
         'External'
+    ]
+
+
+# TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
+def _get_collection_type_list():
+    """Return a list of collection types
+    """
+    return [
+        'Subset',
+        'Value Set',
+        'Dictionary',
+        'Interface Terminology',
+        'Indicator Registry'
     ]
 
 
@@ -296,17 +308,25 @@ def _get_locale_list():
     """Return a list of locales
     """
     return [
+        {'code': 'am', 'name': 'Amharic'},
         {'code': 'ar', 'name': 'Arabic'},
         {'code': 'eu', 'name': 'Basque'},
         {'code': 'ca', 'name': 'Catalan'},
-        {'code': 'zh-cn', 'name': 'Chinese Simplified'},
-        {'code': 'zh-hk', 'name': 'Chinese Traditional'},
+        {'code': 'zh', 'name': 'Chinese'},
         {'code': 'en', 'name': 'English'},
         {'code': 'fr', 'name': 'French'},
+        {'code': 'de', 'name': 'German'},
+        {'code': 'ht', 'name': 'Haitian Creole'},
+        {'code': 'hi', 'name': 'Hindi'},
         {'code': 'it', 'name': 'Italian'},
         {'code': 'ko', 'name': 'Korean'},
+        {'code': 'om', 'name': 'Oromo'},
+        {'code': 'so', 'name': 'Somali'},
         {'code': 'sw', 'name': 'Swahili'},
         {'code': 'es', 'name': 'Spanish'},
+        {'code': 'tl', 'name': 'Tagalog'},
+        {'code': 'ti', 'name': 'Tigrinya'},
+        {'code': 'tr', 'name': 'Turkish'},
     ]
 
 

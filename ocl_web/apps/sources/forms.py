@@ -16,12 +16,12 @@ class SourceNewForm(forms.Form):
     required_css_class = 'required'
 
     short_name = forms.CharField(
-        label=_('Source Short Name'),
+        label=_('Source Short Code'),
         max_length=128,
         required=True,
-        help_text=_('Your new source will live at: http://www.openconceptlab.com'
-                    '<span id="new_source_base_url">/[owner-type]/[owner]/sources/</span>/'
-                    '<span id="new_source_id" style="font-weight:bold;">[source-id]</span>/'),
+        help_text=_('Your new source will live at: http://www.openconceptlab.org'
+                    '<span id="new_repository_base_url">/[OwnerType]/[Owner]/sources/</span>'
+                    '<span id="new_repository_id" style="font-weight:bold;">[SourceCode]</span>/'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. ICD-10"}))
     full_name = forms.CharField(
         label=_('Source Full Name'),
@@ -43,15 +43,15 @@ class SourceNewForm(forms.Form):
         required=False,
         initial='View',
         choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
+    default_locale = forms.ChoiceField(
+        label=_('Default Locale'),
+        choices=[(d['code'], d['name']+' ('+d['code']+')') for d in _get_locale_list()],
+        required=True)
     supported_locales = forms.CharField(
         max_length=30,
         label=_('Supported Locales'),
         required=True,
         widget=forms.TextInput(attrs={'placeholder': "e.g. en,fr,es"}))
-    default_locale = forms.ChoiceField(
-        label=_('Default Locale'),
-        choices=[(d['code'], d['name']+' ('+d['code']+')') for d in _get_locale_list()],
-        required=True)
     description = forms.CharField(
         max_length=512,
         label=_('Description'),
@@ -86,6 +86,7 @@ class SourceEditForm(SourceNewForm):
         self.fields.pop('short_name')
 
 class SourceDeleteForm(forms.Form):
+    """ Form to delete a source """
     required_css_class = 'required'
 
 
