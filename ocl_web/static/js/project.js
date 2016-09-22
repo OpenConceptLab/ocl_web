@@ -1020,24 +1020,27 @@ $('button.collection_version_delete').on('click', function(ev) {
     var version = button.data('id');
 
     var url = ' /' + window.location.pathname.split('/').slice(1,5).join('/') + '/' + version + '/delete/';
-    if(!window.confirm('Are you sure you want to remove ' + version + '?')) {
-      return;
-    }
-    $.ajax({
-        type: "DELETE",
-        url: url,
-        headers: {
-            'X-CSRFToken': $.cookie('csrftoken'),
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        dataType: 'json',
-        contentType: 'application/json'
-    }).done(function (data) {
-        button.closest('.list-group-item').remove();
-        alertify.success('Successfully removed collection version.', 3);
-    }).fail(function () {
-        alertify.error('Something unexpected happened!', 3);
-    });
+    alertify.confirm(
+      'Delete collection version',
+      'Do you want to remove the collection version <b>' + version + '</b> and associated values from References tab?',
+      function() {
+        $.ajax({
+            type: "DELETE",
+            url: url,
+            headers: {
+                'X-CSRFToken': $.cookie('csrftoken'),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            dataType: 'json',
+            contentType: 'application/json'
+        }).done(function (data) {
+            button.closest('.list-group-item').remove();
+            alertify.success('Successfully removed collection version.', 3);
+        }).fail(function () {
+            alertify.error('Something unexpected happened!', 3);
+        });
+      }, function () {}
+    );
 });
 
 
