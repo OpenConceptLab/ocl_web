@@ -957,7 +957,6 @@ $('div.release_unrelease_section #id_release').on('click', function (el) {
         contentType: 'application/json'
     }).done(function (data) {
         if (released) {
-            var dom = "<span class='label label-primary release-label'>Released</span>";
             $el.parents('li').find('.release-label-container .release-label').removeClass('hide');
             alertify.success('Successfully Released.', 3);
         } else {
