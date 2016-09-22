@@ -1069,3 +1069,30 @@ if ($('#new_concept_base_url').length > 0) {
 
     $('#id_concept_id').keyup(function () { updateHelpText(); });
 }
+
+if($('.download-csv').length > 0) {
+    $('a.download-csv').on('click', function (el) {
+
+        var downloadCallback = function(json) {
+            if (json && json.url) {
+                window.location.href = json.url;
+                $('.alertify-notifier.ajs-top.ajs-right').children().click();
+            } else {
+                alertify.error('Something unexpected happened!', 3);
+            }
+        };
+
+        window.downloadCallback = downloadCallback;
+
+        var url = 'http://' + window.location.hostname + ':8000' + window.location.pathname + '?csv=true&callback=downloadCallback&format=jsonp';
+        alertify.success('Downloading...');
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: "jsonp",
+            jsonp: false
+        });
+
+    });
+};
