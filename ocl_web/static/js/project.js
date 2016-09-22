@@ -1083,7 +1083,9 @@ if($('.download-csv').length > 0) {
 
         window.downloadCallback = downloadCallback;
 
-        var url = 'http://' + window.location.hostname + ':8000' + window.location.pathname + '?csv=true&callback=downloadCallback&format=jsonp';
+        var user = $("meta[name='user']").attr('content'),
+            url = 'http://' + window.location.hostname + ':8000' + window.location.pathname + '?csv=true&user='+user+'&callback=downloadCallback&format=jsonp';
+
         alertify.success('Downloading...');
 
         $.ajax({
@@ -1092,6 +1094,5 @@ if($('.download-csv').length > 0) {
             dataType: "jsonp",
             jsonp: false
         });
-
     });
 };
