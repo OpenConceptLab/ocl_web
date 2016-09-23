@@ -56,7 +56,7 @@
                         {% endif %}
 
 		                <h4>
-		                	<a href="{{ source_version_concepts_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} [ </span><span class="resource-label-id-code">{{ source_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
+		                	<a href="{{ source_version_concepts_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} [ </span><span class="resource-label-id-code {% if source_version.retired %}strikethrough{% endif %}">{{ source_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
 
                             <span class="release-label-container">
                               &nbsp;&nbsp;&nbsp;&nbsp;
