@@ -969,7 +969,7 @@ $('div.release_unrelease_section #id_release').on('click', function (el) {
     });
 });
 
-$('div.release_unrelease_section .collection_retire').on('click', function(ev) {
+$('div.release_unrelease_section .resource_retire').on('click', function(ev) {
     var retireCheckboxElem = $(ev.toElement);
     var releaseCheckboxElem = retireCheckboxElem.siblings('#id_release');
     var retireLable = retireCheckboxElem.parents('li')

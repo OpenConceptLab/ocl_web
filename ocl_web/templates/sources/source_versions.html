@@ -61,9 +61,9 @@
 
                             <span class="release-label-container">
                               &nbsp;&nbsp;&nbsp;&nbsp;
-                              <span id="id_released" class="label label-primary release-label {% if not collection_version.released or collection_version.retired %}hide{% endif %}">{% trans "Released" %}</span>
+                              <span class="label label-primary release-label {% if not source_version.released or source_version.retired %}hide{% endif %}">{% trans "Released" %}</span>
                               &nbsp;&nbsp;&nbsp;&nbsp;
-                              <span id="id_retired" class="label label-danger retire-label {% if not collection_version.retired %}hide{% endif %}">{% trans "Retired" %}</span>
+                              <span class="label label-danger retire-label {% if not source_version.retired %}hide{% endif %}">{% trans "Retired" %}</span>
                             </span>
 
 {#		                    {% if source_version.is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>{% endif %}#}
@@ -72,11 +72,18 @@
                         {% if request.user.is_authenticated %}
                             <div class='pull-right release_unrelease_section' style="font-size: small;">
                                 {% if not source_version.id == 'HEAD' %}
-                                    {% if source_version.released %}
-                                        <input id="id_release" type="checkbox" name="release" value="{{ source_version.id }}" checked='checked'> Release </input>
-                                    {% else %}
-                                        <input id="id_release" type="checkbox" name="release"  value="{{ source_version.id }}"> Release </input>
-                                    {% endif %}
+                                    <input id="id_release"
+                                           type="checkbox"
+                                           name="release"
+                                           value="{{ source_version.id }}"
+                                           {% if source_version.retired %}disabled{% endif %}
+                                           {% if source_version.released %}checked{% endif %} /> Release
+
+                                    <input class="resource_retire"
+                                          type="checkbox"
+                                          name="release"
+                                          value="{{ source_version.id }}"
+                                          {% if source_version.retired %}checked{% endif %} /> Retire
                                 {% endif %}
                             </div>
                         {% endif %}
