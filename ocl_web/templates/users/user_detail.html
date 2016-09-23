@@ -40,14 +40,16 @@
 
 			<div class="row"><p>&nbsp;</p></div>
 
-			<!-- Source List -->
+			<!-- Sources, Collections, and Orgs -->
 			<div class="row">
+
+			<!-- User Source List -->
 				<div class="col-sm-4">
 					<div class="list-group">
 						<div class="list-group-item">
 							<h4>User Sources</h4>
 							{% if object == request.user %}
-								<small><p class="text-right"><a href="{% url 'source-new' user=ocl_user.username %}">{% trans "New User Source" %}</a></small></p>
+								<small><p class="text-right"><a href="{% url 'source-new' user=ocl_user.username %}"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans "New User Source" %}</a></small></p>
 							{% endif %}
 						</div>
 						<div class="list-group-item" style="overflow-x: scroll; white-space: nowrap;">
@@ -63,13 +65,35 @@
 					</div>
 				</div>
 
+                <!-- User Collection List -->
+                <div class="col-sm-4">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <h4>User Collections</h4>
+                            {% if object == request.user %}
+                                <small><p class="text-right"><a href="{% url 'collection-new' user=ocl_user.username %}"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans "New User Collection" %}</a></small></p>
+                            {% endif %}
+                        </div>
+                        <div class="list-group-item" style="overflow-x: scroll; white-space: nowrap;">
+                            {% for collection in collections %}
+                                {% url 'collection-home' user=collection.owner collection=collection.short_code as user_collection_url %}
+                                <div class="label-container">
+                                    {% generic_resource_label resource_type='collection' resource_id=collection.short_code resource_name=collection.name resource_url=user_collection_url  label_size='small' display_breadcrumb=True %}
+                                </div>
+                            {% empty %}
+                                <h3><small>No User Collections</small></h3>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
 				<!-- Organization Membership List -->
 				<div class="col-sm-4">
 					<div class="list-group">
 						<div class="list-group-item">
 							<h4>Organization Membership</h4>
 							{% if object == request.user %}
-								<small><p class="text-right"><a href="{% url 'org-new' %}">Create New Organization</a></small></p>
+								<small><p class="text-right"><a href="{% url 'org-new' %}"><span class="glyphicon glyphicon-plus"></span>&nbsp;New Organization</a></small></p>
 							{% endif %}
 						</div>
 						<div class="list-group-item" style="overflow-x: scroll; white-space: nowrap;">
@@ -85,30 +109,8 @@
 					</div>
 				</div>
 
-                <!-- collection List -->
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="list-group">
-                            <div class="list-group-item">
-                                <h4>User Collections</h4>
-                                {% if object == request.user %}
-                                    <small><p class="text-right"><a href="{% url 'collection-new' user=ocl_user.username %}">{% trans "New User Collection" %}</a></small></p>
-                                {% endif %}
-                            </div>
-                            <div class="list-group-item" style="overflow-x: scroll; white-space: nowrap;">
-                                {% for collection in collections %}
-                                    {% url 'collection-home' user=collection.owner collection=collection.short_code as user_collection_url %}
-                                    <div class="label-container">
-                                        {% generic_resource_label resource_type='collection' resource_id=collection.short_code resource_name=collection.name resource_url=user_collection_url  label_size='small' display_breadcrumb=True %}
-                                    </div>
-                                {% empty %}
-                                    <h3><small>No User Collections</small></h3>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+			</div>
+			<!-- End Sources, Collections and Orgs -->
 
 {% if request.GET.debug %}
 			<div class="row">
