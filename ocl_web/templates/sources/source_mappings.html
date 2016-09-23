@@ -66,14 +66,23 @@
 				    	<span class="caret"></span>
 				  	</button>
 				  	<ul class="dropdown-menu" role="menu">
-				  	{% for source_version_i in source_versions %}
-				  		{% if source.owner_type == 'Organization' %}
-				  			{% url 'source-version-mappings' org=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
-				  		{% else %}
-				  			{% url 'source-version-mappings' user=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
-				  		{% endif %}
-				  		<li {% if source_version == source_version_i.id %}class="active"{% endif %}><a href="{{ source_version_i_url }}">{% if source_version_i.released %}<strong>{% endif %}{{ source_version_i.id }}{% if source_version_i.released %}</strong> <span class="text-muted">(Released)</span>{% endif %}</a></li>
-				    {% endfor %}
+            {% for source_version_i in source_versions %}
+              {% if source_type == 'Organization' %}
+                {% url 'source-version-concepts' org=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
+              {% else %}
+                {% url 'source-version-concepts' user=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
+              {% endif %}
+              <li {% if source_version == source_version_i.id %}class="active"{% endif %}>
+                <a href="{{ source_version_i_url }}">
+                  <span {% if source_version_i.retired %}class="strikethrough"{% endif %}>
+                    {% if source_version_i.released and not source_version_i.retired %}
+                    <strong>{% endif %}{{ source_version_i.id }}</strong>
+                  </span>
+                  {% if source_version_i.released and not source_version_i.retired %}<span class="text-muted">(Released)</span>{% endif %}
+                  {% if source_version_i.retired %}<span class="text-muted">(Retired)</span>{% endif %}
+                </a>
+              </li>
+            {% endfor %}
 				  	</ul>
 				</div>
 
