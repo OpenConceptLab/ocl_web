@@ -7,8 +7,21 @@
             </a>
         </div>
     {% endif %}
+{% elif type == 'search' %}
+    {% if request.user.is_authenticated and results %}
+        <input id='download-origin' type="hidden" value="{{ type }}">
+
+        <div class="btn-group pull-left small" style="width:50px;margin-top:-7px;margin-right: 20px">
+            <a class="btn btn-link download-csv">
+                <span style="padding-right: 2px;" class="glyphicon glyphicon-download-alt"></span>
+                csv
+            </a>
+        </div>
+    {% endif %}
 {% else %}
     {% if request.user.is_authenticated and results %}
+        <input type="hidden" value="{{ type }}">
+
         <div class="btn-group pull-left small" style="width:50px;margin-top:-2px">
             <a class="btn btn-link download-csv">
                 <span style="padding-right: 2px;" class="glyphicon glyphicon-download-alt"></span>
