@@ -858,3 +858,27 @@ class SourceVersionEditJsonView(UserOrOrgMixin, TemplateView):
                                           'sources',
                                           data)
         return HttpResponse(res.content, status=200)
+
+
+class SourceVersionDeleteView(UserOrOrgMixin, TemplateView):
+    """ source version delete view"""
+
+    def delete(self, request, *args, **kwargs):
+        self.get_args()
+        api = OclApi(self.request, debug=True)
+
+        if request.is_ajax():
+            result = api.delete(
+                self.owner_type,
+                self.owner_id,
+                'sources',
+                self.source_id,
+                self.source_version_id,
+                **kwargs
+            )
+
+            return HttpResponse(
+                json.dumps({}),
+                content_type="application/json"
+            )
+        return super(SourceVersionDeleteView, self).delete(self, *args, **kwargs)

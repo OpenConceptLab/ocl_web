@@ -23,8 +23,7 @@
 				<div class="btn-group" style="margin-left:40px;padding-right:10px;">
 					<a href="{{ source_version_new_url }}" class="small" style="padding-right:10px;"><span class="glyphicon glyphicon-plus"></span> {% trans "New Source Version" %}</a>&nbsp;&nbsp;&nbsp;
 {#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="source-version-filter" value="released" disabled /> {% trans "Released" %}</label>#}
-{#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="source-version-filter" value="is_processing" disabled /> {% trans "Processing" %}</label>#}
-                    {% include "download_csv.html" with results=source_versions versions=True %}
+{#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="source-version-filter" value="is_processing" disabled /> {% trans "Processing" %}</label> #}
 				</div>
 
 	    	</div>
@@ -48,11 +47,11 @@
 		                {% endcomment %}
 
                         {% if request.user.is_authenticated %}
-                            {% if not source_version.is_processing %}
-                            <div class="pull-right">
-                                <a href="{{ source_version_edit_url }}" class="btn btn-link" title="Edit Source Version"><span class="glyphicon glyphicon-pencil"></span></a>
-                                {% comment %}<a href="{{ source_version_retire_url }}" class="btn btn-link" title="Retire Source Version"><span class="glyphicon glyphicon-trash"></span></a>{% endcomment %}
-                            </div>
+                            {% if not source_version.is_processing and source_version.id != 'HEAD' %}
+                              <div class="pull-right">
+                                  <a href="{{ source_version_edit_url }}" class="btn btn-link" title="Edit Source Version"><span class="glyphicon glyphicon-pencil"></span></a>
+                                  <button class="btn btn-link collection_version_delete glyphicon glyphicon-trash no-text-decoration" title="Delete Collection Version" data-id="{{ source_version.id }}"></button>
+                              </div>
                             {% endif %}
                         {% endif %}
 
@@ -64,6 +63,10 @@
                               <span class="label label-primary release-label {% if not source_version.released or source_version.retired %}hide{% endif %}">{% trans "Released" %}</span>
                               &nbsp;&nbsp;&nbsp;&nbsp;
                               <span class="label label-danger retire-label {% if not source_version.retired %}hide{% endif %}">{% trans "Retired" %}</span>
+                              &nbsp;&nbsp;&nbsp;&nbsp;
+                              {% if source_version.is_processing %}
+                                <span class="label label-warning release-label" title="This source version is processing">{% trans "Processing" %}</span>
+                              {% endif %}
                             </span>
 
 {#		                    {% if source_version.is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>{% endif %}#}
