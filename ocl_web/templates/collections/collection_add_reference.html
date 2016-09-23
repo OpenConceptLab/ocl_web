@@ -123,7 +123,7 @@
                             Version
                         </label>
                       <select class="form-control"
-                              ng-options="rcv as rcv.id for rcv in resourceContainerVersions"
+                              ng-options="rcv as (rcv.id + (rcv.retired ? ' (retired)' : '')) for rcv in resourceContainerVersions"
                               ng-disabled="!owner || !resourceContainer"
                               ng-change="getResourceContainerConcepts(); getResourceContainerMappings()"
                               ng-model="resourceContainerVersion"></select>
