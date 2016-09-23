@@ -94,6 +94,10 @@
 				    	{% endfor %}
 				  	</select>
 				</div>
+                {% if request.user.is_authenticated and results %}
+                    <div class="btn-group pull-left small" style="width:50px;margin-top:-2px"><small class="csv-file"></small></div>
+                    <div class="btn-group pull-left small" style="width:50px;margin-top:-2px"><a class="btn btn-link download-csv">csv<span style="padding-left: 2px;" class="glyphicon glyphicon-download-alt"></span></a></div>
+                {% endif %}
 
 			</div>
 		</div>
