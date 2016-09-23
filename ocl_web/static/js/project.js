@@ -1071,28 +1071,25 @@ if ($('#new_concept_base_url').length > 0) {
 
 if($('.download-csv').length > 0) {
     $('a.download-csv').on('click', function (el) {
-
-        var downloadCallback = function(json) {
-            if (json && json.url) {
-                window.location.href = json.url;
-                $('.alertify-notifier.ajs-top.ajs-right').children().click();
-            } else {
-                alertify.error('Something unexpected happened!', 3);
-            }
-        };
-
-        window.downloadCallback = downloadCallback;
-
-        var user = $("meta[name='user']").attr('content'),
-            url = 'http://' + window.location.hostname + ':8000' + window.location.pathname + '?csv=true&user='+user+'&callback=downloadCallback&format=jsonp';
-
-        alertify.success('Downloading...');
+        alertify.success('Preparing CSV...');
 
         $.ajax({
             type: 'GET',
-            url: url,
-            dataType: "jsonp",
-            jsonp: false
+            url: 'http://' + window.location.hostname + ':8000' + window.location.pathname + '?csv=true',
+            dataType: "json",
+            success: function (json) {
+                if (json && json.url) {
+                    window.location.href = json.url;
+                    $('.alertify-notifier.ajs-top.ajs-right').children().click();
+                } else {
+                    alertify.error('Something unexpected happened!', 3);
+                }
+
+            },
+            error: function (err) {
+                alertify.error('Something unexpected happened!', 3);
+                console.dir(err);
+            }
         });
     });
 };
