@@ -56,20 +56,20 @@
 				    	<span class="caret"></span>
 				  	</button>
 				  	<ul class="dropdown-menu" role="menu">
-            {% for source_version_i in source_versions %}
-              {% if source_type == 'Organization' %}
-                {% url 'source-version-concepts' org=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
+            {% for collection_version_i in collection_versions %}
+              {% if collection.owner_type == 'Organization' %}
+                {% url 'collection-concepts' org=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
               {% else %}
-                {% url 'source-version-concepts' user=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
+                {% url 'collection-concepts' user=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
               {% endif %}
-              <li {% if source_version == source_version_i.id %}class="active"{% endif %}>
-                <a href="{{ source_version_i_url }}">
-                  <span {% if source_version_i.retired %}class="strikethrough"{% endif %}>
-                    {% if source_version_i.released and not source_version_i.retired %}
-                    <strong>{% endif %}{{ source_version_i.id }}</strong>
+              <li {% if collection_version == collection_version_i.id %}class="active"{% endif %}>
+                <a href="{{ collection_version_i_url }}">
+                  <span {% if collection_version_i.retired %}class="strikethrough"{% endif %}>
+                    {% if collection_version_i.released and not collection_version_i.retired %}
+                    <strong>{% endif %}{{ collection_version_i.id }}</strong>
                   </span>
-                  {% if source_version_i.released and not source_version_i.retired %}<span class="text-muted">(Released)</span>{% endif %}
-                  {% if source_version_i.retired %}<span class="text-muted">(Retired)</span>{% endif %}
+                  {% if collection_version_i.released and not collection_version_i.retired %}<span class="text-muted">(Released)</span>{% endif %}
+                  {% if collection_version_i.retired %}<span class="text-muted">(Retired)</span>{% endif %}
                 </a>
               </li>
             {% endfor %}
