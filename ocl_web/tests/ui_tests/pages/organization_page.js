@@ -39,7 +39,7 @@ var OrganizationPage = function() {
     // Release / Un-release version locators
     this.releaseButton = $('#id_release');
     this.message = $('.ajs-success');
-    this.releaseLabel = $$('#id_released');
+    this.releaseLabel = $$('.release-label');
 
     // Delete reference locators
     this.deleteLink = $('.delete-reference');
