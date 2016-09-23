@@ -24,11 +24,7 @@
 					<a href="{{ source_version_new_url }}" class="small" style="padding-right:10px;"><span class="glyphicon glyphicon-plus"></span> {% trans "New Source Version" %}</a>&nbsp;&nbsp;&nbsp;
 {#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="source-version-filter" value="released" disabled /> {% trans "Released" %}</label>#}
 {#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="source-version-filter" value="is_processing" disabled /> {% trans "Processing" %}</label>#}
-                {% if request.user.is_authenticated and source_versions %}
-                    <div class="btn-group pull-right small" style="width:50px;margin-top:-7px">
-                        <a class="btn btn-link download-csv pull-right"><span style="padding-right: 3px;" class="glyphicon glyphicon-download-alt"></span>csv</a>
-                    </div>
-                {% endif %}
+                    {% include "download_csv.html" with results=source_versions versions=True %}
 				</div>
 
 	    	</div>

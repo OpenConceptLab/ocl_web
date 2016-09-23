@@ -1,0 +1,19 @@
+{% if versions %}
+    {% if request.user.is_authenticated and results %}
+        <div class="btn-group pull-right small" style="width:50px;margin-top:-7px">
+            <a class="btn btn-link download-csv pull-right">
+                <span style="padding-right: 2px;" class="glyphicon glyphicon-download-alt"></span>
+                csv
+            </a>
+        </div>
+    {% endif %}
+{% else %}
+    {% if request.user.is_authenticated and results %}
+        <div class="btn-group pull-left small" style="width:50px;margin-top:-2px">
+            <a class="btn btn-link download-csv">
+                <span style="padding-right: 2px;" class="glyphicon glyphicon-download-alt"></span>
+                csv
+            </a>
+        </div>
+    {% endif %}
+{% endif %}
