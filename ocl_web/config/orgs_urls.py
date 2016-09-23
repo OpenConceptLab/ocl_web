@@ -27,7 +27,7 @@ from apps.orgs.views import (
 from apps.sources.views import (
     SourceDetailsView, SourceAboutView, SourceConceptsView, SourceMappingsView,
     SourceNewView, SourceEditView, SourceVersionsView, SourceExternalReferencesView,
-    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView, SourceVersionEditJsonView)
+    SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView, SourceVersionEditJsonView, SourceVersionDeleteView)
 from apps.concepts.views import (
     ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptEditView,
     ConceptRetireView, ConceptNewView, ConceptDescView, ConceptNameView)
@@ -367,6 +367,10 @@ urlpatterns = patterns(
     # /orgs/:org/collections/:collection/:collection_version/delete/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/delete/$',
         CollectionVersionDeleteView.as_view(), name='collection-version-delete'),
+
+    # /users/:user/sources/:source/:version/delete/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/(?P<source_version>[a-zA-Z0-9\-\.]+)/delete/$',
+        SourceVersionDeleteView.as_view(), name='collection-version-delete'),
 
     # /orgs/:org/collections/:collection/delete/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/delete/$',
