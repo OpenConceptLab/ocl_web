@@ -1,7 +1,7 @@
 var UserSourcePage = function() {
 
     // user source locators
-    this.newUserSrclink = element(by.linkText('New User Source'));
+    this.newUserSrclink = element(by.id('new-user-source'));
     this.shortCode = $('#id_short_name');
     this.srcFullName = $('#id_full_name');
     this.supportedLocale = $('#id_supported_locales');
