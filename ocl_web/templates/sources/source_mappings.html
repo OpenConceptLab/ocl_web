@@ -47,7 +47,7 @@
 
 				<!-- New Mapping Button -->
 				{% if_can_change source %}
-					{# TODO: Only allow if viewing "head" -- for now mapping is always added to head #}
+					{# TODO: Only allow if viewing "HEAD" -- mapping is always added to head #}
 					{% if source.owner_type == 'Organization' %}
 						{% url 'mapping-new' org=source.owner source=source.id as new_mapping_url %}
 					{% else %}
@@ -62,7 +62,7 @@
 				<div class="btn-group pull-left" style="padding-right:5px;">
 				  	<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" style="white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:clip;">
 				    	<span class="text-muted" style="letter-spacing:-0.1pt;font-weight:300;">Source Version:</span>
-				    	<span style="font-weight:400;text-spacing:-0.1pt;">{% if source_version %}{{ source_version }}{% else %}head{% endif %}</span>
+				    	<span style="font-weight:400;text-spacing:-0.1pt;">{% if source_version %}{{ source_version }}{% else %}HEAD{% endif %}</span>
 				    	<span class="caret"></span>
 				  	</button>
 				  	<ul class="dropdown-menu" role="menu">

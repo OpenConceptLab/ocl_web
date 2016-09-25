@@ -1071,11 +1071,25 @@ if ($('#new_concept_base_url').length > 0) {
 
 if($('.download-csv').length > 0) {
     $('a.download-csv').on('click', function (el) {
+        var downloadCaller = $('input#download-origin').val(),
+            selectedTab = $('div.list-group a.active').text(),
+            user = $("meta[name='user']").attr('content'),
+            searchParams = "?csv=true&user=" + user,
+            url = 'http://' + window.location.hostname + ':8000' + window.location.pathname + searchParams;
+
+        if (downloadCaller) {
+            var entity = _.find(['concepts', 'collections', 'mappings', 'sources'], function (type) {
+                return selectedTab.match(new RegExp(type, "i"))
+            });
+            if (!_.isEmpty(window.location.search)) searchParams = window.location.search + "&csv=true&user="+user;
+            url = 'http://' + window.location.hostname + ':8000/' + entity + '/' + searchParams;
+        }
+
         alertify.success('Preparing CSV...');
 
         $.ajax({
             type: 'GET',
-            url: 'http://' + window.location.hostname + ':8000' + window.location.pathname + '?csv=true',
+            url: url,
             dataType: "json",
             success: function (json) {
                 if (json && json.url) {

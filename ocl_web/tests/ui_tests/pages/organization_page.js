@@ -1,7 +1,7 @@
 var OrganizationPage = function() {
 
     // create org locators
-    this.createNewOrgLink = element(by.linkText('Create New Organization'));
+    this.createNewOrgLink = element(by.id('new-organization'));
     this.shortCode = $('#id_short_name');
     this.name = $('#id_name');
     this.orgWebsite = $('#id_website');

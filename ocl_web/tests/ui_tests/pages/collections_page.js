@@ -1,7 +1,7 @@
 var CollectionsPage = function() {
 
     // create collection locators
-    this.newUserCollection = element(by.linkText('New User Collection'));
+    this.newUserCollection = element(by.id('new-user-collection'));
     this.shortCode = $('#id_short_code');
     this.collName = $('#id_name');
     this.fullName = $('#id_full_name');
