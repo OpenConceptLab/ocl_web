@@ -1020,8 +1020,8 @@ $('button.collection_version_delete').on('click', function(ev) {
 
     var url = ' /' + window.location.pathname.split('/').slice(1,5).join('/') + '/' + version + '/delete/';
     alertify.confirm(
-      'Delete version',
-      'Do you want to remove the version <b>' + version + '</b> and associated values?',
+      'Delete Version',
+      'Do you want to remove version <b>' + version + '</b> and its associated values?',
       function() {
         $.ajax({
             type: "DELETE",
