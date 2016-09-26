@@ -336,7 +336,7 @@ urlpatterns = patterns(
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/references/delete/$',
         CollectionReferencesDeleteView.as_view(), name='collection-references-delete'),
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/references/$',
-        CollectionReferencesView.as_view(), name='collection-references'),
+        CollectionReferencesView.as_view(), name='collection-version-references'),
 
     # /user/:user/collections/:collection/:collection_version/delete/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/delete/$',

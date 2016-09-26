@@ -389,7 +389,7 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/mappings/$',
         CollectionMappingsView.as_view(), name='collection-mappings'),
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/references/$',
-        CollectionReferencesView.as_view(), name='collection-references'),
+        CollectionReferencesView.as_view(), name='collection-version-references'),
 
     # /orgs/json/
     url(r'^json$', OrgJsonView.as_view(), name='orgs-json-view'),

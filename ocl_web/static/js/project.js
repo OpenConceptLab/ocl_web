@@ -793,7 +793,9 @@ app.controller('AddReferencesController', function($scope, Reference) {
         $scope.concepts.items.filter(function(concept) { return concept.isSelected; })
       ).concat(
         $scope.mappings.items.filter(function(mapping) { return mapping.isSelected; })
-      ).map(function(reference) { return reference.url });
+      ).map(function(reference) {
+          return reference.versioned_object_url;
+      });
 
       $scope.addReferences(references);
     };

@@ -76,9 +76,9 @@
 					<ul class="dropdown-menu" role="menu">
 					{% for collection_version_i in collection_versions %}
 						{% if collection.owner_type == 'Organization' %}
-							{% url 'collection-references' org=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
+							{% url 'collection-version-references' org=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
 						{% else %}
-							{% url 'collection-references' user=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
+							{% url 'collection-version-references' user=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
 						{% endif %}
 						<li {% if collection_version == collection_version_i.id %}class="active"{% endif %}>
               <a href="{{ collection_version_i_url }}">
