@@ -90,7 +90,7 @@ class ConceptNewMappingForm(forms.Form):
 
 
 
-class ConceptNewForm(forms.Form):
+class  ConceptNewForm(forms.Form):
     """
     Concept new form
     """

@@ -907,6 +907,52 @@ app.directive('textField', function() {
     };
 });
 
+app.controller('CustomAttributesController', ['$scope', function($scope) {
+  $scope.extras = [
+      {key:'', value:''},
+  ];
+
+  $scope.addRow = function()
+  {
+      var extra = {key:'', value:''};
+      $scope.extras.push(extra);
+  }
+
+  $scope.removeRow = function(index)
+  {
+      $scope.extras.splice(index, 1);
+  }
+}])
+.directive('customAttributes', function() {
+  return {
+      restrict: 'E',
+      replace: true,
+      controller: 'CustomAttributesController',
+      template: '<div class="form-group">' +
+                      '<label class="control-label">Custom Directive </label>'+
+                       '<div class="col-md-12">'+
+                          '<div class="form-group row" ng-repeat="extra in extras">'+
+
+                                '<div class="col-md-5">'+
+                                    '<label style="padding-left: 0px" for="inputKey" class="col-md-6 control-label">Attribute Name</label>'+
+                                    '<input class="form-control" type="text" value="{{extra.key}}">'+
+                                '</div>'+
+                                '<div class="col-md-6">'+
+                                    '<label style="padding-left: 0px" for="inputValue" class="col-md-6 control-label">Value</label>'+
+                                    '<textarea class="form-control"  rows="3">{{extra.value}}</textarea>'+
+                                '</div>'+
+                                '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeRow($index)"></span>'+
+                           '</div>' +
+                            '<div class="form-group row">'+
+                                '<a ng-click="addRow()" style="cursor: pointer;"> <span class="glyphicon glyphicon-plus"></span> Add Custom Attribute</a>'+
+                            '</div>'+
+                        '</div>' +
+
+                '</div>'
+  };
+});
+
+
 $('a.delete-reference').on('click', function () {
     var selectedReferences = $("input[name='reference']:checked"),
 

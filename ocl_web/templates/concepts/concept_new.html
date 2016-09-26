@@ -27,6 +27,7 @@
 			<form class="form" name="concept_form" autocomplete="off" method="post" action=".">
 				{% csrf_token %}
 				{% bootstrap_form form %}
+                <custom-attributes></custom-attributes>
 				{% buttons %}
 					<button type="submit" class="btn btn-primary">{% trans "Create Concept" %}</button>
 					<a href="{{ source_concepts_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
