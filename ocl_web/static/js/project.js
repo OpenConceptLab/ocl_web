@@ -922,6 +922,7 @@ app.controller('CustomAttributesController', ['$scope', function($scope) {
   {
       $scope.extras.splice(index, 1);
   }
+
 }])
 .directive('customAttributes', function() {
   return {
@@ -929,17 +930,18 @@ app.controller('CustomAttributesController', ['$scope', function($scope) {
       replace: true,
       controller: 'CustomAttributesController',
       template: '<div class="form-group">' +
-                      '<label class="control-label">Custom Directive </label>'+
+                      '<label class="control-label">Custom Attributes </label>'+
                        '<div class="col-md-12">'+
+                          '<input name="extras" id="extras" class="form-control" type="text" ng-model="extras">'+
                           '<div class="form-group row" ng-repeat="extra in extras">'+
 
                                 '<div class="col-md-5">'+
                                     '<label style="padding-left: 0px" for="inputKey" class="col-md-6 control-label">Attribute Name</label>'+
-                                    '<input class="form-control" type="text" value="{{extra.key}}">'+
+                                    '<input class="form-control" type="text" ng-model="extra.key" value="{{extra.key}}">'+
                                 '</div>'+
                                 '<div class="col-md-6">'+
                                     '<label style="padding-left: 0px" for="inputValue" class="col-md-6 control-label">Value</label>'+
-                                    '<textarea class="form-control"  rows="3">{{extra.value}}</textarea>'+
+                                    '<textarea class="form-control"  rows="3" ng-model="extra.value">{{extra.value}}</textarea>'+
                                 '</div>'+
                                 '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeRow($index)"></span>'+
                            '</div>' +
