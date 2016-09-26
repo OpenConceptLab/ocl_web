@@ -63,7 +63,9 @@
 
 				<!-- Sorting -->
 				<div class="btn-group pull-right" style="padding-right:10px;padding-top:5px;">
-                    {% include 'download_csv.html' with type='search' %}
+                    {% if search_type_name != 'organization' and search_type_name != 'user' %}
+                        {% include 'download_csv.html' with type='search' %}
+                    {% endif %}
 				    <div class="btn-group pull-left small" style="padding-right:6px;padding-top:3px;font-weight:300;text-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
 					<select name="sort" class="btn btn-default btn-xs xdropdown-toggle">
 						{% for o in search_sort_options %}

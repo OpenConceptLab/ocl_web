@@ -1080,9 +1080,10 @@ if($('.download-csv').length > 0) {
             url = 'http://' + window.location.hostname + ':8000' + window.location.pathname + searchParams;
 
         if (downloadCaller) {
-            var entity = _.find(['concepts', 'collections', 'mappings', 'sources'], function (type) {
+            var entity = _.find(['concepts', 'collections', 'mappings', 'sources', 'org', 'users'], function (type) {
                 return selectedTab.match(new RegExp(type, "i"))
             });
+            if (entity == 'org') entity = 'orgs';
             if (!_.isEmpty(window.location.search)) searchParams = window.location.search + "&csv=true&user="+user;
             url = 'http://' + window.location.hostname + ':8000/' + entity + '/' + searchParams;
         }
