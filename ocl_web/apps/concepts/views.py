@@ -452,12 +452,16 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             'locale_preferred': True,
             'description_type': form.cleaned_data.get('description_type', '')
         }]
+        extras = []
+        if 'extras' in self.request.POST:
+            extras = json.loads(self.request.POST.get('extras'))
 
         # Create new concept using the API
         api = OclApi(self.request, debug=True)
         result = api.create_concept(
             self.owner_type, self.owner_id, self.source_id, base_data,
-            names=names, descriptions=descriptions)
+            names=names, descriptions=descriptions, extras=extras)
+
         if result.ok:
             messages.add_message(self.request, messages.INFO, _('Concept created.'))
             if self.from_org:
