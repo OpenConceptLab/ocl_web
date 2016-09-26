@@ -66,20 +66,20 @@
 				    	<span class="caret"></span>
 				  	</button>
 				  	<ul class="dropdown-menu" role="menu">
-            {% for source_version_i in source_versions %}
+            {% for source_version in source_versions %}
               {% if source_type == 'Organization' %}
-                {% url 'source-version-concepts' org=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
+                {% url 'source-version-mappings' org=source.owner source=source.id source_version=source_version.id as source_version_url %}
               {% else %}
-                {% url 'source-version-concepts' user=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
+                {% url 'source-version-mappings' user=source.owner source=source.id source_version=source_version.id as source_version_url %}
               {% endif %}
-              <li {% if source_version == source_version_i.id %}class="active"{% endif %}>
-                <a href="{{ source_version_i_url }}">
-                  <span {% if source_version_i.retired %}class="strikethrough"{% endif %}>
-                    {% if source_version_i.released and not source_version_i.retired %}
-                    <strong>{% endif %}{{ source_version_i.id }}</strong>
+              <li {% if source_version == source_version.id %}class="active"{% endif %}>
+                <a href="{{ source_version_url }}">
+                  <span {% if source_version.retired %}class="strikethrough"{% endif %}>
+                    {% if source_version.released and not source_version.retired %}
+                    <strong>{% endif %}{{ source_version.id }}</strong>
                   </span>
-                  {% if source_version_i.released and not source_version_i.retired %}<span class="text-muted">(Released)</span>{% endif %}
-                  {% if source_version_i.retired %}<span class="text-muted">(Retired)</span>{% endif %}
+                  {% if source_version.released and not source_version.retired %}<span class="text-muted">(Released)</span>{% endif %}
+                  {% if source_version.retired %}<span class="text-muted">(Retired)</span>{% endif %}
                 </a>
               </li>
             {% endfor %}
@@ -124,11 +124,7 @@
 					<div class="label-container">
 						<!-- map_type label -->
 {#						{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=mapping_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}#}
-                        {% if kwargs.source_version and kwargs.source_version != 'HEAD' %}
-                            {% generic_resource_label resource_type='mapping' resource_id=result.versioned_object_id resource_name=result.map_type resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}/[{{ result.version }}]
-                        {% else %}
-                            {% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
-                        {% endif %}
+                        {% generic_resource_label resource_type='mapping' resource_id=result.versioned_object_id resource_name=result.map_type resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %} / [ {{ result.version }} ]
 						<!-- from_concept label -->
 						{# TODO: we do not know if this concept is retired #}
 						<div style="padding: 8px 0 8px 20px;">
