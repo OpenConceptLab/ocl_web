@@ -4,7 +4,7 @@
 __pycache__
 
 # Logs
-*.log
+*.log*
 pip-log.txt
 
 # Unit test / coverage reports
