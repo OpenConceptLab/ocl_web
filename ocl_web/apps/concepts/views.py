@@ -743,7 +743,7 @@ class ConceptEditView(UserOrOrgMixin, FormView):
 
         self.get_args()
         temp = []
-        if 'extras' in self.concept:
+        if 'extras' in self.concept and self.concept['extras']:
             for key, value in self.concept.get('extras').iteritems():
                 temp.append({'key' : key,'value':value})
             self.concept['extras'] = temp
