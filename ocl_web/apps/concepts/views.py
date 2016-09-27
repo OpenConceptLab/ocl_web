@@ -454,7 +454,9 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         }]
         extras = {}
         if 'extras' in self.request.POST:
-            extras = json.loads(self.request.POST.get('extras'))
+            extras_dict_list = json.loads(self.request.POST.get('extras'))
+            for item in extras_dict_list:
+                extras[item['key']] = item['value']
 
         # Create new concept using the API
         api = OclApi(self.request, debug=True)
