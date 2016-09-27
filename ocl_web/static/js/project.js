@@ -908,14 +908,11 @@ app.directive('textField', function() {
 });
 
 app.controller('CustomAttributesController', ['$scope', function($scope) {
-  $scope.extras = [
-      {key:'', value:''},
-  ];
+  $scope.extras = {'key1':'val1','key2':'val2'};
 
   $scope.addRow = function()
   {
-      var extra = {key:'', value:''};
-      $scope.extras.push(extra);
+      $scope.extras['']='';
   }
 
   $scope.removeRow = function(index)
@@ -933,18 +930,17 @@ app.controller('CustomAttributesController', ['$scope', function($scope) {
                       '<label class="control-label">Custom Attributes </label>'+
                        '<div class="col-md-12">'+
                           '<input name="extras" id="extras" class="form-control" type="hidden" value="{{ extras }}">'+
-                          '<div class="form-group row" ng-repeat="extra in extras">'+
-
-                                '<div class="col-md-5">'+
-                                    '<label style="padding-left: 0px" for="inputKey" class="col-md-6 control-label">Attribute Name</label>'+
-                                    '<input class="form-control" type="text" ng-model="extra.key" value="{{extra.key}}">'+
-                                '</div>'+
-                                '<div class="col-md-6">'+
-                                    '<label style="padding-left: 0px" for="inputValue" class="col-md-6 control-label">Value</label>'+
-                                    '<textarea class="form-control"  rows="3" ng-model="extra.value">{{extra.value}}</textarea>'+
-                                '</div>'+
-                                '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeRow($index)"></span>'+
-                           '</div>' +
+                              '<div class="form-group row" ng-repeat="(key, value) in extras">'+
+                                    '<div class="col-md-5">'+
+                                        '<label style="padding-left: 0px" for="inputKey" class="col-md-6 control-label">Attribute Name</label>'+
+                                        '<input class="form-control" type="text" ng-model="key" value="{{key}}">'+
+                                    '</div>'+
+                                    '<div class="col-md-6">'+
+                                        '<label style="padding-left: 0px" for="inputValue" class="col-md-6 control-label">Value</label>'+
+                                        '<textarea class="form-control"  rows="3" ng-model="value">{{value}}</textarea>'+
+                                    '</div>'+
+                                    '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeRow($index)"></span>'+
+                            '</div>' +
                             '<div class="form-group row">'+
                                 '<a ng-click="addRow()" style="cursor: pointer;"> <span class="glyphicon glyphicon-plus"></span> Add Custom Attribute</a>'+
                             '</div>'+

@@ -452,7 +452,7 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             'locale_preferred': True,
             'description_type': form.cleaned_data.get('description_type', '')
         }]
-        extras = []
+        extras = {}
         if 'extras' in self.request.POST:
             extras = json.loads(self.request.POST.get('extras'))
 

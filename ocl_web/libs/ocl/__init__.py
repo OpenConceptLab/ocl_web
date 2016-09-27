@@ -305,7 +305,7 @@ class OclApi(object):
 
 
     def create_concept(self, source_owner_type, source_owner_id, source_id, base_data,
-                       names=[], descriptions=[], extras=[]):
+                       names=[], descriptions=[], extras=None):
         """
         Create a concept.
         :param source_owner_type: 'orgs' or 'users'
@@ -332,12 +332,13 @@ class OclApi(object):
         if len(list_data) > 0:
             data['descriptions'] = list_data
 
-        list_data = []
-        for extra in extras:
-            list_data.append(extra)
-        if len(list_data) > 0:
-            data['extras'] = list_data
-
+        # list_data = []
+        # for extra in extras:
+        #     list_data.append(extra)
+        # if len(list_data) > 0:
+        #     data['extras'] = list_data
+        if extras:
+            data['extras'] = extras
         result = self.post(
             source_owner_type, source_owner_id, 'sources', source_id,
             'concepts', **data)
