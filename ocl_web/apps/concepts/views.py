@@ -742,10 +742,15 @@ class ConceptEditView(UserOrOrgMixin, FormView):
         context = super(ConceptEditView, self).get_context_data(*args, **kwargs)
 
         self.get_args()
-
+        temp = []
+        if 'extras' in self.concept:
+            for key, value in self.concept.get('extras').iteritems():
+                temp.append({'key' : key,'value':value})
+            self.concept['extras'] = temp
         context['kwargs'] = self.kwargs
         context['source'] = self.source
         context['concept'] = self.concept
+        context['extras'] = json.dumps(temp)
         return context
 
 
@@ -769,7 +774,12 @@ class ConceptEditView(UserOrOrgMixin, FormView):
         self.get_args()
 
         data = form.cleaned_data
-
+        extras = {}
+        if 'extras' in self.request.POST:
+            extras_dict_list = json.loads(self.request.POST.get('extras'))
+            for item in extras_dict_list:
+                extras[item['key']] = item['value']
+        data['extras'] = extras
         api = OclApi(self.request, debug=True)
         if self.from_org:
             result = api.update_concept('orgs', self.org_id, self.source_id, self.concept_id, data)

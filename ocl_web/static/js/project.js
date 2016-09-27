@@ -908,9 +908,6 @@ app.directive('textField', function() {
 });
 
 app.controller('CustomAttributesController', ['$scope', function($scope) {
-  $scope.extras = [
-      {key:'', value:''},
-  ];
 
   $scope.addRow = function()
   {
@@ -927,6 +924,9 @@ app.controller('CustomAttributesController', ['$scope', function($scope) {
 .directive('customAttributes', function() {
   return {
       restrict: 'E',
+      scope: {
+          extras: "="
+        },
       replace: true,
       controller: 'CustomAttributesController',
       template: '<div class="form-group">' +
