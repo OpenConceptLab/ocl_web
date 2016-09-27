@@ -937,11 +937,11 @@ app.controller('CustomAttributesController', ['$scope', function($scope) {
 
                                 '<div class="col-md-5">'+
                                     '<label style="padding-left: 0px" for="inputKey" class="col-md-6 control-label">Attribute Name</label>'+
-                                    '<input class="form-control" type="text" ng-model="extra.key" value="{{extra.key}}">'+
+                                    '<input class="form-control" type="text" ng-model="extra.key" required>'+
                                 '</div>'+
                                 '<div class="col-md-6">'+
                                     '<label style="padding-left: 0px" for="inputValue" class="col-md-6 control-label">Value</label>'+
-                                    '<textarea class="form-control"  rows="3" ng-model="extra.value">{{extra.value}}</textarea>'+
+                                    '<textarea class="form-control"  rows="3" ng-model="extra.value" required></textarea>'+
                                 '</div>'+
                                 '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeRow($index)"></span>'+
                            '</div>' +
