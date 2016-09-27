@@ -67,7 +67,7 @@
 				  	</button>
 				  	<ul class="dropdown-menu" role="menu">
             {% for source_version in source_versions %}
-              {% if source_type == 'Organization' %}
+              {% if source.owner_type == 'Organization' %}
                 {% url 'source-version-mappings' org=source.owner source=source.id source_version=source_version.id as source_version_url %}
               {% else %}
                 {% url 'source-version-mappings' user=source.owner source=source.id source_version=source_version.id as source_version_url %}

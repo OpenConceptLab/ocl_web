@@ -19,7 +19,6 @@ from .forms import (
     SourceNewForm, SourceEditForm,
     SourceVersionsNewForm, SourceVersionsEditForm, SourceVersionsRetireForm, SourceDeleteForm)
 from apps.core.views import UserOrOrgMixin
-import json
 
 logger = logging.getLogger('oclweb')
 

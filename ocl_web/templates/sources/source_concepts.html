@@ -69,7 +69,7 @@
 					</button>
 					<ul class="dropdown-menu" role="menu">
 					{% for source_version_i in source_versions %}
-						{% if source_type == 'Organization' %}
+						{% if source.owner_type == 'Organization' %}
               {% url 'source-version-concepts' org=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
 						{% else %}
               {% url 'source-version-concepts' user=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
