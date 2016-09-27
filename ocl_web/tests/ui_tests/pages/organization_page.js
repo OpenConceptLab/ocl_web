@@ -41,6 +41,10 @@ var OrganizationPage = function() {
     this.message = $('.ajs-success');
     this.releaseLabel = $$('.release-label');
 
+    // Retire / Un-Retire version locators
+    this.retireButton = $('.resource_retire');
+    this.retireLabel = $$('.retire-label');
+
     // Delete reference locators
     this.deleteLink = $('.delete-reference');
     this.warning = $('.ajs-warning');
@@ -128,6 +132,12 @@ var OrganizationPage = function() {
       this.releaseButton.click();
       browser.sleep('750');
     };
+
+    this.retireVersion = function () {
+      this.retireButton.click();
+      browser.sleep('750');
+    };
+
 
     this.createNewConcept = function (id, name, name_type) {
         this.newConceptLink.click();

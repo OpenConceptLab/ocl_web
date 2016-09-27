@@ -68,6 +68,22 @@ describe('OCL User Source Page', function () {
         browser.sleep('750');
     });
 
+    it('should retire a user source version', function () {
+        orgPage.retireVersion();
+
+        expect(orgPage.message.getText()).toEqual('Successfully Retired.');
+        expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
+        orgPage.message.click();
+    });
+
+    it('should un-retire a user source version', function () {
+        orgPage.retireVersion();
+
+        expect(orgPage.message.getText()).toEqual('Successfully Un-Retired.');
+        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
+        orgPage.message.click();
+    });
+
     it('should un-release a user source version', function () {
         orgPage.releaseVersion();
         browser.sleep('750');

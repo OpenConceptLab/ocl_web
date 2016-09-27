@@ -77,6 +77,22 @@ describe('OCL Org Page', function () {
         browser.sleep('750');
     });
 
+    it('should retire org source version', function () {
+        orgPage.retireVersion();
+
+        expect(orgPage.message.getText()).toEqual('Successfully Retired.');
+        expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
+        orgPage.message.click();
+    });
+
+    it('should un-retire org source version', function () {
+        orgPage.retireVersion();
+
+        expect(orgPage.message.getText()).toEqual('Successfully Un-Retired.');
+        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
+        orgPage.message.click();
+    });
+
     it('should un-release a source version', function () {
         orgPage.releaseVersion();
         browser.sleep('750');
@@ -144,6 +160,22 @@ describe('OCL Org Page', function () {
         browser.sleep('500');
         orgPage.message.click();
         browser.sleep('750');
+    });
+
+    it('should retire org collection version', function () {
+        orgPage.retireVersion();
+
+        expect(orgPage.message.getText()).toEqual('Successfully Retired.');
+        expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
+        orgPage.message.click();
+    });
+
+    it('should un-retire org collection version', function () {
+        orgPage.retireVersion();
+
+        expect(orgPage.message.getText()).toEqual('Successfully Un-Retired.');
+        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
+        orgPage.message.click();
     });
 
     it('should un-release a collection version', function () {
