@@ -20,11 +20,14 @@
 	        <div class="form-group">
 		        {% simple_pager current_page 'source version' url=pagination_url %}
 
-				<div class="btn-group" style="margin-left:40px;padding-right:10px;">
-					<a href="{{ source_version_new_url }}" class="small" style="padding-right:10px;"><span class="glyphicon glyphicon-plus"></span> {% trans "New Source Version" %}</a>&nbsp;&nbsp;&nbsp;
-{#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="source-version-filter" value="released" disabled /> {% trans "Released" %}</label>#}
-{#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="source-version-filter" value="is_processing" disabled /> {% trans "Processing" %}</label> #}
-				</div>
+                    <div class="btn-group" style="margin-left:40px;padding-right:10px;">
+                        {% if_can_change source %}
+                            <a href="{{ source_version_new_url }}" class="small" style="padding-right:10px;"><span class="glyphicon glyphicon-plus"></span> {% trans "New Source Version" %}</a>&nbsp;&nbsp;&nbsp;
+        {#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="source-version-filter" value="released" disabled /> {% trans "Released" %}</label>#}
+        {#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="source-version-filter" value="is_processing" disabled /> {% trans "Processing" %}</label> #}
+                        {% endif_can_change source %}
+                    </div>
+
 
 	    	</div>
 
