@@ -48,6 +48,7 @@ class SourceVersionEditJsonViewTest(TestCase):
     @patch('libs.ocl.OclApi.update_resource_version')
     def test_put(self, mock_update_resource_version):
         colResponse = MagicMock(spec=Response)
+        colResponse.status_code=200
         colResponse.json.return_value = "foobar"
         mock_update_resource_version.return_value = colResponse
         sourceVersionEditView = views.SourceVersionEditJsonView()
