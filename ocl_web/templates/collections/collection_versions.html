@@ -21,7 +21,9 @@
 		        {% simple_pager current_page 'collection version' url=pagination_url %}
 
                 <div class="btn-group" style="margin-left:40px;padding-right:10px;">
-					<a href="{{ collection_version_new_url }}" class="small" style="padding-right:10px;"><span class="glyphicon glyphicon-plus"></span> {% trans "New Collection Version" %}</a>&nbsp;&nbsp;&nbsp;
+                    {% if_can_change collection %}
+					    <a href="{{ collection_version_new_url }}" class="small" style="padding-right:10px;"><span class="glyphicon glyphicon-plus"></span> {% trans "New Collection Version" %}</a>&nbsp;&nbsp;&nbsp;
+                    {% endif_can_change collection %}
 {#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="collection-version-filter" value="released" disabled /> {% trans "Released" %}</label>#}
 {#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="collection-version-filter" value="is_processing" disabled /> {% trans "Processing" %}</label>#}
                     {% include "download_csv.html" with results=collection_versions versions=True %}
@@ -42,7 +44,7 @@
 	    			{% endif %}
 
 		            <li class="list-group-item">
-                        {% if request.user.is_authenticated %}
+                        {% if_can_change collection %}
                             {% if not collection_version.is_processing and collection_version.id != 'HEAD' %}
                                 <div class="pull-right">
                                     <a href="{{ collection_version_edit_url }}" title="Edit Collection Version" class="no-text-decoration">
@@ -51,7 +53,7 @@
                                     <button class="btn btn-link collection_version_delete glyphicon glyphicon-trash no-text-decoration" title="Delete Collection Version" data-id="{{ collection_version.id }}"></button>
                                 </div>
                             {% endif %}
-		                {% endif %}
+		                {% endif_can_change collection %}
 
 		                <h4>
 
@@ -66,7 +68,7 @@
 {##}
 {#		                    {% if collection_version.is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>{% endif %}#}
 		                </h4>
-                        {% if request.user.is_authenticated %}
+                        {% if_can_change collection %}
                             <div class='pull-right release_unrelease_section' style="font-size: small;">
                                 {% if not collection_version.id == 'HEAD' %}
                                     <input id="id_release"
@@ -83,7 +85,7 @@
                                           {% if collection_version.retired %}checked{% endif %} /> Retire
                                 {% endif %}
                             </div>
-                        {% endif %}
+                        {% endif_can_change collection %}
 
 
 		                <p class="small">

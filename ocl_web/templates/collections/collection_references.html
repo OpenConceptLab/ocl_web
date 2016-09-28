@@ -59,10 +59,9 @@
             {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
                 <!-- New collection reference button -->
                 <div class="pull-left">
-                    {% if user.is_authenticated %}
-                    {# TBD: need a more complete tag to check for access #}
-                    <a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" title="Add New Reference" style="font-weight:300;text-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'Reference' %}</a>
-                    {% endif %}
+                    {% if_can_change collection %}
+                        <a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" title="Add New Reference" style="font-weight:300;text-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'Reference' %}</a>
+                    {% endif_can_change collection %}
                 </div>
             {% endif %}
 
@@ -113,12 +112,13 @@
                         <option {% if search_sort == 'DESC' %}selected{% endif %} value="DESC">Last Created (Desc)</option>
                     </select>
                 </div>
-
-            {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
-                <div class="btn-group">
-                    <a class="btn delete-reference">Delete</a>
-                </div>
-            {% endif %}
+            {% if_can_change collection %}
+                {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
+                    <div class="btn-group">
+                        <a class="btn delete-reference">Delete</a>
+                    </div>
+                {% endif %}
+            {% endif_can_change collection %}
             </div> <!-- /col-md-12-->
         </div> <!-- /row -->
 
@@ -128,11 +128,13 @@
 
 
             <div class="row row-search-result references">
-            {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
-                <div class="col-md-1 search-result-col-icon">
-                    <input type="checkbox" name="reference" id="check_reference" value="{{ result.expression }}" {% if result.expression %}{% endif %}>
-                </div>
-            {% endif %}
+            {% if_can_change collection %}
+                {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
+                    <div class="col-md-1 search-result-col-icon">
+                        <input type="checkbox" name="reference" id="check_reference" value="{{ result.expression }}" {% if result.expression %}{% endif %}>
+                    </div>
+                {% endif %}
+            {% endif_can_change collection %}
                 <div class="col-md-11 search-result-col-content">
                     <div class="pull-left small text-muted" style="padding-top:12px;">
                         <span class="glyphicon {% if result.reference_type == 'concepts' %}glyphicon-tag{% else %}glyphicon-link{% endif %}"></span>
