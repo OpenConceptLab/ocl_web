@@ -856,7 +856,7 @@ class SourceVersionEditJsonView(UserOrOrgMixin, TemplateView):
                                           kwargs['source_version'],
                                           'sources',
                                           data)
-        return HttpResponse(res.content, status=200)
+        return HttpResponse(res.content, status=res.status_code)
 
 
 class SourceVersionDeleteView(UserOrOrgMixin, TemplateView):

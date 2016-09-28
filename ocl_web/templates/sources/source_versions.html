@@ -46,14 +46,14 @@
 		                <div class="search-result-col-icon pull-left" style="padding-top:0;padding-right:14px;margin-bottom:20px;"><span class="search-result-icon"><span class="glyphicon glyphicon-asterisk"></span></span></div>
 		                {% endcomment %}
 
-                        {% if request.user.is_authenticated %}
+                        {% if_can_change source %}
                             {% if not source_version.is_processing and source_version.id != 'HEAD' %}
                               <div class="pull-right">
                                   <a href="{{ source_version_edit_url }}" class="btn btn-link" title="Edit Source Version"><span class="glyphicon glyphicon-pencil"></span></a>
                                   <button class="btn btn-link collection_version_delete glyphicon glyphicon-trash no-text-decoration" title="Delete Collection Version" data-id="{{ source_version.id }}"></button>
                               </div>
                             {% endif %}
-                        {% endif %}
+                        {% endif_can_change source %}
 
 		                <h4>
 		                	<a href="{{ source_version_concepts_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} [ </span><span class="resource-label-id-code {% if source_version.retired %}strikethrough{% endif %}">{{ source_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
@@ -71,9 +71,8 @@
 
 {#		                    {% if source_version.is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>{% endif %}#}
 		                </h4>
-
-                        {% if request.user.is_authenticated %}
-                            <div class='pull-right release_unrelease_section' style="font-size: small;">
+                        {% if_can_change source %}
+							<div class='pull-right release_unrelease_section' style="font-size: small;">
                                 {% if not source_version.id == 'HEAD' %}
                                     <input id="id_release"
                                            type="checkbox"
@@ -89,8 +88,7 @@
                                           {% if source_version.retired %}checked{% endif %} /> Retire
                                 {% endif %}
                             </div>
-                        {% endif %}
-
+						{% endif_can_change source %}
 		                <p class="small">
 		                    {% if source_version.description %}<span>{{ source_version.description }}<br /></span>{% endif %}
 		                    <span class="text-muted"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;{% trans "Created on" %} {{ source_version.created_on|smart_datetime }}</span>
