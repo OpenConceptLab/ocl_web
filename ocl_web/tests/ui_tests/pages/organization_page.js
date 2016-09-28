@@ -57,6 +57,7 @@ var OrganizationPage = function() {
     this.conceptId = $('#id_concept_id');
     this.conceptNameType = $('#id_name_type');
     this.createConceptButton = element(by.buttonText('Create Concept'));
+    this.deleteExtra = element(by.css('.glyphicon-trash'));
 
     //create mapping locators
     this.newMappingLink = element(by.linkText('Mappings'));
@@ -145,6 +146,7 @@ var OrganizationPage = function() {
         this.conceptId.sendKeys(id);
         this.name.sendKeys(name);
         this.conceptNameType.sendKeys(name_type);
+        this.deleteExtra.click();
         this.createConceptButton.click();
     };
 

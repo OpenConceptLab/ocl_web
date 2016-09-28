@@ -67,7 +67,7 @@ describe('OCL Org Page', function () {
 
     it('should release a source version', function () {
         orgPage.releaseVersion();
-        browser.sleep('500');
+        browser.sleep('750');
 
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
         expect(orgPage.message.getText()).toEqual('Successfully Released.');
