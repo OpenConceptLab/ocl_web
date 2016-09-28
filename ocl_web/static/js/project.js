@@ -908,9 +908,6 @@ app.directive('textField', function() {
 });
 
 app.controller('CustomAttributesController', ['$scope', function($scope) {
-  $scope.extras = [
-      {key:'', value:''},
-  ];
 
   $scope.addRow = function()
   {
@@ -922,11 +919,34 @@ app.controller('CustomAttributesController', ['$scope', function($scope) {
   {
       $scope.extras.splice(index, 1);
   }
+  $scope.validateKey = function(val, event)
+  {
+        if(val.key == undefined || val.key.trim() == '')
+            $(event.target)[0].setCustomValidity('key can not be empty');
+        else
+        {
+            isValid = true;
+            angular.forEach($scope.extras, function(extra){
+                  if(val.$$hashKey != extra.$$hashKey && val.key == extra.key)
+                  {
+                      $(event.target)[0].setCustomValidity('key must be unique');
+                      isValid = false;
+                      return;
+                  }
+               })
+            if(isValid)
+                $(event.target)[0].setCustomValidity('');
+        }
+
+  }
 
 }])
 .directive('customAttributes', function() {
   return {
       restrict: 'E',
+      scope: {
+          extras: "="
+        },
       replace: true,
       controller: 'CustomAttributesController',
       template: '<div class="form-group">' +
@@ -937,11 +957,11 @@ app.controller('CustomAttributesController', ['$scope', function($scope) {
 
                                 '<div class="col-md-5">'+
                                     '<label style="padding-left: 0px" for="inputKey" class="col-md-6 control-label">Attribute Name</label>'+
-                                    '<input class="form-control" type="text" ng-model="extra.key" value="{{extra.key}}">'+
+                                    '<input class="form-control" type="text" ng-model="extra.key" ng-blur="validateKey(extra, $event)" required>'+
                                 '</div>'+
                                 '<div class="col-md-6">'+
                                     '<label style="padding-left: 0px" for="inputValue" class="col-md-6 control-label">Value</label>'+
-                                    '<textarea class="form-control"  rows="3" ng-model="extra.value">{{extra.value}}</textarea>'+
+                                    '<textarea class="form-control"  rows="3" ng-model="extra.value" required></textarea>'+
                                 '</div>'+
                                 '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeRow($index)"></span>'+
                            '</div>' +

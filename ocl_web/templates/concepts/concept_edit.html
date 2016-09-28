@@ -34,9 +34,10 @@
 			<form class="form" name="concept_form" autocomplete="off" method="post" action=".">
 				{% csrf_token %}
 				{% bootstrap_form form %}
+                <custom-attributes extras="{{ extras }}"></custom-attributes>
 				{% buttons %}
 					<button type="submit" class="btn btn-primary">{% trans "Update Concept" %}</button>
-					<a href="{{ concept_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+					<a href="{{ concept_url }}" class="btn bstn-default">{% trans "Cancel" %}</a>
 				{% endbuttons %}
 			</form>
 		</div>
