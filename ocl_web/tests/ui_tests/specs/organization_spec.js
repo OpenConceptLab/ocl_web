@@ -103,6 +103,16 @@ describe('OCL Org Page', function () {
         orgPage.message.click();
     });
 
+    it('should delete a source version', function () {
+       orgPage.deleteVersion();
+       browser.sleep('250');
+
+       expect(orgPage.message.getText()).toEqual('Successfully removed collection version.');
+
+       browser.sleep('500');
+       orgPage.message.click();
+    });
+
     it('should create concept', function () {
         orgPage.createNewConcept( data.concept_id+id,
             data.concept_name,
@@ -188,6 +198,17 @@ describe('OCL Org Page', function () {
         orgPage.message.click();
         browser.sleep('500');
     });
+
+    it('should delete org colection version', function () {
+       orgPage.deleteVersion();
+       browser.sleep('750');
+
+       expect(orgPage.message.getText()).toEqual('Successfully removed collection version.');
+
+       browser.sleep('500');
+       orgPage.message.click();
+    });
+
 
     it('should add a reference of concept to a collection', function () {
         var concept_expression = '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/concepts/C1.1.1.2-/';

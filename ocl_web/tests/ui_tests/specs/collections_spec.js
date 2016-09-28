@@ -88,6 +88,15 @@ describe('OCL Collections Page', function () {
         // browser.sleep('500');
     });
 
+    it('should delete a user collection version', function () {
+       orgPage.deleteVersion();
+       browser.sleep('750');
+
+       expect(orgPage.message.getText()).toEqual('Successfully removed collection version.');
+        browser.sleep('500');
+       orgPage.message.click();
+    });
+
     it('should add a reference of concept to a collection', function () {
         var concept_expression = '/orgs/EthiopiaMOH/sources/HSTP-Indicators/concepts/1/';
         orgPage.createNewReference(concept_expression);

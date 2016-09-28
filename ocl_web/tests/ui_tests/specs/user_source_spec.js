@@ -95,6 +95,17 @@ describe('OCL User Source Page', function () {
         browser.sleep('500');
     });
 
+    it('should delete a user source version', function () {
+       orgPage.deleteVersion();
+       browser.sleep('500');
+
+       expect(orgPage.message.getText()).toEqual('Successfully removed collection version.');
+
+       browser.sleep('500');
+       orgPage.message.click();
+    });
+
+
     it('should logout', function () {
          logoutPage.logout();
 
