@@ -21,7 +21,9 @@
 		        {% simple_pager current_page 'collection version' url=pagination_url %}
 
                 <div class="btn-group" style="margin-left:40px;padding-right:10px;">
-					<a href="{{ collection_version_new_url }}" class="small" style="padding-right:10px;"><span class="glyphicon glyphicon-plus"></span> {% trans "New Collection Version" %}</a>&nbsp;&nbsp;&nbsp;
+                    {% if_can_change collection %}
+					    <a href="{{ collection_version_new_url }}" class="small" style="padding-right:10px;"><span class="glyphicon glyphicon-plus"></span> {% trans "New Collection Version" %}</a>&nbsp;&nbsp;&nbsp;
+                    {% endif_can_change collection %}
 {#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="collection-version-filter" value="released" disabled /> {% trans "Released" %}</label>#}
 {#					<label class="checkbox-inline input-sm text-muted"><input type="checkbox" name="collection-version-filter" value="is_processing" disabled /> {% trans "Processing" %}</label>#}
                     {% include "download_csv.html" with results=collection_versions versions=True %}
