@@ -160,8 +160,12 @@ class MappingVersionsView(UserOrOrgMixin, MappingReadBaseView):
         self.get_args()
 
         # Load the mapping details
-        mapping = self.get_mapping_details(
-            self.owner_type, self.owner_id, self.source_id, self.mapping_id)
+        if self.mapping_version_id:
+            mapping = self.get_mapping_details(
+                self.owner_type, self.owner_id, self.source_id, self.mapping_id, mapping_version_id = self.mapping_version_id)
+        else :
+            mapping = self.get_mapping_details(
+                self.owner_type, self.owner_id, self.source_id, self.mapping_id)
 
         searcher = self.get_mapping_versions(
             self.owner_type, self.owner_id, self.source_id, self.mapping_id)

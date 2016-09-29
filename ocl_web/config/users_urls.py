@@ -250,6 +250,10 @@ urlpatterns = patterns(
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/details/$',    # pylint: disable=C0301
         MappingDetailsView.as_view(), name='mapping-details'),
 
+    # /users/:user/sources/:source/mappings/:mapping/ - points to "mapping-details"
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/(?P<mapping_version>[a-zA-Z0-9\-\.]+)/details/$',    # pylint: disable=C0301
+        MappingDetailsView.as_view(), name='mapping-details'),
+
     # /users/:user/sources/:source/mappings/:mapping/history/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/history/$',    # pylint: disable=C0301
         MappingVersionsView.as_view(), name='mapping-versions'),
@@ -265,6 +269,11 @@ urlpatterns = patterns(
     # /users/:user/sources/:source/mappings/:mapping/ - points to "mapping-details"
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/(?P<mapping_version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         MappingDetailsView.as_view(), name='mapping-version-home'),
+
+    # /users/:user/sources/:source/mappings/:mapping/ - points to "mapping-details"
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/(?P<mapping_version>[a-zA-Z0-9\-\.]+)/history/$',    # pylint: disable=C0301
+        MappingVersionsView.as_view(), name='mapping-versions'),
+
 
     ## CORE USER - are these used at all?
 

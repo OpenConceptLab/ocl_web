@@ -80,9 +80,24 @@
 	</div> <!-- /container -->
 </header> <!-- /resource-header-mapping -->
 {% endblock resource-header %}
+{% block resource-tabs %}
+    {% if kwargs.mapping_version %}
+        {% if mapping.owner_type == 'Organization' %}
+            {% url 'mapping-details' org=mapping.owner source=mapping.source mapping=mapping.versioned_object_id mapping_version=kwargs.mapping_version as mapping_details_url %}
+            {% url 'mapping-versions' org=mapping.owner source=mapping.source mapping=mapping.versioned_object_id mapping_version=kwargs.mapping_version as mapping_history_url %}
+        {% else %}
+            {% url 'mapping-details' user=mapping.owner source=mapping.source mapping=mapping.versioned_object_id mapping_version=kwargs.mapping_version as mapping_details_url %}
+            {% url 'mapping-versions' user=mapping.owner source=mapping.source mapping=mapping.versioned_object_id mapping_version=kwargs.mapping_version as mapping_history_url %}
+        {% endif %}
 
-{% if not kwargs.mapping_version %}
-    {% block resource-tabs %}
+        <div class="container">
+            <ul class="nav nav-tabs">
+                <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ mapping_details_url }}">Details</a></li>
+                <li role="presentation" {% if selected_tab == "History" %}class="active"{% endif %}><a href="{{ mapping_history_url }}">History</a></li>
+            </ul>
+        </div>
+
+    {% else %}
         {% if mapping.owner_type == 'Organization' %}
             {% url 'mapping-details' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_details_url %}
             {% url 'mapping-versions' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_history_url %}
@@ -91,14 +106,14 @@
             {% url 'mapping-versions' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_history_url %}
         {% endif %}
 
-    <div class="container">
-        <ul class="nav nav-tabs">
-            <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ mapping_details_url }}">Details</a></li>
-            <li role="presentation" {% if selected_tab == "History" %}class="active"{% endif %}><a href="{{ mapping_history_url }}">History</a></li>
-        </ul>
-    </div>
-    {% endblock resource-tabs %}
-{% endif %}
+        <div class="container">
+            <ul class="nav nav-tabs">
+                <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ mapping_details_url }}">Details</a></li>
+                <li role="presentation" {% if selected_tab == "History" %}class="active"{% endif %}><a href="{{ mapping_history_url }}">History</a></li>
+            </ul>
+        </div>
+    {% endif %}
+{% endblock resource-tabs %}
 
 {% block tab-content %}
 {% endblock tab-content %}

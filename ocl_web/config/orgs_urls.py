@@ -296,10 +296,15 @@ urlpatterns = patterns(
     # /orgs/:org/sources/:source/mappings/:mapping/details/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/details/$',    # pylint: disable=C0301
         MappingDetailsView.as_view(), name='mapping-details'),
+    # /orgs/:org/sources/:source/mappings/:mapping/:mapping_versiondetails/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/(?P<mapping_version>[a-zA-Z0-9\-\.]+)/details/$',    # pylint: disable=C0301
+        MappingDetailsView.as_view(), name='mapping-details'),
     # /orgs/:org/sources/:source/mappings/:mapping/history/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/history/$',    # pylint: disable=C0301
         MappingVersionsView.as_view(), name='mapping-versions'),
-
+    # /orgs/:org/sources/:source/mappings/:mapping/:mapping_version/history/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/(?P<mapping_version>[a-zA-Z0-9\-\.]+)/history/$',    # pylint: disable=C0301
+        MappingVersionsView.as_view(), name='mapping-versions'),
     # /orgs/:org/sources/:source/mappings/:mapping/edit/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
         MappingEditView.as_view(), name='mapping-edit'),
