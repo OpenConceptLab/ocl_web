@@ -17,7 +17,8 @@ class CollectionCreateForm(forms.Form):
         label=_('Collection Short Code'),
         max_length=128,
         required=True,
-        help_text=_('Your new collection will live at: https://www.openconceptlab.org'
+        help_text=_('Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) <br/> '
+                    'Your new collection will live at: https://www.openconceptlab.org'
                     '<span id="new_repository_base_url">[OwnerType]/[Owner]/collections/</span>'
                     '<span id="new_repository_id" style>[CollectionCode]</span>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. c80-practice-codes"}))

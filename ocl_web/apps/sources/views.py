@@ -1,6 +1,7 @@
 """
 Views for OCL Sources and Source Versions.
 """
+import re
 import requests
 import logging
 import json
@@ -693,22 +694,26 @@ class SourceNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         data['short_code'] = short_code
         data['id'] = short_code
         data['name'] = short_code
-
-        api = OclApi(self.request, debug=True)
-        result = api.create_source(self.owner_type, self.owner_id, data)
-        if result.status_code == requests.codes.created:
-            messages.add_message(self.request, messages.INFO, _('Source created'))
-            if self.from_org:
-                return HttpResponseRedirect(reverse("source-home",
-                                                    kwargs={"org": self.org_id,
-                                                            'source': short_code}))
+        if re.compile('^[a-zA-Z0-9\-]+$').match(short_code):
+            api = OclApi(self.request, debug=True)
+            result = api.create_source(self.owner_type, self.owner_id, data)
+            if result.status_code == requests.codes.created:
+                messages.add_message(self.request, messages.INFO, _('Source created'))
+                if self.from_org:
+                    return HttpResponseRedirect(reverse("source-home",
+                                                        kwargs={"org": self.org_id,
+                                                                'source': short_code}))
+                else:
+                    return HttpResponseRedirect(reverse("source-home",
+                                                        kwargs={"user": self.user_id,
+                                                                'source': short_code}))
             else:
-                return HttpResponseRedirect(reverse("source-home",
-                                                    kwargs={"user": self.user_id,
-                                                            'source': short_code}))
-        else:
-            emsg = result.json().get('detail', 'Error')
-            messages.add_message(self.request, messages.ERROR, emsg)
+                emsg = result.json().get('detail', 'Error')
+                messages.add_message(self.request, messages.ERROR, emsg)
+                return HttpResponseRedirect(self.request.path)
+        else :
+            validator_template = ' Short Code \'%s\' is not valid. Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) '
+            messages.add_message(self.request, messages.ERROR, validator_template % short_code)
             return HttpResponseRedirect(self.request.path)
 
 

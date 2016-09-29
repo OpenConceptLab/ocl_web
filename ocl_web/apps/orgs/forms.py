@@ -1,6 +1,7 @@
 """
 Organization forms
 """
+from django.core.validators import RegexValidator
 from django.utils.translation import ugettext as _
 from django import forms
 
@@ -15,7 +16,8 @@ class OrganizationNewForm(forms.Form):
         label=_('Organization Short Name'),
         max_length=128,
         required=True,
-        help_text=('Your new organization will live at: '
+        error_messages={'required': 'Please enter your name'},
+        help_text=('Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) <br/>Your new organization will live at: '
                    'https://OpenConceptLab.com/orgs/'
                    '<span id="new_org_id" style="font-weight:bold;">[org-id]</span>/'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. WHO"}))

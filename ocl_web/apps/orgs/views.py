@@ -5,6 +5,7 @@ OCL Organization Views
 import logging
 import json
 
+import re
 from django.shortcuts import redirect
 from django.http import Http404
 from django.views.generic import TemplateView, View
@@ -274,18 +275,20 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
             'id': org_id,
         }
         data.update(form.cleaned_data)
-        print form.cleaned_data
-        print data
-        result = api.create_org(data)
+        if re.compile('^[a-zA-Z0-9\-]+$').match(org_id):
+            result = api.create_org(data)
+            # TODO:  Catch exceptions that will be raised by Ocl lib.
+            if result.ok:
+                messages.add_message(self.request, messages.INFO, _('Organization Added'))
+                return redirect(reverse('org-details', kwargs={'org': org_id}))
 
-        # TODO:  Catch exceptions that will be raised by Ocl lib.
-        if result.ok:
-            messages.add_message(self.request, messages.INFO, _('Organization Added'))
-            return redirect(reverse('org-details', kwargs={'org': org_id}))
-
-        # TODO:  Add error messages from API to form.
-        else:
-            messages.add_message(self.request, messages.INFO, result.json()['mnemonic'])
+            # TODO:  Add error messages from API to form.
+            else:
+                messages.add_message(self.request, messages.INFO, result.json()['mnemonic'])
+                return super(OrganizationNewView, self).form_invalid(form)
+        else :
+            validator_template = ' Short Name \'%s\' is not valid. Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) '
+            messages.add_message(self.request, messages.ERROR, validator_template % org_id)
             return super(OrganizationNewView, self).form_invalid(form)
 
 

@@ -1,6 +1,7 @@
 """
 OCL Concept Views
 """
+import re
 import requests
 import logging
 
@@ -434,6 +435,11 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
         # Prepare the data for submission, incl. renaming fields as needed
         concept_id = form.cleaned_data.pop('concept_id')
+        if not re.compile('^[a-zA-Z0-9\-]+$').match(concept_id):
+            validator_template = ' Concept ID \'%s\' is not valid. Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) '
+            messages.add_message(self.request, messages.ERROR, validator_template % concept_id)
+            return HttpResponseRedirect(self.request.path)
+
         base_data = {
             'id': concept_id,
             'concept_class': form.cleaned_data.get('concept_class'),

@@ -19,7 +19,7 @@ class SourceNewForm(forms.Form):
         label=_('Source Short Code'),
         max_length=128,
         required=True,
-        help_text=_('Your new source will live at: http://www.openconceptlab.org'
+        help_text=_('Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) <br/> Your new source will live at: http://www.openconceptlab.org'
                     '<span id="new_repository_base_url">/[OwnerType]/[Owner]/sources/</span>'
                     '<span id="new_repository_id" style="font-weight:bold;">[SourceCode]</span>/'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. ICD-10"}))

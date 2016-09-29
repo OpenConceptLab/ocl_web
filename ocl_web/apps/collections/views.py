@@ -1,6 +1,7 @@
 """
 OCL Collection views
 """
+import re
 import simplejson as json
 
 import requests
@@ -403,24 +404,28 @@ class CollectionCreateView(CollectionsBaseView, FormView):
         data = form.cleaned_data
         short_code = data.pop('short_code')
         data['id'] = short_code
+        if re.compile('^[a-zA-Z0-9\-]+$').match(short_code):
+            api = OclApi(self.request, debug=True)
+            result = api.post(self.owner_type, self.owner_id, 'collections', **data)
+            if not result.status_code == requests.codes.created:
+                emsg = result.json().get('detail', 'Error')
+                messages.add_message(self.request, messages.ERROR, emsg)
+                return HttpResponseRedirect(self.request.path)
 
-        api = OclApi(self.request, debug=True)
-        result = api.post(self.owner_type, self.owner_id, 'collections', **data)
-        if not result.status_code == requests.codes.created:
-            emsg = result.json().get('detail', 'Error')
-            messages.add_message(self.request, messages.ERROR, emsg)
+            messages.add_message(self.request, messages.INFO, _('Collection created'))
+
+            if self.from_org:
+                return HttpResponseRedirect(reverse("collection-home",
+                                                    kwargs={"org": self.org_id,
+                                                            'collection': short_code}))
+            else:
+                return HttpResponseRedirect(reverse("collection-home",
+                                                    kwargs={"user": self.user_id,
+                                                            'collection': short_code}))
+        else :
+            validator_template = ' Short Code \'%s\' is not valid. Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) '
+            messages.add_message(self.request, messages.ERROR, validator_template % short_code)
             return HttpResponseRedirect(self.request.path)
-
-        messages.add_message(self.request, messages.INFO, _('Collection created'))
-
-        if self.from_org:
-            return HttpResponseRedirect(reverse("collection-home",
-                                                kwargs={"org": self.org_id,
-                                                        'collection': short_code}))
-        else:
-            return HttpResponseRedirect(reverse("collection-home",
-                                                kwargs={"user": self.user_id,
-                                                        'collection': short_code}))
 
 class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
     template_name = "collections/collection_add_reference.html"
