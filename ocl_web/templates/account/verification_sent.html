@@ -2,16 +2,16 @@
 
 {% load i18n %}
 
-{% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
+{% block head_title %}{% trans "Verify Your Email Address" %}{% endblock %}
 
 {% block content %}
 <div class="container">
   <div class="row">
     <div class="col-md-5">
-        <h2>{% trans "Verify Your E-mail Address" %}</h2>
-        
-        <p>{% blocktrans %}We have sent an e-mail to <a href="mailto:{{email}}">{{ email }}</a> for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
-    </div>    
+        <h2>{% trans "Verify Your Email Address" %}</h2>
+
+        <p>{% blocktrans %}We have sent an email to <a href="mailto:{{email}}">{{ email }}</a> for verification. Follow the link provided to finalize the signup process. Please check your spam folder if you do not receive it within a few minutes. Contact the OCL team if you continue to have issues.{% endblocktrans %}</p>
+    </div>
   </div>
 </div>
 
