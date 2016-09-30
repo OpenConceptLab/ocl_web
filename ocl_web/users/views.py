@@ -54,15 +54,15 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         ocl_user = api.get('users', username).json()
         ocl_user_orgs = api.get('users', username, 'orgs', params={'limit':limit}).json()
         ocl_user_sources = api.get('users', username, 'sources', params={'limit':limit}).json()
-        ocl_user_collections = api.get('users', username, 'collections',params={'limit':limit}).json()
+        ocl_user_collections = api.get('users', username, 'collections', params={'limit':limit}).json()
 
         # Set the selected tab
         default_tab = 'repositories'
         if 'tab' in self.request.GET:
             selected_tab = self.request.GET.get('tab').lower()
-            if selected_tab not in ('repositories', 'organizations')
+            if selected_tab not in ('repositories', 'organizations'):
                 selected_tab = default_tab
-        else
+        else:
             selected_tab = default_tab
 
         # Set the context
@@ -147,18 +147,18 @@ class UserListView(LoginRequiredMixin, ListView):
 class UserJsonView(View):
     def get(self, request, *args, **kwargs):
         api = OclApi(self.request, debug=True)
-        result = api.get('users',params={'limit': '0'})
+        result = api.get('users', params={'limit': '0'})
         return HttpResponse(json.dumps(result.json()), content_type="application/json")
 
 
 class UserSourcesView(View):
     def get(self, request, *args, **kwargs):
         api = OclApi(self.request, debug=True)
-        result = api.get('users', kwargs.get("user"), "sources",params={'limit': '0'})
+        result = api.get('users', kwargs.get("user"), "sources", params={'limit': '0'})
         return HttpResponse(json.dumps(result.json()), content_type="application/json")
 
 class UserCollectionsView(View):
     def get(self, request, *args, **kwargs):
         api = OclApi(self.request, debug=True)
-        result = api.get('users', kwargs.get("user"), "collections",params={'limit': '0'})
+        result = api.get('users', kwargs.get("user"), "collections", params={'limit': '0'})
         return HttpResponse(json.dumps(result.json()), content_type="application/json")
