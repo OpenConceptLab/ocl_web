@@ -19,7 +19,7 @@
 			<p><strong>{% trans "Location" %}:</strong><br />{{ ocl_user.location|default:"N/A"  }}</p>
 			{% if ocl_user.website %}<p><strong>{% trans "Website" %}:</strong><br />{{ ocl_user.website }}</p>{% endif %}
 			<p><strong>{% trans "Email" %}:</strong><br />{{ ocl_user.email }}</p>
-			<p><strong>{% trans "Preferred Locales" %}:</strong><br />{{ ocl_user.preferred_locale }}</p>
+			<!--p><strong>{% trans "Preferred Locales" %}:</strong><br />{{ ocl_user.preferred_locale }}</p-->
 			<p><strong>{% trans "Joined" %}:</strong><br />{{ ocl_user.created_on|smart_date }}</p>
 			{% if api_token %}<hr /><p><strong>{% trans "API Token" %}:</strong><br /><span class="small">{{ api_token }}</span></p>{% endif %}
 		</div>
@@ -30,26 +30,38 @@
 			{% if object == request.user %}
 			<div class="row">
 				<div class="pull-right">
-					<a class="btn btn-primary" href="{% url 'users:update' ocl_user.username %}">Edit Profile</a>
-					<a class="btn" href="{% url 'account_email' %}">E-Mail</a>
-					<a class="btn" href="{% url 'avatar_change' %}">Avatar</a>
+					<a class="btn btn-sm btn-primary" href="{% url 'users:update' ocl_user.username %}">Edit Profile</a>
+					<a class="btn btn-sm" href="{% url 'account_email' %}">E-Mail</a>
+					<a class="btn btn-sm" href="{% url 'avatar_change' %}">Avatar</a>
 				</div>
 			</div>
 			{% endif %}
 			<!-- End Action buttons -->
 
-			<div class="row"><p>&nbsp;</p></div>
+
+			<!-- Tabs -->
+			{% url 'users:detail' username=ocl_user.username as user_url %}
+			<div class="row" style="margin:12px 0;">
+				<ul class="nav nav-tabs">
+					<li role="presentation" {% if selected_tab == "repositories" %}class="active"{% endif %}><a href="{{ user_url }}?tab=Repositories">User Repositories</a></li>
+					<li role="presentation" {% if selected_tab == "organizations" %}class="active"{% endif %}><a href="{{ user_url }}?tab=Organizations">Organization Membership</a></li>
+				</ul>
+			</div>
+			<!-- End Tabs -->
+
 
 			<!-- Sources, Collections, and Orgs -->
 			<div class="row">
 
-			<!-- User Source List -->
-				<div class="col-sm-4">
+			{% if selected_tab == "repositories" %}
+
+				<!-- User Sources List -->
+				<div class="col-sm-6">
 					<div class="list-group">
 						<div class="list-group-item">
-							<h4>User Sources</h4>
+							<span><strong>User Sources</strong></span>
 							{% if object == request.user %}
-								<small><p class="text-right"><a id='new-user-source' href="{% url 'source-new' user=ocl_user.username %}"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans "New User Source" %}</a></small></p>
+								<span class="small pull-right" style="padding-top:3px;"><a id="new-user-source" href="{% url 'source-new' user=ocl_user.username %}" title="New User Source"><span class="glyphicon glyphicon-plus"></span><span class="hidden-xs hidden-sm">&nbsp;{% trans "New User Source" %}</span></a></span>
 							{% endif %}
 						</div>
 						<div class="list-group-item" style="overflow-x: scroll; white-space: nowrap;">
@@ -65,35 +77,37 @@
 					</div>
 				</div>
 
-                <!-- User Collection List -->
-                <div class="col-sm-4">
-                    <div class="list-group">
-                        <div class="list-group-item">
-                            <h4>User Collections</h4>
-                            {% if object == request.user %}
-                                <small><p class="text-right"><a id="new-user-collection" href="{% url 'collection-new' user=ocl_user.username %}"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans "New User Collection" %}</a></small></p>
-                            {% endif %}
-                        </div>
-                        <div class="list-group-item" style="overflow-x: scroll; white-space: nowrap;">
-                            {% for collection in collections %}
-                                {% url 'collection-home' user=collection.owner collection=collection.short_code as user_collection_url %}
-                                <div class="label-container">
-                                    {% generic_resource_label resource_type='collection' resource_id=collection.short_code resource_name=collection.name resource_url=user_collection_url  label_size='small' display_breadcrumb=True %}
-                                </div>
-                            {% empty %}
-                                <h3><small>No User Collections</small></h3>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-				<!-- Organization Membership List -->
-				<div class="col-sm-4">
+				<!-- User Collections List -->
+				<div class="col-sm-6">
 					<div class="list-group">
 						<div class="list-group-item">
-							<h4>Organization Membership</h4>
+							<span><strong>User Collections</strong></span>
 							{% if object == request.user %}
-								<small><p class="text-right"><a id="new-organization" href="{% url 'org-new' %}"><span class="glyphicon glyphicon-plus"></span>&nbsp;New Organization</a></small></p>
+								<span class="small pull-right" style="padding-top:3px;"><a id="new-user-collection" href="{% url 'collection-new' user=ocl_user.username %}" title="New User Collection"><span class="glyphicon glyphicon-plus"></span><span class="hidden-xs hidden-sm">&nbsp;{% trans "New User Collection" %}</span></a></span>
+							{% endif %}
+						</div>
+						<div class="list-group-item" style="overflow-x: scroll; white-space: nowrap;">
+							{% for collection in collections %}
+								{% url 'collection-home' user=collection.owner collection=collection.short_code as user_collection_url %}
+								<div class="label-container">
+									{% generic_resource_label resource_type='collection' resource_id=collection.short_code resource_name=collection.name resource_url=user_collection_url  label_size='small' display_breadcrumb=True %}
+								</div>
+							{% empty %}
+								<h3><small>No User Collections</small></h3>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+
+			{% elif selected_tab == "organizations" %}
+
+				<!-- Organization Membership List -->
+				<div class="col-sm-12">
+					<div class="list-group">
+						<div class="list-group-item">
+							<span><strong>Organization Membership</strong></span>
+							{% if object == request.user %}
+								<span class="small pull-right" style="padding-top:3px;"><a id="new-organization" href="{% url 'org-new' %}" title="New Organization"><span class="glyphicon glyphicon-plus"></span><span class="hidden-xs hidden-sm">&nbsp;New Organization</span></a></span>
 							{% endif %}
 						</div>
 						<div class="list-group-item" style="overflow-x: scroll; white-space: nowrap;">
@@ -108,6 +122,8 @@
 						</div>
 					</div>
 				</div>
+
+			{% endif %}
 
 			</div>
 			<!-- End Sources, Collections and Orgs -->

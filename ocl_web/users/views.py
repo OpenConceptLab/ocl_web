@@ -56,11 +56,21 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         ocl_user_sources = api.get('users', username, 'sources', params={'limit':limit}).json()
         ocl_user_collections = api.get('users', username, 'collections',params={'limit':limit}).json()
 
+        # Set the selected tab
+        default_tab = 'repositories'
+        if 'tab' in self.request.GET:
+            selected_tab = self.request.GET.get('tab').lower()
+            if selected_tab not in ('repositories', 'organizations')
+                selected_tab = default_tab
+        else
+            selected_tab = default_tab
+
         # Set the context
         context['ocl_user'] = ocl_user
         context['orgs'] = ocl_user_orgs
         context['sources'] = ocl_user_sources
         context['collections'] = ocl_user_collections
+        context['selected_tab'] = selected_tab
 
         if self.request.user.username == username:
             context['api_token'] = api.api_key
