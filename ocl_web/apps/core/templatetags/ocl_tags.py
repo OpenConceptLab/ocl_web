@@ -193,13 +193,18 @@ def generic_resource_label(
     to display breadcrumb information.
 
     If display_breadcrumb == true:
-        Org/User:    (:icon :resource-id | :resource-name )
-        Source:      (:icon :owner_id / :resource-id | :resource-name )
-        Collection:  (:icon :owner_id / :resource-id | :resource-name )
-        Ver Repo:    (:icon :owner_id / :resource-id [ :resource_version_id ] | :resource-name)
-        Concept:     (:icon :owner_id / :source_id / :resource-id | :resource-name )
-        Mapping:     (:icon :owner_id / :source_id / :resource-id | :resource-name )
-        Ver Concept: (:icon :owner_id / :source_id /:resource-id[:resource_ver_id]|:resource-name)
+        Owner (Organization/User):
+            (:icon :resource-id | :resource-name)
+        Repository (Source/Collection):
+            (:icon :owner_id / :resource-id | :resource-name)
+        Versioned Repository:
+            (:icon :owner_id / :resource-id [ :resource_version_id ] | :resource-name)
+        Repository Version (no name when listing repo versions):
+            (:icon :owner_id / :resource-id [ :resource_version_id ])
+        Concept/Mapping:
+            (:icon :owner_id / :source_id / :resource-id | :resource-name)
+        Versioned Concept/Mapping:
+            (:icon :owner_id / :source_id /:resource-id[:resource_ver_id]|:resource-name)
     Elif resource_id and resource_name:
         ( :icon :resource-id | :resource_name )
     Else:
