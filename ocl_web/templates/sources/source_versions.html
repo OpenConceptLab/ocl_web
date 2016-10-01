@@ -59,7 +59,7 @@
                         {% endif_can_change source %}
 
 		                <h4>
-		                	<a href="{{ source_version_concepts_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ source_version.owner }} / {{ source.id }} [ </span><span class="resource-label-id-code {% if source_version.retired %}strikethrough{% endif %}">{{ source_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
+							{% generic_resource_label resource_type='source_version' resource_id=source.id resource_version_id=source_version.id resource_url=source_version_concepts_url resource_retired=source_version.retired owner_type=source_version.owner_type owner_id=source_version.owner label_size='small' display_breadcrumb=True %}
 
                             <span class="release-label-container">
                               &nbsp;&nbsp;&nbsp;&nbsp;
@@ -83,7 +83,7 @@
                                            value="{{ source_version.id }}"
                                            {% if source_version.retired %}disabled{% endif %}
                                            {% if source_version.released %}checked{% endif %} /> Release
-
+                                    &nbsp;&nbsp;
                                     <input class="resource_retire"
                                           type="checkbox"
                                           name="release"
@@ -112,7 +112,7 @@
 					<p class="small">Create a new <strong>Source Version</strong> to save the state of a source's concepts and
 					mappings at a specific point in time.</p>
 					<p class="small">A <strong>Released</strong> source version indicates to your users that a particular source
-					version is prepared for public consumption.</p>
+					version is prepared for public consumption, while a <strong>Retired</strong> source version indicates that it should no longer be used.</p>
 				</div>
 			</div>
 		</div>

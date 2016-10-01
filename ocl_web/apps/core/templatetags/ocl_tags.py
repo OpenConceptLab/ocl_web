@@ -178,11 +178,11 @@ def mapping_to_concept_label(mapping, label_size=None):
 
 @register.inclusion_tag('includes/generic_resource_label_incl.html')
 def generic_resource_label(
-        resource_type='', resource_id=None, resource_name=None,
+        resource_type='', resource_id=None, resource_name='',
         resource_version_id=None, resource_url=None, resource_retired=False,
         owner_type=None, owner_id=None,
         source_id=None, source_version_id=None,
-        label_size='', display_icon=True, display_breadcrumb=False, empty_name_text=None):
+        label_size='', display_icon=True, display_breadcrumb=False, empty_name_text=''):
     """
     Generates an OCL resource label based on the passed information.
 

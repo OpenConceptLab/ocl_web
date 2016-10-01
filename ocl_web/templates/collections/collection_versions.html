@@ -56,8 +56,8 @@
 		                {% endif_can_change collection %}
 
 		                <h4>
+							{% generic_resource_label resource_type='collection_version' resource_id=collection.id resource_version_id=collection_version.id resource_url=collection_version_concepts_url resource_retired=collection_version.retired owner_type=collection_version.owner_type owner_id=collection_version.owner label_size='small' display_breadcrumb=True %}
 
-                      <a href="{{ collection_version_home_url }}" style="text-decoration:none;"><span class="resource-label small concept"><span class="resource-label-id"><span class="resource-label-id-icon"><span class="glyphicon glyphicon-asterisk"></span></span>&nbsp;&nbsp;<span class="resource-label-id-breadcrumb">{{ collection_version.owner }} / {{ collection.id }} [ </span><span class="resource-label-id-code {% if collection_version.retired %}strikethrough{% endif %}">{{ collection_version.id }}</span><span class="resource-label-id-breadcrumb"> ]</span></span></span></a>
                             <span class="release-label-container">
                               &nbsp;&nbsp;&nbsp;&nbsp;
                               <span class="label label-primary release-label {% if not collection_version.released or collection_version.retired %}hide{% endif %}">{% trans "Released" %}</span>
@@ -77,7 +77,7 @@
                                            value="{{ collection_version.id }}"
                                            {% if collection_version.retired %}disabled{% endif %}
                                            {% if collection_version.released %}checked{% endif %} /> Release
-
+                                    &nbsp;&nbsp;
                                     <input class="resource_retire"
                                           type="checkbox"
                                           name="release"
@@ -105,10 +105,8 @@
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3 class="panel-title">{% trans "Tip" %}</h3></div>
 				<div class="panel-body">
-					<p class="small">Create a new <strong>Collection Version</strong> to save the state of a collection's concepts and
-					mappings at a specific point in time.</p>
-					<p class="small">A <strong>Released</strong> collection version indicates to your users that a particular collection
-					version is prepared for public consumption.</p>
+					<p class="small">Create a new <strong>Collection Version</strong> to save the state of a collection's concepts and mappings at a specific point in time.</p>
+					<p class="small">A <strong>Released</strong> collection version indicates to your users that a particular collection version is prepared for public consumption, while a <strong>Retired</strong> collection version indicates that it should no longer be used.</p>
 				</div>
 			</div>
 		</div>
