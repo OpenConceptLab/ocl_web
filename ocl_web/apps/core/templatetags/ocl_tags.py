@@ -50,7 +50,7 @@ def org_label(org, label_size=None):
         [:org-icon :org-id]
 
     :param org: OCL org resource
-    :param label_size: No value is 'medium'; Acceptabel values are 'small' or 'large'
+    :param label_size: No value is 'medium'; Acceptable values are 'small' or 'large'
     """
     return {'org':org, 'label_size':label_size}
 
@@ -63,7 +63,7 @@ def user_label(user, label_size=None):
         [:user-icon :username]
 
     :param user: OCL user resource
-    :param label_size: No value is 'medium'; Acceptabel values are 'small' or 'large'
+    :param label_size: No value is 'medium'; Acceptable values are 'small' or 'large'
     """
     return {'user':user, 'label_size':label_size}
 
@@ -71,13 +71,13 @@ def user_label(user, label_size=None):
 @register.inclusion_tag('includes/resource_owner_label_incl.html')
 def resource_owner_label(resource, label_size=None):
     """
-    Display a independent label (no breadcrumb) for the owner (a user or organization) of
+    Display an independent label (no breadcrumb) for the owner (a user or organization) of
     a resource, based on the "owner_type" and "owner". Ex:
 
         [:owner-type-icon :owner-id]
 
     :param resource: OCL resource with owner_type and owner attributes
-    :param label_size: No value is 'medium'; Acceptabel values are 'small' or 'large'
+    :param label_size: No value is 'medium'; Acceptable values are 'small' or 'large'
     """
     return {
         'resource_owner_type': resource['owner_type'],
@@ -88,12 +88,12 @@ def resource_owner_label(resource, label_size=None):
 @register.inclusion_tag('includes/source_label_incl.html')
 def source_label(source, label_size=None):
     """
-    Displays indepdent source label (no breadcrumb). Ex:
+    Displays independent source label (no breadcrumb). Ex:
 
         [:source-icon :source-short-name]
 
     :param source: OCL source
-    :param label_size: No value is 'medium'; Acceptabel values are 'small' or 'large'
+    :param label_size: No value is 'medium'; Acceptable values are 'small' or 'large'
     """
     return {
         'source':source,
@@ -103,12 +103,12 @@ def source_label(source, label_size=None):
 @register.inclusion_tag('includes/collection_label_incl.html')
 def collection_label(collection, label_size=None):
     """
-    Displays indepdent collection label (no breadcrumb). Ex:
+    Displays independent collection label (no breadcrumb). Ex:
 
         [:collection-icon :collection-short-name]
 
     :param collection: OCL Collection
-    :param label_size: No value is 'medium'; Acceptabel values are 'small' or 'large'
+    :param label_size: No value is 'medium'; Acceptable values are 'small' or 'large'
     """
     return {
         'collection':collection,
@@ -124,7 +124,7 @@ def concept_label(concept, label_size=None):
         [:concept-icon :concept-id]
 
     :param concept: (required) OCL concept
-    :param label_size: (optional) No value is 'medium'; Acceptabel values are 'small' or 'large'
+    :param label_size: (optional) No value is 'medium'; Acceptable values are 'small' or 'large'
     """
     return {
         'concept':concept,
@@ -144,7 +144,7 @@ def mapping_label(mapping, label_size=None, display_breadcrumb=False):
         [:mapping-icon :owner / :source / :mapping-id :map-type]
 
     :param mapping: (required) OCL mapping
-    :param label_size: (optional) No value is 'medium'; Acceptabel values are 'small' or 'large'
+    :param label_size: (optional) No value is 'medium'; Acceptable values are 'small' or 'large'
     :param display_breadcrumb: (optional) Whether to display source breadcrumb
     """
     return {
@@ -192,13 +192,14 @@ def generic_resource_label(
     `owner_type`, `owner_id`, `source_id`, and `source_version_id` are only used
     to display breadcrumb information.
 
-    If display_breadcrumb == false:
+    If display_breadcrumb == true:
         Org/User:    (:icon :resource-id | :resource-name )
         Source:      (:icon :owner_id / :resource-id | :resource-name )
-        Source Ver:  (:icon :owner_id / :resource-id [ :resource_version_id ] | :resource-name)
+        Collection:  (:icon :owner_id / :resource-id | :resource-name )
+        Ver Repo:    (:icon :owner_id / :resource-id [ :resource_version_id ] | :resource-name)
         Concept:     (:icon :owner_id / :source_id / :resource-id | :resource-name )
         Mapping:     (:icon :owner_id / :source_id / :resource-id | :resource-name )
-        Concept Ver: (:icon :owner_id / :source_id /:resource-id[:resource_ver_id]|:resource-name)
+        Ver Concept: (:icon :owner_id / :source_id /:resource-id[:resource_ver_id]|:resource-name)
     Elif resource_id and resource_name:
         ( :icon :resource-id | :resource_name )
     Else:
@@ -210,27 +211,27 @@ def generic_resource_label(
     default_resource_icon = 'question-sign'
     resource_icons = {
         'concept': 'tag',
-        'external-concept': 'tag',
+        'external_concept': 'tag',
         'mapping': 'link',
         'source': 'th-list',
         'collection': 'tags',
         'org': 'home',
         'user': 'user',
-        'source-version': 'asterisk'
+        'source_version': 'asterisk',
+        'collection_version': 'asterisk',
+        'repository_version': 'asterisk'
     }
     if resource_type in resource_icons:
         resource_icon = resource_icons[resource_type]
     else:
         resource_icon = default_resource_icon
 
-    # Determine label size
+    # Determine label size -- small, large, or nothing (which is medium)
     css_size_class = ''
     if not label_size or label_size.lower() not in ('small', 'large'):
         pass
-    elif label_size.lower() == 'small':
-        css_size_class = 'small'
-    elif label_size.lower() == 'large':
-        css_size_class = 'large'
+    else:
+        css_size_class = label_size.lower()
 
     # Setup the breadcrumb
     breadcrumb_parts = []
