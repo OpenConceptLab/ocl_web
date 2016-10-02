@@ -39,7 +39,7 @@ class SearchFilter(object):
     """
     def __init__(self, filter_id='', filter_name='', filter_widget='',
                  option_defs=None, facet_id='', facet_results=None,
-                 minimized=False, attrs=None):
+                 minimized=False, show_with_restricted_scope=True, attrs=None):
 
         self.filter_id = filter_id          # unique ID for query etc
         self.filter_name = filter_name      # for display
@@ -47,6 +47,7 @@ class SearchFilter(object):
         self.facet_id = facet_id
         self.facet_results = facet_results
         self.minimized = minimized
+        self.show_with_restricted_scope = show_with_restricted_scope
         if not attrs:
             attrs = {}
         self.attrs = attrs
