@@ -45,16 +45,18 @@ class MappingReadBaseView(TemplateView):
         return search_response.json()
 
 
-    def get_mapping_details(self, owner_type, owner_id, source_id, mapping_id, mapping_version_id = None):
+    def get_mapping_details(self, owner_type, owner_id, source_id,
+                            mapping_id, mapping_version_id=None):
         """
         Load mapping details from the API and return as dictionary.
         """
         # TODO(paynejd@gmail.com): Validate the input parameters
         api = OclApi(self.request, debug=True)
-        if mapping_version_id :
+        if mapping_version_id:
             search_response = api.get(
-                owner_type, owner_id, 'sources', source_id, 'mappings', mapping_id, mapping_version_id)
-        else :
+                owner_type, owner_id, 'sources', source_id, 'mappings',
+                mapping_id, mapping_version_id)
+        else:
             search_response = api.get(
                 owner_type, owner_id, 'sources', source_id, 'mappings', mapping_id)
         if search_response.status_code == 404:
@@ -70,6 +72,7 @@ class MappingReadBaseView(TemplateView):
         # TODO(paynejd@gmail.com): Validate the input parameters
 
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_MAPPING_VERSIONS,
+                             search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
                              params=search_params)
 
         api = OclApi(self.request, debug=True, facets=False)
@@ -131,8 +134,9 @@ class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
         # Load the mapping details
         if self.mapping_version_id:
             mapping = self.get_mapping_details(
-                self.owner_type, self.owner_id, self.source_id, self.mapping_id, mapping_version_id = self.mapping_version_id)
-        else :
+                self.owner_type, self.owner_id, self.source_id, self.mapping_id,
+                mapping_version_id=self.mapping_version_id)
+        else:
             mapping = self.get_mapping_details(
                 self.owner_type, self.owner_id, self.source_id, self.mapping_id)
 
@@ -162,8 +166,9 @@ class MappingVersionsView(UserOrOrgMixin, MappingReadBaseView):
         # Load the mapping details
         if self.mapping_version_id:
             mapping = self.get_mapping_details(
-                self.owner_type, self.owner_id, self.source_id, self.mapping_id, mapping_version_id = self.mapping_version_id)
-        else :
+                self.owner_type, self.owner_id, self.source_id, self.mapping_id,
+                mapping_version_id=self.mapping_version_id)
+        else:
             mapping = self.get_mapping_details(
                 self.owner_type, self.owner_id, self.source_id, self.mapping_id)
 

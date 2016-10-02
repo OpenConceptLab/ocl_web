@@ -37,14 +37,17 @@ class OclConstants(object):
     RESOURCE_NAME_SOURCES = 'sources'
     RESOURCE_NAME_CONCEPTS = 'concepts'
     RESOURCE_NAME_COLLECTIONS = 'collections'
-    RESOURCE_NAME_COLLECTION_VERSIONS = 'collection_versions'
-
     RESOURCE_NAME_MAPPINGS = 'mappings'
     RESOURCE_NAME_SOURCE_VERSIONS = 'source_versions'
+    RESOURCE_NAME_COLLECTION_VERSIONS = 'collection_versions'
     RESOURCE_NAME_CONCEPT_VERSIONS = 'concept_versions'
     RESOURCE_NAME_MAPPING_VERSIONS = 'mapping_versions'
 
-    # Search filter definitions for each resource
+    # Search scope - may need additional options in the future
+    SEARCH_SCOPE_GLOBAL = 0      # Global search looks across owners and repositories
+    SEARCH_SCOPE_RESTRICTED = 1  # Restricted search looks within an owner or repository
+
+    # Define the search filters for each resource
     SEARCH_FILTER_INFO = {
         RESOURCE_NAME_CONCEPTS: [
             {
@@ -61,6 +64,7 @@ class OclConstants(object):
                 'filter_name':'Source',
                 'filter_widget':'checkboxes',
                 'facet_id':'source',
+                'show_with_restricted_scope':False,
             },
             {
                 'filter_id':'conceptClass',
@@ -86,6 +90,7 @@ class OclConstants(object):
                 'filter_name':'Concept Owner',
                 'filter_widget':'checkboxes',
                 'facet_id':'owner',
+                'show_with_restricted_scope':False,
             },
             {
                 'filter_id':'locale',
@@ -99,6 +104,7 @@ class OclConstants(object):
                 'filter_widget':'checkboxes',
                 'facet_id':'ownerType',
                 'minimized':True,
+                'show_with_restricted_scope':False,
             },
         ],
         RESOURCE_NAME_MAPPINGS: [
@@ -121,7 +127,8 @@ class OclConstants(object):
                 'filter_id':'source',
                 'filter_name':'Mapping Source',
                 'filter_widget':'checkboxes',
-                'facet_id':'source'
+                'facet_id':'source',
+                'show_with_restricted_scope':False,
             },
             {
                 'filter_id':'retired',
@@ -197,6 +204,7 @@ class OclConstants(object):
                 'filter_widget':'checkboxes',
                 'facet_id':'owner',
                 'minimized':True,
+                'show_with_restricted_scope':False,
             },
             {
                 'filter_id':'ownerType',
@@ -204,6 +212,7 @@ class OclConstants(object):
                 'filter_widget':'checkboxes',
                 'facet_id':'ownerType',
                 'minimized':True,
+                'show_with_restricted_scope':False,
             },
         ],
         RESOURCE_NAME_SOURCES: [
@@ -218,12 +227,42 @@ class OclConstants(object):
                 'filter_name':'Owner',
                 'filter_widget':'checkboxes',
                 'facet_id':'owner',
+                'show_with_restricted_scope':False,
             },
             {
                 'filter_id':'ownerType',
                 'filter_name':'Owner Type',
                 'filter_widget':'checkboxes',
                 'facet_id':'ownerType',
+                'show_with_restricted_scope':False,
+            },
+            {
+                'filter_id':'locale',
+                'filter_name':'Supported Locale',
+                'filter_widget':'checkboxes',
+                'facet_id':'locale',
+            },
+        ],
+        RESOURCE_NAME_COLLECTIONS: [
+            {
+                'filter_id':'collectionType',
+                'filter_name':'Collection Type',
+                'filter_widget':'checkboxes',
+                'facet_id':'collectionType',
+            },
+            {
+                'filter_id':'owner',
+                'filter_name':'Owner',
+                'filter_widget':'checkboxes',
+                'facet_id':'owner',
+                'show_with_restricted_scope':False,
+            },
+            {
+                'filter_id':'ownerType',
+                'filter_name':'Owner Type',
+                'filter_widget':'checkboxes',
+                'facet_id':'ownerType',
+                'show_with_restricted_scope':False,
             },
             {
                 'filter_id':'locale',

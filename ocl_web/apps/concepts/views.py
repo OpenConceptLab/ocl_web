@@ -84,6 +84,7 @@ class ConceptReadBaseView(TemplateView):
 
         # Perform the search
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_CONCEPT_VERSIONS,
+                             search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
                              params=search_params)
         api = OclApi(self.request, debug=True, facets=False)
         search_response = api.get(
@@ -714,7 +715,7 @@ class ConceptEditView(UserOrOrgMixin, FormView):
             self.concept = api.get(
                 self.owner_type, self.org_id, 'sources', self.source_id,
                 'concepts', self.concept_id).json()
-        else :
+        else:
             self.source = api.get(
                 self.owner_type, self.user_id, 'sources', self.source_id).json()
             self.concept = api.get(
@@ -746,7 +747,7 @@ class ConceptEditView(UserOrOrgMixin, FormView):
         temp = []
         if 'extras' in self.concept and self.concept['extras']:
             for key, value in self.concept.get('extras').iteritems():
-                temp.append({'key' : key,'value':value})
+                temp.append({'key':key, 'value':value})
             self.concept['extras'] = temp
         context['kwargs'] = self.kwargs
         context['source'] = self.source

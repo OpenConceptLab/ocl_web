@@ -8,7 +8,7 @@ import requests
 import logging
 from django.http import HttpResponse
 from django.utils.translation import ugettext as _
-from django.core.urlresolvers import reverse,resolve, Resolver404
+from django.core.urlresolvers import reverse, resolve, Resolver404
 from django.http import (HttpResponseRedirect, Http404)
 from django.views.generic import TemplateView, View
 from django.views.generic.edit import FormView
@@ -16,7 +16,8 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 
 from libs.ocl import OclApi, OclSearch, OclConstants
-from .forms import (CollectionCreateForm, CollectionEditForm, CollectionDeleteForm, CollectionVersionAddForm)
+from .forms import (CollectionCreateForm, CollectionEditForm,
+                    CollectionDeleteForm, CollectionVersionAddForm)
 from apps.core.views import UserOrOrgMixin
 from django.http import QueryDict
 
@@ -37,7 +38,8 @@ class CollectionsBaseView(UserOrOrgMixin):
 
         if collection_version_id:
             search_response = api.get(
-                owner_type, owner_id, 'collections', collection_id, collection_version_id, field_name,
+                owner_type, owner_id, 'collections', collection_id,
+                collection_version_id, field_name,
                 params=searcher.search_params)
         else:
             search_response = api.get(
@@ -58,11 +60,12 @@ class CollectionsBaseView(UserOrOrgMixin):
     def get_collection_versions(self, owner_type, owner_id, collection_id, search_params=None):
         # Perform the search
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_COLLECTION_VERSIONS,
+                             search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
                              params=search_params)
 
         api = OclApi(self.request, debug=True, facets=False)
         search_response = api.get(owner_type, owner_id, 'collections', collection_id, 'versions',
-            params=searcher.search_params)
+                                  params=searcher.search_params)
 
         if search_response.status_code == 404:
             raise Http404
@@ -172,7 +175,8 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
             self.get_args()
 
             searcher = self.get_collection_data(
-                self.owner_type, self.owner_id, self.collection_id, OclConstants.RESOURCE_NAME_MAPPINGS,
+                self.owner_type, self.owner_id, self.collection_id,
+                OclConstants.RESOURCE_NAME_MAPPINGS,
                 collection_version_id=self.collection_version_id,
                 search_params=self.request.GET
             )
@@ -241,7 +245,8 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
             self.get_args()
             # Load the concepts in this source, applying search parameters
             searcher = self.get_collection_data(
-                self.owner_type, self.owner_id, self.collection_id, OclConstants.RESOURCE_NAME_CONCEPTS,
+                self.owner_type, self.owner_id, self.collection_id,
+                OclConstants.RESOURCE_NAME_CONCEPTS,
                 collection_version_id=self.collection_version_id,
                 search_params=self.request.GET
             )
@@ -299,7 +304,8 @@ class CollectionVersionsView(CollectionsBaseView, TemplateView):
         self.get_args()
         if request.is_ajax():
             api = OclApi(self.request, debug=True)
-            result = api.get(self.owner_type, self.owner_id, 'collections', kwargs.get('collection'), 'versions',params={'limit': '0'})
+            result = api.get(self.owner_type, self.owner_id, 'collections',
+                             kwargs.get('collection'), 'versions', params={'limit': '0'})
             return HttpResponse(json.dumps(result.json()), content_type="application/json")
         return super(CollectionVersionsView, self).get(self, *args, **kwargs)
 
@@ -316,7 +322,7 @@ class CollectionAboutView(CollectionsBaseView, TemplateView):
         collection = results.json()
         about = None
         if ('extras' in collection and isinstance(collection['extras'], dict) and
-                    'about' in collection['extras']):
+                'about' in collection['extras']):
             about = collection['extras'].get('about')
 
         # Set the context
@@ -422,10 +428,12 @@ class CollectionCreateView(CollectionsBaseView, FormView):
                 return HttpResponseRedirect(reverse("collection-home",
                                                     kwargs={"user": self.user_id,
                                                             'collection': short_code}))
-        else :
+        else:
             validator_template = ' Short Code \'%s\' is not valid. Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) '
             messages.add_message(self.request, messages.ERROR, validator_template % short_code)
             return HttpResponseRedirect(self.request.path)
+
+
 
 class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
     template_name = "collections/collection_add_reference.html"
@@ -449,11 +457,12 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
         """ Return URL for redirecting browser """
         if self.from_org:
             return reverse('collection-references',
-                           kwargs={'org': self.org_id,'collection':self.collection_id})
+                           kwargs={'org': self.org_id, 'collection':self.collection_id})
 
         else:
-            return reverse('collection-references',
-                           kwargs={"user": self.request.user.username,'collection':self.collection_id})
+            return reverse(
+                'collection-references',
+                kwargs={"user": self.request.user.username, 'collection':self.collection_id})
 
     def post(self, request, *args, **kwargs):
         self.get_args()
@@ -478,14 +487,18 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
         )
 
 
+
 class CollectionReferencesDeleteView(CollectionsBaseView, TemplateView):
     def delete(self, request, *args, **kwargs):
         self.get_args()
         references = request.GET.get('references').split(',')
         api = OclApi(self.request, debug=True)
         data = {'references': references}
-        res = api.delete(self.owner_type, self.owner_id, 'collections', self.collection_id, 'references', **data)
+        res = api.delete(self.owner_type, self.owner_id, 'collections',
+                         self.collection_id, 'references', **data)
         return HttpResponse(res.content, status=200)
+
+
 
 class CollectionDeleteView(CollectionsBaseView, FormView):
     """
@@ -514,13 +527,13 @@ class CollectionDeleteView(CollectionsBaseView, FormView):
         if self.collection_version_id:
             if self.from_org:
                 return reverse('collection-details',
-                                                    kwargs={'org': self.org_id,
-                                                            'collection': self.collection_id})
+                               kwargs={'org': self.org_id,
+                                       'collection': self.collection_id})
             else:
                 return reverse('collection-details',
-                                                    kwargs={'user': self.user_id,
-                                                            'collection': self.collection_id})
-        else :
+                               kwargs={'user': self.user_id,
+                                       'collection': self.collection_id})
+        else:
             if self.from_org:
                 return reverse('org-collections',
                                kwargs={'org': self.org_id})
@@ -529,8 +542,6 @@ class CollectionDeleteView(CollectionsBaseView, FormView):
                 return reverse('users:detail',
                                kwargs={"username": self.request.user.username})
 
-
-
     def form_valid(self, form, *args, **kwargs):
         """ Use validated form data to delete the collection"""
 
@@ -538,10 +549,11 @@ class CollectionDeleteView(CollectionsBaseView, FormView):
 
         api = OclApi(self.request, debug=True)
         if self.collection_version_id:
-            result = api.delete(self.owner_type, self.owner_id, 'collections', self.collection_id, self.collection_version_id, **kwargs)
-        else :
+            result = api.delete(self.owner_type, self.owner_id, 'collections',
+                                self.collection_id, self.collection_version_id, **kwargs)
+        else:
             result = api.delete(
-                self.owner_type, self.owner_id, 'collections', self.collection_id,  **kwargs)
+                self.owner_type, self.owner_id, 'collections', self.collection_id, **kwargs)
         if result.status_code != 204:
             emsg = result.json().get('detail', 'Error')
             messages.add_message(self.request, messages.ERROR, emsg)
@@ -552,6 +564,8 @@ class CollectionDeleteView(CollectionsBaseView, FormView):
 
             return HttpResponseRedirect(self.get_success_url())
 
+
+
 class CollectionEditView(CollectionsBaseView, FormView):
     """ Edit collection, either for an org or a user. """
     template_name = "collections/collection_edit.html"
@@ -560,7 +574,8 @@ class CollectionEditView(CollectionsBaseView, FormView):
         """ Trick to load initial data """
         self.get_args()
         api = OclApi(self.request, debug=True)
-        self.collection = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id).json()
+        self.collection = api.get(self.owner_type, self.owner_id, 'collections',
+                                  self.collection_id).json()
         return CollectionEditForm
 
     def get_initial(self):
@@ -623,77 +638,82 @@ class CollectionEditView(CollectionsBaseView, FormView):
                                                 kwargs={'user': self.user_id,
                                                         'collection': self.collection_id}))
 
+
+
 class CollectionVersionsNewView(CollectionsBaseView, UserOrOrgMixin, FormView):
 
-        form_class = CollectionVersionAddForm
-        template_name = "collections/collection_versions_new.html"
+    form_class = CollectionVersionAddForm
+    template_name = "collections/collection_versions_new.html"
 
-        def get_initial(self):
-            super(CollectionVersionsNewView, self).get_initial()
-            self.get_args()
+    def get_initial(self):
+        super(CollectionVersionsNewView, self).get_initial()
+        self.get_args()
 
-            api = OclApi(self.request, debug=True)
-            # source_version = None
-            if self.from_org:
-                collection_version = api.get('orgs', self.org_id, 'collections', self.collection_id,
+        api = OclApi(self.request, debug=True)
+        # source_version = None
+        if self.from_org:
+            collection_version = api.get('orgs', self.org_id, 'collections', self.collection_id,
                                          'versions', params={'limit': 1}).json()
-            else:
-                collection_version = api.get('users', self.user_id, 'collections', self.collection_id,
+        else:
+            collection_version = api.get('users', self.user_id, 'collections', self.collection_id,
                                          'versions', params={'limit': 1}).json()
 
-            data = {
-                'request': self.request,
-                'from_user': self.from_user,
-                'from_org': self.from_org,
-                'user_id': self.user_id,
-                'org_id': self.org_id,
-                'owner_type': self.owner_type,
-                'owner_id': self.owner_id,
-                'collection_id': self.collection_id,
-                'previous_version': collection_version[0]['id'],
-                'released': False
-            }
-            return data
+        data = {
+            'request': self.request,
+            'from_user': self.from_user,
+            'from_org': self.from_org,
+            'user_id': self.user_id,
+            'org_id': self.org_id,
+            'owner_type': self.owner_type,
+            'owner_id': self.owner_id,
+            'collection_id': self.collection_id,
+            'previous_version': collection_version[0]['id'],
+            'released': False
+        }
+        return data
 
-        def get_context_data(self, *args, **kwargs):
+    def get_context_data(self, *args, **kwargs):
 
-            context = super(CollectionVersionsNewView, self).get_context_data(*args, **kwargs)
-            self.get_args()
+        context = super(CollectionVersionsNewView, self).get_context_data(*args, **kwargs)
+        self.get_args()
 
-            api = OclApi(self.request, debug=True)
-            # source = None
+        api = OclApi(self.request, debug=True)
+        # source = None
+        if self.from_org:
+            collection = api.get('orgs', self.org_id, 'collections', self.collection_id).json()
+        else:
+            collection = api.get('users', self.user_id, 'collections', self.collection_id).json()
+
+        # Set the context
+        context['kwargs'] = self.kwargs
+        context['collection'] = collection
+
+        return context
+
+    def form_valid(self, form):
+        self.get_args()
+
+        # Submit the new source version
+        data = form.cleaned_data
+        api = OclApi(self.request, debug=True)
+        result = api.create_collection_version(self.owner_type, self.owner_id,
+                                               self.collection_id, data)
+        if result.status_code == requests.codes.created:
+            messages.add_message(self.request, messages.INFO, _('Collection version created!'))
             if self.from_org:
-                collection = api.get('orgs', self.org_id, 'collections', self.collection_id).json()
+                return HttpResponseRedirect(reverse('collection-versions',
+                                                    kwargs={'org': self.org_id,
+                                                            'collection': self.collection_id}))
             else:
-                collection = api.get('users', self.user_id, 'collections', self.collection_id).json()
+                return HttpResponseRedirect(reverse('collection-versions',
+                                                    kwargs={'user': self.user_id,
+                                                            'collection': self.collection_id}))
+        else:
+            error_msg = result.json().get('detail', 'Error')
+            messages.add_message(self.request, messages.ERROR, error_msg)
+            return HttpResponseRedirect(self.request.path)
 
-            # Set the context
-            context['kwargs'] = self.kwargs
-            context['collection'] = collection
 
-            return context
-
-        def form_valid(self, form):
-            self.get_args()
-
-            # Submit the new source version
-            data = form.cleaned_data
-            api = OclApi(self.request, debug=True)
-            result = api.create_collection_version(self.owner_type, self.owner_id, self.collection_id, data)
-            if result.status_code == requests.codes.created:
-                messages.add_message(self.request, messages.INFO, _('Collection version created!'))
-                if self.from_org:
-                    return HttpResponseRedirect(reverse('collection-versions',
-                                                        kwargs={'org': self.org_id,
-                                                                'collection': self.collection_id}))
-                else:
-                    return HttpResponseRedirect(reverse('collection-versions',
-                                                        kwargs={'user': self.user_id,
-                                                                'collection': self.collection_id}))
-            else:
-                error_msg = result.json().get('detail', 'Error')
-                messages.add_message(self.request, messages.ERROR, error_msg)
-                return HttpResponseRedirect(self.request.path)
 
 class CollectionVersionEditJsonView(CollectionsBaseView, TemplateView):
     def put(self, request, *args, **kwargs):
@@ -707,6 +727,7 @@ class CollectionVersionEditJsonView(CollectionsBaseView, TemplateView):
                                           'collections',
                                           data)
         return HttpResponse(res.content, status=200)
+
 
 
 class CollectionVersionDeleteView(CollectionsBaseView, View):

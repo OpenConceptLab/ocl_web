@@ -50,11 +50,12 @@ class SourceReadBaseView(TemplateView):
 
         # Perform the search
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_SOURCE_VERSIONS,
+                             search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
                              params=search_params)
 
         api = OclApi(self.request, debug=True, facets=False)
         search_response = api.get(owner_type, owner_id, 'sources', source_id, 'versions',
-            params=searcher.search_params)
+                                  params=searcher.search_params)
 
         if search_response.status_code == 404:
             raise Http404
@@ -76,7 +77,9 @@ class SourceReadBaseView(TemplateView):
         # TODO(paynejd@gmail.com): Validate the input parameters
 
         # Perform the search, applying source_version_id if not None
-        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_CONCEPTS, params=search_params)
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_CONCEPTS,
+                             search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
+                             params=search_params)
         api = OclApi(self.request, debug=True, facets=True)
         if source_version_id:
             search_response = api.get(
@@ -107,6 +110,7 @@ class SourceReadBaseView(TemplateView):
 
         # Perform the search
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_MAPPINGS,
+                             search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
                              params=search_params)
         api = OclApi(self.request, debug=True, facets=True)
         if source_version_id:
@@ -156,6 +160,7 @@ class SourceReadBaseView(TemplateView):
 
         # Perform the search
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_MAPPINGS,
+                             search_scope=OclConstants.SEARCH_SCOPE_GLOBAL,
                              params=params)
         api = OclApi(self.request, debug=True, facets=True)
         search_response = api.get('mappings', params=searcher.search_params)
@@ -471,7 +476,8 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
         self.get_args()
         if request.is_ajax():
             api = OclApi(self.request, debug=True)
-            result = api.get(self.owner_type, self.owner_id, 'sources', kwargs.get('source'), 'versions', params={'limit': '0'})
+            result = api.get(self.owner_type, self.owner_id, 'sources', kwargs.get('source'),
+                             'versions', params={'limit': '0'})
             return HttpResponse(json.dumps(result.json()), content_type="application/json")
         return super(SourceVersionsView, self).get(self, *args, **kwargs)
 
@@ -685,7 +691,7 @@ class SourceNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
     def form_valid(self, form):
         """
-        Retrun whether source input is valid and then update API backend.
+        Return whether source input is valid and then update API backend.
         """
         self.get_args()
 
@@ -711,7 +717,7 @@ class SourceNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
                 emsg = result.json().get('detail', 'Error')
                 messages.add_message(self.request, messages.ERROR, emsg)
                 return HttpResponseRedirect(self.request.path)
-        else :
+        else:
             validator_template = ' Short Code \'%s\' is not valid. Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) '
             messages.add_message(self.request, messages.ERROR, validator_template % short_code)
             return HttpResponseRedirect(self.request.path)

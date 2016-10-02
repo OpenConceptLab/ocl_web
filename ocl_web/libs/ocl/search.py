@@ -159,13 +159,14 @@ class OclSearch(object):
     TRANSFERRABLE_SEARCH_PARAMS = ['q', 'limit', 'debug']
 
 
-    def __init__(self, search_type=None, params=None):
+    def __init__(self, search_type=None, search_scope=None, params=None):
         """
         :param search_type: Plural of OCL resource name (e.g. 'concepts', 'sources', 'users')
         :param params: dictionary, QueryDict, or string of search params
         """
         # outputs
         self.search_type = search_type
+        self.search_scope = search_scope if search_scope else OclConstants.SEARCH_SCOPE_GLOBAL
         self.num_per_page = self.DEFAULT_NUM_PER_PAGE
         self.current_page = None
         self.search_params = {}
@@ -210,9 +211,18 @@ class OclSearch(object):
             return
         filter_list = SearchFilterList(resource_name=resource_type)
         for filter_definition in OclConstants.SEARCH_FILTER_INFO[resource_type]:
+            # Optionally skip this filter if restricted scope search
+            # (See filter definitions in OclConstants for settings for each resource)
+            if (self.search_scope == OclConstants.SEARCH_SCOPE_RESTRICTED and
+                    'show_with_restricted_scope' in filter_definition and
+                    not filter_definition['show_with_restricted_scope']):
+                continue
+
+            # Apply the facets returned by the API to the filter definition
             if 'facet_id' in filter_definition and filter_definition['facet_id'] in facets:
                 filter_definition['facet_results'] = facets[filter_definition['facet_id']]
             search_filter = SearchFilter(**filter_definition)
+
             # Do anything that needs to be done to the filter here
             filter_list.add_filter(search_filter)
         self.search_filter_list = filter_list

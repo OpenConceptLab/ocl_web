@@ -67,7 +67,9 @@ class OrganizationReadBaseView(TemplateView):
         # TODO(paynejd@gmail.com): Validate the input parameters
 
         # Perform the search
-        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_SOURCES, params=search_params)
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_SOURCES,
+                             search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
+                             params=search_params)
         api = OclApi(self.request, debug=True, facets=True)
         search_response = api.get('orgs', org_id, 'sources', params=searcher.search_params)
         if search_response.status_code == 404:
@@ -85,7 +87,9 @@ class OrganizationReadBaseView(TemplateView):
     def get_org_collections(self, org_id, search_params=None):
 
         # Perform the search
-        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_COLLECTIONS, params=search_params)
+        searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_COLLECTIONS,
+                             search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
+                             params=search_params)
         api = OclApi(self.request, debug=True, facets=True)
         search_response = api.get('orgs', org_id, 'collections', params=searcher.search_params)
         if search_response.status_code == 404:
@@ -171,7 +175,7 @@ class OrganizationSourcesView(OrganizationReadBaseView):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             api = OclApi(self.request, debug=True)
-            result = api.get('orgs', kwargs.get("org"), "sources",params={'limit': '0'})
+            result = api.get('orgs', kwargs.get("org"), "sources", params={'limit':'0'})
             return HttpResponse(json.dumps(result.json()), content_type="application/json")
         return super(OrganizationSourcesView, self).get(self, *args, **kwargs)
 
@@ -286,7 +290,7 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
             else:
                 messages.add_message(self.request, messages.INFO, result.json()['mnemonic'])
                 return super(OrganizationNewView, self).form_invalid(form)
-        else :
+        else:
             validator_template = ' Short Name \'%s\' is not valid. Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) '
             messages.add_message(self.request, messages.ERROR, validator_template % org_id)
             return super(OrganizationNewView, self).form_invalid(form)
@@ -431,5 +435,5 @@ class OrganizationMemberRemoveView(LoginRequiredMixin,
 class OrgJsonView(View):
     def get(self, request, *args, **kwargs):
         api = OclApi(self.request, debug=True)
-        result = api.get('orgs',params={'limit': '0'})
+        result = api.get('orgs', params={'limit':'0'})
         return HttpResponse(json.dumps(result.json()), content_type="application/json")
