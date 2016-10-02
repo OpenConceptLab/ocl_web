@@ -219,8 +219,16 @@ class OclSearch(object):
                 continue
 
             # Apply the facets returned by the API to the filter definition
-            if 'facet_id' in filter_definition and filter_definition['facet_id'] in facets:
-                filter_definition['facet_results'] = facets[filter_definition['facet_id']]
+            try:
+                if (facet and 'facet_id' in filter_definition and
+                        filter_definition['facet_id'] in facets):
+                    filter_definition['facet_results'] = facets[filter_definition['facet_id']]
+                else:
+                    filter_definition['facet_results'] = None
+            except TypeError:
+                filter_definition['facet_results'] = None
+
+            # Create a new FilterDefinition with its facet results, if applicable
             search_filter = SearchFilter(**filter_definition)
 
             # Do anything that needs to be done to the filter here
