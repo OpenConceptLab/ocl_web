@@ -241,7 +241,7 @@ a.resource-label:hover {
   background-color: #428bca;
 }
 .resource-label.mapping .resource-label-name {
-  background-color: #aaa;
+  background-color: #428bca;
 }
 .resource-label.source .resource-label-name {
   background-color: #5cb85c;
