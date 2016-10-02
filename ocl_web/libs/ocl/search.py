@@ -220,7 +220,7 @@ class OclSearch(object):
 
             # Apply the facets returned by the API to the filter definition
             try:
-                if (facet and 'facet_id' in filter_definition and
+                if (facets and 'facet_id' in filter_definition and
                         filter_definition['facet_id'] in facets):
                     filter_definition['facet_results'] = facets[filter_definition['facet_id']]
                 else:
