@@ -74,7 +74,8 @@ For getting this running on your local machine:
 .. _livereload: https://github.com/gruntjs/grunt-contrib-watch#using-live-reload-with-the-browser-extension
 
 
-How To Setup Ocl_web on dev machine-New
+---------------------------------------
+# Updated ReadMe for dev setup
 ---------------------------------------
 Prequisite:
     1. ocl_web repo on local machine (clone the repo from git hub)
