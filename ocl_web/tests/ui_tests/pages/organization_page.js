@@ -1,6 +1,7 @@
 var OrganizationPage = function() {
 
     // create org locators
+    this.orgTab = element(by.linkText('Organization Membership'));
     this.createNewOrgLink = element(by.id('new-organization'));
     this.shortCode = $('#id_short_name');
     this.name = $('#id_name');
@@ -47,7 +48,7 @@ var OrganizationPage = function() {
 
     // Delete version locators
     this.deleteVersionIcon = element(by.css('.glyphicon-trash'));
-    
+
     // Delete reference locators
     this.deleteLink = $('.delete-reference');
     this.warning = $('.ajs-warning');
@@ -81,6 +82,7 @@ var OrganizationPage = function() {
     };
 
     this.createNewOrg = function (org_ShortCode, org_name, website, company, loc ) {
+        this.orgTab.click();
         this.createNewOrgLink.click();
         this.shortCode.sendKeys(org_ShortCode);
         this.name.sendKeys(org_name);
@@ -163,7 +165,7 @@ var OrganizationPage = function() {
 
     this.deleteVersion = function () {
         this.deleteVersionIcon.click();
-        browser.sleep('250');
+        browser.sleep('500');
         this.okButton.click();
         browser.sleep('250');
     };

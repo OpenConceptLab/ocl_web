@@ -65,7 +65,7 @@ describe('OCL Org Page', function () {
         expect((orgPage.status).getText()).toEqual('Source version created!');
     });
 
-    it('should release a source version', function () {
+    it('should release a org source version', function () {
         orgPage.releaseVersion();
         browser.sleep('750');
 
@@ -79,14 +79,17 @@ describe('OCL Org Page', function () {
 
     it('should retire org source version', function () {
         orgPage.retireVersion();
+        browser.sleep('500');
 
         expect(orgPage.message.getText()).toEqual('Successfully Retired.');
         expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
+
         orgPage.message.click();
     });
 
     it('should un-retire org source version', function () {
         orgPage.retireVersion();
+        browser.sleep('500');
 
         expect(orgPage.message.getText()).toEqual('Successfully Un-Retired.');
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
@@ -105,7 +108,7 @@ describe('OCL Org Page', function () {
 
     it('should delete a source version', function () {
        orgPage.deleteVersion();
-       browser.sleep('250');
+       browser.sleep('500');
 
        expect(orgPage.message.getText()).toEqual('Successfully removed collection version.');
 
@@ -182,6 +185,7 @@ describe('OCL Org Page', function () {
 
     it('should un-retire org collection version', function () {
         orgPage.retireVersion();
+        browser.sleep('500');
 
         expect(orgPage.message.getText()).toEqual('Successfully Un-Retired.');
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
