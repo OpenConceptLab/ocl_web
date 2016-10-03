@@ -1112,6 +1112,33 @@ $('button.collection_version_delete').on('click', function(ev) {
     );
 });
 
+$('button.source_version_delete').on('click', function(ev) {
+    var button = $(ev.toElement);
+    var version = button.data('id');
+
+    var url = ' /' + window.location.pathname.split('/').slice(1,5).join('/') + '/' + version + '/delete/';
+    alertify.confirm(
+      'Delete Version',
+      'Do you want to remove version <b>' + version + '</b> and its associated values?',
+      function() {
+        $.ajax({
+            type: "DELETE",
+            url: url,
+            headers: {
+                'X-CSRFToken': $.cookie('csrftoken'),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            dataType: 'json',
+            contentType: 'application/json'
+        }).done(function (data) {
+            button.closest('.list-group-item').remove();
+            alertify.success('Successfully removed source version.', 3);
+        }).fail(function () {
+            alertify.error('Something unexpected happened!', 3);
+        });
+      }, function () {}
+    );
+});
 
 if ($('#new_concept_base_url').length > 0) {
     var urlParts = _.compact(window.location.pathname.split('/')),
