@@ -17,6 +17,31 @@
 </h3>
 
 <div class="container" ng-controller="AddReferencesController">
+    <!--Error modal-->
+    <script type="text/ng-template" id="error-modal.html">
+      <div class="modal-header">
+          <h3 class="modal-title">Add Reference</h3>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning">
+          References listed below could not be added.
+        </div>
+        <ul class="list-group">
+          <li class="list-group-item" ng-repeat="(key, error) in errors">
+            <strong>[[ key ]]</strong> - [[ error[0] ]]
+          </li>
+        </ul>
+
+        <div class="alert alert-success" ng-if="!addingSingle">
+          Valid references, if any, have been added successfully.
+        </div>
+        <a href="{{ collection_references_url }}" ng-if="!addingSingle">View all references</a>
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-primary" type="button" ng-click="closeErrorModal()">OK</button>
+      </div>
+    </script>
+    <!-- /Error modal-->
 
     <div class="row">
         <div class="form-group">
@@ -56,6 +81,7 @@
         </div> {# row #}
       </div>
       <div id="addmultiplereftab" class="tab-pane fade">
+
        <div class="row">
             <div class="col-lg-2" ng-init="getOwners()">
                 <br/>

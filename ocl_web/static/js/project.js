@@ -699,7 +699,7 @@ app.controller('MemberRemoveController', function($scope, $uibModal,
     };
 });
 
-app.controller('AddReferencesController', function($scope, Reference) {
+app.controller('AddReferencesController', function($scope, $uibModal, Reference) {
     $scope.pageObj = {};
     $scope.ownerType = 'orgs';
     $scope.resourceContainerType = 'sources';
@@ -800,14 +800,28 @@ app.controller('AddReferencesController', function($scope, Reference) {
       $scope.addReferences(references);
     };
 
+    $scope.openErrorModal = function () {
+      $scope.errorModal = $uibModal.open({
+        animation: true,
+        templateUrl: 'error-modal.html',
+        scope: $scope
+      });
+    };
+
+    $scope.closeErrorModal = function () {
+      $scope.errorModal.close();
+    };
+
     $scope.addReferences = function(references) {
+        $scope.addingSingle = (references.length === 1);
         Reference.addReferences(references)
             .success(function(result) {
               if(!_.size(result.errors)) {
                 location.pathname = result.success_url;
                 return;
               }
-              window.alert(JSON.stringify(result.errors));
+              $scope.errors = result.errors[0];
+              $scope.openErrorModal();
             })
             .error(function(error) {
                 window.alert(error);
