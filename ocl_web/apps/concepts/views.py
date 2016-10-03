@@ -449,7 +449,7 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             'name_type': form.cleaned_data.get('name_type', '')
         }]
         descriptions = [{
-            'description': form.cleaned_data.get('description'),
+            'description': form.cleaned_data.get('description').strip(),
             'locale': form.cleaned_data.get('locale'),
             'locale_preferred': True,
             'description_type': form.cleaned_data.get('description_type', '')

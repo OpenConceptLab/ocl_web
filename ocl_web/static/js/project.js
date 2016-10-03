@@ -699,7 +699,7 @@ app.controller('MemberRemoveController', function($scope, $uibModal,
     };
 });
 
-app.controller('AddReferencesController', function($scope, Reference) {
+app.controller('AddReferencesController', function($scope, $uibModal, Reference) {
     $scope.pageObj = {};
     $scope.ownerType = 'orgs';
     $scope.resourceContainerType = 'sources';
@@ -754,7 +754,7 @@ app.controller('AddReferencesController', function($scope, Reference) {
         }
         $scope.loading = true;
 
-        var params = {limit: $scope.REFERENCE_LIMIT, page: page};
+        var params = {limit: $scope.REFERENCE_LIMIT, page: page, includeRetired: true};
         Reference.getResourceContainerVersionConcepts($scope.ownerType, $scope.resourceContainerType, $scope.owner, $scope.resourceContainer, $scope.resourceContainerVersion, params)
             .success(function(result) {
                 $scope.concepts = result;
@@ -800,14 +800,28 @@ app.controller('AddReferencesController', function($scope, Reference) {
       $scope.addReferences(references);
     };
 
+    $scope.openErrorModal = function () {
+      $scope.errorModal = $uibModal.open({
+        animation: true,
+        templateUrl: 'error-modal.html',
+        scope: $scope
+      });
+    };
+
+    $scope.closeErrorModal = function () {
+      $scope.errorModal.close();
+    };
+
     $scope.addReferences = function(references) {
+        $scope.addingSingle = (references.length === 1);
         Reference.addReferences(references)
             .success(function(result) {
               if(!_.size(result.errors)) {
                 location.pathname = result.success_url;
                 return;
               }
-              window.alert(JSON.stringify(result.errors));
+              $scope.errors = result.errors[0];
+              $scope.openErrorModal();
             })
             .error(function(error) {
                 window.alert(error);
@@ -1112,6 +1126,33 @@ $('button.collection_version_delete').on('click', function(ev) {
     );
 });
 
+$('button.source_version_delete').on('click', function(ev) {
+    var button = $(ev.toElement);
+    var version = button.data('id');
+
+    var url = ' /' + window.location.pathname.split('/').slice(1,5).join('/') + '/' + version + '/delete/';
+    alertify.confirm(
+      'Delete Version',
+      'Do you want to remove version <b>' + version + '</b> and its associated values?',
+      function() {
+        $.ajax({
+            type: "DELETE",
+            url: url,
+            headers: {
+                'X-CSRFToken': $.cookie('csrftoken'),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            dataType: 'json',
+            contentType: 'application/json'
+        }).done(function (data) {
+            button.closest('.list-group-item').remove();
+            alertify.success('Successfully removed source version.', 3);
+        }).fail(function () {
+            alertify.error('Something unexpected happened!', 3);
+        });
+      }, function () {}
+    );
+});
 
 if ($('#new_concept_base_url').length > 0) {
     var urlParts = _.compact(window.location.pathname.split('/')),

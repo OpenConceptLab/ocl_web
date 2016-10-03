@@ -53,7 +53,7 @@
                             {% if not source_version.is_processing and source_version.id != 'HEAD' %}
                               <div class="pull-right">
                                   <a href="{{ source_version_edit_url }}" class="btn btn-link" title="Edit Source Version"><span class="glyphicon glyphicon-pencil"></span></a>
-                                  <button class="btn btn-link collection_version_delete glyphicon glyphicon-trash no-text-decoration" title="Delete Collection Version" data-id="{{ source_version.id }}"></button>
+                                  <button class="btn btn-link source_version_delete glyphicon glyphicon-trash no-text-decoration" title="Delete Source Version" data-id="{{ source_version.id }}"></button>
                               </div>
                             {% endif %}
                         {% endif_can_change source %}
