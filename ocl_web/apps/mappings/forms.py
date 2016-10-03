@@ -88,6 +88,11 @@ class MappingEditForm(MappingNewForm):
     """
     Mapping edit form
     """
+    update_comment = forms.CharField(
+        label=_('Update Comment'),
+        required=True,
+        widget=forms.Textarea(attrs={'rows': 5,
+                                     'placeholder': 'Note the reason for editing the mapping'}))
 
     def __init__(self, *args, **kwargs):
         """

@@ -261,7 +261,8 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         base_data = {
             'from_concept_url': form.cleaned_data.get('from_concept_url'),
             'map_type': form.cleaned_data.get('map_type', ''),
-            'external_id': form.cleaned_data.get('external_id', '')
+            'external_id': form.cleaned_data.get('external_id', ''),
+            'update_comment': form.cleaned_data.get('update_comment', '')
         }
         if mapping_destination == 'Internal':
             base_data['to_concept_url'] = form.cleaned_data.get('internal_to_concept_url')

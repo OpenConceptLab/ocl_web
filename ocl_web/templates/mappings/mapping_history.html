@@ -18,6 +18,7 @@
 						<div class="col-md-9">
                                 <span class="text-muted small"><em>version : </em></span> {{ mapping_version.version }}
                             <br />
+                            {% if mapping_version.update_comment %}{{ mapping_version.update_comment }}{% else %}<span class="text-muted small"><em>No update comment</em></span>{% endif %}<br />
 							<span class="text-muted small">
 								<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Updated by {{ mapping_version.created_by }}
 								&nbsp;&nbsp;&nbsp;&nbsp;
