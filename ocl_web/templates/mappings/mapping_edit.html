@@ -47,7 +47,7 @@
 					{% bootstrap_field form.external_to_concept_code %}
 					{% bootstrap_field form.external_to_concept_name %}
 				</div>
-
+                {% bootstrap_field form.update_comment %}
 				{% buttons %}
 					<button type="submit" class="btn btn-primary">{% trans "Update Mapping" %}</button>
 					<a href="{{ mapping_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
