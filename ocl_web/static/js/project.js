@@ -754,7 +754,7 @@ app.controller('AddReferencesController', function($scope, $uibModal, Reference)
         }
         $scope.loading = true;
 
-        var params = {limit: $scope.REFERENCE_LIMIT, page: page};
+        var params = {limit: $scope.REFERENCE_LIMIT, page: page, includeRetired: true};
         Reference.getResourceContainerVersionConcepts($scope.ownerType, $scope.resourceContainerType, $scope.owner, $scope.resourceContainer, $scope.resourceContainerVersion, params)
             .success(function(result) {
                 $scope.concepts = result;

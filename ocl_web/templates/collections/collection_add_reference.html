@@ -214,7 +214,7 @@
                             <span class="breadcrumb_part breadcrumb_part_focus" ng-bind="concept.id"></span>
                           </span>
                         </span>
-                        <span class="resource-label-name" ng-bind="concept.display_name"></span>
+                        <span ng-class="concept.retired == true ? 'resource-label-name retired':'resource-label-name'" ng-bind="concept.display_name"></span>
                       </a>
                       <p>
                         <em>Class:</em> <span ng-bind="concept.concept_class"></span> <em>Datatype:</em> <span ng-bind="concept.datatype"></span>
