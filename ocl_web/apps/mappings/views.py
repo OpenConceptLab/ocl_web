@@ -77,7 +77,8 @@ class MappingReadBaseView(TemplateView):
 
         api = OclApi(self.request, debug=True, facets=False)
         search_response = api.get(
-            owner_type, owner_id, 'sources', source_id, 'mappings', mapping_id, 'versions')
+            owner_type, owner_id, 'sources', source_id, 'mappings', mapping_id, 'versions',
+            params=searcher.search_params)
 
         if search_response.status_code == 404:
             raise Http404
@@ -173,7 +174,7 @@ class MappingVersionsView(UserOrOrgMixin, MappingReadBaseView):
                 self.owner_type, self.owner_id, self.source_id, self.mapping_id)
 
         searcher = self.get_mapping_versions(
-            self.owner_type, self.owner_id, self.source_id, self.mapping_id)
+            self.owner_type, self.owner_id, self.source_id, self.mapping_id, search_params={'limit': '0'})
 
         # Set the context
         context['kwargs'] = self.kwargs
