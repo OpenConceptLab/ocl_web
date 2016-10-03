@@ -71,6 +71,7 @@ describe('OCL Collections Page', function () {
 
     it('should un-retire user collection version', function () {
         orgPage.retireVersion();
+        browser.sleep('500');
 
         expect(orgPage.message.getText()).toEqual('Successfully Un-Retired.');
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');

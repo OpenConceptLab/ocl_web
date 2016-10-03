@@ -78,6 +78,7 @@ describe('OCL User Source Page', function () {
 
     it('should un-retire a user source version', function () {
         orgPage.retireVersion();
+        browser.sleep('500');
 
         expect(orgPage.message.getText()).toEqual('Successfully Un-Retired.');
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
