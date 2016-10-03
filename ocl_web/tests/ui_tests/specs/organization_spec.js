@@ -110,7 +110,7 @@ describe('OCL Org Page', function () {
        orgPage.deleteVersion();
        browser.sleep('500');
 
-       expect(orgPage.message.getText()).toEqual('Successfully removed collection version.');
+       expect(orgPage.message.getText()).toEqual('Successfully removed source version.');
 
        browser.sleep('500');
        orgPage.message.click();
