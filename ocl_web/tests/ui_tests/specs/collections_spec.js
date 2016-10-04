@@ -94,7 +94,7 @@ describe('OCL Collections Page', function () {
     });
 
     it('should delete a user collection version', function () {
-       orgPage.deleteVersion();
+       orgPage.deleteCollectionVersion();
        browser.sleep('750');
 
        expect(orgPage.notification.getText()).toEqual('Successfully removed collection version.');

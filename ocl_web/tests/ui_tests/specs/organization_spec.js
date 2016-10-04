@@ -115,8 +115,8 @@ describe('OCL Org Page', function () {
     });
 
     it('should delete a source version', function () {
-       orgPage.deleteVersion();
-       browser.sleep('500');
+       orgPage.deleteSrcVersion();
+       browser.sleep('750');
 
        expect(orgPage.notification.getText()).toEqual('Successfully removed source version.');
 
@@ -195,7 +195,7 @@ describe('OCL Org Page', function () {
 
     it('should un-retire org collection version', function () {
         orgPage.retireVersion();
-        browser.sleep('500');
+        browser.sleep('750');
 
         expect(orgPage.notification.getText()).toEqual('Successfully Un-Retired.');
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
@@ -217,14 +217,14 @@ describe('OCL Org Page', function () {
     });
 
     it('should delete org colection version', function () {
-       orgPage.deleteVersion();
+       orgPage.deleteCollectionVersion();
        browser.sleep('750');
 
        expect(orgPage.notification.getText()).toEqual('Successfully removed collection version.');
 
        browser.sleep('500');
        orgPage.notification.click();
-        browser.sleep('200');
+        browser.sleep('500');
     });
 
 

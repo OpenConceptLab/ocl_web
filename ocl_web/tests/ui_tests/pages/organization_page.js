@@ -47,7 +47,8 @@ var OrganizationPage = function() {
     this.retireLabel = $$('.retire-label');
 
     // Delete version locators
-    this.deleteVersionIcon = element(by.css('.glyphicon-trash'));
+    this.deleteSrcVersionIcon = element(by.css('.source_version_delete'));
+    this.deleteColVersionIcon = element(by.css('.collection_version_delete'));
 
     // Delete reference locators
     this.deleteLink = $('.delete-reference');
@@ -163,8 +164,15 @@ var OrganizationPage = function() {
         this.createMappingButton.click();
     };
 
-    this.deleteVersion = function () {
-        this.deleteVersionIcon.click();
+    this.deleteSrcVersion = function () {
+        this.deleteSrcVersionIcon.click();
+        browser.sleep('500');
+        this.okButton.click();
+        browser.sleep('250');
+    };
+
+    this.deleteCollectionVersion = function () {
+        this.deleteColVersionIcon.click();
         browser.sleep('500');
         this.okButton.click();
         browser.sleep('250');
