@@ -60,41 +60,48 @@ describe('OCL User Source Page', function () {
 
     it('should release a user source version', function () {
         orgPage.releaseVersion();
-        browser.sleep('600');
+        browser.sleep('750');
 
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
-        expect(orgPage.message.getText()).toEqual('Successfully Released.');
+        expect(orgPage.notification.getText()).toEqual('Successfully Released.');
 
         browser.sleep('500');
-        orgPage.message.click();
+        orgPage.notification.click();
         browser.sleep('750');
     });
 
     it('should retire a user source version', function () {
         orgPage.retireVersion();
+        browser.sleep('500');
 
-        expect(orgPage.message.getText()).toEqual('Successfully Retired.');
         expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
-        orgPage.message.click();
+        expect(orgPage.notification.getText()).toEqual('Successfully Retired.');
+
+        browser.sleep('500');
+        orgPage.notification.click();
+        browser.sleep('500');
     });
 
     it('should un-retire a user source version', function () {
         orgPage.retireVersion();
         browser.sleep('500');
 
-        expect(orgPage.message.getText()).toEqual('Successfully Un-Retired.');
+        expect(orgPage.notification.getText()).toEqual('Successfully Un-Retired.');
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
-        orgPage.message.click();
+
+        browser.sleep('500');
+        orgPage.notification.click();
+        browser.sleep('500');
     });
 
     it('should un-release a user source version', function () {
         orgPage.releaseVersion();
         browser.sleep('750');
 
-        expect(orgPage.message.getText()).toEqual('Successfully Un-Released.');
+        expect(orgPage.notification.getText()).toEqual('Successfully Un-Released.');
 
         browser.sleep('500');
-        orgPage.message.click();
+        orgPage.notification.click();
         browser.sleep('500');
     });
 
@@ -102,10 +109,11 @@ describe('OCL User Source Page', function () {
        orgPage.deleteVersion();
        browser.sleep('500');
 
-       expect(orgPage.message.getText()).toEqual('Successfully removed source version.');
+       expect(orgPage.notification.getText()).toEqual('Successfully removed source version.');
 
        browser.sleep('500');
-       orgPage.message.click();
+       orgPage.notification.click();
+       browser.sleep('500');
     });
 
 
