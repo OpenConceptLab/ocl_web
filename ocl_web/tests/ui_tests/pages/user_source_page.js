@@ -37,7 +37,7 @@ var UserSourcePage = function() {
         this.setShortCode(code);
         this.setSrcFullName(full_name);
         this.setSupportedLocale(locale);
-        this.setCustomValidationSchema(custom_validation_schema);
+        // this.setCustomValidationSchema(custom_validation_schema);
         this.clickCreateUsrSrcButton();
     };
 };
