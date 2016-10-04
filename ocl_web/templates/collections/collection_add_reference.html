@@ -226,7 +226,7 @@
                         total-items="concepts.total"
                         ng-model="currentConceptPage"
                         items-per-page="REFERENCE_LIMIT"
-                        ng-change="getSourceConcepts(currentConceptPage)">
+                        ng-change="getResourceContainerConcepts(currentConceptPage)">
                 </uib-pagination>
             </div>
             <div class="col-lg-6">
@@ -308,7 +308,7 @@
                         total-items="mappings.total"
                         ng-model="currentMappingPage"
                         items-per-page="REFERENCE_LIMIT"
-                        ng-change="getSourceMappings(currentMappingPage)">
+                        ng-change="getResourceContainerMappings(currentMappingPage)">
                 </uib-pagination>
             </div>
         </div>
