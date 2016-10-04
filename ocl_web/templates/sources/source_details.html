@@ -8,38 +8,38 @@
 <div class="container" style="margin-top: 20px;">
 <div class="row">
 
-	<!-- Source attributes -->
-	<div class="col-md-8">
-		<div class="panel panel-default">
-			<div class="panel-heading"><h3 class="panel-title">Source Details</h3></div>
+    <!-- Source attributes -->
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Source Details</h3></div>
             <div class="panel-body">
-				{% field_label 'ID' source.id %}
-				{% field_label 'Name' source.id %}
-				{% field_label 'Full Name' source.full_name %}
-				<hr />
-				{% field_label 'Description' source.description %}
-				{% field_label 'Source Type' source.source_type %}
-				{% field_label 'Website' source.website url=True %}
-				{% field_label 'Public Access' source.public_access %}
-				<hr />
-				{% field_label 'Default Locale' source.default_locale %}
-				{% field_label 'Supported Locales' source.default_locale %}
+                {% field_label 'ID' source.id %}
+                {% field_label 'Name' source.id %}
+                {% field_label 'Full Name' source.full_name %}
+                <hr />
+                {% field_label 'Description' source.description %}
+                {% field_label 'Source Type' source.source_type %}
+                {% field_label 'Website' source.website url=True %}
+                {% field_label 'Public Access' source.public_access %}
+                <hr />
+                {% field_label 'Default Locale' source.default_locale %}
+                {% field_label 'Supported Locales' source.default_locale %}
                 {% field_label 'Custom Validation Type' source.custom_validation_type %}
-				{% if source.external_id %}<hr />{% field_label 'External ID' source.external_id %}{% endif %}
-				<hr />
-				{% field_label 'Created by' source.created_by %}
-				{% field_label 'Created on' source.created_on|smart_date %}
-				{% field_label 'Updated by' source.created_by %}
-				{% field_label 'Updated on' source.created_on|smart_date %}
-            	{% if source.extras and source.extras.items %}
-            		<hr />
-            		{% for k, v in source.extras.items %}
-            			{% field_label k v %}
-            		{% endfor %}
-            	{% endif %}
+                {% if source.external_id %}<hr />{% field_label 'External ID' source.external_id %}{% endif %}
+                <hr />
+                {% field_label 'Created by' source.created_by %}
+                {% field_label 'Created on' source.created_on|smart_date %}
+                {% field_label 'Updated by' source.created_by %}
+                {% field_label 'Updated on' source.created_on|smart_date %}
+                {% if source.extras and source.extras.items %}
+                    <hr />
+                    {% for k, v in source.extras.items %}
+                        {% field_label k v %}
+                    {% endfor %}
+                {% endif %}
             </div>
-		</div>
-	</div>
+        </div>
+    </div>
 
 
 </div>
