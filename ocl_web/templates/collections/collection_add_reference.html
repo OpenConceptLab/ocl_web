@@ -35,10 +35,14 @@
         <div class="alert alert-success" ng-if="!addingSingle">
           Valid references, if any, have been added successfully.
         </div>
-        <a href="{{ collection_references_url }}" ng-if="!addingSingle">View all references</a>
       </div>
       <div class="modal-footer">
-          <button class="btn btn-primary" type="button" ng-click="closeErrorModal()">OK</button>
+          <button class="btn" type="button" ng-click="closeErrorModal()">Close</button>
+          <a href="{{ collection_references_url }}"
+             ng-if="!addingSingle"
+             class="btn btn-primary"
+             type="button"
+             ng-click="closeErrorModal()">View all references</a>
       </div>
     </script>
     <!-- /Error modal-->
