@@ -9,6 +9,13 @@ var CollectionsPage = function() {
     this.addCollectionButton = element(by.buttonText('Add'));
     this.status = $('.alert-info');
 
+    // create collection version locators
+    this.versionTab = element(by.linkText('Versions'));
+    this.createVersionLink = element(by.linkText('New Collection Version'));
+    this.versionId = $('#id_id');
+    this.versionDescription = $('#id_description');
+    this.createColVersionButton = element(by.buttonText('Create Collection Version'));
+
     // edit collection locators
     this.editIcon = element(by.css('span.glyphicon-cog'));
     this.description = $('#id_description');
@@ -76,6 +83,14 @@ var CollectionsPage = function() {
         this.setFullName(full_name);
         this.setSupportedLocale(locale);
         this.clickAddCollection();
+    };
+
+    this.createNewCollectionVersion = function (id, description) {
+        this.versionTab.click();
+        this.createVersionLink.click();
+        this.versionId.sendKeys(id);
+        this.versionDescription.sendKeys(description);
+        this.createColVersionButton.click();
     };
 
     this.editCollection = function (description, id) {
