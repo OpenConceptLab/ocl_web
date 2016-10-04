@@ -29,7 +29,7 @@
                 </div>
                 {% bootstrap_form form layout="horizontal" %}
                 {% buttons layout="horizontal" %}
-                    <button type="submit" class="btn btn-primary">{% trans "Delete" %}</button>
+                    <button type="button" class="btn btn-primary delete-source">{% trans "Delete" %}</button>
                     <a href="{{ source_home_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
                 {% endbuttons %}
             </form>

@@ -21,7 +21,9 @@
   {% resource_owner_label source %} / {% source_label source %} / {% trans "Edit Source" %}
   {# TODO: Only show if admin or owner #}
     {% if_can_change source %}
-        <a href="{{ source_delete_url }}" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+        <a href="{{ source_delete_url }}" class="small text-muted">
+            <span class="glyphicon glyphicon-trash"></span>
+        </a>
     {% endif_can_change source %}
 </h3>
 

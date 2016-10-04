@@ -1224,3 +1224,31 @@ if($('.download-csv').length > 0) {
         });
     });
 };
+
+$('form#source_create_form .delete-source').on('click', function (ev) {
+    var button = $(ev.toElement);
+    alertify.confirm(
+        'Delete Source',
+        'Do you want to delete the entire Source? <br />'+
+        'This will remove the Collection ' +
+        'and all of its versions and associated values from Concepts and ' +
+        'Mappings tab.',
+    function() {
+        $('form#source_create_form').submit();
+      }, function() {}
+    ).set('labels', {ok:'Yes', cancel:'No'});
+});
+
+$('form#collection_delete_form .delete-collection').on('click', function (ev) {
+    var button = $(ev.toElement);
+    alertify.confirm(
+        'Delete Source',
+        'Do you want to delete the entire Collection? <br />'+
+        'This will remove the Collection ' +
+        'and all of its versions and associated values from References, Concepts and ' +
+        'Mappings tab.',
+    function() {
+        $('form#collection_delete_form').submit();
+      }, function() {}
+    ).set('labels', {ok:'Yes', cancel:'No'});
+});
