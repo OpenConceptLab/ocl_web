@@ -8,7 +8,6 @@ from django.http.request import HttpRequest
 from mock import Mock, patch, MagicMock
 from libs.ocl import OclApi, OclSearch, OclConstants
 import views;
-from unittest import skip
 
 
 class FakeRequest(object):

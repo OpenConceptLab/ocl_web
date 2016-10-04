@@ -78,35 +78,35 @@ For getting this running on your local machine:
 # Updated ReadMe for dev setup
 ---------------------------------------
 Prequisite:
-    1. ocl_web repo on local machine (clone the repo from git hub)
+    1. ocl_web -- git clone git@github.com:OpenConceptLab/ocl_web.git
     2. python
     3. npm
-    4. postgre (running and up. after installation use(usially this work or check postgre docs) 'pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start' to start the postgre server )
-    4. python virtual env (install using 'pip install virtualenv')
+    4. Postgres 9.5
+      - OSX -- 'pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start'
+      - Ubuntu -- service start postgresql
+    5. pip
+    6. python virtualenv -- pip install virtualenv
+    7. OCL API must be setup.
 
-Steps for dev machine setup:
-    1. goto ocl_web local cloned repository
-    2. create a virtual env. (use command 'virtualenv env' . Here virtual environment name is 'env' but you can give any name)
-    3. edit file ./env/bin/activate and add below entries (as export/environment variable). see oclapi readme file about getting the admin token.
-       if oclapi is already setup and ready, you can see the token at http://0.0.0.0:8000/admin/authtoken/token/ (8000 is the port where oclapi server is running)
-            export OCL_API_HOST='<your_api_server_ip>''
-            export OCL_API_TOKEN='<token for accessing API as admin>''
-            export OCL_ANON_API_TOKEN='<token for anon access or same token as above i.e. ocl_api_token value>'
-    4. activate virtual env using 'source env/bin/activate' . after this you will be inside the virtual environment.
+OclWeb Setup:
+    1. cd ocl_web
+    2. virtualenv env -- Creates a virtual env (env is the name of virtualenv, can give any)
+    3. vi ./env/bin/activate -- and add below entries (as export/environment variable).
+       OclAPI must be already setup for this, you can see the token at http://0.0.0.0:8000/admin/authtoken/token/ (8000 is the port where oclapi server is running)
+            export OCL_API_HOST='<your_api_server_ip>'
+            export OCL_API_TOKEN='<root_token_from_api>'
+            export OCL_ANON_API_TOKEN='<root_token_from_api>'
+    4. source env/bin/activate -- Activate virtual env, after this you will be inside the virtual environment.
        if you are changing anything inside the activate file as in step 3, you have to deactivate and then reactivate the virtual env.
        for deactivation of virtual env just write 'deactivate' and then use 'source env/bin/activate' to activate again.
-    5. Install dependencies requirement using 'pip install -r requirements/local.txt'
-    6. Install Grunt Dependencies using 'npm install'
-    7. got ocl_web folder and run 'python manage.py syncdb'. This will prepare the ocl_database.
-    8. run server using 'grunt serve'. server will be started at localhost:7000 port. if you want to change the port , change it in Gruntfile.js
+    5. pip install -r requirements/local.txt -- Install dependencies requirement using
+    6. npm install
+    7. python ocl_web/manage.py syncdb -- syncs the schema with psql
+    8. python ocl_web/manage.py migrate -- psql migrations
+    8. grunt serve
 
-Steps to run the test:
-    1. goto ocl_web/ocl_web local cloned repository and activate the virtual env as mentioned in step no 4 of 'dev machine setup' guide
-    2. run 'python manage.py test' // this will run the unit test
-
-
-
-
+Tests:
+    1. Inside ocl_web virtualenv -- run 'python ocl_web/manage.py test' // this will run the unit test
 
 
 ---------------------------------------------------------------------

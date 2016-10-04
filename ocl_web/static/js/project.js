@@ -767,13 +767,18 @@ app.controller('AddReferencesController', function($scope, $uibModal, Reference)
             });
     };
 
+    $scope.formatResourceContainerVersion = function(resourceContainerVersion) {
+        return resourceContainerVersion.id + (resourceContainerVersion.retired ? ' (Retired)' : (resourceContainerVersion.released ? ' (Released)': ''));
+    }
+
+
     $scope.getResourceContainerMappings = function(page) {
         if(!$scope.owner || !$scope.resourceContainer) {
             return;
         }
         $scope.loading = true;
 
-        var params = {limit: $scope.REFERENCE_LIMIT, page: page};
+        var params = {limit: $scope.REFERENCE_LIMIT, page: page, includeRetired: true};
         Reference.getResourceContainerVersionMappings($scope.ownerType, $scope.resourceContainerType, $scope.owner, $scope.resourceContainer, $scope.resourceContainerVersion, params)
             .success(function(result) {
                 $scope.mappings = result;

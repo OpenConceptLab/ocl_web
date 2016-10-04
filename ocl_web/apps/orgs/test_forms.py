@@ -33,22 +33,3 @@ class OrganizationNewFormTest(TestCase):
         form = OrganizationNewForm(data=form_data)
         self.assertFalse(form.is_valid())
 
-    @skip("max length vaidation not working")
-    def test_when_required_fields_provided_with_shortcode_length_morethan_128_then_form_is_invalid(self):
-        form_data = {
-            'short_name': 'abcdefghijklmnopqrstwxyzabcdefghijklmnopqrstwxyzabcdefghijklmnopqrstwxyza' \
-                          'bcdefghijklmnopqrstwxyzabcdefghijklmnopqrstwxyzabcdwe',
-            'name': 'test full name'
-        }
-        form = OrganizationNewForm(data=form_data)
-        self.assertFalse(form.is_valid())
-
-    @skip("max length vaidation not working")
-    def test_when_required_fields_provided_with_name_length_morethan_256_then_form_is_invalid(self):
-        form_data = {
-            'name': 'abcdefghijklmnopqrstwxyzabcdefghijklmnopqrstwxyzabcdefghijklmnopqrstwxyzabcdefghijklmnopqrstwxyzabcdefghijklmnopqrstwxyz' \
-                    'abcdefghijklmnopqrstwxyzabcdefghijklmnopqrstwxyzabcdefghijklmnopqrstwxyzabcdefghijklmnopqrstwxyzabcdefghijklmnopqrstwxyz',
-            'short_name': 'testshort'
-        }
-        form = OrganizationNewForm(data=form_data)
-        self.assertFalse(form.is_valid())

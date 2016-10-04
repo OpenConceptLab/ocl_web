@@ -27,10 +27,9 @@ class DeleteViewTest(TestCase):
         context = sourceDeleteView.get_context_data();
         self.assertEquals(context['source'],'testSource')
 
-    @skip("need to fix this test case")
+    @patch('django.contrib.messages.add_message')
     @patch('libs.ocl.OclApi.delete')
-    @patch('django.contrib.messages.api')
-    def test_whenDeleteSuccessfull_thenReturnSourceDeletedMessage(self, mock_delete,mock_message):
+    def test_whenDeleteSuccessfull_thenReturnSourceDeletedMessage(self, mock_delete, mock_message):
         colResponse = MagicMock(spec=Response, status_code=204)
         mock_delete.return_value=colResponse
         form = SourceDeleteForm()
@@ -42,7 +41,6 @@ class DeleteViewTest(TestCase):
 
         result=sourceDeleteView.form_valid(form)
         mock_message.add_message.asser_called_with("error","Error")
-        print result
 
 class SourceVersionEditJsonViewTest(TestCase):
     @patch('libs.ocl.OclApi.update_resource_version')

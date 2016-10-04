@@ -1,6 +1,5 @@
 from django.test import TestCase
 from forms import CollectionCreateForm, CollectionEditForm, CollectionVersionAddForm
-from unittest import skip
 
 
 class CollectionCreateTest(TestCase):

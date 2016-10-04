@@ -139,6 +139,7 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
         params = self.request.GET.copy()
         params['verbose'] = 'true'
         params['limit'] = '10'
+        params['includeRetired'] = 'true'
 
         versions = self.get_collection_versions(
             self.owner_type, self.owner_id, self.collection_id,
@@ -208,6 +209,7 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         params = self.request.GET.copy()
         params['verbose'] = 'true'
         params['limit'] = '10'
+        params['includeRetired'] = 'true'
 
         # to fetch all , set limit to 0
         versions = self.get_collection_versions(
