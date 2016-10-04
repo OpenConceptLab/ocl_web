@@ -166,7 +166,7 @@ describe('OCL Org Page', function () {
 
     it('should release a collection version', function () {
         orgPage.releaseVersion();
-        browser.sleep('600');
+        browser.sleep('750');
 
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
         expect(orgPage.message.getText()).toEqual('Successfully Released.');
@@ -219,19 +219,14 @@ describe('OCL Org Page', function () {
     it('should add a reference of concept to a collection', function () {
         var concept_expression = '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
         orgPage.createNewReference(concept_expression);
-        // expect((orgPage.status).getText()).toEqual('Expression added.');
-        // expect(element(by.linkText(' '+expression)).isPresent()).toBe(true);
     });
-    //
+
     // it('should add multiple reference', function () {
     //     element(by.linkText('References')).click();
     //     element(by.linkText('Add Multiple References')).click();
     //     element(by.cssContainingText('option', 'EthiopiaMoH-test-MlcaE')).click();
     //     element(by.cssContainingText('option', 'S1')).click();
     //     element(by.cssContainingText('option', 'S1-V2')).click();
-    //
-    //
-    //
     // });
 
     // it('should delete without selecting reference', function () {

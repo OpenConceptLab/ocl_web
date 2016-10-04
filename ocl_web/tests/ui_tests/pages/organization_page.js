@@ -39,7 +39,7 @@ var OrganizationPage = function() {
 
     // Release / Un-release version locators
     this.releaseButton = $('#id_release');
-    this.message = $('.ajs-success');
+    this.notification = $('.ajs-success');
     this.releaseLabel = $$('.release-label');
 
     // Retire / Un-Retire version locators
