@@ -767,6 +767,11 @@ app.controller('AddReferencesController', function($scope, $uibModal, Reference)
             });
     };
 
+    $scope.formatResourceContainerVersion = function(resourceContainerVersion) {
+        return resourceContainerVersion.id + (resourceContainerVersion.retired ? ' (Retired)' : (resourceContainerVersion.released ? ' (Released)': ''));
+    }
+
+
     $scope.getResourceContainerMappings = function(page) {
         if(!$scope.owner || !$scope.resourceContainer) {
             return;
