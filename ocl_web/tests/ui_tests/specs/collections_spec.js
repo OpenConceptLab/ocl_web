@@ -98,8 +98,10 @@ describe('OCL Collections Page', function () {
        browser.sleep('750');
 
        expect(orgPage.notification.getText()).toEqual('Successfully removed collection version.');
+
         browser.sleep('500');
        orgPage.notification.click();
+        browser.sleep('500');
     });
 
     it('should add a reference of concept to a collection', function () {

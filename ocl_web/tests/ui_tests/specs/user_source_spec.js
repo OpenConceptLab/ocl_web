@@ -107,7 +107,7 @@ describe('OCL User Source Page', function () {
 
     it('should delete a user source version', function () {
        orgPage.deleteVersion();
-       browser.sleep('500');
+       browser.sleep('750');
 
        expect(orgPage.notification.getText()).toEqual('Successfully removed source version.');
 

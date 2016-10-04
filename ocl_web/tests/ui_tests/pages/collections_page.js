@@ -27,6 +27,7 @@ var CollectionsPage = function() {
     // delete collection locators
     this.deleteIcon = element(by.css('span.glyphicon-trash'));
     this.deleteButton = element(by.buttonText('Delete'));
+    this.deleteConfirm = element(by.buttonText('Yes'));
 
     this.setShortCode = function (code) {
         this.shortCode.sendKeys(code);
@@ -104,6 +105,7 @@ var CollectionsPage = function() {
         this.clickEditIcon();
         this.clickDeleteIcon();
         this.clickDeleteCollection();
+        this.deleteConfirm.click();
     };
 };
 module.exports = CollectionsPage;
