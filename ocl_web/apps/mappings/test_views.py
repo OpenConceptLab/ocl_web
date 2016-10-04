@@ -11,7 +11,6 @@ from apps.collections.forms import CollectionCreateForm, CollectionEditForm, Col
     CollectionVersionAddForm
 from libs.ocl import OclApi, OclSearch, OclConstants
 import views
-from unittest import skip
 
 class MyDict(dict):
     def __init__(self,name):
