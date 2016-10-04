@@ -467,6 +467,53 @@ class CollectionVersionsNewViewTest(TestCase):
         result = collectionNewVserionView.form_valid(form)
         mock_message.add_message.asser_called_with("error", "Error")
 
+class CollectionVersionEditViewTest(TestCase):
+    @patch('libs.ocl.OclApi.get')
+    def test_getFromClass_getVersionData(self, mock_get):
+        collectionVersionEditView = views.CollectionVersionEditView()
+        collectionVersionEditView.request = FakeRequest()
+        collectionVersionEditView.kwargs = {
+            'org': 'testOrgId',
+        }
+
+        collectionVersionForm = collectionVersionEditView.get_form_class()
+        self.assertEquals(collectionVersionForm.__name__, 'CollectionVersionsEditForm')
+
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForUserColVersion_contextForUserReceived(self, mock_get):
+        colResponse = MagicMock(spec=Response)
+        colResponse.json.return_value = "testUser"
+        mock_get.return_value = colResponse
+        collectionVersionEditView = views.CollectionVersionEditView()
+        collectionVersionEditView.request = FakeRequest()
+        collectionVersionEditView.collection = {'id': 'mycolid'}
+        collectionVersionEditView.kwargs = {
+            'user': 'testUserId',
+        }
+        context = collectionVersionEditView.get_context_data();
+        self.assertIsNone(context['org'])
+        self.assertEquals(context['ocl_user'], "testUser")
+        self.assertTrue(context['from_user'])
+        self.assertFalse(context['from_org'])
+
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForOrgColVersion_contextForOrgReceived(self, mock_get):
+        colResponse = MagicMock(spec=Response)
+        colResponse.json.return_value = "testOrg"
+        mock_get.return_value = colResponse
+        collectionVersionEditView = views.CollectionVersionEditView()
+        collectionVersionEditView.request = FakeRequest()
+        collectionVersionEditView.collection = {'id': 'mycolid'}
+        collectionVersionEditView.kwargs = {
+            'org': 'testOrgId',
+        }
+        context = collectionVersionEditView.get_context_data();
+        self.assertEquals(context['org'], "testOrg")
+        self.assertIsNone(context['ocl_user'])
+        self.assertFalse(context['from_user'])
+        self.assertTrue(context['from_org'])
+
+
 class CollectionVersionEditJsonViewTest(TestCase):
     @patch('libs.ocl.OclApi.update_resource_version')
     def test_put(self, mock_update_resource_version):
