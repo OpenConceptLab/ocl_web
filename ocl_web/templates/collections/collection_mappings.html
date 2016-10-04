@@ -116,7 +116,7 @@
 						<!-- map_type label -->
                         {% if kwargs.collection_version and kwargs.collection_version != 'HEAD' %}
 {#						{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type     resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.collection label_size='small' display_breadcrumb=True %}#}
-                            {% generic_resource_label resource_type='mapping' resource_id=result.versioned_object_id resource_name=result.map_type resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}/[{{ result.version }}]
+                            {% generic_resource_label resource_type='mapping' resource_id=result.versioned_object_id resource_name=result.map_type resource_url=result.version_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}/[{{ result.version }}]
                         {% else %}
                             {% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
                         {% endif %}
