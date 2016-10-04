@@ -26,6 +26,7 @@ class FakeRequest(object):
         self.GET = {}
         self.body = None
         self.user = MyDict('tempuser')
+        self.path = '.'
 
     def get_full_path(self):
 
@@ -165,9 +166,9 @@ class CollectionCreateViewTest(TestCase):
         self.assertTrue(context['from_user'])
         self.assertFalse(context['from_org'])
 
-    @skip('TODO: test showing exception. not able to fix now. will come back')
+    @patch('django.contrib.messages.add_message')
     @patch('libs.ocl.OclApi.post')
-    def test_validDataPassedfromOrg_formIsValid(self, mock_post):
+    def test_validDataPassedfromOrg_formIsValid(self, mock_post, mock_add_message):
         form_data = {
             'short_code': 'col',
             'name': 'col',
@@ -188,7 +189,7 @@ class CollectionCreateViewTest(TestCase):
             'org': 'testOrgId',
         }
         abc = collectionCreateView.form_valid(form)
-        # print abc
+        mock_add_message.assert_called_once_with(collectionCreateView.request, messages.INFO, ('Collection created'))
 
 class CollectionEditViewTest(TestCase):
     @patch('libs.ocl.OclApi.get')
@@ -251,10 +252,9 @@ class CollectionDeleteViewTest(TestCase):
         context = collectionDeleteView.get_context_data();
         self.assertEquals(context['collection'],'testCollection')
 
-    @skip("need to fix this test case")
-    @patch('django.contrib.messages.api')
+    @patch('django.contrib.messages.add_message')
     @patch('libs.ocl.OclApi.delete')
-    def test_whenDeleteSuccessfull_thenReturnCollectionDeletedMessage(self, mock_delete,mock_message):
+    def test_whenDeleteSuccessfull_thenReturnCollectionDeletedMessage(self, mock_delete, mock_message):
         colResponse = MagicMock(spec=Response, status_code=204)
         mock_delete.return_value=colResponse
         form = CollectionDeleteForm()
@@ -266,7 +266,6 @@ class CollectionDeleteViewTest(TestCase):
 
         result=collectionDeleteView.form_valid(form)
         mock_message.add_message.asser_called_with("error","Error")
-        print result
 
 
 class CollectionAddReferenceViewTest(TestCase):
@@ -448,8 +447,7 @@ class CollectionVersionsNewViewTest(TestCase):
         context = collectionVersionNewView.get_context_data()
         self.assertEquals(context['collection'], 'testCollection')
 
-    @skip("need to fix this test case")
-    @patch('django.contrib.messages.api')
+    @patch('django.contrib.messages.add_message')
     @patch('libs.ocl.OclApi.create_collection_version')
     def test_whenDeleteSuccessfull_thenReturnCollectionDeletedMessage(self, mock_create_version, mock_message):
         colResponse = MagicMock(spec=Response, status_code=204)
@@ -468,7 +466,6 @@ class CollectionVersionsNewViewTest(TestCase):
 
         result = collectionNewVserionView.form_valid(form)
         mock_message.add_message.asser_called_with("error", "Error")
-        print result
 
 class CollectionVersionEditJsonViewTest(TestCase):
     @patch('libs.ocl.OclApi.update_resource_version')
