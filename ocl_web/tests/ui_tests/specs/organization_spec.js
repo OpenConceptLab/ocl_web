@@ -3,18 +3,21 @@
 var LoginPage = require('../pages/login_page.js');
 var LogoutPage = require('../pages/logout_page.js');
 var OrgPage = require('../pages/organization_page');
+var CollectionPage = require('../pages/collections_page.js');
 var data = require('../fixtures/test_data.json');
 
 describe('OCL Org Page', function () {
     var loginPage;
     var logoutPage;
     var orgPage;
+    var collectionPage;
     var id = '';
     var mapping_id;
 
     beforeEach(function () {
         loginPage = new LoginPage();
         logoutPage = new LogoutPage();
+        collectionPage = new CollectionPage();
         orgPage = new OrgPage();
     });
 
@@ -70,40 +73,44 @@ describe('OCL Org Page', function () {
         browser.sleep('750');
 
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
-        expect(orgPage.message.getText()).toEqual('Successfully Released.');
+        expect(orgPage.notification.getText()).toEqual('Successfully Released.');
 
         browser.sleep('500');
-        orgPage.message.click();
+        orgPage.notification.click();
         browser.sleep('750');
     });
 
     it('should retire org source version', function () {
         orgPage.retireVersion();
-        browser.sleep('500');
+        browser.sleep('750');
 
-        expect(orgPage.message.getText()).toEqual('Successfully Retired.');
+        expect(orgPage.notification.getText()).toEqual('Successfully Retired.');
         expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
 
-        orgPage.message.click();
+        browser.sleep('500');
+        orgPage.notification.click();
+        browser.sleep('500');
     });
 
     it('should un-retire org source version', function () {
         orgPage.retireVersion();
         browser.sleep('500');
 
-        expect(orgPage.message.getText()).toEqual('Successfully Un-Retired.');
+        expect(orgPage.notification.getText()).toEqual('Successfully Un-Retired.');
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
-        orgPage.message.click();
+
+        orgPage.notification.click();
+        browser.sleep('500');
     });
 
     it('should un-release a source version', function () {
         orgPage.releaseVersion();
         browser.sleep('750');
 
-        expect(orgPage.message.getText()).toEqual('Successfully Un-Released.');
+        expect(orgPage.notification.getText()).toEqual('Successfully Un-Released.');
 
         browser.sleep('500');
-        orgPage.message.click();
+        orgPage.notification.click();
         browser.sleep('500');
     });
 
@@ -111,10 +118,11 @@ describe('OCL Org Page', function () {
        orgPage.deleteVersion();
        browser.sleep('500');
 
-       expect(orgPage.message.getText()).toEqual('Successfully removed source version.');
+       expect(orgPage.notification.getText()).toEqual('Successfully removed source version.');
 
        browser.sleep('500');
-       orgPage.message.click();
+       orgPage.notification.click();
+        browser.sleep('500');
     });
 
     it('should create concept', function () {
@@ -155,11 +163,8 @@ describe('OCL Org Page', function () {
     });
 
     it('should create collection version', function () {
-       element(by.linkText('Versions')).click();
-       element(by.linkText('New Collection Version')).click();
-       $('#id_id').sendKeys('V1');
-       $('#id_description').sendKeys('version 1');
-       element(by.buttonText('Create Collection Version')).click();
+
+       collectionPage.createNewCollectionVersion('V1', 'version 1');
 
        expect((orgPage.status).getText()).toEqual('Collection version created!');
     });
@@ -169,38 +174,45 @@ describe('OCL Org Page', function () {
         browser.sleep('750');
 
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
-        expect(orgPage.message.getText()).toEqual('Successfully Released.');
+        expect(orgPage.notification.getText()).toEqual('Successfully Released.');
 
         browser.sleep('500');
-        orgPage.message.click();
+        orgPage.notification.click();
         browser.sleep('750');
     });
 
     it('should retire org collection version', function () {
         orgPage.retireVersion();
+         browser.sleep('750');
 
-        expect(orgPage.message.getText()).toEqual('Successfully Retired.');
+        expect(orgPage.notification.getText()).toEqual('Successfully Retired.');
         expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
-        orgPage.message.click();
+
+        browser.sleep('500');
+        orgPage.notification.click();
+        browser.sleep('500');
     });
 
     it('should un-retire org collection version', function () {
         orgPage.retireVersion();
         browser.sleep('500');
 
-        expect(orgPage.message.getText()).toEqual('Successfully Un-Retired.');
+        expect(orgPage.notification.getText()).toEqual('Successfully Un-Retired.');
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
-        orgPage.message.click();
+
+        browser.sleep('500');
+        orgPage.notification.click();
+        browser.sleep('500');
     });
 
     it('should un-release a collection version', function () {
         orgPage.releaseVersion();
         browser.sleep('750');
 
-        expect(orgPage.message.getText()).toEqual('Successfully Un-Released.');
+        expect(orgPage.notification.getText()).toEqual('Successfully Un-Released.');
 
         browser.sleep('500');
-        orgPage.message.click();
+        orgPage.notification.click();
         browser.sleep('500');
     });
 
@@ -208,10 +220,10 @@ describe('OCL Org Page', function () {
        orgPage.deleteVersion();
        browser.sleep('750');
 
-       expect(orgPage.message.getText()).toEqual('Successfully removed collection version.');
+       expect(orgPage.notification.getText()).toEqual('Successfully removed collection version.');
 
        browser.sleep('500');
-       orgPage.message.click();
+       orgPage.notification.click();
         browser.sleep('200');
     });
 
@@ -245,10 +257,10 @@ describe('OCL Org Page', function () {
     // it('should delete a reference of concept from org collection', function () {
     //     orgPage.deleteReference();
     //
-    //     expect(orgPage.message.getText()).toEqual('Successfully removed.');
+    //     expect(orgPage.notification.getText()).toEqual('Successfully removed.');
     //
     //     browser.sleep('500');
-    //     orgPage.message.click();
+    //     orgPage.notification.click();
     //     browser.sleep('500');
     // });
 
