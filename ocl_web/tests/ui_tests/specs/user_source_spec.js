@@ -29,9 +29,11 @@ describe('OCL User Source Page', function () {
 
     it('should create source', function () {
         srcShortCode = orgPage.getRandomString(5);
-        usrSrcPage.createNewUsrSource(data.src_code+srcShortCode,
+        usrSrcPage.createNewUsrSource(
+            data.src_code+srcShortCode,
             data.src_full_name,
-            data.supported_locale
+            data.supported_locale,
+            data.custom_validation_schema
         );
 
         expect((orgPage.status).getText()).toEqual('Source created');

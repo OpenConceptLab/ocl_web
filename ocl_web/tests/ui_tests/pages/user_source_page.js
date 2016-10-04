@@ -5,6 +5,7 @@ var UserSourcePage = function() {
     this.shortCode = $('#id_short_name');
     this.srcFullName = $('#id_full_name');
     this.supportedLocale = $('#id_supported_locales');
+    this.customValidationSchema = $('#id_custom_validation_schema');
     this.createUsrSourceButton = element(by.buttonText('Create Source'));
 
     this.clickNewUsrSrcLink = function () {
@@ -23,15 +24,20 @@ var UserSourcePage = function() {
        this.supportedLocale.sendKeys(locale)
     };
 
+    this.setCustomValidationSchema = function (custom_validation_schema) {
+       this.customValidationSchema.sendKeys(custom_validation_schema)
+    };
+
     this.clickCreateUsrSrcButton = function () {
        this.createUsrSourceButton.click();
     };
 
-    this.createNewUsrSource = function (code, full_name, locale){
+    this.createNewUsrSource = function (code, full_name, locale, custom_validation_schema){
         this.clickNewUsrSrcLink();
         this.setShortCode(code);
         this.setSrcFullName(full_name);
         this.setSupportedLocale(locale);
+        this.setCustomValidationSchema(custom_validation_schema);
         this.clickCreateUsrSrcButton();
     };
 };
