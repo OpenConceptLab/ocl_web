@@ -289,6 +289,12 @@ def _get_source_type_list():
         'External'
     ]
 
+def _get_custom_validation_type_list():
+    return [
+        'None',
+        'OpenMRS',
+    ]
+
 
 # TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
 def _get_collection_type_list():
