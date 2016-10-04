@@ -104,6 +104,7 @@ describe('OCL Org Page', function () {
 
         browser.sleep('500');
         orgPage.message.click();
+        browser.sleep('500');
     });
 
     it('should delete a source version', function () {
@@ -211,6 +212,7 @@ describe('OCL Org Page', function () {
 
        browser.sleep('500');
        orgPage.message.click();
+        browser.sleep('200');
     });
 
 
