@@ -33,7 +33,7 @@ describe('OCL User Source Page', function () {
             data.src_code+srcShortCode,
             data.src_full_name,
             data.supported_locale,
-            data.custom_validation_type
+            data.custom_validation_schema
         );
 
         expect((orgPage.status).getText()).toEqual('Source created');

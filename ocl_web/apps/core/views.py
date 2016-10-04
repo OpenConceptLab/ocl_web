@@ -289,7 +289,7 @@ def _get_source_type_list():
         'External'
     ]
 
-def _get_custom_validation_type_list():
+def _get_custom_validation_schema_list():
     return [
         'None',
         'OpenMRS',

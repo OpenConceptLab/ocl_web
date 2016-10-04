@@ -7,7 +7,7 @@ from django import forms
 
 from libs.ocl import OclApi
 
-from apps.core.views import _get_source_type_list, _get_locale_list, _get_custom_validation_type_list
+from apps.core.views import _get_source_type_list, _get_locale_list, _get_custom_validation_schema_list
 
 
 
@@ -52,9 +52,9 @@ class SourceNewForm(forms.Form):
         label=_('Supported Locales'),
         required=True,
         widget=forms.TextInput(attrs={'placeholder': "e.g. en,fr,es"}))
-    custom_validation_type = forms.ChoiceField(
-        label=_('Custom Validation Type'),
-        choices=[(v, v) for v in _get_custom_validation_type_list()],
+    custom_validation_schema = forms.ChoiceField(
+        label=_('Custom Validation Schema'),
+        choices=[(v, v) for v in _get_custom_validation_schema_list()],
         required=False)
     description = forms.CharField(
         max_length=512,
