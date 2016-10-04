@@ -1230,7 +1230,7 @@ $('form#source_create_form .delete-source').on('click', function (ev) {
     alertify.confirm(
         'Delete Source',
         'Do you want to delete the entire Source? <br />'+
-        'This will remove the Collection ' +
+        'This will remove the Source ' +
         'and all of its versions and associated values from Concepts and ' +
         'Mappings tab.',
     function() {
