@@ -1242,7 +1242,7 @@ $('form#source_create_form .delete-source').on('click', function (ev) {
 $('form#collection_delete_form .delete-collection').on('click', function (ev) {
     var button = $(ev.toElement);
     alertify.confirm(
-        'Delete Source',
+        'Delete Collection',
         'Do you want to delete the entire Collection? <br />'+
         'This will remove the Collection ' +
         'and all of its versions and associated values from References, Concepts and ' +
