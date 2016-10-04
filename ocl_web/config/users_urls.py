@@ -28,7 +28,8 @@ from apps.mappings.views import (
 from apps.core.views import ExtraJsonView
 from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView, CollectionAboutView, \
     CollectionVersionsView, CollectionConceptsView, CollectionMappingsView, \
-    CollectionReferencesView, CollectionVersionDeleteView, CollectionDeleteView, CollectionAddReferenceView, CollectionVersionsNewView, CollectionReferencesDeleteView, CollectionVersionEditJsonView
+    CollectionReferencesView, CollectionVersionDeleteView, CollectionDeleteView, CollectionAddReferenceView, CollectionVersionsNewView, CollectionReferencesDeleteView, CollectionVersionEditJsonView, \
+    CollectionVersionEditView
 
 urlpatterns = patterns(
     '',
@@ -324,6 +325,9 @@ urlpatterns = patterns(
     # /users/:user/collections/:collection/versions/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/versions/$',
         CollectionVersionsView.as_view(), name='collection-versions'),
+    # /users/:user/collections/:collection/:collection_version/edit/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/edit/$',
+        CollectionVersionEditView.as_view(), name='collection-version-edit'),
     # /users/:user/collections/:collection/:collection_version/json/edit/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/json/edit/$',
         CollectionVersionEditJsonView.as_view(), name='collection-version-json-edit'),

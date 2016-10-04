@@ -6,6 +6,8 @@ import simplejson as json
 
 import requests
 import logging
+
+from braces.views import LoginRequiredMixin
 from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse, resolve, Resolver404
@@ -17,7 +19,7 @@ from django.core.paginator import Paginator
 
 from libs.ocl import OclApi, OclSearch, OclConstants
 from .forms import (CollectionCreateForm, CollectionEditForm,
-                    CollectionDeleteForm, CollectionVersionAddForm)
+                    CollectionDeleteForm, CollectionVersionAddForm, CollectionVersionsEditForm)
 from apps.core.views import UserOrOrgMixin
 from django.http import QueryDict
 
@@ -245,7 +247,7 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             self.get_args()
-            # Load the concepts in this source, applying search parameters
+            # Load the concepts in this collection, applying search parameters
             searcher = self.get_collection_data(
                 self.owner_type, self.owner_id, self.collection_id,
                 OclConstants.RESOURCE_NAME_CONCEPTS,
@@ -277,7 +279,7 @@ class CollectionVersionsView(CollectionsBaseView, TemplateView):
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
 
-        # Load the source versions
+        # Load the collection versions
         params = self.request.GET.copy()
         params['verbose'] = 'true'
         params['limit'] = '10'
@@ -652,7 +654,7 @@ class CollectionVersionsNewView(CollectionsBaseView, UserOrOrgMixin, FormView):
         self.get_args()
 
         api = OclApi(self.request, debug=True)
-        # source_version = None
+        # collection_version = None
         if self.from_org:
             collection_version = api.get('orgs', self.org_id, 'collections', self.collection_id,
                                          'versions', params={'limit': 1}).json()
@@ -680,7 +682,7 @@ class CollectionVersionsNewView(CollectionsBaseView, UserOrOrgMixin, FormView):
         self.get_args()
 
         api = OclApi(self.request, debug=True)
-        # source = None
+        # collection = None
         if self.from_org:
             collection = api.get('orgs', self.org_id, 'collections', self.collection_id).json()
         else:
@@ -695,7 +697,7 @@ class CollectionVersionsNewView(CollectionsBaseView, UserOrOrgMixin, FormView):
     def form_valid(self, form):
         self.get_args()
 
-        # Submit the new source version
+        # Submit the new collection version
         data = form.cleaned_data
         api = OclApi(self.request, debug=True)
         result = api.create_collection_version(self.owner_type, self.owner_id,
@@ -716,6 +718,68 @@ class CollectionVersionsNewView(CollectionsBaseView, UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.request.path)
 
 
+
+class CollectionVersionEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
+    """ View to edit collection version """
+    form_class = CollectionVersionsEditForm
+    template_name = "collections/collection_versions_edit.html"
+
+    def get_form_class(self):
+        """ Trick to load initial form data """
+        self.get_args()
+        api = OclApi(self.request, debug=True)
+        self.collection_version = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id,
+                                      self.collection_version_id).json()
+        return CollectionVersionsEditForm
+
+    def get_initial(self):
+        """ Load initial form data """
+        data = {
+            'org_id': self.org_id,
+            'user_id': self.user_id,
+            'from_org': self.from_org,
+            'from_user': self.from_user,
+            'collection_id': self.collection_id,
+            'collection_version_id': self.collection_version_id,
+            'request': self.request,
+        }
+        data.update(self.collection_version)
+        return data
+
+    def get_context_data(self, *args, **kwargs):
+        """ Load context data needed for the view """
+        context = super(CollectionVersionEditView, self).get_context_data(*args, **kwargs)
+        context['kwargs'] = self.kwargs
+        context['collection_version'] = self.collection_version
+        return context
+
+    def form_valid(self, form):
+        """ If form data is valid, then update API backend. """
+        self.get_args()
+
+        # Submit updated collection version description to the API
+        data = {
+            'description':form.cleaned_data.get('description')
+        }
+        api = OclApi(self.request, debug=True)
+        result = api.update_resource_version(self.owner_type, self.owner_id, self.collection_id,
+                                             self.collection_version_id, 'collections', data)
+
+        # Check if successful
+        if result.status_code == requests.codes.ok:
+            messages.add_message(self.request, messages.INFO, _('Collection version updated'))
+            if self.from_org:
+                return HttpResponseRedirect(reverse('collection-versions',
+                                                    kwargs={'org': self.org_id,
+                                                            'collection': self.collection_id}))
+            else:
+                return HttpResponseRedirect(reverse('collection-versions',
+                                                    kwargs={'user': self.user_id,
+                                                            'collection': self.collection_id}))
+        else:
+            emsg = result.text
+            messages.add_message(self.request, messages.ERROR, emsg)
+            return HttpResponseRedirect(self.request.path)
 
 class CollectionVersionEditJsonView(CollectionsBaseView, TemplateView):
     def put(self, request, *args, **kwargs):

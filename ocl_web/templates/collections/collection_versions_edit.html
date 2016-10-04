@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load ocl_tags %}
+
+
+{% block title %}{% trans "Edit Collection Version" %} - Open Concept Lab{% endblock %}
+
+
+{% block content %}
+{% if source_version.owner_type == "Organization" %}
+	{% url 'collection-versions' org=kwargs.org collection=kwargs.collection as collection_versions_url %}
+	{% url 'collection-home' org=kwargs.org collection=kwargs.collection as collection_home_url %}
+{% else %}
+	{% url 'collection-versions' user=kwargs.user collection=kwargs.collection as collection_versions_url %}
+	{% url 'collection-home' user=kwargs.user collection=kwargs.collection as collection_home_url %}
+{% endif %}
+
+<h3>
+	{% resource_owner_label collection_version %} / {% generic_resource_label resource_type='collection' resource_id=kwargs.collection resource_url=collection_home_url %}
+	<span title="Collection Version ID">[ {{ kwargs.collection_version }} ]</span>
+	&nbsp;/&nbsp;{% trans 'Edit' %}
+</h3>
+
+<div class="container" style="padding-top:20px;">
+	<div class="row">
+
+		<!-- Form -->
+		<div class="col-lg-8">
+		  	<form class="form-horizontal" id="collection_create_form" method="post" action=".">
+				{% csrf_token %}
+				{% bootstrap_form form %}
+				{% buttons %}
+					<button type="submit" class="btn btn-primary">{% trans "Update Collection Version" %}</button>
+					<a href="{{ collection_versions_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+				{% endbuttons %}
+		  	</form>
+		</div>
+
+	</div> <!-- /row -->
+</div> <!-- /container -->
+{% endblock %}

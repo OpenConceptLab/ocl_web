@@ -116,3 +116,14 @@ class CollectionVersionAddForm(forms.Form):
         widget=forms.HiddenInput())
 
     # released = forms.BooleanField(required=False, label=_('Released'))
+
+class CollectionVersionsEditForm(CollectionVersionAddForm):
+    """ Form to edit a collection version """
+    def __init__(self, *args, **kwargs):
+        """ Dirty trick to delete one field for edit form. django 1.6 lets you do this
+            officially.
+        """
+        super(CollectionVersionsEditForm, self).__init__(*args, **kwargs)
+        self.fields.pop('id')
+        self.fields.pop('previous_version')
+
