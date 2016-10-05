@@ -402,10 +402,9 @@ class OrganizationMemberAddView(LoginRequiredMixin, FormView):
         if result.status_code == 204:
             messages.add_message(self.request, messages.INFO, _('Member Added'))
             return redirect(reverse('org-details', kwargs={'org': self.org['id']}))
-
-        # TODO:  Add error messages from API to form.
-        else:
-            return super(OrganizationMemberAddView, self).form_invalid(form)
+        elif result.status_code == 404:
+            messages.add_message(self.request, messages.ERROR, 'Member doesn\'t exist')
+        return super(OrganizationMemberAddView, self).form_invalid(form)
 
 
 # TODO(paynejd): OrganizationMemberRemoveView only half works -- fix this
