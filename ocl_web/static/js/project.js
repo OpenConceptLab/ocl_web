@@ -1110,7 +1110,8 @@ $('button.collection_version_delete').on('click', function(ev) {
     var url = ' /' + window.location.pathname.split('/').slice(1,5).join('/') + '/' + version + '/delete/';
     alertify.confirm(
       'Delete Version',
-      'Do you want to remove version <b>' + version + '</b> and its associated values?',
+      'Are you sure you want to permanently delete this collection version <b>' + version + '</b>? This action cannot be undone! This will delete the version and its references. ' +
+      'Concepts and mappings that are referenced in this collection version will not be affected.',
       function() {
         $.ajax({
             type: "DELETE",
@@ -1138,7 +1139,8 @@ $('button.source_version_delete').on('click', function(ev) {
     var url = ' /' + window.location.pathname.split('/').slice(1,5).join('/') + '/' + version + '/delete/';
     alertify.confirm(
       'Delete Version',
-      'Do you want to remove version <b>' + version + '</b> and its associated values?',
+      'Are you sure you want to permanently delete this source version <b>' + version + '</b>? This action cannot be undone! This will delete the version and all of its details. ' +
+      'Concepts and mappings in this source version will not be affected.',
       function() {
         $.ajax({
             type: "DELETE",
@@ -1229,7 +1231,7 @@ $('form#source_create_form .delete-source').on('click', function (ev) {
     var button = $(ev.toElement);
     alertify.confirm(
         'Delete Source',
-        'Do you want to delete entire Source? This will remove the Source, all of it\'s versions, associated Concepts and Mappings.',
+        'Are you sure you want to permanently delete this source? This action cannot be undone! This will delete the entire source and all of its associated versions, concepts and mappings.',
     function() {
         $('form#source_create_form').submit();
       }, function() {}
@@ -1240,7 +1242,8 @@ $('form#collection_delete_form .delete-collection').on('click', function (ev) {
     var button = $(ev.toElement);
     alertify.confirm(
         'Delete Collection',
-        'Do you want to delete entire Collection? This will remove the Collection, all of it\'s versions and associated values from References, Concepts and Mappings tab.',
+        'Are you sure you want to permanently delete this collection? This action cannot be undone! This will delete the entire collection and all of its associated versions and references.' +
+        'Concepts and mappings that are referenced in this collection will not be affected.',
     function() {
         $('form#collection_delete_form').submit();
       }, function() {}
