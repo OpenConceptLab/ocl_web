@@ -103,11 +103,11 @@ describe('OCL Collections Page', function () {
        orgPage.notification.click();
         browser.sleep('500');
     });
-
-    it('should add a reference of concept to a collection', function () {
-        var concept_expression = '/orgs/EthiopiaMOH/sources/HSTP-Indicators/concepts/1/';
-        orgPage.createNewReference(concept_expression);
-    });
+    
+    // it('should add a reference of concept to a collection', function () {
+    //     var concept_expression = '/orgs/EthiopiaMOH/sources/HSTP-Indicators/concepts/1/';
+    //     orgPage.createNewReference(concept_expression);
+    // });
 
     it('should edit collection', function () {
         collectionPage.editCollection(data.col_desc, data.ext_id);
