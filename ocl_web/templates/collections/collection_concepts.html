@@ -53,20 +53,20 @@
 						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" role="menu">
-					{% for collection_version_i in collection_versions %}
+					{% for collection_version in collection_versions %}
 						{% if collection.owner_type == 'Organization' %}
-							{% url 'collection-concepts' org=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
+							{% url 'collection-concepts' org=collection.owner collection=collection.id collection_version=collection_version.id as collection_version_url %}
 						{% else %}
-							{% url 'collection-concepts' user=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
+							{% url 'collection-concepts' user=collection.owner collection=collection.id collection_version=collection_version.id as collection_version_url %}
 						{% endif %}
-						<li {% if collection_version == collection_version_i.id %}class="active"{% endif %}>
-              <a href="{{ collection_version_i_url }}">
-                <span {% if collection_version_i.retired %}class="strikethrough"{% endif %}>
-                  {% if collection_version_i.released and not collection_version_i.retired %}
-                  <strong>{% endif %}{{ collection_version_i.id }}</strong>
+						<li {% if collection_version == collection_version.id %}class="active"{% endif %}>
+              <a href="{{ collection_version_url }}">
+                <span {% if collection_version.retired %}class="strikethrough"{% endif %}>
+                  {% if collection_version.released and not collection_version.retired %}
+                  <strong>{% endif %}{{ collection_version.id }}</strong>
                 </span>
-                {% if collection_version_i.released and not collection_version_i.retired %}<span class="text-muted">(Released)</span>{% endif %}
-                {% if collection_version_i.retired %}<span class="text-muted">(Retired)</span>{% endif %}
+                {% if collection_version.released and not collection_version.retired %}<span class="text-muted">(Released)</span>{% endif %}
+                {% if collection_version.retired %}<span class="text-muted">(Retired)</span>{% endif %}
               </a>
             </li>
 					{% endfor %}
@@ -97,14 +97,17 @@
 <!-- Search results -->
 
         {% for result in results %}
-            <p class="foobar">{{ result_url }}</p>
 			<div class="row row-search-result">
 				<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 				<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-tag search-result-icon"></span></div>
 				<div class="col-md-10 search-result-col-content">
                     <div class="label-container">
                         {% if kwargs.collection_version == 'HEAD' or kwargs.collection_version == None %}
-						    {% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+                            {% if result.is_latest_version %}
+						        {% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+                            {% else %}
+                                {% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.version_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+                			{% endif %}
                         {% else %}
 						    {% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.version_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
             			{% endif %}
