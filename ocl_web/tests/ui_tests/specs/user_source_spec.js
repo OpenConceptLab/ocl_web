@@ -5,6 +5,7 @@ var LogoutPage = require('../pages/logout_page.js');
 var data = require('../fixtures/test_data.json');
 var OrgPage = require('../pages/organization_page');
 var UserSourcePage = require('../pages/user_source_page');
+var configuration = require('../utilities/configuration.js');
 
 describe('OCL User Source Page', function () {
     var loginPage;
@@ -23,9 +24,9 @@ describe('OCL User Source Page', function () {
 
     it('should login', function () {
         loginPage.visit();
-        loginPage.login(data.username,data.password);
+        loginPage.login();
 
-        expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as awadhwa1.');
+        expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as ' + configuration.get("username") + '.');
     });
 
     it('should create source', function () {
@@ -112,9 +113,9 @@ describe('OCL User Source Page', function () {
 
        expect(orgPage.notification.getText()).toEqual('Successfully removed source version.');
 
-       browser.sleep('500');
+       browser.sleep('750');
        orgPage.notification.click();
-       browser.sleep('500');
+       browser.sleep('750');
     });
 
 

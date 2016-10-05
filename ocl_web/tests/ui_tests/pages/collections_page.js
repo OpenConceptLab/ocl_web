@@ -106,6 +106,7 @@ var CollectionsPage = function() {
         this.clickDeleteIcon();
         this.clickDeleteCollection();
         this.deleteConfirm.click();
+        browser.sleep('500');
     };
 };
 module.exports = CollectionsPage;

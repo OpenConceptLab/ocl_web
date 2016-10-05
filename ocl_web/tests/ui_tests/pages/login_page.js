@@ -1,3 +1,4 @@
+var configuration = require('../utilities/configuration.js');
 var LoginPage = function() {
 
   this.username = $('#id_login');
@@ -7,31 +8,31 @@ var LoginPage = function() {
   this.loginStatus = $('.alert-success');
 
   this.visit = function() {
-    browser.get('/');
+    browser.get(configuration.get('baseUrl'));
   };
 
   this.signIn = function () {
       this.signinLink.click();
   };
 
-  this.setUsername = function(username) {
+  this.setUsername = function() {
     this.username.clear();
-    this.username.sendKeys(username);
+    this.username.sendKeys(configuration.get("username"));
   };
 
-  this.setPassword = function(password){
+  this.setPassword = function(){
     this.password.clear();
-    this.password.sendKeys(password);
+    this.password.sendKeys(configuration.get("password"));
   };
 
   this.clickLogin = function() {
     this.loginButton.click();
   };
 
-   this.login = function(username, password) {
+   this.login = function() {
     this.signIn();
-    this.setUsername(username);
-    this.setPassword(password);
+    this.setUsername();
+    this.setPassword();
     this.clickLogin();
   };
 };

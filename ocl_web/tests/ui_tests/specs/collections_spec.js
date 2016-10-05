@@ -5,6 +5,7 @@ var LogoutPage = require('../pages/logout_page.js');
 var CollectionPage = require('../pages/collections_page.js');
 var OrgPage = require('../pages/organization_page');
 var data = require('../fixtures/test_data.json');
+var configuration = require('../utilities/configuration.js');
 
 describe('OCL Collections Page', function () {
 
@@ -24,9 +25,9 @@ describe('OCL Collections Page', function () {
 
     it('should login', function () {
         loginPage.visit();
-        loginPage.login(data.username,data.password);
+        loginPage.login();
 
-        expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as awadhwa1.');
+        expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as ' + configuration.get("username") + '.');
     });
 
     it('should create collection', function () {
