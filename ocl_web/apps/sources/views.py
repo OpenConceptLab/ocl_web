@@ -714,8 +714,12 @@ class SourceNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
                                                         kwargs={"user": self.user_id,
                                                                 'source': short_code}))
             else:
-                emsg = result.json().get('detail', 'Error')
-                messages.add_message(self.request, messages.ERROR, emsg)
+                emsg = result.json().get('detail', None)
+                if not emsg:
+                    for msg in result.json().get('__all__'):
+                        messages.add_message(self.request, messages.ERROR, msg)
+                else:
+                    messages.add_message(self.request, messages.ERROR, emsg)
                 return HttpResponseRedirect(self.request.path)
         else:
             validator_template = ' Short Code \'%s\' is not valid. Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) '

@@ -418,8 +418,12 @@ class CollectionCreateView(CollectionsBaseView, FormView):
             api = OclApi(self.request, debug=True)
             result = api.post(self.owner_type, self.owner_id, 'collections', **data)
             if not result.status_code == requests.codes.created:
-                emsg = result.json().get('detail', 'Error')
-                messages.add_message(self.request, messages.ERROR, emsg)
+                emsg = result.json().get('detail', None)
+                if not emsg:
+                    for msg in result.json().get('__all__'):
+                        messages.add_message(self.request, messages.ERROR, msg)
+                else:
+                    messages.add_message(self.request, messages.ERROR, emsg)
                 return HttpResponseRedirect(self.request.path)
 
             messages.add_message(self.request, messages.INFO, _('Collection created'))
