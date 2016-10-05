@@ -18,6 +18,7 @@ describe('OCL User Source Page', function () {
         logoutPage = new LogoutPage();
          orgPage = new OrgPage();
          usrSrcPage = new UserSourcePage();
+         return browser.ignoreSynchronization = true;
     });
 
     it('should login', function () {

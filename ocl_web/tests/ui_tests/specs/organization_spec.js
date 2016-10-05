@@ -19,6 +19,7 @@ describe('OCL Org Page', function () {
         logoutPage = new LogoutPage();
         collectionPage = new CollectionPage();
         orgPage = new OrgPage();
+        return browser.ignoreSynchronization = true;
     });
 
     it('should login', function () {
