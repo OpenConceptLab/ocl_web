@@ -22,7 +22,7 @@ urlpatterns = patterns(
         name='detail'),
 
     # URL pattern for the UserUpdateView
-    url(regex=r'^update/(?P<username>[\w\-_]+)/$',
+    url(regex=r'^update/(?P<username>[\w\-_\.]+)/$',
         view=views.UserUpdateView.as_view(),
         name='update'),
 )
