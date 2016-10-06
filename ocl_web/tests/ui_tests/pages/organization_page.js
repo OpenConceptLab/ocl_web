@@ -108,7 +108,6 @@ var OrganizationPage = function() {
         this.addNewReferenceLink.click();
         this.expression.sendKeys(expression);
         this.addReferenceButton.click();
-        browser.sleep('500');
     };
 
     this.deleteReference = function () {
