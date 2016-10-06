@@ -14,12 +14,12 @@ from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.core.paginator import Paginator
 from braces.views import LoginRequiredMixin
-
 from libs.ocl import OclApi, OclSearch, OclConstants
 from .forms import (
     SourceNewForm, SourceEditForm,
     SourceVersionsNewForm, SourceVersionsEditForm, SourceVersionsRetireForm, SourceDeleteForm)
 from apps.core.views import UserOrOrgMixin
+from apps.core.utils import SearchStringFormatter
 
 logger = logging.getLogger('oclweb')
 
@@ -278,7 +278,7 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
-        context['search_query'] = searcher.get_query()
+        context['search_query'] = self.search_string
         context['search_filters'] = searcher.search_filter_list
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
@@ -288,6 +288,9 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         return context
 
     def get(self, request, *args, **kwargs):
+        self.search_string = request.GET.get('q', '')
+        SearchStringFormatter.add_wildcard(request)
+
         if request.is_ajax():
             self.get_args()
             # Load the concepts in this source, applying search parameters

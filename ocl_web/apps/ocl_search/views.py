@@ -31,6 +31,9 @@ class GlobalSearchView(TemplateView):
         searcher = OclSearch(params=self.request.GET)
         api = OclApi(self.request, debug=True,
                      facets=OclConstants.resource_has_facets(searcher.search_type))
+
+        if 'q' in searcher.search_params and searcher.search_params['q'] and not self.request.GET.get('exact_match'):
+            searcher.search_params['q'] = "*" + searcher.search_params['q'] + "*"
         search_response = api.get(searcher.search_type, params=searcher.search_params)
         if search_response.status_code == 404:
             raise Http404
