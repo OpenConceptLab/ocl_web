@@ -1,27 +1,26 @@
 """
 OCL Collection views
 """
+import logging
 import re
-import simplejson as json
 
 import requests
-import logging
-
+import simplejson as json
+from apps.core.utils import SearchStringFormatter
+from apps.core.views import UserOrOrgMixin
 from braces.views import LoginRequiredMixin
-from django.http import HttpResponse
-from django.utils.translation import ugettext as _
-from django.core.urlresolvers import reverse, resolve, Resolver404
-from django.http import (HttpResponseRedirect, Http404)
-from django.views.generic import TemplateView, View
-from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.core.paginator import Paginator
-
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse
+from django.http import (HttpResponseRedirect, Http404)
+from django.utils.translation import ugettext as _
+from django.views.generic import TemplateView, View
+from django.views.generic.edit import FormView
 from libs.ocl import OclApi, OclSearch, OclConstants
+
 from .forms import (CollectionCreateForm, CollectionEditForm,
                     CollectionDeleteForm, CollectionVersionAddForm, CollectionVersionsEditForm)
-from apps.core.views import UserOrOrgMixin
-from django.http import QueryDict
 
 logger = logging.getLogger('oclweb')
 
@@ -234,7 +233,7 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
-        context['search_query'] = searcher.get_query()
+        context['search_query'] = self.search_string if hasattr(self, 'search_string') else ''
         context['search_filters'] = searcher.search_filter_list
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
@@ -245,6 +244,9 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
+        self.search_string = request.GET.get('q', '')
+        SearchStringFormatter.add_wildcard(request)
+
         if request.is_ajax():
             self.get_args()
             # Load the concepts in this collection, applying search parameters
