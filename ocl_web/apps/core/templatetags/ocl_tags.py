@@ -133,7 +133,7 @@ def concept_label(concept, label_size=None):
 
 
 @register.inclusion_tag('includes/mapping_label_incl.html')
-def mapping_label(mapping, label_size=None, display_breadcrumb=False):
+def mapping_label(mapping, label_size=None, display_breadcrumb=False, url=None):
     """
     Displays mapping label. Ex with no breadcrumb:
 
@@ -150,7 +150,8 @@ def mapping_label(mapping, label_size=None, display_breadcrumb=False):
     return {
         'mapping': mapping,
         'label_size': label_size,
-        'display_breadcrumb': display_breadcrumb
+        'display_breadcrumb': display_breadcrumb,
+        'url': url
     }
 
 
