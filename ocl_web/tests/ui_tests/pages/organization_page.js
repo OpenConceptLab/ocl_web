@@ -166,6 +166,7 @@ var OrganizationPage = function() {
     };
 
     this.deleteSrcVersion = function () {
+        browser.sleep('250');
         this.deleteSrcVersionIcon.click();
         browser.sleep('500');
         this.okButton.click();
