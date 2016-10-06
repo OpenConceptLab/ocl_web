@@ -5,11 +5,7 @@ var LogoutPage = function() {
     //this.logoutStatus = element(by.className('alert-success')).getText();
 
     this.clickLogout = function () {
-        this.logoutButton.isPresent().then(function(isPresent) {
-            if(isPresent){
-                this.logoutButton.click();
-            }
-        })
+        this.logoutButton.click();
     };
 
     this.clickSignout = function () {
