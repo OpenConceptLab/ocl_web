@@ -336,7 +336,7 @@ urlpatterns = patterns(
         CollectionConceptsView.as_view(), name='collection-concepts'),
     # /users/:user/collections/:collection/:collection_version/concepts/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/concepts/$',
-        CollectionConceptsView.as_view(), name='collection-concepts'),
+        CollectionConceptsView.as_view(), name='collection-version-concepts'),
     # /users/:user/collections/:collection/mappings/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/mappings/$',
         CollectionMappingsView.as_view(), name='collection-mappings'),

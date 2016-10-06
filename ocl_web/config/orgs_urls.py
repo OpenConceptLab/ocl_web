@@ -395,7 +395,7 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/$',
         CollectionDetailView.as_view(), name='collection-version-home'),
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/concepts/$',
-        CollectionConceptsView.as_view(), name='collection-concepts'),
+        CollectionConceptsView.as_view(), name='collection-version-concepts'),
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/mappings/$',
         CollectionMappingsView.as_view(), name='collection-mappings'),
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/collections/(?P<collection>[a-zA-Z0-9\-\.]+)/(?P<collection_version>[a-zA-Z0-9\-\.]+)/references/$',
