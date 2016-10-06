@@ -205,14 +205,14 @@ class UserUrlsTest(TestCase):
 
     def test_user_collection_version_concepts_to_viewname(self):
         resolver = resolve('/users/testuser/collections/collection1/v1/concepts/')
-        self.assertEqual(resolver.view_name, 'collection-concepts')
+        self.assertEqual(resolver.view_name, 'collection-version-concepts')
         self.assertEqual(resolver.kwargs['user'], 'testuser')
         self.assertEqual(resolver.kwargs['collection'], 'collection1')
         self.assertEqual(resolver.kwargs['collection_version'], 'v1')
 
 
     def test_user_collection_version_concepts_viewname_to_url(self):
-        url = reverse('collection-concepts', kwargs={"user": "testuser", "collection": "collection1","collection_version":"v1"})
+        url = reverse('collection-version-concepts', kwargs={"user": "testuser", "collection": "collection1","collection_version":"v1"})
         self.assertEqual(url, '/users/testuser/collections/collection1/v1/concepts/')
 
 
