@@ -18,6 +18,7 @@ from braces.views import LoginRequiredMixin
 from braces.views import JsonRequestResponseMixin
 from django.http import HttpResponse
 
+from apps.core.utils import SearchStringFormatter
 from .forms import (OrganizationNewForm, OrganizationEditForm)
 from .forms import (OrganizationMemberAddForm)
 from libs.ocl import OclApi, OclSearch, OclConstants
@@ -160,7 +161,7 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         context['sources'] = searcher.search_results
         context['source_page'] = search_current_page
         context['source_pagination_url'] = self.request.get_full_path()
-        context['source_q'] = searcher.get_query()
+        context['source_q'] = self.search_string
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.search_filter_list
@@ -173,6 +174,9 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         return context
 
     def get(self, request, *args, **kwargs):
+        self.search_string = request.GET.get('q', '')
+        SearchStringFormatter.add_wildcard(request)
+
         if request.is_ajax():
             api = OclApi(self.request, debug=True)
             result = api.get('orgs', kwargs.get("org"), "sources", params={'limit':'0'})
