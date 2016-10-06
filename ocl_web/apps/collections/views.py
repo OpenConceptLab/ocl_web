@@ -233,7 +233,7 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
-        context['search_query'] = self.search_string
+        context['search_query'] = self.search_string if hasattr(self, 'search_string') else ''
         context['search_filters'] = searcher.search_filter_list
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()

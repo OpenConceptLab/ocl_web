@@ -10,7 +10,7 @@ from django.views.generic import TemplateView
 from django.http import Http404
 from django.core.paginator import Paginator
 from django.utils.http import urlencode
-import urllib
+from apps.core.utils import SearchStringFormatter
 from libs.ocl import (OclApi, OclSearch, OclConstants)
 
 
@@ -28,12 +28,15 @@ class GlobalSearchView(TemplateView):
         context = super(GlobalSearchView, self).get_context_data(*args, **kwargs)
 
         # Perform the primary search via the API
+
+        search_string = self.request.GET.get('q', '')
+        SearchStringFormatter.add_wildcard(self.request)
+
         searcher = OclSearch(params=self.request.GET)
+
         api = OclApi(self.request, debug=True,
                      facets=OclConstants.resource_has_facets(searcher.search_type))
 
-        if 'q' in searcher.search_params and searcher.search_params['q'] and not self.request.GET.get('exact_match'):
-            searcher.search_params['q'] = "*" + searcher.search_params['q'] + "*"
         search_response = api.get(searcher.search_type, params=searcher.search_params)
         if search_response.status_code == 404:
             raise Http404
@@ -58,6 +61,7 @@ class GlobalSearchView(TemplateView):
         context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.search_filter_list
+        context['search_query'] = search_string
 
         # Build URL params for navigating to other resources
         other_resource_search_params = {}
