@@ -105,8 +105,23 @@
 						{% endfor %}
 					</select>
 				</div>
+
                 {% include "download_csv.html"%}
-			</div>
+
+                <div class="pull-left small" style="width:250px;margin-left:262px">
+                    {% if request.GET.exact_match %}
+                        <input name="exact_match" type="checkbox" class="pull-left form-control" tooltip="Exact Match"
+                               style="width:11px;box-shadow:none;margin-top:-9px;margin-right:2px;" checked="checked"/>
+                            <span>exact match</span>
+                    {% else %}
+                        <input name="exact_match" type="checkbox" class="pull-left form-control" tooltip="Exact Match"
+                               style="width:11px;box-shadow:none;margin-top:-9px;margin-right:2px;"/>
+                            <span>exact match</span>
+                    {% endif %}
+                </div>
+
+
+            </div>
 		</div>
 
 <!-- Search results -->
