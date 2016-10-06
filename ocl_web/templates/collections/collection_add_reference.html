@@ -187,133 +187,141 @@
             </div> {# col-lg-12 #}
         </div> {# row #}
 
-        <div class="row" ng-if="mappings.items.length || concepts.items.length">
+        <div class="row">
             <div class="col-lg-6">
+              <div class="alert alert-warning" ng-if="!loading && owner && resourceContainer && resourceContainerVersion && !concepts.items.length">
+                No concepts found!
+              </div>
+              <div ng-if="concepts.items.length">
                 <h4 class="checkbox">
                     <label>
                       <input type="checkbox"
-                             ng-change="selectAllReferencesChanged(concepts.items, pageObj.selectAllConcepts)"
-                             ng-model="pageObj.selectAllConcepts"
-                      name="allconceptscheckbox">
+                             ng-model="pageObj.selectAllConcepts">
                       All Concepts
                     </label>
                 </h4>
-                <div class="alert alert-warning" ng-if="!loading && owner && resourceContainer && resourceContainerVersion && !concepts.items.length">
-                  No concepts found!
-                </div>
-                <ul class="list-group">
-                  <li class="list-group-item checkbox" ng-repeat="concept in concepts.items">
-                      <label class="overflow-hidden">
-                          <input type="checkbox"
-                                 ng-change="pageObj.selectAllConcepts = referenceSelectionChanged(concept, concepts.items)"
-                                 ng-model="concept.isSelected">
-                      </label>
-                      <a class="resource-label concept small" href="[[ concept.url ]]" target="_blank">
-                        <span class="resource-label-id">
-                          <span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;
-                          <span class="resource-label-id-breadcrumb">
-                            <span class="breadcrumb_part" ng-bind="concept.owner"></span>
-                            <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="concept.source"></span>
-                            <span class="breadcrumb_divider"> / </span>
-                            <span class="breadcrumb_part breadcrumb_part_focus" ng-bind="concept.id"></span>
+                <div ng-if="!pageObj.selectAllConcepts">
+                  <ul class="list-group">
+                    <li class="list-group-item checkbox" ng-repeat="concept in concepts.items">
+                        <label class="overflow-hidden">
+                            <input type="checkbox"
+                                   ng-model="concept.isSelected">
+                        </label>
+                        <a class="resource-label concept small" href="[[ concept.url ]]" target="_blank">
+                          <span class="resource-label-id">
+                            <span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;
+                            <span class="resource-label-id-breadcrumb">
+                              <span class="breadcrumb_part" ng-bind="concept.owner"></span>
+                              <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="concept.source"></span>
+                              <span class="breadcrumb_divider"> / </span>
+                              <span class="breadcrumb_part breadcrumb_part_focus" ng-bind="concept.id"></span>
+                            </span>
                           </span>
-                        </span>
-                        <span ng-class="concept.retired == true ? 'resource-label-name retired':'resource-label-name'" ng-bind="concept.display_name"></span>
-                      </a>
-                      <p>
-                        <em>Class:</em> <span ng-bind="concept.concept_class"></span> <em>Datatype:</em> <span ng-bind="concept.datatype"></span>
-                        <br><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on <span ng-bind="concept.updated_on | date"></span></span>
-                      </p>
-                  </li>
-                </ul>
-                <uib-pagination
-                        total-items="concepts.total"
-                        ng-model="currentConceptPage"
-                        items-per-page="REFERENCE_LIMIT"
-                        ng-change="getResourceContainerConcepts(currentConceptPage)">
-                </uib-pagination>
+                          <span ng-class="concept.retired == true ? 'resource-label-name retired':'resource-label-name'" ng-bind="concept.display_name"></span>
+                        </a>
+                        <p>
+                          <em>Class:</em> <span ng-bind="concept.concept_class"></span> <em>Datatype:</em> <span ng-bind="concept.datatype"></span>
+                          <br><span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on <span ng-bind="concept.updated_on | date"></span></span>
+                        </p>
+                    </li>
+                  </ul>
+                  <uib-pagination
+                          total-items="concepts.total"
+                          ng-model="currentConceptPage"
+                          items-per-page="REFERENCE_LIMIT"
+                          ng-change="getResourceContainerConcepts(currentConceptPage)">
+                  </uib-pagination>
+                </div>
+              </div>
+              <div ng-if="pageObj.selectAllConcepts" class="alert alert-info">
+                All concepts will be added.
+              </div>
             </div>
             <div class="col-lg-6">
-              <h4 class="checkbox">
-                <label>
-                      <input type="checkbox"
-                             ng-change="selectAllReferencesChanged(mappings.items, pageObj.selectAllMappings)"
-                             ng-model="pageObj.selectAllMappings"
-                             name="allmappingcheckbox">
-                      All Mappings
-                    </label>
-                </h4>
-                <div class="alert alert-warning" ng-if="!loading && owner && resourceContainer && resourceContainerVersion && !mappings.items.length">
-                  No mappings found!
-                </div>
-                <ul class="list-group">
-                  <li class="list-group-item checkbox" ng-repeat="mapping in mappings.items">
-                      <label>
-                        <input type="checkbox"
-                               ng-change="pageObj.selectAllMappings = referenceSelectionChanged(mapping, mappings.items)"
-                               ng-model="mapping.isSelected">
-                        <div class="col-md-10 search-result-col-content">
-                          <div class="label-container">
-                            <a class="resource-label mapping small" href="[[ mapping.versioned_object_url ]]" target="_blank">
-                                <span class="resource-label-id">
-                                  <span class="resource-label-id-icon"><span class="glyphicon glyphicon-link"></span></span>&nbsp;&nbsp;
-                                  <span class="resource-label-id-breadcrumb">
-                                    <span class="breadcrumb_part" ng-bind="mapping.owner"></span>
-                                    <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="mapping.source"></span>
-                                    <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part breadcrumb_part_focus" ng-bind="mapping.id"></span>
+              <div class="alert alert-warning" ng-if="!loading && owner && resourceContainer && resourceContainerVersion && !mappings.items.length">
+                No mappings found!
+              </div>
+              <div ng-if="mappings.items.length">
+                  <h4 class="checkbox">
+                    <label>
+                          <input type="checkbox"
+                                 ng-model="pageObj.selectAllMappings">
+                          All Mappings
+                        </label>
+                    </h4>
+                    <div ng-if="!pageObj.selectAllMappings">
+                      <ul class="list-group">
+                        <li class="list-group-item checkbox" ng-repeat="mapping in mappings.items">
+                            <label>
+                              <input type="checkbox"
+                                     ng-model="mapping.isSelected">
+                              <div class="col-md-10 search-result-col-content">
+                                <div class="label-container">
+                                  <a class="resource-label mapping small" href="[[ mapping.versioned_object_url ]]" target="_blank">
+                                      <span class="resource-label-id">
+                                        <span class="resource-label-id-icon"><span class="glyphicon glyphicon-link"></span></span>&nbsp;&nbsp;
+                                        <span class="resource-label-id-breadcrumb">
+                                          <span class="breadcrumb_part" ng-bind="mapping.owner"></span>
+                                          <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="mapping.source"></span>
+                                          <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part breadcrumb_part_focus" ng-bind="mapping.id"></span>
+                                        </span>
+                                      </span>
+                                      <span class="resource-label-name" ng-bind="mapping.map_type"></span>
+                                    </a>
                                   </span>
-                                </span>
-                                <span class="resource-label-name" ng-bind="mapping.map_type"></span>
-                              </a>
-                            </span>
 
-                            <!-- from_concept label -->
-                            <div style="padding: 8px 0 8px 20px;">
-                              <span class="text-muted small">From:</span>&nbsp;&nbsp;
-                              <a href="[[ mapping.from_concept_url ]]" target="_blank" class="resource-label concept small">
-                                  <span class="resource-label-id">
-                                    <span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;
-                                    <span class="resource-label-id-breadcrumb">
-                                      <span class="breadcrumb_part" ng-bind="mapping.from_source_owner"></span>
-                                      <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="mapping.from_source_name"></span>
-                                      <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part breadcrumb_part_focus" ng-bind="mapping.from_concept_code"></span>
-                                    </span>
-                                  </span>
-                                  <span class="resource-label-name" ng-bind="mapping.from_concept_name"></span>
-                                </span>
-                              </a>
-                            </div>
+                                  <!-- from_concept label -->
+                                  <div style="padding: 8px 0 8px 20px;">
+                                    <span class="text-muted small">From:</span>&nbsp;&nbsp;
+                                    <a href="[[ mapping.from_concept_url ]]" target="_blank" class="resource-label concept small">
+                                        <span class="resource-label-id">
+                                          <span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;
+                                          <span class="resource-label-id-breadcrumb">
+                                            <span class="breadcrumb_part" ng-bind="mapping.from_source_owner"></span>
+                                            <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="mapping.from_source_name"></span>
+                                            <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part breadcrumb_part_focus" ng-bind="mapping.from_concept_code"></span>
+                                          </span>
+                                        </span>
+                                        <span class="resource-label-name" ng-bind="mapping.from_concept_name"></span>
+                                      </span>
+                                    </a>
+                                  </div>
 
-                            <!-- to_concept label -->
-                            <div style="padding: 8px 0 8px 20px;">
-                              <span class="text-muted small">To:</span>&nbsp;&nbsp;
-                              <a href="[[ mapping.to_concept_url ]]" target="_blank" class="resource-label concept small">
-                                <span class="resource-label-id">
-                                  <span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;
-                                  <span class="resource-label-id-breadcrumb">
-                                    <span class="breadcrumb_part" ng-bind="mapping.to_source_owner"></span>
-                                    <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="mapping.to_source_name"></span>
-                                    <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part breadcrumb_part_focus" ng-bind="mapping.to_concept_code"></span>
-                                  </span>
-                                </span>
-                                <span class="resource-label-name" ng-bind="mapping.to_concept_name"></span>
-                              </a>
-                            </div>
+                                  <!-- to_concept label -->
+                                  <div style="padding: 8px 0 8px 20px;">
+                                    <span class="text-muted small">To:</span>&nbsp;&nbsp;
+                                    <a href="[[ mapping.to_concept_url ]]" target="_blank" class="resource-label concept small">
+                                      <span class="resource-label-id">
+                                        <span class="resource-label-id-icon"><span class="glyphicon glyphicon-tag"></span></span>&nbsp;&nbsp;
+                                        <span class="resource-label-id-breadcrumb">
+                                          <span class="breadcrumb_part" ng-bind="mapping.to_source_owner"></span>
+                                          <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part" ng-bind="mapping.to_source_name"></span>
+                                          <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part breadcrumb_part_focus" ng-bind="mapping.to_concept_code"></span>
+                                        </span>
+                                      </span>
+                                      <span class="resource-label-name" ng-bind="mapping.to_concept_name"></span>
+                                    </a>
+                                  </div>
 
-                          </div>
-                          <p>
-                          <span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on <span ng-bind="mapping.updated_at | date"></span></span>
-                          </p>
-                        </div>
-                      </label>
-                  </li>
-                </ul>
-                <uib-pagination
-                        total-items="mappings.total"
-                        ng-model="currentMappingPage"
-                        items-per-page="REFERENCE_LIMIT"
-                        ng-change="getResourceContainerMappings(currentMappingPage)">
-                </uib-pagination>
+                                </div>
+                                <p>
+                                <span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on <span ng-bind="mapping.updated_at | date"></span></span>
+                                </p>
+                              </div>
+                            </label>
+                        </li>
+                      </ul>
+                      <uib-pagination
+                              total-items="mappings.total"
+                              ng-model="currentMappingPage"
+                              items-per-page="REFERENCE_LIMIT"
+                              ng-change="getResourceContainerMappings(currentMappingPage)">
+                      </uib-pagination>
+                    </div>
+                    <div ng-if="pageObj.selectAllMappings" class="alert alert-info">
+                      All mappings will be added.
+                    </div>
+              </div>
             </div>
         </div>
 

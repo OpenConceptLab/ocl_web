@@ -791,18 +791,27 @@ app.controller('AddReferencesController', function($scope, $uibModal, Reference)
             });
     };
 
-    $scope.addMultipleReferences = function() {
-      references = [];
-
-      references = references.concat(
-        $scope.concepts.items.filter(function(concept) { return concept.isSelected; })
-      ).concat(
-        $scope.mappings.items.filter(function(mapping) { return mapping.isSelected; })
-      ).map(function(reference) {
-          return reference.url;
+    var _getResourceExpressions = function(resources) {
+      return resources.items.filter(function(resource) {
+        return resource.isSelected;
+      }).map(function(resource) {
+        return resource.url;
       });
+    }
 
-      $scope.addReferences(references);
+    var _getUri = function() {
+      var ownerIdentifier = $scope.ownerType === 'orgs' ? $scope.owner.id : $scope.owner.username;
+      var resourceIdentifier = $scope.resourceContainerType === 'sources' ? $scope.resourceContainer.name : $scope.resourceContainer.id;
+      return '/' + $scope.ownerType  + '/' + ownerIdentifier + '/' + $scope.resourceContainerType + '/' + resourceIdentifier + '/' + $scope.resourceContainerVersion.id + '/';
+    };
+
+    $scope.addMultipleReferences = function() {
+      var payload = {
+        uri: _getUri(),
+        concepts: $scope.pageObj.selectAllConcepts ? '*' : _getResourceExpressions($scope.concepts),
+        mappings: $scope.pageObj.selectAllMappings ? '*' : _getResourceExpressions($scope.mappings),
+      }
+      $scope.addReferences(payload);
     };
 
     $scope.openErrorModal = function () {
@@ -820,38 +829,20 @@ app.controller('AddReferencesController', function($scope, $uibModal, Reference)
     $scope.addReferences = function(references) {
         $scope.addingSingle = (references.length === 1);
         Reference.addReferences(references)
-            .success(function(result) {
-              if(!_.size(result.errors)) {
-                location.pathname = result.success_url;
-                return;
-              }
-              $scope.errors = result.errors[0];
-              $scope.openErrorModal();
-            })
-            .error(function(error) {
-                window.alert(error);
-            })
-            .finally(function() {
-                $scope.loading = false;
-            });
-    };
-
-    $scope.selectAllReferencesChanged = function(allReferences, selectAllModel) {
-      angular.forEach(allReferences, function(reference) {
-        reference.isSelected = selectAllModel;
-      });
-    };
-
-    $scope.referenceSelectionChanged = function(reference, allReferences) {
-      if(!reference.isSelected) {
-        return false;
-      }
-      var selectedReferences = allReferences.filter(function(ref) {
-        return ref.isSelected;
-      });
-      if(selectedReferences.length === allReferences.length) {
-        return true;
-      }
+          .success(function(result) {
+            if(!_.size(result.errors)) {
+              location.pathname = result.success_url;
+              return;
+            }
+            $scope.errors = result.errors[0];
+            $scope.openErrorModal();
+          })
+          .error(function(error) {
+              window.alert(error);
+          })
+          .finally(function() {
+              $scope.loading = false;
+          });
     };
 
 });

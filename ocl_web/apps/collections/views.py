@@ -476,7 +476,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
 
     def post(self, request, *args, **kwargs):
         self.get_args()
-        expressions = json.loads(request.body)
+        data = json.loads(request.body)
         api = OclApi(self.request, debug=True)
 
         result = api.put(
@@ -485,7 +485,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
             'collections',
             self.collection_id,
             'references',
-            expressions=expressions
+            data=data
         )
         errors = result.json() if result.status_code == requests.codes.bad else []
         return HttpResponse(
