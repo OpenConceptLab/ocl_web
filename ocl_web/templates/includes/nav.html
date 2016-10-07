@@ -2,7 +2,7 @@
 <div class="header navbar" style="margin-bottom:0;">
   <div class="container">
     <a class="navbar-brand" href="{% url 'home'%}"><img src="{% static 'images/ocl-logo.png' %}" height="40" width="62" /></a>
-    <form class="navbar-form" style="display:inline-block;" role="search" action="{% url 'search'%}" method="get">
+    <form class="navbar-form" role="search" action="{% url 'search'%}" method="get">
       <div class="input-group input-group-sm pull-left">
         <input name="q" type="text" class="form-control" placeholder="Search OCL" value="{{ search_query }}" />
 
@@ -17,12 +17,15 @@
           <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
         </span>
       </div>
-      <div style="width: 200px;">
+      <div class="input-group input-group-sm pull-left ">
+        <label for="exact_match">
           {% if request.GET.exact_match %}
-            <input name="exact_match" type="checkbox" class="form-control" tooltip="Exact Match" checked="checked" style="box-shadow: none;margin-top: 0px;"/> exact match
+              <input name="exact_match" type="checkbox"  tooltip="Exact Match" checked="checked" />
+
           {% else %}
-            <input name="exact_match" type="checkbox" class="form-control" tooltip="Exact Match" style="box-shadow: none;margin-top: 0px;"/> exact match
+            <input name="exact_match" type="checkbox"  tooltip="Exact Match" />
           {% endif %}
+        exact match </label>
       </div>
 
 
