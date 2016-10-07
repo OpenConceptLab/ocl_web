@@ -814,6 +814,13 @@ app.controller('AddReferencesController', function($scope, $uibModal, Reference)
       $scope.addReferences(payload);
     };
 
+    $scope.addSingleReferences = function() {
+      var payload = {
+        expressions: [$scope.singleReference]
+      }
+      $scope.addReferences(payload);
+    }
+
     $scope.openErrorModal = function () {
       $scope.errorModal = $uibModal.open({
         animation: true,

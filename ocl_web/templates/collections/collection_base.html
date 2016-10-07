@@ -49,7 +49,7 @@
 {% block resource-tabs %}
 {% if collection.owner_type == 'Organization' %}
 	{% if kwargs and "collection_version" in kwargs %}
-		{% url 'collection-concepts' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
+		{% url 'collection-version-concepts' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
 		{% url 'collection-mappings' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_mappings_url %}
 		{% url 'collection-version-references' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_references_url %}
 	{% else %}
@@ -63,7 +63,7 @@
 	{% url 'collection-about' org=collection.owner collection=collection.id as collection_about_url %}
 {% else %}
 	{% if kwargs and "collection_version" in kwargs %}
-		{% url 'collection-concepts' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
+		{% url 'collection-version-concepts' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
 		{% url 'collection-mappings' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_mappings_url %}
 		{% url 'collection-version-references' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_references_url %}
 	{% else %}

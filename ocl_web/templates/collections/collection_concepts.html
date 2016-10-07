@@ -55,9 +55,9 @@
 					<ul class="dropdown-menu" role="menu">
 					{% for collection_version in collection_versions %}
 						{% if collection.owner_type == 'Organization' %}
-							{% url 'collection-concepts' org=collection.owner collection=collection.id collection_version=collection_version.id as collection_version_url %}
+							{% url 'collection-version-concepts' org=collection.owner collection=collection.id collection_version=collection_version.id as collection_version_url %}
 						{% else %}
-							{% url 'collection-concepts' user=collection.owner collection=collection.id collection_version=collection_version.id as collection_version_url %}
+							{% url 'collection-version-concepts' user=collection.owner collection=collection.id collection_version=collection_version.id as collection_version_url %}
 						{% endif %}
 						<li {% if collection_version == collection_version.id %}class="active"{% endif %}>
               <a href="{{ collection_version_url }}">
