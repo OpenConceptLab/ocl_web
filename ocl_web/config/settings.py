@@ -30,7 +30,6 @@ class Common(Configuration):
     """ manage.py Command 'settings' to setup environment """
 
     DEFAULT_FROM_EMAIL = 'no-reply@openconceptlab.org'
-    EMAIL_HOST = 'openconceptlab.org'
     ACCOUNT_EMAIL_SUBJECT_PREFIX = '[openconceptlab.org] '
 
     ########## APP CONFIGURATION
