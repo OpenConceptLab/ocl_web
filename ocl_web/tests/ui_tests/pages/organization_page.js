@@ -24,7 +24,6 @@ var OrganizationPage = function() {
     this.addNewReferenceLink = element(by.linkText(' Reference'));
     this.expression = $('#expression');
     this.addReferenceButton = element(by.buttonText('Add'));
-    this.countOfReferences = element.all(by.css('a[title="Collection Reference"]'));
 
     // create source under org locators
     this.newOrgSourceLink = element(by.linkText('Sources'));
