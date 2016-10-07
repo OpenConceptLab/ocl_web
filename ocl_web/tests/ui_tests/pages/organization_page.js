@@ -166,11 +166,11 @@ var OrganizationPage = function() {
     };
 
     this.deleteSrcVersion = function () {
-        browser.sleep('250');
+        browser.sleep('10000');
         this.deleteSrcVersionIcon.click();
-        browser.sleep('500');
+        browser.sleep('5000');
         this.okButton.click();
-        browser.sleep('250');
+        browser.sleep('2000');
     };
 
     this.deleteCollectionVersion = function () {
