@@ -6,6 +6,8 @@ var OrgPage = require('../pages/organization_page');
 var CollectionPage = require('../pages/collections_page.js');
 var data = require('../fixtures/test_data.json');
 var configuration = require('../utilities/configuration.js');
+var EC = require('protractor').ExpectedConditions;
+
 
 describe('OCL Org Page', function () {
     var loginPage;
@@ -32,115 +34,96 @@ describe('OCL Org Page', function () {
 
     it('should create organization', function () {
         id = orgPage.getRandomString(5);
-        orgPage.createNewOrg( data.org_short_code+id,
-            data.org_name,
-            data.website,
-            data.company,
-            data.org_location
-        );
+        orgPage.createNewOrg(data.org_short_code + id, data.org_name, data.website, data.company, data.org_location);
 
         expect((orgPage.status).getText()).toEqual('Organization Added');
     });
 
     it('should create source', function () {
-        orgPage.createNewSource( data.src_code,
-            data.src_full_name,
-            data.supported_locale
-        );
+        orgPage.createNewSource(data.src_code, data.src_full_name, data.supported_locale);
 
         expect((orgPage.status).getText()).toEqual('Source created');
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept( data.concept_id,
-            data.concept_name,
-            data.name_type
-        );
+        orgPage.createNewConcept(data.concept_id, data.concept_name, data.name_type);
 
+        browser.wait(EC.presenceOf(orgPage.status), 1000);
         expect((orgPage.status).getText()).toEqual('Concept created.');
 
-        element(by.linkText('  '+data.src_code)).click();
+        element(by.linkText('  ' + data.src_code)).click();
     });
 
     it('should create source version', function () {
-        orgPage.createNewSourceVersion(data.id,
-            data.description
-        );
+        orgPage.createNewSourceVersion(data.id, data.description);
 
+        browser.wait(EC.presenceOf(orgPage.status), 500);
         expect((orgPage.status).getText()).toEqual('Source version created!');
     });
 
     it('should release a org source version', function () {
         orgPage.releaseVersion();
-        browser.sleep('750');
 
-        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), 500);
         expect(orgPage.notification.getText()).toEqual('Successfully Released.');
 
-        browser.sleep('500');
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 500);
+        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
+
         orgPage.notification.click();
-        browser.sleep('750');
     });
 
     it('should retire org source version', function () {
         orgPage.retireVersion();
-        browser.sleep('750');
 
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired.'), 1000);
         expect(orgPage.notification.getText()).toEqual('Successfully Retired.');
+
+        browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), 1000);
         expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
 
-        browser.sleep('500');
         orgPage.notification.click();
-        browser.sleep('500');
     });
 
     it('should un-retire org source version', function () {
         orgPage.retireVersion();
-        browser.sleep('500');
 
-        expect(orgPage.notification.getText()).toEqual('Successfully Un-Retired.');
-        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 1000);
 
         orgPage.notification.click();
-        browser.sleep('500');
     });
 
     it('should un-release a source version', function () {
         orgPage.releaseVersion();
-        browser.sleep('750');
 
-        expect(orgPage.notification.getText()).toEqual('Successfully Un-Released.');
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), 1000);
 
-        browser.sleep('500');
         orgPage.notification.click();
-        browser.sleep('500');
     });
 
     it('should delete a source version', function () {
-       browser.sleep('750');
-       orgPage.deleteSrcVersion();
+        orgPage.deleteSrcVersion();
 
-       expect(orgPage.notification.getText()).toEqual('Successfully removed source version.');
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'version.'), 1000);
 
-       browser.sleep('500');
-       orgPage.notification.click();
-        browser.sleep('500');
+        orgPage.notification.click();
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept( data.concept_id+id,
+        orgPage.createNewConcept(data.concept_id + id,
             data.concept_name,
             data.name_type
         );
 
         expect((orgPage.status).getText()).toEqual('Concept created.');
 
-        element(by.linkText('  '+data.src_code)).click();
+        element(by.linkText('  ' + data.src_code)).click();
     });
 
     it('should create a mapping', function () {
-        var fromConceptURL= '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
-        var toConceptURL = '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/concepts/C1.1.1.2-'+id+'/';
+        var fromConceptURL = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
+        var toConceptURL = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + id + '/';
 
         orgPage.createNewMapping(
             fromConceptURL,
@@ -152,11 +135,11 @@ describe('OCL Org Page', function () {
 
         // mapping_id = element(by.css('#mapping_id .row .field-label-value')).getText();
         // console.log(mapping_id);
-        element(by.linkText('  '+data.org_short_code+id)).click();
+        element(by.linkText('  ' + data.org_short_code + id)).click();
     });
 
     it('should create collection under org', function () {
-        orgPage.createNewOrgCollection( data.short_code+id,
+        orgPage.createNewOrgCollection(data.short_code + id,
             data.col_name,
             data.full_name,
             data.supported_locale
@@ -166,73 +149,74 @@ describe('OCL Org Page', function () {
 
     it('should create collection version', function () {
 
-       collectionPage.createNewCollectionVersion('V1', 'version 1');
+        collectionPage.createNewCollectionVersion('V1', 'version 1');
 
-       expect((orgPage.status).getText()).toEqual('Collection version created!');
+        expect((orgPage.status).getText()).toEqual('Collection version created!');
     });
 
     it('should release a collection version', function () {
         orgPage.releaseVersion();
-        browser.sleep('750');
 
-        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), 1000);
         expect(orgPage.notification.getText()).toEqual('Successfully Released.');
 
-        browser.sleep('500');
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 1000);
+        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
+
         orgPage.notification.click();
-        browser.sleep('750');
     });
 
     it('should retire org collection version', function () {
         orgPage.retireVersion();
-         browser.sleep('750');
 
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired.'), 1000);
         expect(orgPage.notification.getText()).toEqual('Successfully Retired.');
+
+        browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), 1000);
         expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
 
-        browser.sleep('500');
         orgPage.notification.click();
-        browser.sleep('500');
     });
 
     it('should un-retire org collection version', function () {
         orgPage.retireVersion();
-        browser.sleep('750');
 
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), 1000);
         expect(orgPage.notification.getText()).toEqual('Successfully Un-Retired.');
+
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 1000);
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
 
-        browser.sleep('500');
         orgPage.notification.click();
-        browser.sleep('500');
     });
 
     it('should un-release a collection version', function () {
         orgPage.releaseVersion();
-        browser.sleep('750');
 
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), 1000);
         expect(orgPage.notification.getText()).toEqual('Successfully Un-Released.');
 
-        browser.sleep('500');
         orgPage.notification.click();
-        browser.sleep('500');
     });
 
     it('should delete org colection version', function () {
-       orgPage.deleteCollectionVersion();
-       browser.sleep('750');
+        orgPage.deleteCollectionVersion();
 
-       expect(orgPage.notification.getText()).toEqual('Successfully removed collection version.');
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed collection version.'), 1000);
+        expect(orgPage.notification.getText()).toEqual('Successfully removed collection version.');
 
-       browser.sleep('500');
-       orgPage.notification.click();
-        browser.sleep('500');
+        orgPage.notification.click();
     });
 
 
     it('should add a reference of concept to a collection', function () {
-        var concept_expression = '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
+        var concept_expression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
         orgPage.createNewReference(concept_expression);
+
+        var newlyAddedReference = element(by.css('a[title="Collection Reference"]'));
+        browser.wait(EC.presenceOf(newlyAddedReference), 1000);
+
+        expect(orgPage.countOfReferences.count()).toEqual(1);
     });
 
     // it('should add multiple reference', function () {
@@ -275,8 +259,8 @@ describe('OCL Org Page', function () {
     //     // expect(element(by.linkText(' '+expression)).isPresent()).toBe(true);
     // });
 
-     it('should logout', function () {
-         logoutPage.logout();
+    it('should logout', function () {
+        logoutPage.logout();
 
         expect((loginPage.loginStatus).getText()).toEqual('You have signed out.');
     });

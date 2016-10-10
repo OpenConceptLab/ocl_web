@@ -1,3 +1,5 @@
+var EC = require('protractor').ExpectedConditions;
+
 var OrganizationPage = function() {
 
     // create org locators
@@ -23,7 +25,8 @@ var OrganizationPage = function() {
     this.references = element(by.linkText('References'));
     this.addNewReferenceLink = element(by.linkText(' Reference'));
     this.expression = $('#expression');
-    this.addReferenceButton = element(by.buttonText('Add'));
+    this.addReferenceButton = element(by.id('add-single-reference'));
+    this.countOfReferences = element.all(by.css('a[title="Collection Reference"]'));
 
     // create source under org locators
     this.newOrgSourceLink = element(by.linkText('Sources'));
@@ -39,8 +42,8 @@ var OrganizationPage = function() {
 
     // Release / Un-release version locators
     this.releaseButton = $('#id_release');
-    this.notification = $('.ajs-success');
-    this.releaseLabel = $$('.release-label');
+    this.notification = element.all(by.css('.ajs-success')).first();
+    this.releaseLabel = $$('.label-primary.release-label');
 
     // Retire / Un-Retire version locators
     this.retireButton = $('.resource_retire');
@@ -108,15 +111,13 @@ var OrganizationPage = function() {
         this.addNewReferenceLink.click();
         this.expression.sendKeys(expression);
         this.addReferenceButton.click();
-        browser.sleep('1000');
     };
 
     this.deleteReference = function () {
         this.checkReference.click();
         this.deleteLink.click();
-        browser.sleep('250');
+        browser.wait(EC.visibilityOf(this.okButton), 500);
         this.okButton.click();
-        browser.sleep('1000');
     };
 
     this.createNewSource = function (src_shortCode, full_name, locale) {
@@ -138,12 +139,10 @@ var OrganizationPage = function() {
 
     this.releaseVersion = function () {
       this.releaseButton.click();
-      browser.sleep('750');
     };
 
     this.retireVersion = function () {
       this.retireButton.click();
-      browser.sleep('750');
     };
 
     this.createNewConcept = function (id, name, name_type) {
@@ -152,6 +151,7 @@ var OrganizationPage = function() {
         this.conceptId.sendKeys(id);
         this.name.sendKeys(name);
         this.conceptNameType.sendKeys(name_type);
+        browser.wait(EC.visibilityOf(this.deleteExtra), 500);
         this.deleteExtra.click();
         this.createConceptButton.click();
     };
@@ -166,18 +166,19 @@ var OrganizationPage = function() {
     };
 
     this.deleteSrcVersion = function () {
-        browser.sleep('10000');
+        browser.wait(EC.visibilityOf(this.deleteSrcVersionIcon), 1000);
         this.deleteSrcVersionIcon.click();
-        browser.sleep('5000');
+
+        browser.wait(EC.visibilityOf(this.okButton, 1000));
         this.okButton.click();
-        browser.sleep('2000');
     };
 
     this.deleteCollectionVersion = function () {
+        browser.wait(EC.visibilityOf(this.deleteColVersionIcon), 1000);
         this.deleteColVersionIcon.click();
-        browser.sleep('500');
+
+        browser.wait(EC.visibilityOf(this.okButton), 1000);
         this.okButton.click();
-        browser.sleep('250');
     };
     //
     // this.waitForAjax = function () {
