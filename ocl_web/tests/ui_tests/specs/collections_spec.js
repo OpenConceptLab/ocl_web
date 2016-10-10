@@ -6,6 +6,7 @@ var CollectionPage = require('../pages/collections_page.js');
 var OrgPage = require('../pages/organization_page');
 var data = require('../fixtures/test_data.json');
 var configuration = require('../utilities/configuration.js');
+var EC = require('protractor').ExpectedConditions;
 
 describe('OCL Collections Page', function () {
 
@@ -13,7 +14,7 @@ describe('OCL Collections Page', function () {
     var logoutPage;
     var collectionPage;
     var orgPage;
-    var id='';
+    var id = '';
 
     beforeEach(function () {
         loginPage = new LoginPage();
@@ -32,7 +33,7 @@ describe('OCL Collections Page', function () {
 
     it('should create collection', function () {
         id = orgPage.getRandomString(2);
-        collectionPage.createNewUserCollection( data.short_code+id,
+        collectionPage.createNewUserCollection(data.short_code + id,
             data.col_name,
             data.full_name,
             data.supported_locale
@@ -43,73 +44,59 @@ describe('OCL Collections Page', function () {
 
     it('should create collection version', function () {
 
-       collectionPage.createNewCollectionVersion('V1', 'Version 1');
+        collectionPage.createNewCollectionVersion('V1', 'Version 1');
 
-       expect((orgPage.status).getText()).toEqual('Collection version created!');
+        expect((orgPage.status).getText()).toEqual('Collection version created!');
     });
 
     it('should release a user collection version', function () {
         orgPage.releaseVersion();
-        browser.sleep('500');
 
-        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), 500);
         expect(orgPage.notification.getText()).toEqual('Successfully Released.');
 
-        browser.sleep('500');
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 500);
+        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
+
         orgPage.notification.click();
-        browser.sleep('750');
     });
 
     it('should retire user collection version', function () {
         orgPage.retireVersion();
-        browser.sleep('500');
 
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired.'), 500);
         expect(orgPage.notification.getText()).toEqual('Successfully Retired.');
+
+        browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), 500);
         expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
 
-         browser.sleep('500');
         orgPage.notification.click();
-         browser.sleep('500');
     });
 
     it('should un-retire user collection version', function () {
         orgPage.retireVersion();
-        browser.sleep('500');
 
-        expect(orgPage.notification.getText()).toEqual('Successfully Un-Retired.');
-        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 1000);
 
-         browser.sleep('500');
         orgPage.notification.click();
-         browser.sleep('500');
     });
 
     it('should un-release a user collection version', function () {
         orgPage.releaseVersion();
-        browser.sleep('500');
 
-        expect(orgPage.notification.getText()).toEqual('Successfully Un-Released.');
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), 500);
 
-        browser.sleep('500');
         orgPage.notification.click();
-        browser.sleep('500');
     });
 
     it('should delete a user collection version', function () {
-       orgPage.deleteCollectionVersion();
-       browser.sleep('750');
+        orgPage.deleteCollectionVersion();
 
-       expect(orgPage.notification.getText()).toEqual('Successfully removed collection version.');
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed collection version.'), 1000);
 
-        browser.sleep('500');
-       orgPage.notification.click();
-        browser.sleep('500');
+        orgPage.notification.click();
     });
-
-    // it('should add a reference of concept to a collection', function () {
-    //     var concept_expression = '/orgs/EthiopiaMOH/sources/HSTP-Indicators/concepts/1/';
-    //     orgPage.createNewReference(concept_expression);
-    // });
 
     it('should edit collection', function () {
         collectionPage.editCollection(data.col_desc, data.ext_id);
@@ -125,11 +112,10 @@ describe('OCL Collections Page', function () {
         expect((collectionPage.status).getText()).toEqual('Collection Deleted');
     });
 
-     it('should logout', function () {
-         logoutPage.logout();
+    it('should logout', function () {
+        logoutPage.logout();
 
-         expect((loginPage.loginStatus).getText()).toEqual('You have signed out.');
-     });
-
+        expect((loginPage.loginStatus).getText()).toEqual('You have signed out.');
+    });
 });
 
