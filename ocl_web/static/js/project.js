@@ -811,14 +811,14 @@ app.controller('AddReferencesController', function($scope, $uibModal, Reference)
         concepts: $scope.pageObj.selectAllConcepts ? '*' : _getResourceExpressions($scope.concepts),
         mappings: $scope.pageObj.selectAllMappings ? '*' : _getResourceExpressions($scope.mappings),
       }
-      $scope.addReferences(payload);
+      $scope.addReferences(payload, false);
     };
 
     $scope.addSingleReferences = function() {
       var payload = {
         expressions: [$scope.singleReference]
       }
-      $scope.addReferences(payload);
+      $scope.addReferences(payload, true);
     }
 
     $scope.openErrorModal = function () {
@@ -833,10 +833,20 @@ app.controller('AddReferencesController', function($scope, $uibModal, Reference)
       $scope.errorModal.close();
     };
 
-    $scope.addReferences = function(references) {
-        $scope.addingSingle = (references.length === 1);
-        Reference.addReferences(references)
+    $scope.addReferences = function(payload, addingSingle) {
+        $scope.addingSingle = addingSingle;
+        Reference.addReferences(payload)
           .success(function(result) {
+            if($scope.pageObj.selectAllConcepts || $scope.pageObj.selectAllMappings) {
+              alertify.success(
+                'We have started adding all the references, it might take some time for all references to reflect. Try to refresh the references tab in some time.', 3
+              );
+              setTimeout(function() {
+                location.pathname = result.success_url;
+              }, 3000);
+              return;
+            }
+
             if(!_.size(result.errors)) {
               location.pathname = result.success_url;
               return;
