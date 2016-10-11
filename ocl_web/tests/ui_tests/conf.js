@@ -5,7 +5,7 @@
 
     var phantomJSCapabilities = {
         browserName: 'phantomjs',
-        'phantomjs.binary.path': 'node_modules/phantomjs/bin/phantomjs'
+        'phantomjs.binary.path': 'node_modules/phantomjs/lib/phantom/bin/phantomjs'
     };
 
     var invalidBrowserCapabilities = {
