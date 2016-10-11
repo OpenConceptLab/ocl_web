@@ -12,8 +12,7 @@ cd $OCL_WEB
 #if [[ $CREATE_USER_RESULT -ne 0 ]]; then
 #    exit 1
 #fi
+rm -rf node_modules/protractor/selenium
+nohup ./node_modules/protractor/bin/webdriver-manager update
 
-nohup ./node_modules/protractor/bin/webdriver-manager update > nohup_ui_tests.out  2>&1 &
-
-sleep 3
 ./node_modules/protractor/bin/protractor ./ocl_web/tests/ui_tests/conf.js --verbose
