@@ -1,5 +1,13 @@
 #!/bin/bash
+# create test user (username=testuser, password=test123)
+
 # env=local browser=phantomjs OCL_WEB=~/workspace/ocl_web run_ui_tests.sh
+python ocl_web/manage.py create_test_user --username=testuser --password=test123
+
+CREATE_USER_RESULT=$?
+if [[ $CREATE_USER_RESULT -ne 0 ]]; then
+    exit 1
+fi
 
 if [ -z $OCL_WEB ]; then
     OCL_WEB=~/ocl_web

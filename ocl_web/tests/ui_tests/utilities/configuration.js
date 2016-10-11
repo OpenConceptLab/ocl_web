@@ -11,8 +11,8 @@ function Configuration() {
     var testExecutionEnvironment = getTestExecutionEnvironment();
     this.env = envConfig[testExecutionEnvironment];
     this.env["env"] = testExecutionEnvironment;
-    this.env["username"] = process.env.username ? process.env.username : "awadhwa1";
-    this.env["password"] = process.env.password ? process.env.password : "root123";
+    this.env["username"] = process.env.username ? process.env.username : "testuser";
+    this.env["password"] = process.env.password ? process.env.password : "test123";
 }
 
 var Configurations = new Configuration();
