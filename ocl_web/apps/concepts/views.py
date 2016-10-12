@@ -773,6 +773,9 @@ class ConceptEditView(UserOrOrgMixin, FormView):
             'concept': self.concept,
             'request': self.request,
         }
+        data.update(self.concept['names'][0] if self.concept['names'] else {})
+        data.update(self.concept['descriptions'][0] if self.concept['descriptions'] else {})
+
         data.update(self.concept)
         return data
 
@@ -790,11 +793,20 @@ class ConceptEditView(UserOrOrgMixin, FormView):
                 extras[item['key']] = item['value']
         data['extras'] = extras
         api = OclApi(self.request, debug=True)
+
+        locale = data.pop('locale')
+        locale_preferred = self.concept['names'][0].get('locale_preferred', None) if self.concept['names'] else False
+        names = [
+            {'locale': locale, 'locale_preferred': locale_preferred, 'name': data.pop('name'), 'name_type': data.pop('name_type')}
+        ]
+        descriptions = [
+            {'locale': locale, 'locale_preferred': locale_preferred, 'description': data.pop('description'), 'description_type': data.pop('description_type')}
+        ]
         if self.from_org:
-            result = api.update_concept('orgs', self.org_id, self.source_id, self.concept_id, data)
+            result = api.update_concept('orgs', self.org_id, self.source_id, self.concept_id, data, names, descriptions)
         else:
             result = api.update_concept(
-                'users', self.user_id, self.source_id, self.concept_id, data)
+                'users', self.user_id, self.source_id, self.concept_id, data, names, descriptions)
         if result.status_code != requests.codes.ok:
             emsg = result.json().get('detail', 'Error')
             messages.add_message(self.request, messages.ERROR, emsg)

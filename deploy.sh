@@ -11,5 +11,5 @@ ssh root@$IP "tar -xzf releases/ocl_web$RELEASE_VERSION.tgz && mv repo ocl_web"
 if [[ -z $PORT ]]
 then
 	PORT=80
-fi	
+fi
 ssh root@$IP "DJANGO_CONFIGURATION=$ENV OCL_WEB_SOCKET_ADDRESS=0.0.0.0:$PORT ./ocl_web/run_server.sh $SETTINGS $TOKEN"

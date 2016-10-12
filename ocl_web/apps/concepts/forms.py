@@ -185,12 +185,6 @@ class ConceptEditForm(ConceptNewForm):
         """
         super(ConceptEditForm, self).__init__(*args, **kwargs)
         self.fields.pop('concept_id')
-        self.fields.pop('locale')
-        self.fields.pop('name')
-        self.fields.pop('name_type')
-        self.fields.pop('description')
-        self.fields.pop('description_type')
-
 
 
 # TODO: Resurrect ConceptNameForm
