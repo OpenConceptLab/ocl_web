@@ -5,14 +5,10 @@ if [ -z $OCL_WEB ]; then OCL_WEB=~/ocl_web; fi
 
 cd $OCL_WEB
 
-# create test user (username=testuser, password=test123) if environment is local
-#if [ $env -eq local ]; then python ocl_web/manage.py create_test_user --username=awadhwa --password=root123; fi
-#
-#CREATE_USER_RESULT=$?
-#if [[ $CREATE_USER_RESULT -ne 0 ]]; then
-#    exit 1
-#fi
-rm -rf node_modules/protractor/selenium
+echo "Removing selenium before update"
+rm -rf ./node_modules/protractor/node_modules/webdriver-manager/selenium
+
+echo "Updating web driver manager"
 nohup ./node_modules/protractor/bin/webdriver-manager update
 
 ./node_modules/protractor/bin/protractor ./ocl_web/tests/ui_tests/conf.js --verbose
