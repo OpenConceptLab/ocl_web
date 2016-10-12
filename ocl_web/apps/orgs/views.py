@@ -292,7 +292,7 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
 
             # TODO:  Add error messages from API to form.
             else:
-                messages.add_message(self.request, messages.INFO, result.json()['mnemonic'])
+                messages.add_message(self.request, messages.ERROR, result.json()['mnemonic'])
                 return super(OrganizationNewView, self).form_invalid(form)
         else:
             validator_template = ' Short Name \'%s\' is not valid. Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) '
