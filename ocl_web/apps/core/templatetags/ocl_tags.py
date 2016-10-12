@@ -327,15 +327,20 @@ def field_label(label, value, url=False, truncate=True, vertical=False, small=Fa
     value = u'%s' % value
     if truncate and len(value) > (TRUNCATE_LENGTH + 3):
         value = value[:TRUNCATE_LENGTH] + '...'
+    id = convert_to_id(label)
     return {
         'field_label': label,
         'field_value': value,
         'url_value': url_string,
         'is_url': url,
         'vertical': vertical,
-        'small': small
+        'small': small,
+        'id': id
     }
 
+def convert_to_id(label):
+    label = label.replace(' ', '_').lower()
+    return "id_" + label
 
 
 ## Custom Tags: PAGINATION
