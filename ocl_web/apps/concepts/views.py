@@ -309,6 +309,14 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
         }
         if mapping_destination == 'Internal':
             base_data['to_concept_url'] = form.cleaned_data.get('internal_to_concept_url')
+            # TODO: move regex validation to form
+            user_concept_format = r'^/users/([a-zA-Z0-9\-\.]+)/sources/([a-zA-Z0-9\-\.]+)/concepts/([a-zA-Z0-9\-\.]+)/$'
+            org_concept_format = r'^/orgs/([a-zA-Z0-9\-]+)/sources/([a-zA-Z0-9\-\.]+)/concepts/([a-zA-Z0-9\-\.]+)/$'
+            if not (re.compile(user_concept_format).match(base_data['to_concept_url']) or
+                        re.compile(org_concept_format).match(base_data['to_concept_url'])):
+                emsg = 'Invalid format of "To Concept URL" \'%s\'. valid url format is /[orgs or users]/[:org or :user]/sources/:source/concepts/:concept/' % base_data['to_concept_url']
+                messages.add_message(self.request, messages.ERROR, emsg)
+                return super(ConceptMappingsView, self).form_invalid(form)
         elif mapping_destination == 'External':
             base_data['to_source_url'] = form.cleaned_data.get('external_to_source_url')
             base_data['to_concept_code'] = form.cleaned_data.get('external_to_concept_code')
