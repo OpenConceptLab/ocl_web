@@ -12,6 +12,7 @@ var OrganizationPage = function() {
     this.orgLocation = $('#id_location');
     this.createOrgButton = element(by.buttonText('Create Organization'));
     this.status = $('.alert-info');
+    this.customValidationSchema = $('#id_custom_validation_schema');
 
     // create collection under org locators
     this.newOrgCollectionLink = element(by.linkText('Collections'));

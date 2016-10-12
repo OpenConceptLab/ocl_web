@@ -9,7 +9,7 @@
     <div class="col-md-3 field-label-key">
         {{ field_label }}
     </div>
-    <div class="col-md-9 field-label-value">
+    <div class="col-md-9 field-label-value" id="{{ id }}">
         {% if is_url and url_value and field_value %}
             <a href="{{ url_value }}" target="_blank">{{ field_value }}</a>
         {% else %}

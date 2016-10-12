@@ -35,11 +35,11 @@ describe('OCL User Source Page', function () {
         usrSrcPage.createNewUsrSource(
             data.src_code + srcShortCode,
             data.src_full_name,
-            data.supported_locale,
-            data.custom_validation_schema
+            data.supported_locale
         );
 
         expect((orgPage.status).getText()).toEqual('Source created');
+        expect((orgPage.customValidationSchema).getText()).toEqual('None')
     });
 
     it('should create concept', function () {

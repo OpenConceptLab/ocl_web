@@ -17,6 +17,7 @@
   "_comment": "Source data below..",
   "src_code":"HSTP-Indicators",
   "src_full_name":"Health Sector Transformation Plan 2016-2020 Indicators",
+  "custom_validation_schema": "OpenMRS",
 
   "_comment": "Source version data below..",
   "id":"V1",
