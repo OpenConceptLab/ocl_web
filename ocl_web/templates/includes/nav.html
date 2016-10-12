@@ -17,17 +17,12 @@
           <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
         </span>
       </div>
-      <div class="input-group input-group-sm pull-left ">
-        <label for="exact_match">
-          {% if request.GET.exact_match %}
-              <input name="exact_match" type="checkbox"  tooltip="Exact Match" checked="checked" />
-
-          {% else %}
-            <input name="exact_match" type="checkbox"  tooltip="Exact Match" />
-          {% endif %}
-        exact match </label>
+      <div class="input-group input-group-sm pull-left small">
+        <label for="exact_match_global_search">
+          <input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search" />
+          <span style="font-weight:300;">Exact match</span>
+        </label>
       </div>
-
 
     {# A tricky way for the body of the main search screen to add to the form input by skipping the closing form tag #}
     {% if not extend_nav_form %}
