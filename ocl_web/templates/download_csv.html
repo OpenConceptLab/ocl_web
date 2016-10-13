@@ -1,9 +1,9 @@
 {% if versions %}
     {% if request.user.is_authenticated and results %}
-        <div class="btn-group pull-right small" style="width:50px;margin-top:-7px">
-            <a class="btn btn-link download-csv pull-right">
-                <span style="padding-right: 2px;" class="glyphicon glyphicon-download-alt"></span>
-                csv
+        <div class="btn-group pull-right small" style="margin-top:-7px;">
+            <a class="btn btn-link btn-sm download-csv pull-right">
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span style="font-weight:300;" class="small">CSV</span>
             </a>
         </div>
     {% endif %}
@@ -11,10 +11,10 @@
     {% if request.user.is_authenticated and results %}
         <input id='download-origin' type="hidden" value="{{ type }}">
 
-        <div class="btn-group pull-left small" style="width:50px;margin-top:-7px;margin-right: 20px">
-            <a class="btn btn-link download-csv">
-                <span style="padding-right: 2px;" class="glyphicon glyphicon-download-alt"></span>
-                csv
+        <div class="btn-group pull-left small" style="margin-top:-7px;margin-right: 20px">
+            <a class="btn btn-link btn-sm download-csv">
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span style="font-weight:300;" class="small">CSV</span>
             </a>
         </div>
     {% endif %}
@@ -22,10 +22,10 @@
     {% if request.user.is_authenticated and results %}
         <input type="hidden" value="{{ type }}">
 
-        <div class="btn-group pull-left small" style="width:50px;margin-top:-2px">
-            <a class="btn btn-link download-csv">
-                <span style="padding-right: 2px;" class="glyphicon glyphicon-download-alt"></span>
-                csv
+        <div class="btn-group pull-left small" style="margin-top:-2px">
+            <a class="btn btn-link btn-sm download-csv">
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span style="font-weight:300;" class="small">CSV</span>
             </a>
         </div>
     {% endif %}

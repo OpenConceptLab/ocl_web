@@ -54,7 +54,7 @@
 						{% url 'mapping-new' user=source.owner source=source.id as new_mapping_url %}
 					{% endif %}
 				<div class="pull-left">
-					<a class="btn btn-link btn-sm" title="Add New Mapping to Source" style="font-weight:300;text-spacing:-0.1pt;" href="{{ new_mapping_url }}"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'New Mapping' %}</a>
+					<a class="btn btn-link btn-sm" title="Add New Mapping to Source" style="font-weight:300;letter-spacing:-0.1pt;" href="{{ new_mapping_url }}"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'New Mapping' %}</a>
 				</div>
 				{% endif_can_change %}
 
@@ -62,7 +62,7 @@
 				<div class="btn-group pull-left" style="padding-right:5px;">
 				  	<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" style="white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:clip;">
 				    	<span class="text-muted" style="letter-spacing:-0.1pt;font-weight:300;">Source Version:</span>
-				    	<span style="font-weight:400;text-spacing:-0.1pt;">{% if source_version %}{{ source_version }}{% else %}HEAD{% endif %}</span>
+				    	<span style="font-weight:400;letter-spacing:-0.1pt;">{% if source_version %}{{ source_version }}{% else %}HEAD{% endif %}</span>
 				    	<span class="caret"></span>
 				  	</button>
 				  	<ul class="dropdown-menu" role="menu">
@@ -95,7 +95,7 @@
                 </div>
 
 				<!-- Sort By Dropdown -->
-				<div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;text-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
+				<div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;letter-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
 				<div class="btn-group pull-left" style="padding-top:5px;">
 				  	<select name="sort" class="btn btn-default btn-sm xdropdown-toggle">
 				  		{% for sort_option in search_sort_options %}

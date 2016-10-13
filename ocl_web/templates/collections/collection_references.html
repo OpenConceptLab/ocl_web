@@ -60,7 +60,7 @@
                 <!-- New collection reference button -->
                 <div class="pull-left">
                     {% if_can_change collection %}
-                        <a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" title="Add New Reference" style="font-weight:300;text-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'Reference' %}</a>
+                        <a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" title="Add New Reference" style="font-weight:300;letter-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'Reference' %}</a>
                     {% endif_can_change collection %}
                 </div>
             {% endif %}
@@ -69,7 +69,7 @@
 				<div class="btn-group pull-left" style="padding-right:5px;">
 					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" style="white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:clip;">
 						<span class="text-muted" style="letter-spacing:-0.1pt;font-weight:300;">Version:</span>
-						<span style="font-weight:400;text-spacing:-0.1pt;">{% if collection_version %}{{ collection_version }}{% else %}HEAD{% endif %}</span>
+						<span style="font-weight:400;letter-spacing:-0.1pt;">{% if collection_version %}{{ collection_version }}{% else %}HEAD{% endif %}</span>
 						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" role="menu">
@@ -105,7 +105,7 @@
                 </div>
 
                 <!-- Sort dropdown -->
-                <div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;text-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
+                <div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;letter-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
                 <div class="btn-group pull-left" style="padding-top:5px;">
                     <select name="search_sort" class="btn btn-default btn-sm xdropdown-toggle">
                         <option {% if search_sort == 'ASC' %}selected{% endif %} value="ASC">Last Created (Asc)</option>

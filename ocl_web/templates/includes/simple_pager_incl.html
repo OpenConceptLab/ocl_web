@@ -4,7 +4,7 @@
   	<a href="{{ p_url }}{% if page.has_previous %}page={{ page.previous_page_number }}{% else %}#{% endif %}" class="btn btn-default btn-sm {% if not page.has_previous %}disabled{% endif %}" title="Previous Page"><strong>&lt;</strong></a>
   	<a href="{{ p_url }}{% if page.has_next %}page={{ page.next_page_number }}{% else %}#{% endif %}" class="btn btn-default btn-sm {% if not page.has_next %}disabled{% endif %}" title="Next Page"><strong>&gt;</strong></a>
 </div>
-<div class="pull-right small" style="margin-right:6px;padding-top:6px;font-weight:300;text-spacing:-0.1pt;">
+<div class="pull-right small" style="margin-right:6px;padding-top:6px;font-weight:300;letter-spacing:-0.1pt;">
   	<strong>{{ page.start_index|intcomma }}&ndash;{{ page.end_index|intcomma }}</strong> of <strong>{{ page.paginator.count|intcomma }}</strong> {{ name }}{{ page.paginator.count|pluralize }}
 </div>
 {% endwith %}

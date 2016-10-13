@@ -50,7 +50,7 @@
                 <div class="pull-left">
                     {% if user.is_authenticated %}
                     {# TBD: need a more complete tag to check for access #}
-                    <a href="{% url 'source-new' org=org.id %}" class="btn btn-link btn-sm" title="Add New Source to Organization" style="font-weight:300;text-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'New Source' %}</a>
+                    <a href="{% url 'source-new' org=org.id %}" class="btn btn-link btn-sm" title="Add New Source to Organization" style="font-weight:300;letter-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'New Source' %}</a>
                     {% endif %}
                 </div>
 
@@ -65,7 +65,7 @@
                 </div>
 
                 <!-- Sort dropdown -->
-                <div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;text-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
+                <div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;letter-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
                 <div class="btn-group pull-left" style="padding-top:5px;">
                     <select name="sort" class="btn btn-default btn-sm xdropdown-toggle">
                         {% for o in search_sort_options %}
