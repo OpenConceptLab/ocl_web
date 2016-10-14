@@ -218,7 +218,6 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         return self.render_json_response({'message': _('extra deleted')})
 
 
-# TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
 def _get_concept_class_list():
     """Return a list of concept classes.
 
@@ -229,7 +228,6 @@ def _get_concept_class_list():
     return [r['name'] for r in response.json()]
 
 
-# TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
 def _get_datatype_list():
     """Return a list of datatypes.
 
@@ -270,7 +268,6 @@ def _get_collection_type_list():
     ]
 
 
-# TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
 def _get_locale_list():
     """Return a list of locales
     """
