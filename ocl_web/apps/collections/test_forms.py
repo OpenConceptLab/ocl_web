@@ -20,7 +20,6 @@ class FakeResponse(object):
 
 
 class CollectionCreateTest(TestCase):
-
     @mock.patch.object(OclApi, 'get')
     def test_when_all_valid_data_is_provided_then_new_collection_should_be_made(self, mock_get):
         form_data = {
