@@ -12,6 +12,7 @@ from braces.views import JsonRequestResponseMixin
 from libs.ocl import OclApi
 
 logger = logging.getLogger('oclweb')
+api = OclApi()
 
 
 class UserOrOrgMixin(object):
@@ -224,36 +225,8 @@ def _get_concept_class_list():
     This is a temporary function. Should get this data from the database.
     currently from OpenMRS dataset 2014/10/19
     """
-    return [
-        'Aggregate Measurement',
-        'Anatomy',
-        'ConvSet',
-        'Diagnosis',
-        'Drug',
-        'Drug form',
-        'Finding',
-        'Frequency',
-        'Health Care Monitoring Topics',
-        'Indicator',
-        'LabSet',
-        'Medical supply',
-        'MedSet',
-        'Misc',
-        'Misc Order',
-        'Organism',
-        'Pharmacologic Drug Class',
-        'Procedure',
-        'Program',
-        'Question',
-        'Radiology/Imaging Procedure',
-        'Specimen',
-        'State',
-        'Symptom',
-        'Symptom/Finding',
-        'Test',
-        'Units of Measure',
-        'Workflow',
-    ]
+    response = api.get('selection-attributes', 'concept-classes', params={'limit': 0})
+    return [r['name'] for r in response.json()]
 
 
 # TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
@@ -262,20 +235,8 @@ def _get_datatype_list():
 
     Currently from OpenMRS dataset 2014/10/19
     """
-    return [
-        'Boolean',
-        'Coded',
-        'Complex',
-        'Date',
-        'Datetime',
-        'Document',
-        'None',
-        'Numeric',
-        'Rule',
-        'Structured Numeric',
-        'Text',
-        'Time'
-    ]
+    response = api.get('selection-attributes', 'concept-datatypes', params={'limit': 0})
+    return [r['name'] for r in response.json()]
 
 
 # TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
@@ -313,27 +274,8 @@ def _get_collection_type_list():
 def _get_locale_list():
     """Return a list of locales
     """
-    return [
-        {'code': 'am', 'name': 'Amharic'},
-        {'code': 'ar', 'name': 'Arabic'},
-        {'code': 'eu', 'name': 'Basque'},
-        {'code': 'ca', 'name': 'Catalan'},
-        {'code': 'zh', 'name': 'Chinese'},
-        {'code': 'en', 'name': 'English'},
-        {'code': 'fr', 'name': 'French'},
-        {'code': 'de', 'name': 'German'},
-        {'code': 'ht', 'name': 'Haitian Creole'},
-        {'code': 'hi', 'name': 'Hindi'},
-        {'code': 'it', 'name': 'Italian'},
-        {'code': 'ko', 'name': 'Korean'},
-        {'code': 'om', 'name': 'Oromo'},
-        {'code': 'so', 'name': 'Somali'},
-        {'code': 'sw', 'name': 'Swahili'},
-        {'code': 'es', 'name': 'Spanish'},
-        {'code': 'tl', 'name': 'Tagalog'},
-        {'code': 'ti', 'name': 'Tigrinya'},
-        {'code': 'tr', 'name': 'Turkish'},
-    ]
+    response = api.get('selection-attributes', 'name-locales', params={'limit': 0})
+    return [{'code': r['code'], 'name': r['name']} for r in response.json()]
 
 
 # TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
