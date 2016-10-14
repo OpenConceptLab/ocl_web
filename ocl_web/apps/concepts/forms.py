@@ -94,7 +94,12 @@ class  ConceptNewForm(forms.Form):
     """
     Concept new form
     """
-    # TODO(paynejd@gmail.com): Populate all dropdowns dynamically
+
+    def __init__(self, *args, **kwargs):
+        super(ConceptNewForm, self).__init__(*args, **kwargs)
+        self.fields['concept_class'].choices = [(cl, cl) for cl in _get_concept_class_list()]
+        self.fields['datatype'].choices = [(d, d) for d in _get_datatype_list()]
+        self.fields['locale'].choices = [(l['code'], l['name']) for l in _get_locale_list()]
 
     required_css_class = 'required'
 
@@ -111,27 +116,24 @@ class  ConceptNewForm(forms.Form):
                     '[concept-id]</span></small>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. A15.0"}))
 
-    # TODO: Populate this dynamically
     concept_class = forms.ChoiceField(
-        choices=[(v, v) for v in _get_concept_class_list()],
+        choices=[],
         label=_('Concept Class'),
         required=True)
 
-    # TODO: Populate this dynamically
     datatype = forms.ChoiceField(
-        choices=[(v, v) for v in _get_datatype_list()],
+        choices=[],
         label=_('Datatype'),
         initial='None',
         required=True)
 
     # TODO: Put locale, name, and name_type on the same row
 
-    # TODO: Populate this dynamically
     locale = forms.ChoiceField(
         label=_('Name Locale'),
         required=True,
         help_text=_('<small>Choose the locale for the initial name and description</small>'),
-        choices=[(d['code'], d['name']) for d in _get_locale_list()])
+        choices=[])
 
     name = forms.CharField(
         label=_('Name'),
@@ -141,7 +143,6 @@ class  ConceptNewForm(forms.Form):
             attrs={'placeholder':_("e.g. Tuberculosis of lung, confirmed by sputum "
                                    "microscopy with or without culture")}))
 
-    # TODO: Populate this dynamically
     name_type = forms.CharField(
         label=_('Name Type'),
         max_length=256,
@@ -155,7 +156,6 @@ class  ConceptNewForm(forms.Form):
         max_length=1024,
         required=False)
 
-    # TODO: Populate this dynamically
     description_type = forms.CharField(
         label=_('Description Type'),
         max_length=128,
