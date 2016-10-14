@@ -1,9 +1,13 @@
+import mock
+from libs.ocl import OclApi
 from django.test import TestCase
 from forms import CollectionCreateForm, CollectionEditForm, CollectionVersionAddForm
+from requests.models import Response
 
 
 class CollectionCreateTest(TestCase):
-    def test_when_all_valid_data_is_provided_then_new_collection_should_be_made(self):
+    @mock.patch.object(OclApi, 'get')
+    def test_when_all_valid_data_is_provided_then_new_collection_should_be_made(self, mock_get):
         form_data = {
             'short_code': 'col',
             'name': 'col',
@@ -13,10 +17,15 @@ class CollectionCreateTest(TestCase):
             'default_locale': 'en',
             'supported_locales': 'en'
         }
+        response = Response()
+        response.json = lambda: [{'code': 'en', 'name': 'en'}]
+        mock_get.return_value = response
+
         form = CollectionCreateForm(data=form_data)
         self.assertTrue(form.is_valid())
 
-    def test_when_shortName_is_not_provided_then_form_is_not_valid(self):
+    @mock.patch.object(OclApi, 'get')
+    def test_when_shortName_is_not_provided_then_form_is_not_valid(self, mock_get):
         form_data = {
             'full_name': 'collection',
             'collection_type': 'Dictionary',
@@ -27,7 +36,8 @@ class CollectionCreateTest(TestCase):
         form = CollectionCreateForm(data=form_data)
         self.assertFalse(form.is_valid())
 
-    def test_when_FullName_is_not_provided_then_form_is_not_valid(self):
+    @mock.patch.object(OclApi, 'get')
+    def test_when_FullName_is_not_provided_then_form_is_not_valid(self, mock_get):
         form_data = {
             'name': 'col',
             'collection_type': 'Dictionary',
@@ -38,7 +48,8 @@ class CollectionCreateTest(TestCase):
         form = CollectionCreateForm(data=form_data)
         self.assertFalse(form.is_valid())
 
-    def test_when_defaultLocale_is_not_provided_then_form_is_not_valid(self):
+    @mock.patch.object(OclApi, 'get')
+    def test_when_defaultLocale_is_not_provided_then_form_is_not_valid(self, mock_get):
         form_data = {
             'name': 'col',
             'full_name': 'collection',
@@ -49,7 +60,8 @@ class CollectionCreateTest(TestCase):
         form = CollectionCreateForm(data=form_data)
         self.assertFalse(form.is_valid())
 
-    def test_when_defaultLocales_is_not_provided_then_form_is_not_valid(self):
+    @mock.patch.object(OclApi, 'get')
+    def test_when_defaultLocales_is_not_provided_then_form_is_not_valid(self, mock_get):
         form_data = {
             'short_code': 'col',
             'name': 'col',
@@ -59,12 +71,18 @@ class CollectionCreateTest(TestCase):
             'default_locale': 'en',
             'supported_locales': 'en'
         }
+
+        response = Response()
+        response.json = lambda: [{'code': 'en', 'name': 'en'}]
+        mock_get.return_value = response
+
         form = CollectionCreateForm(data=form_data)
         self.assertTrue(form.is_valid())
 
 class CollectionEditFormTest(TestCase):
 
-    def test_when_edit_form_called_short_name_should_not_be_present(self):
+    @mock.patch.object(OclApi, 'get')
+    def test_when_edit_form_called_short_name_should_not_be_present(self, mock_get):
         edit_form = CollectionEditForm()
         self.assertFalse(edit_form.fields.__contains__('short_code'))
         self.assertTrue(edit_form.fields.__contains__('name'))

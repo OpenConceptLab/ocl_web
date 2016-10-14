@@ -192,11 +192,16 @@ class ConceptNameForm(forms.Form):
     """
         Form for a single concept name.
     """
+
+    def __init__(self, *args, **kwargs):
+        super(ConceptNameForm, self).__init__(*args, **kwargs)
+        self.fields['locale'].choices = [(l['code'], l['name']) for l in _get_locale_list()]
+
     required_css_class = 'required'
 
     name = forms.CharField(max_length=30, label=_('Name'), required=True)
     locale = forms.ChoiceField(
-        choices=[(d['code'], d['name']) for d in _get_locale_list()],
+        choices=[],
         label=_('Locale'),
         required=True)
 

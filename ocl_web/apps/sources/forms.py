@@ -13,6 +13,11 @@ from apps.core.views import _get_source_type_list, _get_locale_list, _get_custom
 
 class SourceNewForm(forms.Form):
     """ source create form """
+
+    def __init__(self, *args, **kwargs):
+        super(SourceNewForm, self).__init__(*args, **kwargs)
+        self.fields['default_locale'].choices = [(l['code'], l['name']) for l in _get_locale_list()]
+
     required_css_class = 'required'
 
     short_name = forms.CharField(
@@ -45,8 +50,9 @@ class SourceNewForm(forms.Form):
         choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
     default_locale = forms.ChoiceField(
         label=_('Default Locale'),
-        choices=[(d['code'], d['name']+' ('+d['code']+')') for d in _get_locale_list()],
+        choices=[],
         required=True)
+
     supported_locales = forms.CharField(
         max_length=30,
         label=_('Supported Locales'),

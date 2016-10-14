@@ -11,6 +11,11 @@ from apps.core.views import _get_collection_type_list, _get_locale_list
 
 class CollectionCreateForm(forms.Form):
     """ collection create form """
+
+    def __init__(self, *args, **kwargs):
+        super(CollectionCreateForm, self).__init__(*args, **kwargs)
+        self.fields['default_locale'].choices = [(l['code'], l['name']) for l in _get_locale_list()]
+
     required_css_class = 'required'
 
     short_code = forms.CharField(
@@ -47,7 +52,7 @@ class CollectionCreateForm(forms.Form):
         choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
     default_locale = forms.ChoiceField(
         label=_('Default Locale'),
-        choices=[(d['code'], d['name']+' ('+d['code']+')') for d in _get_locale_list()],
+        choices=[],
         required=True)
     supported_locales = forms.CharField(
         max_length=30,

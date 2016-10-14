@@ -168,7 +168,8 @@ class CollectionCreateViewTest(TestCase):
 
     @patch('django.contrib.messages.add_message')
     @patch('libs.ocl.OclApi.post')
-    def test_validDataPassedfromOrg_formIsValid(self, mock_post, mock_add_message):
+    @patch('libs.ocl.OclApi.get')
+    def test_validDataPassedfromOrg_formIsValid(self, mock_get, mock_post, mock_add_message):
         form_data = {
             'short_code': 'col',
             'name': 'col',
