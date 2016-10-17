@@ -159,6 +159,10 @@ class  ConceptNewForm(forms.Form):
         widget=forms.TextInput(
             attrs={'placeholder': _("e.g. Tuberculosis of lung, confirmed by sputum "
                                     "microscopy with or without culture")}))
+    name_locale_preferred = forms.BooleanField(
+        label=_('Locale Preferred'),
+        required=False)
+
 
     #TODO: description
 
@@ -179,6 +183,10 @@ class  ConceptNewForm(forms.Form):
         required=False,widget=forms.TextInput(
             attrs={'placeholder': _("e.g. Tuberculosis of lung, confirmed by sputum "
                                     "microscopy with or without culture")}))
+
+    description_locale_preferred = forms.BooleanField(
+        label=_('Locale Preferred'),
+        required=False)
 
 
 class ConceptEditForm(ConceptNewForm):
