@@ -988,7 +988,7 @@ app.controller('CustomAttributesController', ['$scope', function($scope) {
                                 '</div>'+
                                 '<div class="col-md-6">'+
                                     '<label style="padding-left: 0px" for="inputValue" class="col-md-6 control-label">Value</label>'+
-                                    '<textarea class="form-control"  rows="3" ng-model="extra.value" required></textarea>'+
+                                    '<textarea class="form-control"  rows="3" ng-model="extra.value"></textarea>'+
                                 '</div>'+
                                 '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeRow($index)"></span>'+
                            '</div>' +
