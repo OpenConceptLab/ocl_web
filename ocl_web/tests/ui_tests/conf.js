@@ -26,6 +26,7 @@
     }
 
     exports.config = {
+        directConnect: true,
         framework: 'jasmine',
         seleniumPort: 4444,
         specs: ['./specs/home_spec.js', './specs/organization_spec.js','./specs/user_source_spec.js','./specs/collections_spec.js','./specs/user_source_validation_spec.js'],
