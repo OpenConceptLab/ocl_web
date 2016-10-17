@@ -115,12 +115,12 @@ class  ConceptNewForm(forms.Form):
         label=_('Concept ID'),
         max_length=256,
         required=True,
-        help_text=_('<small>Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) </small><br/>'
-                    '<small>Your new concept will live at: '
+        help_text=_('<small>Alphanumeric characters, hyphens and periods are allowed.<br/>'
+                    'Your new concept will live at: '
                     '<span id="new_concept_base_url">/[owner-type]/[owner]/sources/'
                     '[source]/concepts/</span>'
                     '<span id="new_concept_id" style="font-weight:bold;">'
-                    '[concept-id]</span></small>'),
+                    '[concept-id]</span>/</small>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. A15.0"}))
 
     concept_class = forms.ChoiceField(
