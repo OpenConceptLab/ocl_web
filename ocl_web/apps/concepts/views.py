@@ -451,15 +451,15 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         }
         names = [{
             'name': form.cleaned_data.get('name'),
-            'locale': form.cleaned_data.get('locale'),
-            'locale_preferred': True,
-            'name_type': form.cleaned_data.get('name_type', '')
+            'locale': form.cleaned_data.get('name_locale'),
+            'locale_preferred': form.cleaned_data.get('name_locale_preferred'),
+            'name_type': form.cleaned_data.get('name_type')
         }]
         descriptions = [{
             'description': form.cleaned_data.get('description').strip(),
-            'locale': form.cleaned_data.get('locale'),
-            'locale_preferred': True,
-            'description_type': form.cleaned_data.get('description_type', '')
+            'locale': form.cleaned_data.get('description_locale'),
+            'locale_preferred': form.cleaned_data.get('description_locale_preferred'),
+            'description_type': form.cleaned_data.get('description_type')
         }]
         extras = {}
         if 'extras' in self.request.POST:
@@ -773,9 +773,22 @@ class ConceptEditView(UserOrOrgMixin, FormView):
             'concept': self.concept,
             'request': self.request,
         }
-        data.update(self.concept['names'][0] if self.concept['names'] else {})
-        data.update(self.concept['descriptions'][0] if self.concept['descriptions'] else {})
 
+        if self.concept['names']:
+            data.update(self.concept['names'][0] if self.concept['names'] else {})
+            data.update({
+                'name_locale_preferred': data.pop('locale_preferred', False),
+                'name_type': data.pop('type', None),
+                'name_locale': data.pop('locale', None)
+            })
+
+        if self.concept['descriptions']:
+            data.update(self.concept['descriptions'][0] if self.concept['descriptions'] else {})
+            data.update({
+                'description_locale_preferred': data.pop('locale_preferred', False),
+                'description_type': data.pop('type', None),
+                'description_locale': data.pop('locale', None)
+            })
         data.update(self.concept)
         return data
 
@@ -794,14 +807,19 @@ class ConceptEditView(UserOrOrgMixin, FormView):
         data['extras'] = extras
         api = OclApi(self.request, debug=True)
 
-        locale = data.pop('locale')
-        locale_preferred = self.concept['names'][0].get('locale_preferred', None) if self.concept['names'] else False
-        names = [
-            {'locale': locale, 'locale_preferred': locale_preferred, 'name': data.pop('name'), 'name_type': data.pop('name_type')}
-        ]
-        descriptions = [
-            {'locale': locale, 'locale_preferred': locale_preferred, 'description': data.pop('description'), 'description_type': data.pop('description_type')}
-        ]
+        names = [{
+            'locale': data.pop('name_locale'),
+            'locale_preferred': data.pop('name_locale_preferred'),
+            'name': data.pop('name'),
+            'type': data.pop('name_type')
+        }]
+        descriptions = [{
+            'locale': data.pop('description_locale'),
+            'locale_preferred': data.pop('description_locale_preferred'),
+            'description': data.pop('description'),
+            'type': data.pop('description_type')
+        }]
+
         if self.from_org:
             result = api.update_concept('orgs', self.org_id, self.source_id, self.concept_id, data, names, descriptions)
         else:

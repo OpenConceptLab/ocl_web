@@ -20,7 +20,7 @@ from django import forms
 from django.forms.formsets import formset_factory
 
 #from libs.ocl import OclApi
-from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list)
+from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list, _get_type_list)
 
 
 
@@ -97,9 +97,16 @@ class  ConceptNewForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(ConceptNewForm, self).__init__(*args, **kwargs)
+
+        locale_choices = [(l['code'], l['name']) for l in _get_locale_list()]
+        type_choices = [(t, t) for t in _get_type_list()]
+
         self.fields['concept_class'].choices = [(cl, cl) for cl in _get_concept_class_list()]
         self.fields['datatype'].choices = [(d, d) for d in _get_datatype_list()]
-        self.fields['locale'].choices = [(l['code'], l['name']) for l in _get_locale_list()]
+        self.fields['name_locale'].choices = locale_choices
+        self.fields['name_type'].choices = type_choices
+        self.fields['description_locale'].choices = locale_choices
+        self.fields['description_type'].choices = type_choices
 
     required_css_class = 'required'
 
@@ -127,12 +134,22 @@ class  ConceptNewForm(forms.Form):
         initial='None',
         required=True)
 
-    # TODO: Put locale, name, and name_type on the same row
+    external_id = forms.CharField(
+        label=_('Concept External ID'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
 
-    locale = forms.ChoiceField(
+    #TODO: name
+
+    name_locale = forms.ChoiceField(
         label=_('Name Locale'),
         required=True,
         help_text=_('<small>Choose the locale for the initial name and description</small>'),
+        choices=[])
+
+    name_type = forms.ChoiceField(
+        label=_('Name Type'),
+        required=True,
         choices=[])
 
     name = forms.CharField(
@@ -140,32 +157,36 @@ class  ConceptNewForm(forms.Form):
         max_length=256,
         required=True,
         widget=forms.TextInput(
-            attrs={'placeholder':_("e.g. Tuberculosis of lung, confirmed by sputum "
-                                   "microscopy with or without culture")}))
+            attrs={'placeholder': _("e.g. Tuberculosis of lung, confirmed by sputum "
+                                    "microscopy with or without culture")}))
+    name_locale_preferred = forms.BooleanField(
+        label=_('Locale Preferred'),
+        required=False)
 
-    name_type = forms.CharField(
-        label=_('Name Type'),
-        max_length=256,
+
+    #TODO: description
+
+    description_locale = forms.ChoiceField(
+        label=_('Description Locale'),
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': "e.g. FULLY_SPECIFIED"}))
+        help_text=_('<small>Choose the locale for the initial name and description</small>'),
+        choices=[])
 
-    # TODO: Put locale, description, and description_type on the same row
+    description_type = forms.ChoiceField(
+        label=_('Description Type'),
+        required=False,
+        choices=[])
 
     description = forms.CharField(
         label=_('Description'),
         max_length=1024,
+        required=False,widget=forms.TextInput(
+            attrs={'placeholder': _("e.g. Tuberculosis of lung, confirmed by sputum "
+                                    "microscopy with or without culture")}))
+
+    description_locale_preferred = forms.BooleanField(
+        label=_('Locale Preferred'),
         required=False)
-
-    description_type = forms.CharField(
-        label=_('Description Type'),
-        max_length=128,
-        required=False)
-
-    external_id = forms.CharField(
-        label=_('Concept External ID'),
-        required=False,
-        widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
-
 
 
 class ConceptEditForm(ConceptNewForm):
