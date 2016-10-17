@@ -274,6 +274,13 @@ def _get_locale_list():
     response = api.get('selection-attributes', 'name-locales', params={'limit': 0})
     return [{'code': r['code'], 'name': r['name']} for r in response.json()]
 
+def _get_type_list():
+    """Return a list of locales
+    """
+    return [
+        "FULLY_SPECIFIED",
+    ]
+
 
 # TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
 def _get_map_type_list():
