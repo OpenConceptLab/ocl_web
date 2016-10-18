@@ -18,7 +18,7 @@ class CollectionCreateTest(TestCase):
             'supported_locales': 'en'
         }
         response = Response()
-        response.json = lambda: [{'code': 'en', 'name': 'en'}]
+        response.json = lambda: [{'id': 'en', 'display_name': 'en'}]
         mock_get.return_value = response
 
         form = CollectionCreateForm(data=form_data)
@@ -73,7 +73,7 @@ class CollectionCreateTest(TestCase):
         }
 
         response = Response()
-        response.json = lambda: [{'code': 'en', 'name': 'en'}]
+        response.json = lambda: [{'id': 'en', 'display_name': 'en'}]
         mock_get.return_value = response
 
         form = CollectionCreateForm(data=form_data)

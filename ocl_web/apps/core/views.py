@@ -224,8 +224,8 @@ def _get_concept_class_list():
     This is a temporary function. Should get this data from the database.
     currently from OpenMRS dataset 2014/10/19
     """
-    response = api.get('selection-attributes', 'concept-classes', params={'limit': 0})
-    return [r['name'] for r in response.json()]
+    response = api.get('orgs', 'OCL', 'sources', 'Classes', 'concepts', params={'limit': 0})
+    return [concept_class['id'] for concept_class in response.json()]
 
 
 def _get_datatype_list():
@@ -233,8 +233,8 @@ def _get_datatype_list():
 
     Currently from OpenMRS dataset 2014/10/19
     """
-    response = api.get('selection-attributes', 'concept-datatypes', params={'limit': 0})
-    return [r['name'] for r in response.json()]
+    response = api.get('orgs', 'OCL', 'sources', 'Datatypes', 'concepts', params={'limit': 0})
+    return [datatype['id'] for datatype in response.json()]
 
 
 # TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
@@ -271,15 +271,15 @@ def _get_collection_type_list():
 def _get_locale_list():
     """Return a list of locales
     """
-    response = api.get('selection-attributes', 'name-locales', params={'limit': 0})
-    return [{'code': r['code'], 'name': r['name']} for r in response.json()]
+    response = api.get('orgs', 'OCL', 'sources', 'Locales', 'concepts', params={'limit': 0})
+    return [{'code': locale['id'], 'name': locale['id'] + ' - ' + locale['display_name']} for locale in response.json()]
+
 
 def _get_type_list():
     """Return a list of locales
     """
-    return [
-        "FULLY_SPECIFIED",
-    ]
+    response = api.get('orgs', 'OCL', 'sources', 'NameTypes', 'concepts', params={'limit': 0})
+    return [t['id'] for t in response.json()]
 
 
 # TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
