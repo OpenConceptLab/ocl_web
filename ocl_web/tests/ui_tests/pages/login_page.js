@@ -29,8 +29,8 @@ var LoginPage = function() {
     this.loginButton.click();
   };
 
-   this.login = function() {
-    this.signIn();
+  this.login = function() {
+    //this.signIn();
     this.setUsername();
     this.setPassword();
     this.clickLogin();
