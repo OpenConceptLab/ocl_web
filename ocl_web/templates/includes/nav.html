@@ -15,33 +15,31 @@
       <form class="navbar-form navbar-left" role="search" action="{% url 'search'%}" method="get">
         <div class="input-group">
           <input name="q" id="global_search" type="text" class="form-control input-sm" placeholder="Search OCL" value="{{ search_query }}" />
-          <span class="input-group-btn"><button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button></span>
+          <span class="input-group-btn"><button class="btn btn-default btn-sm" type="submit"><span class="glyphicon glyphicon-search"></span></button></span>
         </div><!-- /.form-group -->
-        <span class="form-group-btn"><label for="exact_match_global_search" style="font-weight:300;"><input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search" /><span class="small">Exact match</span></label></span>
+        <span class="form-group-btn"><label for="exact_match_global_search" style="font-weight:300;cursor:pointer;"><input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search" />&nbsp;<span class="small">{% trans "Exact match" %}</span></label></span>
         {% if request.GET.type %}<input type="hidden" name="type" value="{{ request.GET.type }}" />{% endif %}
         {% if request.GET.debug %}<input type="hidden" name="debug" value="{{ request.GET.debug }}" />{% endif %}
       </form><!-- /.navbar-form -->
 
       <ul class="nav navbar-nav pull-right ocl-nav-menu">
-        <!--li><a href="{% url 'explore' %}">Explore</a></li-->
-        <li><a href="{% url 'features' %}">Features</a></li>
-        <!--li><a href="http://maternalconceptlab.tumblr.com/" target="_new">Blog</a></li-->
-        <!--li><a href="{% url 'help' %}">Learning Center</a></li-->
+        <!--li><a href="{% url 'explore' %}">{% trans "Explore" %}</a></li-->
+        <li><a href="{% url 'features' %}">{% trans "Features" %}</a></li>
+        <!--li><a href="http://maternalconceptlab.tumblr.com/" target="_new">{% trans "Blog" %}</a></li-->
+        <!--li><a href="{% url 'help' %}">{% trans "Learning Center" %}</a></li-->
 
         {% if request.user.is_authenticated %}
           <li><a href="{% url 'users:detail' request.user.username %}">{{ user.username }}</a></li>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-plus"></span> <b class="caret"></b></a>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="{% url 'org-new' %}"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;New Organization</a></li>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+              <li><a href="{% url 'org-new' %}"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{% trans "New Organization" %}</a></li>
             </ul>
           </li>
           <li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
         {% else %}
-          <li><a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a></li>
-          <li><a href="{% url 'account_login' %}">{% trans "Sign In" %}</a></li>
           <li class="dropdown"><a href="{% url 'account_login' %}" class="dropdown-toggle" data-toggle="dropdown"><b>{% trans "Sign In" %}</b> <span class="caret"></span></a>
-            <ul id="login-dp" class="dropdown-menu">
+            <ul id="login-dp" class="dropdown-menu dropdown-menu-right" style="padding:14px 14px 0;min-width:250px;">
               <li>
                 <div class="row">
                   <div class="col-md-12" >
@@ -49,23 +47,25 @@
                       {% csrf_token %}
                       <div class="form-group">
                         <label class="small" for="id_login">{% trans "Username" %}<span class="required">*</span></label>
-                        <input autofocus="autofocus" type="text" class="form-control input-sm" id="id_login" name="login" placeholder="Username" required maxlength="100">
+                        <input type="text" class="form-control input-sm" id="id_login" name="login" placeholder="Username" required maxlength="100">
                       </div>
                       <div class="form-group">
                         <label class="small" for="id_password">{% trans "Password" %}<span class="required">*</span></label>
                         <input type="password" class="form-control input-sm" id="id_password" name="password" placeholder="Password" required>
-                        <div class="help-block text-right"><a href="">{% trans "Forgot password?" %}</a></div>    
+                        <div class="help-block text-right"><a href="{% url 'account_reset_password' %}"><small>{% trans "Forgot password?" %}</small></a></div>    
                       </div>
                       <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-block">{% trans "Sign In" %}</button>
-                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ request.path }}" />
+                        <button type="submit" class="btn btn-primary btn-block btn-sm">{% trans "Sign In" %}</button>
+                        <input type="hidden" name="redirect_url" value="{{ request.path }}" />
                       </div>
-                      <div class="checkbox">
+                      <div class="checkbox input-sm">
                         <label><input type="checkbox"> {% trans "Remember me" %}</label>
                       </div>
                     </form>
                   </div><!-- /.col-md-12 -->
-                  <div class="bottom text-center">{% trans "New user?" %} <a href="#"><b>{% trans "Sign Up" %}</b></a></div><!-- /.bottom -->
+                  <div class="bottom text-center" style="padding:14px;background-color:#eee;clear:both;border:1px solid #ccc;">
+                    {% trans "New user?" %} <a href="{% url 'account_signup' %}"><b>{% trans "Sign Up" %}</b></a>
+                  </div><!-- /.bottom -->
                 </div><!-- /.row -->
               </li>
             </ul>
