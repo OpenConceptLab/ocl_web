@@ -7,6 +7,15 @@
 
 {% block content %}
 
+
+<!-- Start search form -->
+
+<form method="get" action="{% url 'search'%}" role="search">
+	{% if request.GET.q %}<input type="hidden" name="q" value="{{ request.GET.q }}" />{% endif %}
+    {% if request.GET.type %}<input type="hidden" name="type" value="{{ request.GET.type }}" />{% endif %}
+    {% if request.GET.debug %}<input type="hidden" name="debug" value="{{ request.GET.debug }}" />{% endif %}
+    {% if request.GET.debug %}<input type="hidden" name="exact_match" value="{{ request.GET.debug }}" />{% endif %}
+
 <!-- Start content row -->
 
 <div class="row">
@@ -90,12 +99,8 @@
 {% else %}
 				<h3><small>We found 0 {{ search_type_name }}{{ 0|pluralize }}.</small></h3>
 {% endif %}
-			</div> <!-- /col-md-12 -->
-		</div> <!-- /row -->
-
-{# TODO: This form element appears misplaced! #}
-</form>
-
+			</div> <!-- /.col-md-12 -->
+		</div> <!-- /.row -->
 
 <!-- Search Results -->
 {% for result in results %}
@@ -270,11 +275,12 @@
 {% endfor %}
 
 <!-- Pagination -->
-			{% if results %}
-			<div class="row" style="text-align:center;">
-				{% bootstrap_pagination page url=pagination_url %}
-			</div>
-			{% endif %}
+
+		{% if results %}
+		<div class="row" style="text-align:center;">
+			{% bootstrap_pagination page url=pagination_url %}
+		</div>
+		{% endif %}
 
 <!-- End search results section -->
 
@@ -283,6 +289,10 @@
 <!-- End content row -->
 
 </div>
+
+<!-- End search form -->
+
+</form>
 
 <!-- Debug -->
 
