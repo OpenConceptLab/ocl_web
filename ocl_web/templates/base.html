@@ -10,6 +10,8 @@
 	<meta name="robots" content="noindex">
 	<meta name="user" content="{{ request.user.username }}">
 
+	<link rel='shortcut icon' href="{% static 'images/favicon.ico' %}" type='image/x-icon'/ >
+
 	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
 	<!--[if lt IE 9]>
 		<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -17,14 +19,10 @@
 
 	{% block css %}
 	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/alertifyjs/1.8.0/css/alertify.min.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/alertifyjs/1.8.0/css/themes/bootstrap.min.css">
-
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-
-	<!-- Your stuff: Third-party css libraries go here -->
 
 	<!-- This file store project specific CSS -->
 	<link href="{% static 'css/project.css' %}" rel="stylesheet">
@@ -77,14 +75,12 @@
 	================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	{% block javascript %}
-		<!-- Latest JQuery -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-		<!-- Latest compiled and minified JavaScript -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/alertifyjs/1.8.0/alertify.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/alertifyjs/1.8.0/alertify.min.js"></script>
 
-		<!-- Your stuff: Third-party javascript libraries go here -->
-		<script src="{% static 'js/project.js' %}"></script>
+	<!-- Your stuff: Third-party javascript libraries go here -->
+	<script src="{% static 'js/project.js' %}"></script>
 	{% endblock javascript %}
 
 	{% block extrajavascript %}
