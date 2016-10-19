@@ -18,7 +18,7 @@
 
 			<!-- Source version search bar -->
 	        <div class="form-group">
-		        {% simple_pager current_page 'source version' url=pagination_url %}
+		        {% simple_pager current_page 'source version' url=pagination_url pager_size='small' %}
 
                     <div class="btn-group" style="margin-left:40px;padding-right:10px;">
                         {% if_can_change source %}

@@ -43,7 +43,7 @@
 			<div class="col-md-12" style="padding-left:0;padding-right:0;">
 
 				<!-- Simple pager -->
-                {% simple_pager current_page 'mapping' url=pagination_url %}
+                {% simple_pager current_page 'mapping' url=pagination_url pager_size='small' %}
 
 				<!-- New Mapping Button -->
 				{% if_can_change source %}

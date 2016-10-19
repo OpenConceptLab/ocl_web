@@ -346,7 +346,7 @@ def convert_to_id(label):
 ## Custom Tags: PAGINATION
 
 @register.inclusion_tag('includes/simple_pager_incl.html')
-def simple_pager(page, name, url=None):
+def simple_pager(page, name, url=None, pager_size=''):
     """
         Display a simple pager with N-M of P {name}[<] [>]
 
@@ -356,6 +356,14 @@ def simple_pager(page, name, url=None):
             includes query parameters.
     """
 
+    # Determine display size -- small, large, or nothing (which is medium)
+    css_size_class = ''
+    if not label_size or label_size.lower() not in ('small', 'large'):
+        pass
+    else:
+        css_size_class = label_size.lower()
+
+    # Set next and previous URLs for the pager
     if url:
         # Remove existing page GET parameters
         # Should use force_text, see django-bootstrap3...
@@ -371,6 +379,7 @@ def simple_pager(page, name, url=None):
         'page': page,
         'name': name,
         'url': url,
+        'pager_size': css_size_class
     }
 
 
