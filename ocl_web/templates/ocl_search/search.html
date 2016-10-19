@@ -90,23 +90,10 @@
 				{% endif %}
 
 
-				{% comment %}
-				<!-- Actions -->
-				<!-- Jon commented until there are actions that we can perform on resources -->
-				<!--div class="btn-group">
-					&nbsp;&nbsp;
-					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><strong>Actions</strong> <span class="caret"></span></button>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="#">Add to collection</a></li>
-					</ul>
-					&nbsp;&nbsp;
-				</div-->
-				{% endcomment %}
-
-
 				<!-- Exact match checkbox -->
-				<div class="btn-group pull-right" style="margin-top:6px;margin-right:12px;"><label for="exact_match_global_search" style="font-weight:300;cursor:pointer;"><input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search">&nbsp;<span class="small">{% trans "Exact match" %}</span></label></div>
-
+				<div class="btn-group pull-right" style="margin-top:6px;margin-right:12px;">
+					<label for="exact_match_global_search" style="font-weight:300;cursor:pointer;"><input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search">&nbsp;<span class="small">Exact match</span></label>
+				</div>
 
 				<!-- Search bar -->
 				<div class="input-group" style="width:auto;padding-right:6px;">
