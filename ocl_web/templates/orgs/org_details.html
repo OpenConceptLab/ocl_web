@@ -44,15 +44,19 @@
 					{% include 'includes/ng_alerts_incl.html' %}
 					{% if_can_change org %}
 						<a href="{% url 'org-member-add' org.id %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add Member" %}</a>
-						{% for member in members %}
+					{% endif_can_change %}
+                    {% for member in members %}
 							<div class="label-container">
-								{% user_label member label_size='small' %}<button type="button" class="btn btn-link" data-org='{{org.id}}' ng-click="removeMember('{{org.id}}', '{{member.username}}')" ><span class="glyphicon glyphicon-trash"></span></button>
-							</div>
+								{% user_label member label_size='small' %}
+                                {% if_can_change org %}
+                                    <button type="button" class="btn btn-link" data-org='{{org.id}}' ng-click="removeMember('{{org.id}}', '{{member.username}}')" ><span class="glyphicon glyphicon-trash"></span></button>
+							    {% endif_can_change %}
+                            </div>
 							{% if request.GET.debug %}<pre>{{ member|pprint }}</pre>{% endif %}
 						{% empty %}
 							No members.
-						{% endfor %}
-					{% endif_can_change %}
+                    {% endfor %}
+
 				</div>
 			</div> <!-- /panel -->
 		</div> <!-- /col-md-4 -->
