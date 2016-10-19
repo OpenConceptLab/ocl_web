@@ -279,7 +279,7 @@ def _get_type_list():
     """Return a list of locales
     """
     response = api.get('orgs', 'OCL', 'sources', 'NameTypes', 'concepts', params={'limit': 0})
-    return [t['id'] for t in response.json()]
+    return [t['display_name'] for t in response.json()]
 
 
 # TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
