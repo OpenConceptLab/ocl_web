@@ -20,7 +20,7 @@ from django import forms
 from django.forms.formsets import formset_factory
 
 #from libs.ocl import OclApi
-from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list, _get_type_list)
+from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list, _get_name_type_list, _get_description_type_list)
 
 
 
@@ -99,14 +99,13 @@ class  ConceptNewForm(forms.Form):
         super(ConceptNewForm, self).__init__(*args, **kwargs)
 
         locale_choices = [(l['code'], l['name']) for l in _get_locale_list()]
-        type_choices = [(t, t) for t in _get_type_list()]
 
         self.fields['concept_class'].choices = [(cl, cl) for cl in _get_concept_class_list()]
         self.fields['datatype'].choices = [(d, d) for d in _get_datatype_list()]
         self.fields['name_locale'].choices = locale_choices
-        self.fields['name_type'].choices = type_choices
+        self.fields['name_type'].choices = [(t, t) for t in _get_name_type_list()]
         self.fields['description_locale'].choices = locale_choices
-        self.fields['description_type'].choices = type_choices
+        self.fields['description_type'].choices = [(t, t) for t in _get_description_type_list()]
 
     required_css_class = 'required'
 

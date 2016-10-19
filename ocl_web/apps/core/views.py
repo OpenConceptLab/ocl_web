@@ -275,11 +275,13 @@ def _get_locale_list():
     return [{'code': locale['id'], 'name': locale['id'] + ' - ' + locale['display_name']} for locale in response.json()]
 
 
-def _get_type_list():
-    """Return a list of locales
-    """
+def _get_name_type_list():
     response = api.get('orgs', 'OCL', 'sources', 'NameTypes', 'concepts', params={'limit': 0})
-    return [t['display_name'] for t in response.json()]
+    return [name_type['display_name'] for name_type in response.json()]
+
+def _get_description_type_list():
+    response = api.get('orgs', 'OCL', 'sources', 'DescriptionTypes', 'concepts', params={'limit': 0})
+    return [description_type['display_name'] for description_type in response.json()]
 
 
 # TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
