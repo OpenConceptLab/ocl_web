@@ -30,7 +30,7 @@ var LoginPage = function() {
   };
 
   this.login = function() {
-    //this.signIn();
+    this.signIn();
     this.setUsername();
     this.setPassword();
     this.clickLogin();
