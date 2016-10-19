@@ -29,7 +29,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 class Common(Configuration):
     """ manage.py Command 'settings' to setup environment """
 
-    DEFAULT_FROM_EMAIL = 'no-reply@openconceptlab.org'
+    DEFAULT_FROM_EMAIL = 'noreply@openconceptlab.org'
     ACCOUNT_EMAIL_SUBJECT_PREFIX = '[openconceptlab.org] '
 
     ########## APP CONFIGURATION
@@ -451,7 +451,7 @@ class Production(Common):
     ########## END STORAGE CONFIGURATION
 
     ########## EMAIL
-    DEFAULT_FROM_EMAIL = values.Value('ocl_web <ocl_web_noreply@openconceptlab.com>')
+    DEFAULT_FROM_EMAIL = values.Value('ocl_web <noreply@openconceptlab.org>')
 #    EMAIL_HOST = values.Value('smtp.sendgrid.com')
 #    EMAIL_HOST_PASSWORD = values.SecretValue(environ_prefix="", environ_name="SENDGRID_PASSWORD")
 #    EMAIL_HOST_USER = values.SecretValue(environ_prefix="", environ_name="SENDGRID_USERNAME")
