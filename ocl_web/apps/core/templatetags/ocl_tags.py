@@ -358,10 +358,10 @@ def simple_pager(page, name, url=None, pager_size=''):
 
     # Determine display size -- small, large, or nothing (which is medium)
     css_size_class = ''
-    if not label_size or label_size.lower() not in ('small', 'large'):
+    if not pager_size or pager_size.lower() not in ('small', 'large'):
         pass
     else:
-        css_size_class = label_size.lower()
+        css_size_class = pager_size.lower()
 
     # Set next and previous URLs for the pager
     if url:

@@ -11,10 +11,9 @@
 <!-- Start search form -->
 
 <form method="get" action="{% url 'search'%}" role="search">
-	{% if request.GET.q %}<input type="hidden" name="q" value="{{ request.GET.q }}" />{% endif %}
-    {% if request.GET.type %}<input type="hidden" name="type" value="{{ request.GET.type }}" />{% endif %}
-    {% if request.GET.debug %}<input type="hidden" name="debug" value="{{ request.GET.debug }}" />{% endif %}
-    {% if request.GET.debug %}<input type="hidden" name="exact_match" value="{{ request.GET.debug }}" />{% endif %}
+	{% if request.GET.type %}<input type="hidden" name="type" value="{{ request.GET.type }}" />{% endif %}
+	{% if request.GET.debug %}<input type="hidden" name="debug" value="{{ request.GET.debug }}" />{% endif %}
+	{% if request.GET.debug %}<input type="hidden" name="exact_match" value="{{ request.GET.debug }}" />{% endif %}
 
 <!-- Start content row -->
 
@@ -60,47 +59,72 @@
 
 	<div class="col-md-9">
 
-<!-- Search Results, Actions, Sorting and Paging -->
+<!-- Search Bar, Actions, Sorting and Paging -->
 
 		<div class="row" style="margin-bottom:10px;">
 			<div class="col-md-12">
 
-{% if results %}
-
 				<!-- Paging -->
+				{% if results %}
 				{% simple_pager page search_type_name url=pagination_url %}
+				{% endif %}
+
 
 				<!-- Sorting -->
-				<div class="btn-group pull-right" style="padding-right:10px;padding-top:5px;">
-                    {% if search_type_name != 'organization' and search_type_name != 'user' %}
-                        {% include 'download_csv.html' with type='search' %}
-                    {% endif %}
-				    <div class="btn-group pull-left small" style="padding-right:6px;padding-top:3px;font-weight:300;letter-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
+				{% if results %}
+				<div class="btn-group pull-right" style="margin-right:12px;">
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-sort"></span> <span class="caret"></span></button>
+					<ul class="dropdown-menu" role="menu">
+						{% for o in search_sort_options %}
+						<li {% if search_sort == o %}class="active"{% endif %}><a href="{% url 'search' %}?{{ other_resource_search_params }}?sort={{ o }}">{{ o }}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+				<!--div class="btn-group pull-right" style="padding-right:10px;padding-top:5px;">
+					{% if search_type_name != 'organization' and search_type_name != 'user' %}
+						{% include 'download_csv.html' with type='search' %}
+					{% endif %}
+					<div class="btn-group pull-left small" style="padding-right:6px;padding-top:3px;font-weight:300;letter-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
 					<select name="sort" class="btn btn-default btn-xs xdropdown-toggle">
 						{% for o in search_sort_options %}
 						<option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
 						{% endfor %}
 					</select>
-				</div>
+				</div-->
+				{% endif %}
 
-				<!-- Actions -->
+
+				<!-- Search results download -->
+				{% if results and search_type_name != 'organization' and search_type_name != 'user' %}
+				<div class="btn-group pull-right" style="margin-right:12px;">
+					{% include 'download_csv.html' with type='search' %}
+				</div>
+				{% endif %}
+
+
 				{% comment %}
+				<!-- Actions -->
 				<!-- Jon commented until there are actions that we can perform on resources -->
-				<div class="btn-group">
+				<!--div class="btn-group">
 					&nbsp;&nbsp;
 					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><strong>Actions</strong> <span class="caret"></span></button>
 					<ul class="dropdown-menu" role="menu">
 						<li><a href="#">Add to collection</a></li>
 					</ul>
 					&nbsp;&nbsp;
-				</div>
+				</div-->
 				{% endcomment %}
 
-{% else %}
-				<h3><small>We found 0 {{ search_type_name }}{{ 0|pluralize }}.</small></h3>
-{% endif %}
+
+				<!-- Search bar -->
+				<div class="input-group" style="width:auto;padding-right:12px;">
+          			<input name="q" id="global_search" type="text" class="form-control" placeholder="Search OCL" style="width:100%;" {% if request.GET.q %}value="{{ request.GET.q }}"{% endif %}>
+          			<span class="input-group-btn"><button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button></span>
+				</div>
+
 			</div> <!-- /.col-md-12 -->
 		</div> <!-- /.row -->
+
 
 <!-- Search Results -->
 {% for result in results %}
@@ -270,7 +294,14 @@
 
 	{% endif %}
 		</div>
+
 {% empty %}
+
+		<div class="row" style="margin-bottom:10px;">
+			<div class="col-md-12">
+				<h3><small>We found 0 {{ search_type_name }}{{ 0|pluralize }}.</small></h3>
+			</div>
+		</div>
 
 {% endfor %}
 
