@@ -273,7 +273,7 @@ def _get_locale_list():
     """
     response = api.get('orgs', 'OCL', 'sources', 'Locales', 'concepts', params={'limit': 0})
     if response.status_code == 404:
-        return []
+        return [{'code': 'en', 'name': 'en - English'}]
 
     return [{'code': locale['id'], 'name': locale['id'] + ' - ' + locale['display_name']} for locale in response.json()]
 
