@@ -67,7 +67,10 @@ class GlobalSearchView(TemplateView):
         other_resource_search_params = {}
         for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
             if param in self.request.GET:
-                other_resource_search_params[param] = self.request.GET.get(param)
+                if param == 'q':
+                    other_resource_search_params[param] = search_string
+                else:
+                    other_resource_search_params[param] = self.request.GET.get(param)
 
         context['other_resource_search_params'] = ''
 

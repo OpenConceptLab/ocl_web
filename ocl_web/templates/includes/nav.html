@@ -12,6 +12,7 @@
     </div>
 
     <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
+      {% if not hide_nav_search %}
       <form class="navbar-form navbar-left" role="search" action="{% url 'search'%}" method="get">
         <div class="input-group">
           <input name="q" id="global_search" type="text" class="form-control input-sm" placeholder="Search OCL" value="{{ search_query }}" />
@@ -21,6 +22,7 @@
         {% if request.GET.type %}<input type="hidden" name="type" value="{{ request.GET.type }}" />{% endif %}
         {% if request.GET.debug %}<input type="hidden" name="debug" value="{{ request.GET.debug }}" />{% endif %}
       </form><!-- /.navbar-form -->
+      {% endif %}
 
       <ul class="nav navbar-nav pull-right ocl-nav-menu">
         <!--li><a href="{% url 'explore' %}">{% trans "Explore" %}</a></li-->

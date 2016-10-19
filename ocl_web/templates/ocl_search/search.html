@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.html" with hide_nav_search=1 %}
 {% load bootstrap3 %}
 {% load ocl_tags %}
 {% load humanize %}
@@ -13,7 +13,6 @@
 <form method="get" action="{% url 'search'%}" role="search">
 	{% if request.GET.type %}<input type="hidden" name="type" value="{{ request.GET.type }}" />{% endif %}
 	{% if request.GET.debug %}<input type="hidden" name="debug" value="{{ request.GET.debug }}" />{% endif %}
-	{% if request.GET.debug %}<input type="hidden" name="exact_match" value="{{ request.GET.debug }}" />{% endif %}
 
 <!-- Start content row -->
 
@@ -76,21 +75,10 @@
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-sort"></span> <span class="caret"></span></button>
 					<ul class="dropdown-menu" role="menu">
 						{% for o in search_sort_options %}
-						<li {% if search_sort == o %}class="active"{% endif %}><a href="{% url 'search' %}?{{ other_resource_search_params }}?sort={{ o }}">{{ o }}</a></li>
+						<li {% if search_sort == o %}class="active"{% endif %}><a href="{% url 'search' %}?{{ other_resource_search_params }}&amp;sort={{ o }}">{{ o }}</a></li>
 						{% endfor %}
 					</ul>
 				</div>
-				<!--div class="btn-group pull-right" style="padding-right:10px;padding-top:5px;">
-					{% if search_type_name != 'organization' and search_type_name != 'user' %}
-						{% include 'download_csv.html' with type='search' %}
-					{% endif %}
-					<div class="btn-group pull-left small" style="padding-right:6px;padding-top:3px;font-weight:300;letter-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
-					<select name="sort" class="btn btn-default btn-xs xdropdown-toggle">
-						{% for o in search_sort_options %}
-						<option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
-						{% endfor %}
-					</select>
-				</div-->
 				{% endif %}
 
 
@@ -116,9 +104,13 @@
 				{% endcomment %}
 
 
+				<!-- Exact match checkbox -->
+				<div class="btn-group pull-right" style="margin-top:6px;margin-right:12px;"><label for="exact_match_global_search" style="font-weight:300;cursor:pointer;"><input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search">&nbsp;<span class="small">{% trans "Exact match" %}</span></label></div>
+
+
 				<!-- Search bar -->
-				<div class="input-group" style="width:auto;padding-right:12px;">
-          			<input name="q" id="global_search" type="text" class="form-control" placeholder="Search OCL" style="width:100%;" {% if request.GET.q %}value="{{ request.GET.q }}"{% endif %}>
+				<div class="input-group" style="width:auto;padding-right:6px;">
+          			<input name="q" id="global_search" type="text" class="form-control" placeholder="Search OCL" style="width:100%;" {% if request.GET.q %}value="{{ search_query }}"{% endif %}>
           			<span class="input-group-btn"><button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button></span>
 				</div>
 
