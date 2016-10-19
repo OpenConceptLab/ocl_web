@@ -62,6 +62,7 @@ class GlobalSearchView(TemplateView):
         context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.search_filter_list
         context['search_query'] = search_string
+        context['hide_nav_search'] = True
 
         # Build URL params for navigating to other resources
         other_resource_search_params = {}
@@ -78,7 +79,7 @@ class GlobalSearchView(TemplateView):
         if other_resource_search_params:
             context['other_resource_search_params'] = (
                 '&' + urlencode(other_resource_search_params))
-        #
+
         # Perform the counter searches for the other resources
         resource_count = {}
         for resource_type in OclConstants.RESOURCE_TYPE_INFO:
