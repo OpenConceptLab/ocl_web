@@ -195,6 +195,19 @@ class OclSearch(object):
             'Name (Desc)',
         ]
 
+    # TODO(paynejd@gmail.com): Develop plan to handle search sort options better
+    def get_sort_icons(self):
+        """
+        :returns: a list of bootstrap icon names for each sort option.
+        """
+        return {
+            'Best Match': 'glyphicon-sort',
+            'Last Update (Desc)': 'glyphicon-sort-by-attributes-alt',
+            'Last Update (Asc)': 'glyphicon-sort-by-attributes',
+            'Name (Asc)': 'glyphicon-sort-by-alphabet',
+            'Name (Desc)': 'glyphicon-sort-by-alphabet-alt',
+        }
+
     def get_sort(self):
         """ Returns the current sort option """
         return '' if self.search_sort is None else self.search_sort

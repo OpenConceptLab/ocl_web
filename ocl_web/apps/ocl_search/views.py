@@ -59,6 +59,7 @@ class GlobalSearchView(TemplateView):
         context['search_type'] = searcher.search_type
         context['search_type_name'] = OclConstants.resource_display_name(searcher.search_type)
         context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort_icons'] = searcher.get_sort_icons()
         context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.search_filter_list
         context['search_query'] = search_string
@@ -73,9 +74,10 @@ class GlobalSearchView(TemplateView):
                 else:
                     other_resource_search_params[param] = self.request.GET.get(param)
 
+        # This code encodes the search parameters into a single URL-encoded string
+        #    so that it can easily be appended onto URL links on the search page
+        # TODO: Update list of search params depending on how used (e.g. links for sort vs. search type)
         context['other_resource_search_params'] = ''
-
-        # Following code breaks for unicode characters -- couldn't figure out why this code is here -- Sny/Anshu
         if other_resource_search_params:
             context['other_resource_search_params'] = (
                 '&' + urlencode(other_resource_search_params))
