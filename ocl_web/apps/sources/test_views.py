@@ -2,6 +2,7 @@ import json
 from unittest import TestCase
 from unittest import skip
 from apps.sources.forms import  SourceDeleteForm
+from django.contrib import messages
 from mock import patch, MagicMock
 from requests.models import Response
 import views
@@ -39,8 +40,8 @@ class DeleteViewTest(TestCase):
             'org': 'testOrgId',
         }
 
-        result=sourceDeleteView.form_valid(form)
-        mock_message.add_message.asser_called_with("error","Error")
+        sourceDeleteView.form_valid(form)
+        mock_message.assert_called_once_with(sourceDeleteView.request, messages.INFO, ('Source Deleted'))
 
 class SourceVersionEditJsonViewTest(TestCase):
     @patch('libs.ocl.OclApi.update_resource_version')

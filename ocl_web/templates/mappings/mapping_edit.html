@@ -10,14 +10,18 @@
 {% block content %}
 {% if source.owner_type == 'Organization' %}
 	{% url 'mapping-home' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_url %}
+    {% url 'mapping-retire' org=source.owner source=source.id mapping=mapping.id as mapping_retire_url%}
+
 {% else %}
 	{% url 'mapping-home' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_url %}
+    {% url 'mapping-retire' user=source.owner source=source.id mapping=mapping.id as mapping_retire_url%}
+
 {% endif %}
 
 <h3>
 	{% resource_owner_label mapping label_size='large' %} / {% generic_resource_label resource_type='source' resource_id=mapping.source resource_url=source_url label_size='large' %} / {% generic_resource_label resource_type='mapping' resource_id=mapping.id resource_name=mapping.map_type resource_url=mapping_home_url label_size='large' %}&nbsp;/&nbsp;{% trans 'Edit' %}
 	{% if not mapping.retired %}
-		&nbsp;&nbsp;&nbsp;<a href="{% url 'mapping-retire' org=source.owner source=source.id mapping=mapping.id %}" title="Retire Mapping" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
+		&nbsp;&nbsp;&nbsp;<a href="{{ mapping_retire_url }} " title="Retire Mapping" class="small text-muted"><span class="glyphicon glyphicon-trash"></span></a>
 	{% endif %}
 </h3>
 

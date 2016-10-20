@@ -1,5 +1,6 @@
 from unittest import TestCase
 import mock
+from apps.mappings.forms import MappingRetireForm
 from django.http import Http404
 from django_extensions.db.fields import json
 from requests.exceptions import HTTPError
@@ -102,6 +103,36 @@ class MappingVersionsViewTest(TestCase):
         kwargs={'mapping_id': id}
         with self.assertRaises(Http404):
             mappingVersionsView.get_context_data(**kwargs)
+
+    @patch('libs.ocl.OclApi.get')
+    def test_getContextForMapping_contextForMappingReceived(self, mock_get):
+        colResponse = MagicMock(spec=Response)
+        colResponse.json.return_value = "testMapping"
+        mock_get.return_value = colResponse
+        mappingRetireView = views.MappingRetireView()
+        mappingRetireView.request = FakeRequest()
+        mappingRetireView.kwargs = {
+            'source_id': 'testSourceId',
+            'mapping_id': 'testMapping_id'
+        }
+        context = mappingRetireView.get_context_data();
+        self.assertEqual(context['mapping'], 'testMapping')
+
+    @patch('django.contrib.messages.add_message')
+    @patch('libs.ocl.OclApi.delete')
+    def test_whenRetireSuccessfull_thenReturnSourceDeletedMessage(self, mock_delete, mock_message):
+        colResponse = MagicMock(spec=Response, status_code=204)
+        mock_delete.return_value = colResponse
+        form = MappingRetireForm()
+        mappingRetireView = views.MappingRetireView()
+        mappingRetireView.request = FakeRequest()
+        mappingRetireView.kwargs = {
+            'source_id': 'testSourceId',
+            'mapping_id': 'testMapping_id'
+        }
+        form.cleaned_data={'comment':'updated'}
+        mappingRetireView.form_valid(form)
+        mock_message.assert_called_once_with(mappingRetireView.request, messages.INFO, ('Mapping retired'))
 
 
 
