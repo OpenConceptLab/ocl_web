@@ -269,19 +269,22 @@ def _get_collection_type_list():
 
 
 def _get_locale_list():
-    """Return a list of locales
+    """Return a list of locales only for those having 2-letter codes
     """
     response = api.get('orgs', 'OCL', 'sources', 'Locales', 'concepts', params={'limit': 0})
-    return [{'code': locale['id'], 'name': locale['id'] + ' - ' + locale['display_name']} for locale in response.json()]
+    if response.status_code == 404:
+        return [{'code': 'en', 'name': 'en - English'}]
+    return [{'code': locale['locale'], 'name': locale['locale'] + ' - ' + locale['display_name']} for locale in response.json() if locale['locale']]
 
 
 def _get_name_type_list():
     response = api.get('orgs', 'OCL', 'sources', 'NameTypes', 'concepts', params={'limit': 0})
-    return [name_type['display_name'] for name_type in response.json()]
+    return [] if response.status_code == 404 else [name_type['display_name'] for name_type in response.json()]
+
 
 def _get_description_type_list():
     response = api.get('orgs', 'OCL', 'sources', 'DescriptionTypes', 'concepts', params={'limit': 0})
-    return [description_type['display_name'] for description_type in response.json()]
+    return [] if response.status_code == 404 else [description_type['display_name'] for description_type in response.json()]
 
 
 # TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
