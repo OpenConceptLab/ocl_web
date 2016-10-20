@@ -1,4 +1,2 @@
 {# angular alert box #}
-{% verbatim %}
-<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="alerts.splice($index, 1)">{{alert.msg}}</alert>
-{% endverbatim %}
+<alert ng-repeat="alert in alerts" type="[[alert.type]]" close="alerts.splice($index, 1)">[[ alert.msg ]]</alert>
