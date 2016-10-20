@@ -170,7 +170,7 @@ var OrganizationPage = function() {
         browser.wait(EC.visibilityOf(this.deleteSrcVersionIcon), 1000);
         this.deleteSrcVersionIcon.click();
 
-        browser.wait(EC.visibilityOf(this.okButton, 1000));
+        browser.wait(EC.visibilityOf(this.okButton, 1200));
         this.okButton.click();
     };
 
