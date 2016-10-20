@@ -225,7 +225,7 @@ def _get_concept_class_list():
     currently from OpenMRS dataset 2014/10/19
     """
     response = api.get('orgs', 'OCL', 'sources', 'Classes', 'concepts', params={'limit': 0})
-    return [concept_class['id'] for concept_class in response.json()]
+    return [] if response.status_code == 404 else [concept_class['id'] for concept_class in response.json()]
 
 
 def _get_datatype_list():
