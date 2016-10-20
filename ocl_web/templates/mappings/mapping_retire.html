@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load ocl_tags %}
+
+{% block title %}{% trans "Retire Mapping" %}{% endblock %}
+
+{% block content %}
+{% if mapping.owner_type == 'Organization' %}
+    {% url 'mapping-home' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_url %}
+{% else %}
+    {% url 'mapping-home' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_url %}
+{% endif %}
+
+<h3>
+    {% resource_owner_label mapping %} / {% source_label source %} / {% mapping_label mapping %} / {% trans 'Retire Mapping' %}
+</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>{% trans "Retire Mapping" %}</h1>
+
+            <form class="form-horizontal" id="source_create_form" method="post" action=".">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Mapping</label>
+                    <div class="col-md-4">{{ mapping.display_name }}</div>
+                </div>
+                {% bootstrap_form form layout="horizontal" %}
+                {% buttons layout="horizontal" %}
+                    <button type="submit" class="btn btn-primary">{% trans "Retire" %}</button>
+                    <a href="{{ mapping_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+                {% endbuttons %}
+            </form>
+
+        </div> {# col-lg-12 #}
+    </div> {# row #}
+</div> {# container #}
+{% endblock %}

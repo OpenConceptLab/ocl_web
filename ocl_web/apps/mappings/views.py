@@ -12,6 +12,7 @@ from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
+from django.http import (HttpResponseRedirect, Http404)
 import json
 
 from libs.ocl import OclConstants
@@ -396,3 +397,58 @@ class MappingRetireView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView)
         Loads the mapping details.
         """
         return
+
+    def get_context_data(self, *args, **kwargs):
+        """ Set context data for retiring the concept """
+        context = super(MappingRetireView, self).get_context_data(*args, **kwargs)
+
+        self.get_args()
+
+        api = OclApi(self.request, debug=True)
+        source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
+        mapping = api.get(
+            self.owner_type, self.owner_id, 'sources', self.source_id,
+            'mappings', self.mapping_id).json()
+        context['source'] = source
+        context['mapping'] = mapping
+        context['kwargs'] = self.kwargs
+        return context
+
+    def get_success_url(self):
+        """ Return URL for redirecting browser """
+        if self.from_org:
+            return reverse('mapping-details',
+                           kwargs={'org': self.org_id,
+                                   'source': self.source_id,
+                                   'mapping': self.mapping_id})
+
+        else:
+            return reverse('mapping-details',
+                           kwargs={'user': self.user_id,
+                                   'source': self.source_id,
+                                   'mapping': self.mapping_id})
+
+    def form_valid(self, form, *args, **kwargs):
+        """ Use validated form data to retire the mapping """
+
+        self.get_args()
+        print form.cleaned_data
+
+        data = {'update_comment': form.cleaned_data['comment']}
+        api = OclApi(self.request, debug=True)
+        result = api.delete(
+            self.owner_type, self.owner_id, 'sources', self.source_id, 'mappings',
+            self.mapping_id, **data)
+        print result
+        if result.status_code != 204:
+            print result.status_code
+            emsg = result.json().get('detail', 'Error')
+            messages.add_message(self.request, messages.ERROR, emsg)
+            return HttpResponseRedirect(self.request.path)
+
+        else:
+            messages.add_message(self.request, messages.INFO, _('Mapping retired'))
+            return HttpResponseRedirect(self.get_success_url())
+
+
+

@@ -677,16 +677,12 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
         """ Use validated form data to retire the concept """
 
         self.get_args()
-        print form.cleaned_data
-
         data = {'update_comment': form.cleaned_data['comment']}
         api = OclApi(self.request, debug=True)
         result = api.delete(
             self.owner_type, self.owner_id, 'sources', self.source_id, 'concepts',
             self.concept_id, **data)
-        print result
         if result.status_code != 204:
-            print result.status_code
             emsg = result.json().get('detail', 'Error')
             messages.add_message(self.request, messages.ERROR, emsg)
             return HttpResponseRedirect(self.request.path)
