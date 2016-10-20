@@ -31,6 +31,10 @@
         specs: ['./specs/organization_spec.js','./specs/user_source_spec.js','./specs/collections_spec.js','./specs/user_source_validation_spec.js'],
         capabilities: getBrowserCapabilities(),
 
+        jasmineNodeOpts: {
+            defaultTimeoutInterval: 60000
+        },
+
         'onPrepare' : function () {
             browser.driver.manage().window().setSize(1280, 1024);
         }
