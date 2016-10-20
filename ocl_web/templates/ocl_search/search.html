@@ -63,14 +63,13 @@
 		<div class="row" style="margin-bottom:10px;">
 			<div class="col-md-12">
 
-				<!-- Paging -->
 				{% if results %}
+				<!-- Paging -->
 				{% simple_pager page search_type_name url=pagination_url %}
 				{% endif %}
 
-
-				<!-- Sorting -->
 				{% if results %}
+				<!-- Sorting -->
 				<div class="btn-group pull-right" style="margin-right:12px;">
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-sort"></span> <span class="caret"></span></button>
 					<ul class="dropdown-menu" role="menu">
@@ -81,28 +80,26 @@
 				</div>
 				{% endif %}
 
-
-				<!-- Search results download -->
 				{% if results and search_type_name != 'organization' and search_type_name != 'user' %}
+				<!-- Search results download -->
 				<div class="btn-group pull-right" style="margin-right:12px;">
 					{% include 'download_csv.html' with type='search' %}
 				</div>
 				{% endif %}
 
-
-				<!-- Exact match checkbox -->
+				<!-- Exact match checkbox (always show) -->
 				<div class="btn-group pull-right" style="margin-top:6px;margin-right:12px;">
 					<label for="exact_match_global_search" style="font-weight:300;cursor:pointer;"><input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search">&nbsp;<span class="small">Exact match</span></label>
 				</div>
 
-				<!-- Search bar -->
+				<!-- Search bar (always show) -->
 				<div class="input-group" style="width:auto;padding-right:6px;">
           			<input name="q" id="global_search" type="text" class="form-control" placeholder="Search OCL" style="width:100%;" {% if request.GET.q %}value="{{ search_query }}"{% endif %}>
           			<span class="input-group-btn"><button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button></span>
 				</div>
 
-			</div> <!-- /.col-md-12 -->
-		</div> <!-- /.row -->
+			</div><!-- /.col-md-12 -->
+		</div><!-- /.row -->
 
 
 <!-- Search Results -->
@@ -166,11 +163,13 @@
 			{% if result.owner_type == 'Organization' %}
 				{% url 'source-home' org=result.owner source=result.short_code as result_home_url %}
 				{% url 'source-concepts' org=result.owner source=result.short_code as result_concepts_url %}
-				{% comment %}{% url 'source-mappings' org=result.owner source=result.short_code as result_mappings_url %}{% endcomment %}
+				{% url 'source-mappings' org=result.owner source=result.short_code as result_mappings_url %}
+				{% url 'source-versions' org=result.owner source=result.short_code as result_versions_url %}
 			{% else %}
 				{% url 'source-home' user=result.owner source=result.short_code as result_home_url %}
 				{% url 'source-concepts' user=result.owner source=result.short_code as result_concepts_url %}
-				{% comment %}{% url 'source-mappings' user=result.owner source=result.short_code as result_mappings_url %}{% endcomment %}
+				{% url 'source-mappings' user=result.owner source=result.short_code as result_mappings_url %}
+				{% url 'source-versions' user=result.owner source=result.short_code as result_versions_url %}
 			{% endif %}
 
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
@@ -178,7 +177,10 @@
 			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="{{ result_concepts_url }}" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>
-					{% comment %}&nbsp;&nbsp;&nbsp;&nbpsp;<a href="{{ result_mappings_url }}" title="Active mappings in source"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>{% endcomment %}
+					&nbsp;&nbsp;&nbsp;&nbpsp;
+					<a href="{{ result_mappings_url }}" title="Active mappings in source"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;{{ result.active_mappings|intcomma }}</a>
+					&nbsp;&nbsp;&nbsp;&nbpsp;
+					<a href="{{ result_versions_url }}" title="Source versions"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;{{ result.versions|intcomma }}</a>
 				</div>
 				<div class="label-container">
 					{% generic_resource_label resource_type='source' resource_id=result.short_code resource_name=result.name resource_url=result_home_url owner_type=result.owner_type owner_id=result.owner label_size='small' display_breadcrumb=True %}
@@ -195,11 +197,13 @@
 			{% if result.owner_type == 'Organization' %}
 				{% url 'collection-home' org=result.owner collection=result.short_code as result_home_url %}
 				{% url 'collection-concepts' org=result.owner collection=result.short_code as result_concepts_url %}
-				{% comment %}{% url 'collection-mappings' org=result.owner collection=result.short_code as result_mappings_url %}{% endcomment %}
+				{% url 'collection-mappings' org=result.owner collection=result.short_code as result_mappings_url %}
+				{% url 'collection-versions' org=result.owner collection=result.short_code as result_versions_url %}
 			{% else %}
 				{% url 'collection-home' user=result.owner collection=result.short_code as result_home_url %}
 				{% url 'collection-concepts' user=result.owner collection=result.short_code as result_concepts_url %}
-				{% comment %}{% url 'collection-mappings' user=result.owner collection=result.short_code as result_mappings_url %}{% endcomment %}
+				{% url 'collection-mappings' user=result.owner collection=result.short_code as result_mappings_url %}
+				{% url 'collection-versions' user=result.owner collection=result.short_code as result_versions_url %}
 			{% endif %}
 
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
@@ -207,7 +211,10 @@
 			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
 					<a href="{{ result_concepts_url }}" title="Active concepts in collection"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>
-					{% comment %}&nbsp;&nbsp;&nbsp;&nbpsp;<a href="{{ result_mappings_url }}" title="Active mappings in collections"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>{% endcomment %}
+					&nbsp;&nbsp;&nbsp;&nbpsp;
+					<a href="{{ result_mappings_url }}" title="Active mappings in collections"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;{{ result.active_mappings|intcomma }}</a>
+					&nbsp;&nbsp;&nbsp;&nbpsp;
+					<a href="{{ result_versions_url }}" title="Collection versions"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;{{ result.versions|intcomma }}</a>
 				</div>
 				<div class="label-container">
 					{% generic_resource_label resource_type='collection' resource_id=result.short_code resource_name=result.name resource_url=result_home_url owner_type=result.owner_type owner_id=result.owner label_size='small' display_breadcrumb=True %}
@@ -227,9 +234,11 @@
 			<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-home search-result-icon"></span></div>
 			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="{% url 'org-home' org=result.id %}#members" title="Members in organization"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.members|intcomma }}</a>
+					<a href="{{ result_url }}#members" title="Members in organization"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.members|intcomma }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="{% url 'org-home' org=result.id %}#sources" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources|intcomma }}</a>
+					<a href="{% url 'org-sources' org=result.id %}" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources|intcomma }}</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="{% url 'org-collections' org=result.id %}" title="Public collections owned by organization"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections|intcomma }}</a>
 				</div>
 				<div class="label-container">
 					{% generic_resource_label resource_type='org' resource_id=result.id resource_name=result.name resource_url=result_url label_size='small' display_breadcrumb=True %}
@@ -254,9 +263,11 @@
 			</div>
 			<div class="col-md-10 search-result-col-content">
 				<div class="pull-right small text-muted" style="padding-top:12px;">
-					<a href="{% url 'users:detail' result.username %}#orgs" title="Organizations"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.orgs|intcomma }}</a>
+					<a href="{{ result_url }}?tab=Organizations" title="Organization membership"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.orgs|intcomma }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="{% url 'users:detail' result.username %}#sources" title="Public sources owned by user"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources|intcomma }}</a>
+					<a href="{{ result_url }}" title="Public sources owned by user"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources|intcomma }}</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="{{ result_url }}" title="Public collections owned by user"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;{{ result.public_collections|intcomma }}</a>
 				</div>
 				<div class="label-container">
 					{% generic_resource_label resource_type='user' resource_id=result.username resource_name=result.name resource_url=result_url label_size='small' display_breadcrumb=True %}
