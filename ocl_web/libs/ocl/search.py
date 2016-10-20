@@ -182,7 +182,8 @@ class OclSearch(object):
         if params is not None:
             self.parse_search_request(params, search_type=search_type)
 
-    # TODO(paynejd@gmail.com): Develop plan to handle search sort options better
+    # TODO(paynejd@gmail.com): Retire this method after get_sort_option_definitions()
+    # is applied everywhere -- currently it is only applied in global search
     def get_sort_options(self):
         """
         :returns: a list of sort options.
@@ -195,18 +196,11 @@ class OclSearch(object):
             'Name (Desc)',
         ]
 
-    # TODO(paynejd@gmail.com): Develop plan to handle search sort options better
-    def get_sort_icons(self):
+    def get_sort_option_definitions(self):
         """
-        :returns: a list of bootstrap icon names for each sort option.
+        :returns: a list of sort option definitions including bootstrap icon names for each
         """
-        return {
-            'Best Match': 'glyphicon-sort',
-            'Last Update (Desc)': 'glyphicon-sort-by-attributes-alt',
-            'Last Update (Asc)': 'glyphicon-sort-by-attributes',
-            'Name (Asc)': 'glyphicon-sort-by-alphabet',
-            'Name (Desc)': 'glyphicon-sort-by-alphabet-alt',
-        }
+        return OclConstants.SORT_OPTION_DEFINITIONS
 
     def get_sort(self):
         """ Returns the current sort option """

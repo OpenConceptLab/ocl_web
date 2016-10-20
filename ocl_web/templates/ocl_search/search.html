@@ -74,8 +74,8 @@
 				<div class="btn-group pull-right" style="margin-right:12px;">
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-sort"></span> <span class="caret"></span></button>
 					<ul class="dropdown-menu" role="menu">
-						{% for sort_term, sort_icon in search_sort_icons %}
-						<li {% if search_sort == sort_term %}class="active"{% endif %}><a href="{% url 'search' %}?{{ other_resource_search_params }}&amp;sort={{ sort_term }}"><span class="glyphicon {{ sort_icon }}"></span>&nbsp;{{ sort_term }}</a></li>
+						{% for sort_option_def in search_sort_option_defs %}
+						<li {% if search_sort == sort_option_def.value %}class="active"{% endif %}><a href="{% url 'search' %}?{{ other_resource_search_params }}&amp;sort={{ sort_option_def.value }}"><span class="glyphicon {{ sort_option_def.icon }}"></span>&nbsp;{{ sort_option_def.display }}</a></li>
 						{% endfor %}
 					</ul>
 				</div>

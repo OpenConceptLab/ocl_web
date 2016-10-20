@@ -58,8 +58,8 @@ class GlobalSearchView(TemplateView):
         context['pagination_url'] = self.request.get_full_path()
         context['search_type'] = searcher.search_type
         context['search_type_name'] = OclConstants.resource_display_name(searcher.search_type)
-        context['search_sort_options'] = searcher.get_sort_options()
-        context['search_sort_icons'] = searcher.get_sort_icons()
+        #context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort_option_defs'] = searcher.get_sort_option_definitions()
         context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.search_filter_list
         context['search_query'] = search_string
@@ -76,7 +76,7 @@ class GlobalSearchView(TemplateView):
 
         # This code encodes the search parameters into a single URL-encoded string
         #    so that it can easily be appended onto URL links on the search page
-        # TODO: Update list of search params depending on how used (e.g. links for sort vs. search type)
+        # TODO: Update list of search params depending on how used (e.g. sort/search type links)
         context['other_resource_search_params'] = ''
         if other_resource_search_params:
             context['other_resource_search_params'] = (

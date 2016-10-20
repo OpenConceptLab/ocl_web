@@ -327,6 +327,37 @@ class OclConstants(object):
             'facets':False},
     }
 
+
+    # Ordered list of definitions for sort options
+    # Currently the same list is applied to all resources
+    SORT_OPTION_DEFINITIONS = [
+        {
+            'value': 'Best Match',
+            'display': 'Best Match',
+            'icon': 'glyphicon-sort'
+        },
+        {
+            'value': 'Last Update (Desc)',
+            'display': 'Last Update (Desc)',
+            'icon': 'glyphicon-sort-by-attributes-alt'
+        },
+        {
+            'value': 'Last Update (Asc)',
+            'display': 'Last Update (Asc)',
+            'icon': 'glyphicon-sort-by-attributes'
+        },
+        {
+            'value': 'Name (Asc)',
+            'display': 'Name (Asc)',
+            'icon': 'glyphicon-sort-by-alphabet'
+        },
+        {
+            'value': 'Name (Desc)',
+            'display': 'Name (Desc)',
+            'icon': 'glyphicon-sort-by-alphabet-alt'
+        }
+    ]
+
     @classmethod
     def resource_id(cls, resource_type):
         """Get numeric resource identifier."""
