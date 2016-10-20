@@ -269,13 +269,12 @@ def _get_collection_type_list():
 
 
 def _get_locale_list():
-    """Return a list of locales
+    """Return a list of locales only for those having 2-letter codes
     """
     response = api.get('orgs', 'OCL', 'sources', 'Locales', 'concepts', params={'limit': 0})
     if response.status_code == 404:
         return [{'code': 'en', 'name': 'en - English'}]
-
-    return [{'code': locale['id'], 'name': locale['id'] + ' - ' + locale['display_name']} for locale in response.json()]
+    return [{'code': locale['locale'], 'name': locale['locale'] + ' - ' + locale['display_name']} for locale in response.json() if locale['locale']]
 
 
 def _get_name_type_list():
