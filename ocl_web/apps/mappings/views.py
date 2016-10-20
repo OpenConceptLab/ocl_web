@@ -393,13 +393,7 @@ class MappingRetireView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView)
     template_name = "mappings/mapping_retire.html"
 
     def get_context_data(self, *args, **kwargs):
-        """
-        Loads the mapping details.
-        """
-        return
-
-    def get_context_data(self, *args, **kwargs):
-        """ Set context data for retiring the concept """
+        """ Set context data for retiring the mapping """
         context = super(MappingRetireView, self).get_context_data(*args, **kwargs)
 
         self.get_args()
@@ -432,16 +426,12 @@ class MappingRetireView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView)
         """ Use validated form data to retire the mapping """
 
         self.get_args()
-        print form.cleaned_data
-
         data = {'update_comment': form.cleaned_data['comment']}
         api = OclApi(self.request, debug=True)
         result = api.delete(
             self.owner_type, self.owner_id, 'sources', self.source_id, 'mappings',
             self.mapping_id, **data)
-        print result
         if result.status_code != 204:
-            print result.status_code
             emsg = result.json().get('detail', 'Error')
             messages.add_message(self.request, messages.ERROR, emsg)
             return HttpResponseRedirect(self.request.path)
