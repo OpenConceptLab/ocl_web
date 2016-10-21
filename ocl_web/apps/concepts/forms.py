@@ -161,6 +161,7 @@ class  ConceptNewForm(forms.Form):
                                     "microscopy with or without culture")}))
     name_locale_preferred = forms.BooleanField(
         label=_('Locale Preferred'),
+        initial=True,
         required=False)
 
 
@@ -186,6 +187,7 @@ class  ConceptNewForm(forms.Form):
 
     description_locale_preferred = forms.BooleanField(
         label=_('Locale Preferred'),
+        initial=True,
         required=False)
 
 
