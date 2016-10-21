@@ -274,7 +274,14 @@ def _get_locale_list():
     response = api.get('orgs', 'OCL', 'sources', 'Locales', 'concepts', params={'limit': 0})
     if response.status_code == 404:
         return [{'code': 'en', 'name': 'en - English'}]
-    return [{'code': locale['locale'], 'name': locale['locale'] + ' - ' + locale['display_name']} for locale in response.json() if locale['locale']]
+
+    return [
+        {
+            'code': locale['locale'],
+            'name': locale['display_name'] + ' [' + locale['locale'] + ']'
+        }
+        for locale in response.json() if locale['locale']
+        ]
 
 
 def _get_name_type_list():
