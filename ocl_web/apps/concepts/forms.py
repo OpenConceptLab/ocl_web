@@ -149,6 +149,7 @@ class  ConceptNewForm(forms.Form):
     name_type = forms.ChoiceField(
         label=_('Name Type'),
         required=True,
+        initial = 'Fully Specified',
         choices=[])
 
     name = forms.CharField(
