@@ -145,7 +145,7 @@ var OrganizationPage = function() {
       this.retireButton.click();
     };
 
-    this.createNewConcept = function (id, name, name_type) {
+    this.createNewConcept = function (id, name) {
         this.newConceptLink.click();
         this.createConcept.click();
         this.conceptId.sendKeys(id);
