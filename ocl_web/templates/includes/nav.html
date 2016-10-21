@@ -2,16 +2,16 @@
 <nav class="header navbar" style="margin-bottom:0;" role="navigation">
   <div class="container-fluid">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#ocl-navbar-collapse">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{% url 'home'%}"><span class="sr-only">OCL Home</span><img src="{% static 'images/ocl-logo.png' %}" height="40" width="62" /></a>
+      <a class="navbar-brand" href="{% url 'home'%}"><img src="{% static 'images/ocl-logo.png' %}" height="40" width="62" alt="OCL Home" /></a>
     </div>
 
-    <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
+    <div class="collapse navbar-collapse" id="ocl-navbar-collapse">
       {% if not hide_nav_search %}
       <form class="navbar-form navbar-left" role="search" action="{% url 'search'%}" method="get">
         <div class="input-group">
@@ -24,21 +24,21 @@
       </form><!-- /.navbar-form -->
       {% endif %}
 
-      <ul class="nav navbar-nav pull-right ocl-nav-menu">
+      <ul class="nav navbar-nav navbar-right ocl-nav-menu">
         <!--li><a href="{% url 'explore' %}">{% trans "Explore" %}</a></li-->
         <li><a href="{% url 'features' %}">{% trans "Features" %}</a></li>
         <!--li><a href="http://maternalconceptlab.tumblr.com/" target="_new">{% trans "Blog" %}</a></li-->
         <!--li><a href="{% url 'help' %}">{% trans "Learning Center" %}</a></li-->
 
         {% if request.user.is_authenticated %}
-          <li><a href="{% url 'users:detail' request.user.username %}">{{ user.username }}</a></li>
+          <li><a href="{% url 'users:detail' request.user.username %}" title="User Profile: {{ user.name }}&#10;({{ user.email }})"><span class="glyphicon glyphicon-user"></span>&nbsp;{{ user.username }}</a></li>
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-plus"></span> <b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="New Resource Menu"><span class="glyphicon glyphicon-plus"></span> <b class="caret"></b></a>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
               <li><a href="{% url 'org-new' %}"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{% trans "New Organization" %}</a></li>
             </ul>
           </li>
-          <li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
+          <li><a href="{% url 'account_logout' %}" title="{% trans "Sign Out" %}"><span class="glyphicon glyphicon-log-out"></span></a></li>
         {% else %}
           <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>{% trans "Sign In" %}</b> <span class="caret"></span></a>
             <ul id="login-dp" class="dropdown-menu dropdown-menu-right" style="padding:14px 14px 0;min-width:250px;">
