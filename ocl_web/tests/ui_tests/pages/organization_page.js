@@ -64,7 +64,6 @@ var OrganizationPage = function() {
     this.newConceptLink = element(by.linkText('Concepts'));
     this.createConcept = element(by.linkText(' New Concept'));
     this.conceptId = $('#id_concept_id');
-    this.conceptNameType = $('#id_name_type');
     this.createConceptButton = element(by.buttonText('Create Concept'));
     this.deleteExtra = element(by.css('.glyphicon-trash'));
 
@@ -151,7 +150,6 @@ var OrganizationPage = function() {
         this.createConcept.click();
         this.conceptId.sendKeys(id);
         this.name.sendKeys(name);
-        this.conceptNameType.sendKeys(name_type);
         browser.wait(EC.visibilityOf(this.deleteExtra), 500);
         this.deleteExtra.click();
         this.createConceptButton.click();
