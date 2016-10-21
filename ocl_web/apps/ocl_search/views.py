@@ -67,6 +67,10 @@ class GlobalSearchView(TemplateView):
 
         # Build URL params for navigating to other resources
         other_resource_search_params = {}
+
+        if self.request.GET.get('exact_match'):
+            other_resource_search_params['exact_match'] = self.request.GET.get('exact_match')
+
         for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
             if param in self.request.GET:
                 if param == 'q':
