@@ -359,3 +359,11 @@ a.resource-label:hover {
 .strikethrough {
   text-decoration: line-through
 }
+
+.navbar-toggle {
+  background-color: #fff;
+}
+
+.navbar-toggle .icon-bar {
+  background-color: #777;
+}
