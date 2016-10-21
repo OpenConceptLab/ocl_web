@@ -31,7 +31,7 @@
         <!--li><a href="{% url 'help' %}">{% trans "Learning Center" %}</a></li-->
 
         {% if request.user.is_authenticated %}
-          <li><a href="{% url 'users:detail' request.user.username %}" title="User Profile: {{ user.name }}&#10;({{ user.email }})"><span class="glyphicon glyphicon-user"></span>&nbsp;{{ user.username }}</a></li>
+          <li><a href="{% url 'users:detail' request.user.username %}" title="User Profile: {{ user.email }}"><span class="glyphicon glyphicon-user"></span>&nbsp;{{ user.username }}</a></li>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="New Resource Menu"><span class="glyphicon glyphicon-plus"></span> <b class="caret"></b></a>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
