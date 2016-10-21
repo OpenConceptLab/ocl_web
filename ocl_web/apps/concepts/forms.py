@@ -21,7 +21,7 @@ from django.forms.formsets import formset_factory
 
 #from libs.ocl import OclApi
 from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list, _get_name_type_list, _get_description_type_list)
-
+from libs.ocl import OclApi
 
 
 class ConceptRetireForm(forms.Form):
@@ -98,6 +98,13 @@ class  ConceptNewForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ConceptNewForm, self).__init__(*args, **kwargs)
 
+        url_components = kwargs['initial']['request'].path.split('/')
+
+        # get /user/org/:org/sources/:source from /user/org/:org/sources/:source/concepts/new
+        source_url_components = url_components[1 : url_components.index('sources') + 2]
+        api = OclApi(kwargs['initial']['request'], debug=True)
+        response = api.get(*source_url_components)
+
         locale_choices = [(l['code'], l['name']) for l in _get_locale_list()]
 
         self.fields['concept_class'].choices = [(cl, cl) for cl in _get_concept_class_list()]
@@ -106,6 +113,9 @@ class  ConceptNewForm(forms.Form):
         self.fields['name_type'].choices = [(t, t) for t in _get_name_type_list()]
         self.fields['description_locale'].choices = locale_choices
         self.fields['description_type'].choices = [(t, t) for t in _get_description_type_list()]
+
+        self.fields['name_locale'].initial=response.json()['default_locale']
+        self.fields['description_locale'].initial=response.json()['default_locale']
 
     required_css_class = 'required'
 
@@ -149,6 +159,7 @@ class  ConceptNewForm(forms.Form):
     name_type = forms.ChoiceField(
         label=_('Name Type'),
         required=True,
+        initial = 'Fully Specified',
         choices=[])
 
     name = forms.CharField(
@@ -160,6 +171,7 @@ class  ConceptNewForm(forms.Form):
                                     "microscopy with or without culture")}))
     name_locale_preferred = forms.BooleanField(
         label=_('Locale Preferred'),
+        initial=True,
         required=False)
 
 
@@ -185,6 +197,7 @@ class  ConceptNewForm(forms.Form):
 
     description_locale_preferred = forms.BooleanField(
         label=_('Locale Preferred'),
+        initial=True,
         required=False)
 
 
