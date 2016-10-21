@@ -48,7 +48,7 @@ describe('OCL Org Page', function () {
     it('should create concept', function () {
         orgPage.createNewConcept(data.concept_id, data.concept_name);
 
-        browser.wait(EC.presenceOf(orgPage.status), 1000);
+        browser.wait(EC.presenceOf(orgPage.status),2000);
         expect((orgPage.status).getText()).toEqual('Concept created.');
 
         element(by.linkText('  ' + data.src_code)).click();
