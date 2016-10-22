@@ -266,7 +266,7 @@
                                           <span class="breadcrumb_divider"> / </span><span class="breadcrumb_part breadcrumb_part_focus" ng-bind="mapping.id"></span>
                                         </span>
                                       </span>
-                                      <span class="resource-label-name" ng-bind="mapping.map_type"></span>
+                                      <span ng-class="mapping.retired == true ? 'resource-label-name retired':'resource-label-name'" ng-bind="mapping.map_type"></span>
                                     </a>
                                   </span>
 
