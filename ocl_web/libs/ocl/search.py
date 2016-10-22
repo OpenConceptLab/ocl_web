@@ -157,7 +157,7 @@ class OclSearch(object):
 
     # List of URL parameters that are transferred between searches of different resource types
     # NOTE: This is used to build the resource links on the global search page
-    TRANSFERRABLE_SEARCH_PARAMS = ['q', 'limit', 'debug']
+    TRANSFERRABLE_SEARCH_PARAMS = ['q', 'limit', 'debug', 'exact_match']
 
 
     def __init__(self, search_type=None, search_scope=None, params=None):

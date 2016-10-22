@@ -23,19 +23,20 @@ class GlobalSearchView(TemplateView):
     template_name = "ocl_search/search.html"
 
     def get_context_data(self, *args, **kwargs):
-        """ Set context for OCL global search_type """
+        """ Set context for OCL global search """
 
         context = super(GlobalSearchView, self).get_context_data(*args, **kwargs)
 
         # Perform the primary search via the API
 
-        search_string = self.request.GET.get('q', '')
+        original_search_string = self.request.GET.get('q', '')
         SearchStringFormatter.add_wildcard(self.request)
 
         searcher = OclSearch(params=self.request.GET)
 
-        api = OclApi(self.request, debug=True,
-                     facets=OclConstants.resource_has_facets(searcher.search_type))
+        api = OclApi(
+            self.request, debug=True,
+            facets=OclConstants.resource_has_facets(searcher.search_type))
 
         search_response = api.get(searcher.search_type, params=searcher.search_params)
         if search_response.status_code == 404:
@@ -45,7 +46,8 @@ class GlobalSearchView(TemplateView):
 
         # Process the primary search results
         searcher.process_search_results(
-            search_type=searcher.search_type, search_response=search_response,
+            search_type=searcher.search_type,
+            search_response=search_response,
             search_params=self.request.GET)
 
         # Setup paginator for primary search
@@ -58,29 +60,23 @@ class GlobalSearchView(TemplateView):
         context['pagination_url'] = self.request.get_full_path()
         context['search_type'] = searcher.search_type
         context['search_type_name'] = OclConstants.resource_display_name(searcher.search_type)
-        #context['search_sort_options'] = searcher.get_sort_options()
         context['search_sort_option_defs'] = searcher.get_sort_option_definitions()
         context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.search_filter_list
-        context['search_query'] = search_string
+        context['search_query'] = original_search_string
         context['hide_nav_search'] = True
 
         # Build URL params for navigating to other resources
         other_resource_search_params = {}
-
-        if self.request.GET.get('exact_match'):
-            other_resource_search_params['exact_match'] = self.request.GET.get('exact_match')
-
         for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
             if param in self.request.GET:
                 if param == 'q':
-                    other_resource_search_params[param] = search_string
+                    other_resource_search_params[param] = original_search_string
                 else:
                     other_resource_search_params[param] = self.request.GET.get(param)
 
         # This code encodes the search parameters into a single URL-encoded string
         #    so that it can easily be appended onto URL links on the search page
-        # TODO: Update list of search params depending on how used (e.g. sort/search type links)
         context['other_resource_search_params'] = ''
         if other_resource_search_params:
             context['other_resource_search_params'] = (
