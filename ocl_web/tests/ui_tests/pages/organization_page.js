@@ -66,6 +66,8 @@ var OrganizationPage = function() {
     this.conceptId = $('#id_concept_id');
     this.createConceptButton = element(by.buttonText('Create Concept'));
     this.deleteExtra = element(by.css('.glyphicon-trash'));
+    this.select_name_locale = element(by.id('id_name_locale'));
+    this.select_desc_locale = element(by.id('id_description_locale'));
 
     //create mapping locators
     this.newMappingLink = element(by.linkText('Mappings'));
@@ -145,10 +147,12 @@ var OrganizationPage = function() {
       this.retireButton.click();
     };
 
-    this.createNewConcept = function (id, name) {
+    this.createNewConcept = function (id, name, locale) {
         this.newConceptLink.click();
         this.createConcept.click();
         this.conceptId.sendKeys(id);
+        this.select_name_locale.$('[value='+ locale +']').click();
+        this.select_desc_locale.$('[value='+ locale +']').click();
         this.name.sendKeys(name);
         browser.wait(EC.visibilityOf(this.deleteExtra), 500);
         this.deleteExtra.click();

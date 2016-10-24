@@ -46,9 +46,9 @@ describe('OCL Org Page', function () {
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept(data.concept_id, data.concept_name);
+        orgPage.createNewConcept(data.concept_id, data.concept_name, 'ab');
 
-        browser.wait(EC.presenceOf(orgPage.status),2000);
+        browser.wait(EC.presenceOf(orgPage.status),1000);
         expect((orgPage.status).getText()).toEqual('Concept created.');
 
         element(by.linkText('  ' + data.src_code)).click();
@@ -64,7 +64,7 @@ describe('OCL Org Page', function () {
     it('should release a org source version', function () {
         orgPage.releaseVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), 500);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), 1000);
         expect(orgPage.notification.getText()).toEqual('Successfully Released.');
 
         browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 500);
@@ -111,11 +111,11 @@ describe('OCL Org Page', function () {
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept(data.concept_id + id,
-            data.concept_name,
-            data.name_type
-        );
 
+        orgPage.createNewConcept(data.concept_id + id,
+            data.concept_name, 'aa');
+
+        browser.wait(EC.presenceOf(orgPage.status),1000);
         expect((orgPage.status).getText()).toEqual('Concept created.');
 
         element(by.linkText('  ' + data.src_code)).click();
