@@ -774,7 +774,7 @@ class ConceptEditView(UserOrOrgMixin, FormView):
             data.update(self.concept['names'][0] if self.concept['names'] else {})
             data.update({
                 'name_locale_preferred': data.pop('locale_preferred', False),
-                'name_type': data.pop('type', None),
+                'name_type': data.pop('name_type', None),
                 'name_locale': data.pop('locale', None)
             })
 
@@ -782,9 +782,10 @@ class ConceptEditView(UserOrOrgMixin, FormView):
             data.update(self.concept['descriptions'][0] if self.concept['descriptions'] else {})
             data.update({
                 'description_locale_preferred': data.pop('locale_preferred', False),
-                'description_type': data.pop('type', None),
+                'description_type': data.pop('description_type', None),
                 'description_locale': data.pop('locale', None)
             })
+
         data.update(self.concept)
         return data
 
@@ -807,13 +808,13 @@ class ConceptEditView(UserOrOrgMixin, FormView):
             'locale': data.pop('name_locale'),
             'locale_preferred': data.pop('name_locale_preferred'),
             'name': data.pop('name'),
-            'type': data.pop('name_type')
+            'name_type': data.pop('name_type')
         }]
         descriptions = [{
             'locale': data.pop('description_locale'),
             'locale_preferred': data.pop('description_locale_preferred'),
             'description': data.pop('description'),
-            'type': data.pop('description_type')
+            'description_type': data.pop('description_type')
         }]
 
         if self.from_org:
