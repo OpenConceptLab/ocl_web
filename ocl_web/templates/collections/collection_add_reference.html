@@ -167,7 +167,12 @@
 
                       <div class="form-group has-feedback">
                         <label class="control-label">Search</label>
-                        <input type="text" class="form-control" placeholder="search" />
+                        <input type="text"
+                               class="form-control"
+                               ng-model="pageObj.search"
+                               ng-model-options="{debounce: 300}"
+                               ng-change="getResourceContainerConcepts(); getResourceContainerMappings()"
+                               placeholder="search" />
                         <i class="glyphicon glyphicon-search form-control-feedback"></i>
                     </div>
                 </form>
