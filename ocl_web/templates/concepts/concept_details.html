@@ -83,7 +83,7 @@
 
 					<div class="row" style="padding-bottom:10px;">
 						<div class="col-md-9">
-							{{ description.description }}
+              <span style="white-space:pre-wrap">{{ description.description }}</span>
 							{% if description.description_type %}<span class="small text-muted">&nbsp;&nbsp;<span class="label label-default">{{ description.description_type}}</span></span>{% endif %}
 							{% if description.locale %}<span class="small text-muted">&nbsp;&nbsp;<em>[{{ description.locale }}]</em></span>{% endif %}
 							{% if description.locale_preferred %}<span class="glyphicon glyphicon-flag" title="{% trans 'Preferred description for this locale' %}"></span>{% endif %}
