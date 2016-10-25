@@ -823,8 +823,14 @@ class ConceptEditView(UserOrOrgMixin, FormView):
             result = api.update_concept(
                 'users', self.user_id, self.source_id, self.concept_id, data, names, descriptions)
         if result.status_code != requests.codes.ok:
-            emsg = result.json().get('detail', 'Error')
-            messages.add_message(self.request, messages.ERROR, emsg)
+            data = result.json()
+            emsg = data.get('detail')
+            if not emsg:
+                error_fields = data.keys()
+                if 'non_field_errors' in error_fields:
+                    error_fields.remove('non_field_errors')
+                emsg = data[error_fields[0]][0]
+            messages.add_message(self.request, messages.ERROR, emsg or 'Error')
             return HttpResponseRedirect(self.request.path)
 
         else:
