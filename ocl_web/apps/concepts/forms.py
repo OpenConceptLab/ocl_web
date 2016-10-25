@@ -191,7 +191,7 @@ class  ConceptNewForm(forms.Form):
     description = forms.CharField(
         label=_('Description'),
         max_length=1024,
-        required=False,widget=forms.TextInput(
+        required=False,widget=forms.Textarea(
             attrs={'placeholder': _("e.g. Tuberculosis of lung, confirmed by sputum "
                                     "microscopy with or without culture")}))
 
