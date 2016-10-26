@@ -13,6 +13,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.template.response import TemplateResponse
+from apps.core.views import _get_locale_list, _get_name_type_list
 import json
 #from django.core.paginator import Paginator
 
@@ -434,6 +435,8 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         # Set the context
         context['kwargs'] = self.kwargs
         context['source'] = source
+        context['locales'] = json.dumps(_get_locale_list())
+        context['name_types'] = json.dumps(_get_name_type_list())
 
         return context
 
@@ -754,6 +757,8 @@ class ConceptEditView(UserOrOrgMixin, FormView):
         context['source'] = self.source
         context['concept'] = self.concept
         context['extras'] = json.dumps(temp)
+        context['locales'] = json.dumps(_get_locale_list())
+        context['name_types'] = json.dumps(_get_name_type_list())
         return context
 
 

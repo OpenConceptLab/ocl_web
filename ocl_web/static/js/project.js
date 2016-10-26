@@ -1017,7 +1017,9 @@ app.directive('conceptNameSynonym', function() {
       restrict: 'E',
       replace: true,
       scope: {
-        names: "="
+        names: '=',
+        types: '=',
+        locales: '=',
       },
       template: '' +
       '<div class="form-group" ng-init="addName()">' +
@@ -1027,7 +1029,7 @@ app.directive('conceptNameSynonym', function() {
           '<label class="control-label col-md-12">Names & Synonyms</label>' +
           '<div class="form-group required col-md-3">' +
             '<label class="control-label">Locale</label>' +
-            '<select class="form-control" ng-model="name.locale" ng-options="l.locale as getLocaleDisplayName(l) for l in locales"' +
+            '<select class="form-control" ng-model="name.locale" ng-options="l.code as l.name for l in locales"' +
                      'required="required" title="Choose the locale for the initial name and description">' +
             '</select>' +
             '<span class="help-block"><small>Choose the locale for the initial name and description</small></span>' +
@@ -1035,7 +1037,7 @@ app.directive('conceptNameSynonym', function() {
 
           '<div class="form-group required col-md-3">' +
             '<label class="control-label">Type</label>' +
-            '<select class="form-control" required="required" ng-model="name.name_type" ng-options="t.display_name as t.display_name for t in types"></select>' + 
+            '<select class="form-control" required="required" ng-model="name.name_type" ng-options="t as t for t in types"></select>' + 
           '</div>' +
 
           '<div class="form-group required col-md-3">' +
@@ -1062,20 +1064,6 @@ app.directive('conceptNameSynonym', function() {
 
       '</div>',
       controller: function($scope, $http) {
-        $scope.locales = [{display_name: 'English', locale: 'en'}];
-
-        $http.get('/orgs/OCL/sources/Locales/concepts/?limit=0')
-          .then(function(result) {
-            $scope.locales = result.data.items.filter(function(locale) {
-              return locale.locale;
-            });
-          });
-
-        $http.get('/orgs/OCL/sources/NameTypes/concepts/?limit=0')
-          .then(function(result) {
-            $scope.types = result.data.items
-          });
-
         $scope.removeName = function(index) {
           $scope.names.splice(index, 1);
         };
@@ -1088,10 +1076,6 @@ app.directive('conceptNameSynonym', function() {
             'name_type': 'Fully Specified'
           });
         };
-
-        $scope.getLocaleDisplayName = function(locale) {
-          return locale.display_name + ' [' + locale.locale + ']';
-        };
       }
   };
 });
@@ -1100,7 +1084,9 @@ app.directive('conceptDescription', function() {
   return {
       restrict: 'E',
       scope: {
-        descriptions: "="
+        descriptions: "=",
+        types: '=',
+        locales: '=',
       },
       replace: true,
       template: '' +
@@ -1111,7 +1097,7 @@ app.directive('conceptDescription', function() {
           '<label class="control-label col-md-12">Description</label>' +
           '<div class="form-group required col-md-3">' +
             '<label class="control-label">Locale</label>' +
-            '<select class="form-control" ng-model="description.locale" ng-options="l.locale as getLocaleDisplayName(l) for l in locales"' +
+            '<select class="form-control" ng-model="description.locale" ng-options="l.code as l.name for l in locales"' +
                      'required="required" title="Choose the locale for the initial name and description">' +
             '</select>' +
             '<span class="help-block"><small>Choose the locale for the initial name and description</small></span>' +
@@ -1119,7 +1105,7 @@ app.directive('conceptDescription', function() {
 
           '<div class="form-group required col-md-3">' +
             '<label class="control-label">Type</label>' +
-            '<select class="form-control" required="required" ng-model="description.description_type" ng-options="t.display_name as t.display_name for t in types"></select>' + 
+            '<select class="form-control" required="required" ng-model="description.description_type" ng-options="t as t for t in types"></select>' + 
           '</div>' +
 
           '<div class="form-group required col-md-3">' +
@@ -1145,20 +1131,6 @@ app.directive('conceptDescription', function() {
 
       '</div>',
       controller: function($scope, $http) {
-        $scope.locales = [{display_name: 'English', locale: 'en'}];
-
-        $http.get('/orgs/OCL/sources/Locales/concepts/?limit=0')
-          .then(function(result) {
-            $scope.locales = result.data.items.filter(function(locale) {
-              return locale.locale;
-            });
-          });
-
-        $http.get('/orgs/OCL/sources/NameTypes/concepts/?limit=0')
-          .then(function(result) {
-            $scope.types = result.data.items
-          });
-
         $scope.removeDescription = function(index) {
           $scope.descriptions.splice(index, 1);
         };
@@ -1171,10 +1143,6 @@ app.directive('conceptDescription', function() {
             'locale_preferred': false,
             'description_type': 'Fully Specified'
           });
-        };
-
-        $scope.getLocaleDisplayName = function(locale) {
-          return locale.display_name + ' [' + locale.locale + ']';
         };
       }
   };
