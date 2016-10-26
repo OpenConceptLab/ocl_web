@@ -1211,23 +1211,42 @@ if($('.download-csv').length > 0) {
         var downloadCaller = $('input#download-origin').val(),
             selectedTab = $('div.list-group a.active').text(),
             user = $("meta[name='user']").attr('content'),
-            searchParams = "?csv=true&user=" + user,
-            url = 'http://' + window.location.hostname + ':8000' + window.location.pathname + searchParams;
+            portInfo = ':8000',
+            url = 'http://' + window.location.hostname + portInfo,
 
-        if (downloadCaller) {
-            var entity = _.find(['concepts', 'collections', 'mappings', 'sources', 'org', 'users'], function (type) {
-                return selectedTab.match(new RegExp(type, "i"))
-            });
-            if (entity == 'org') entity = 'orgs';
-            if (!_.isEmpty(window.location.search)) searchParams = window.location.search + "&csv=true&user="+user;
-            url = 'http://' + window.location.hostname + ':8000/' + entity + '/' + searchParams;
-        }
+            getQueryParams = function (extraParams) {
+                extraParams = extraParams || '';
+
+                var mandatoryParams = "csv=true&user=" + user + extraParams,
+                    paramsWithExistingSearchParams = window.location.search + "&" + mandatoryParams;
+
+                return _.isEmpty(window.location.search) ? "?" + mandatoryParams : paramsWithExistingSearchParams;
+            },
+
+            getSearchEntity = function () {
+                var entity = _.find(['concepts', 'collections', 'mappings', 'sources', 'org', 'users'], function (type) {
+                    return selectedTab.match(new RegExp(type, "i"))
+                });
+                if (entity == 'org') entity = 'orgs';
+
+                return entity;
+            },
+
+            constructUrl = function () {
+                if (downloadCaller) {
+                    var entity = getSearchEntity();
+
+                    return url + '/' + entity + '/' + getQueryParams("&type=" + entity);
+                } else {
+                    return url + window.location.pathname + getQueryParams("&type=repoSearch");
+                }
+            };
 
         alertify.success('Preparing CSV...');
 
         $.ajax({
             type: 'GET',
-            url: url,
+            url: constructUrl(),
             dataType: "json",
             success: function (json) {
                 if (json && json.url) {
