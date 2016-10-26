@@ -1228,6 +1228,12 @@ var fireDownload = function (url) {
     });
 };
 
+//Stackoverflow - Anshu
+$.urlParam = function(name){
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    return results[1] || 0;
+};
+
 
 if($('.download-csv').length > 0) {
     $('a.download-csv').on('click', function (el) {
@@ -1235,11 +1241,11 @@ if($('.download-csv').length > 0) {
             selectedTab = $('div.list-group a.active').text(),
             user = $("meta[name='user']").attr('content'),
             portInfo = ':8000',
+            exactMatch = $("input[name='exact_match']:checked").size() > 0,
             url = 'http://' + window.location.hostname + portInfo,
 
             getQueryParams = function (extraParams) {
                 extraParams = extraParams || '';
-
                 var mandatoryParams = "csv=true&user=" + user + extraParams,
                     paramsWithExistingSearchParams = window.location.search + "&" + mandatoryParams;
 
@@ -1256,12 +1262,13 @@ if($('.download-csv').length > 0) {
             },
 
             getURL = function () {
+                var exactMatchParam = exactMatch ? '&exact_match=on' : '';
                 if (downloadCaller) {
                     var entity = getSearchEntity();
 
-                    return url + '/' + entity + '/' + getQueryParams("&type=" + entity);
+                    return url + '/' + entity + '/' + getQueryParams("&type=" + entity + exactMatchParam);
                 } else {
-                    return url + window.location.pathname + getQueryParams("&type=repoSearch");
+                    return url + window.location.pathname + getQueryParams("&type=repoSearch" + exactMatchParam);
                 }
             };
 
