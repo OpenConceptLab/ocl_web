@@ -1,8 +1,22 @@
 import mock
 from libs.ocl import OclApi
 from django.test import TestCase
+from requests.exceptions import HTTPError
 from forms import CollectionCreateForm, CollectionEditForm, CollectionVersionAddForm
 from requests.models import Response
+
+
+class FakeResponse(object):
+    """ FakeRequest class """
+    def __init__(self,data=None):
+        self.session = {}
+        self.GET = {}
+        self.detail = data
+        self.status_code = 200
+    def json(self):
+        return {'detail': self.detail}
+    def raise_for_status(self):
+        raise HTTPError('error', response=self)
 
 
 class CollectionCreateTest(TestCase):

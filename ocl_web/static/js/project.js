@@ -754,7 +754,12 @@ app.controller('AddReferencesController', function($scope, $uibModal, Reference)
         }
         $scope.loading = true;
 
-        var params = {limit: $scope.REFERENCE_LIMIT, page: page, includeRetired: true};
+        var params = {
+          limit: $scope.REFERENCE_LIMIT,
+          page: page,
+          includeRetired: true,
+          q: '*' + ($scope.pageObj.search || '') + '*'
+        };
         Reference.getResourceContainerVersionConcepts($scope.ownerType, $scope.resourceContainerType, $scope.owner, $scope.resourceContainer, $scope.resourceContainerVersion, params)
             .success(function(result) {
                 $scope.concepts = result;
@@ -778,7 +783,12 @@ app.controller('AddReferencesController', function($scope, $uibModal, Reference)
         }
         $scope.loading = true;
 
-        var params = {limit: $scope.REFERENCE_LIMIT, page: page, includeRetired: true};
+        var params = {
+          limit: $scope.REFERENCE_LIMIT,
+          page: page,
+          includeRetired: true,
+          q: '*' + ($scope.pageObj.search || '') + '*'
+        };
         Reference.getResourceContainerVersionMappings($scope.ownerType, $scope.resourceContainerType, $scope.owner, $scope.resourceContainer, $scope.resourceContainerVersion, params)
             .success(function(result) {
                 $scope.mappings = result;
@@ -808,6 +818,7 @@ app.controller('AddReferencesController', function($scope, $uibModal, Reference)
     $scope.addMultipleReferences = function() {
       var payload = {
         uri: _getUri(),
+        search_term: '*' + ($scope.pageObj.search || '') + '*',
         concepts: $scope.pageObj.selectAllConcepts ? '*' : _getResourceExpressions($scope.concepts),
         mappings: $scope.pageObj.selectAllMappings ? '*' : _getResourceExpressions($scope.mappings),
       }

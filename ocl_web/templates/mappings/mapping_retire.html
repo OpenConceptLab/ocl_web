@@ -25,7 +25,7 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label class="col-md-2 control-label">Mapping</label>
-                    <div class="col-md-4">{{ mapping.display_name }}</div>
+                    <div class="col-md-4">{{ mapping.id }}</div>
                 </div>
                 {% bootstrap_form form layout="horizontal" %}
                 {% buttons layout="horizontal" %}
