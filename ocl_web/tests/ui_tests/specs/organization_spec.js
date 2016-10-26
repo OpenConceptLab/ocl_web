@@ -46,7 +46,7 @@ describe('OCL Org Page', function () {
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept(data.concept_id, data.concept_name, 'ab');
+        orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key);
 
         browser.wait(EC.presenceOf(orgPage.status),1000);
         expect((orgPage.status).getText()).toEqual('Concept created.');
@@ -113,7 +113,7 @@ describe('OCL Org Page', function () {
     it('should create concept', function () {
 
         orgPage.createNewConcept(data.concept_id + id,
-            data.concept_name, 'aa');
+            data.concept_name, data.concept_desc, data.key);
 
         browser.wait(EC.presenceOf(orgPage.status),1000);
         expect((orgPage.status).getText()).toEqual('Concept created.');

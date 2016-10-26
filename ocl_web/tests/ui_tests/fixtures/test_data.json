@@ -25,5 +25,7 @@
 
   "_comment": "Concept data below..",
   "concept_id":"C1.1.1.2-",
-  "concept_name":"Life Expectancy at Birth(years)"
+  "concept_name":"Life Expectancy at Birth(years)",
+  "concept_desc":"Concept description",
+  "key": "key1"
 }

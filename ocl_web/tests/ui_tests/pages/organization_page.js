@@ -7,6 +7,7 @@ var OrganizationPage = function() {
     this.createNewOrgLink = element(by.id('new-organization'));
     this.shortCode = $('#id_short_name');
     this.name = $('#id_name');
+    this.conceptName = element(by.model('name.name'));
     this.orgWebsite = $('#id_website');
     this.orgCompany = $('#id_company');
     this.orgLocation = $('#id_location');
@@ -65,9 +66,10 @@ var OrganizationPage = function() {
     this.createConcept = element(by.linkText(' New Concept'));
     this.conceptId = $('#id_concept_id');
     this.createConceptButton = element(by.buttonText('Create Concept'));
-    this.deleteExtra = element(by.css('.glyphicon-trash'));
-    this.select_name_locale = element(by.id('id_name_locale'));
-    this.select_desc_locale = element(by.id('id_description_locale'));
+    this.select_name_locale = element(by.model('name.locale'));
+    this.select_desc_locale = element(by.model('description.locale'));
+    this.conceptDesc = element(by.model('description.description'));
+    this.key = element(by.model('extra.key'));
 
     //create mapping locators
     this.newMappingLink = element(by.linkText('Mappings'));
@@ -147,15 +149,15 @@ var OrganizationPage = function() {
       this.retireButton.click();
     };
 
-    this.createNewConcept = function (id, name, locale) {
+    this.createNewConcept = function (id, name, desc, key) {
         this.newConceptLink.click();
         this.createConcept.click();
         this.conceptId.sendKeys(id);
-        this.select_name_locale.$('[value='+ locale +']').click();
-        this.select_desc_locale.$('[value='+ locale +']').click();
-        this.name.sendKeys(name);
-        browser.wait(EC.visibilityOf(this.deleteExtra), 500);
-        this.deleteExtra.click();
+        this.select_name_locale.$('[value="string:ab"]').click();
+        this.conceptName.sendKeys(name);
+        this.select_desc_locale.$('[value="string:ab"]').click();
+        this.conceptDesc.sendKeys(desc);
+        this.key.sendKeys(key);
         this.createConceptButton.click();
     };
 
