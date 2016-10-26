@@ -98,24 +98,8 @@ class  ConceptNewForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ConceptNewForm, self).__init__(*args, **kwargs)
 
-        url_components = kwargs['initial']['request'].path.split('/')
-
-        # get /user/org/:org/sources/:source from /user/org/:org/sources/:source/concepts/new
-        source_url_components = url_components[1 : url_components.index('sources') + 2]
-        api = OclApi(kwargs['initial']['request'], debug=True)
-        response = api.get(*source_url_components)
-
-        locale_choices = [(l['code'], l['name']) for l in _get_locale_list()]
-
         self.fields['concept_class'].choices = [(cl, cl) for cl in _get_concept_class_list()]
         self.fields['datatype'].choices = [(d, d) for d in _get_datatype_list()]
-        self.fields['name_locale'].choices = locale_choices
-        self.fields['name_type'].choices = [(t, t) for t in _get_name_type_list()]
-        self.fields['description_locale'].choices = locale_choices
-        self.fields['description_type'].choices = [(t, t) for t in _get_description_type_list()]
-
-        self.fields['name_locale'].initial=response.json()['default_locale']
-        self.fields['description_locale'].initial=response.json()['default_locale']
 
     required_css_class = 'required'
 
@@ -147,58 +131,6 @@ class  ConceptNewForm(forms.Form):
         label=_('Concept External ID'),
         required=False,
         widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
-
-    #TODO: name
-
-    name_locale = forms.ChoiceField(
-        label=_('Name Locale'),
-        required=True,
-        help_text=_('<small>Choose the locale for the initial name and description</small>'),
-        choices=[])
-
-    name_type = forms.ChoiceField(
-        label=_('Name Type'),
-        required=True,
-        initial = 'Fully Specified',
-        choices=[])
-
-    name = forms.CharField(
-        label=_('Name'),
-        max_length=256,
-        required=True,
-        widget=forms.TextInput(
-            attrs={'placeholder': _("e.g. Tuberculosis of lung, confirmed by sputum "
-                                    "microscopy with or without culture")}))
-    name_locale_preferred = forms.BooleanField(
-        label=_('Locale Preferred'),
-        initial=True,
-        required=False)
-
-
-    #TODO: description
-
-    description_locale = forms.ChoiceField(
-        label=_('Description Locale'),
-        required=True,
-        help_text=_('<small>Choose the locale for the initial name and description</small>'),
-        choices=[])
-
-    description_type = forms.ChoiceField(
-        label=_('Description Type'),
-        required=False,
-        choices=[])
-
-    description = forms.CharField(
-        label=_('Description'),
-        max_length=1024,
-        required=False,widget=forms.Textarea(
-            attrs={'placeholder': _("e.g. Tuberculosis of lung, confirmed by sputum "
-                                    "microscopy with or without culture")}))
-
-    description_locale_preferred = forms.BooleanField(
-        label=_('Locale Preferred'),
-        initial=True,
-        required=False)
 
 
 class ConceptEditForm(ConceptNewForm):

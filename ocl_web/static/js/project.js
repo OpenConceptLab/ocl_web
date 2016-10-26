@@ -1012,6 +1012,173 @@ app.controller('CustomAttributesController', ['$scope', function($scope) {
   };
 });
 
+app.directive('conceptNameSynonym', function() {
+  return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        names: "="
+      },
+      template: '' +
+      '<div class="form-group" ng-init="addName()">' +
+        '<input name="names" class="form-control" type="hidden" value="{{ names }}">'+
+        '<div class="form-group" ng-repeat="name in names">' +
+          '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeName($index)"></span>'+
+          '<label class="control-label col-md-12">Names & Synonyms</label>' +
+          '<div class="form-group required col-md-3">' +
+            '<label class="control-label">Locale</label>' +
+            '<select class="form-control" ng-model="name.locale" ng-options="l.locale as getLocaleDisplayName(l) for l in locales"' +
+                     'required="required" title="Choose the locale for the initial name and description">' +
+            '</select>' +
+            '<span class="help-block"><small>Choose the locale for the initial name and description</small></span>' +
+          '</div>' +
+
+          '<div class="form-group required col-md-3">' +
+            '<label class="control-label">Type</label>' +
+            '<select class="form-control" required="required" ng-model="name.name_type" ng-options="t.display_name as t.display_name for t in types"></select>' + 
+          '</div>' +
+
+          '<div class="form-group required col-md-3">' +
+            '<label class="control-label">Name</label>' +
+            '<input class="form-control" ng-model="name.name"' +
+                    'placeholder="e.g. Tuberculosis of lung, confirmed by sputum microscopy with or without culture" required="required" title="" type="text">' +
+          '</div>' +
+
+          '<div class="form-group col-md-3">' +
+            '<label class="control-label"></label>' +
+            '<div class="checkbox">' +
+              '<label>' +
+                '<input checked="checked" type="checkbox" ng-model="name.locale_preferred">' +
+                'Locale Preferred' +
+              '</label>' +
+            '</div>' +
+          '</div>' +
+
+        '</div>' +
+
+        '<div class="form-group col-md-12">'+
+          '<a ng-click="addName()" style="cursor: pointer;"> <span class="glyphicon glyphicon-plus"></span> Add name/synonym</a>'+
+        '</div>'+
+
+      '</div>',
+      controller: function($scope, $http) {
+        $scope.locales = [{display_name: 'English', locale: 'en'}];
+
+        $http.get('/orgs/OCL/sources/Locales/concepts/?limit=0')
+          .then(function(result) {
+            $scope.locales = result.data.items.filter(function(locale) {
+              return locale.locale;
+            });
+          });
+
+        $http.get('/orgs/OCL/sources/NameTypes/concepts/?limit=0')
+          .then(function(result) {
+            $scope.types = result.data.items
+          });
+
+        $scope.removeName = function(index) {
+          $scope.names.splice(index, 1);
+        };
+
+        $scope.addName = function() {
+          $scope.names.push({
+            'name': '',
+            'locale': 'en',
+            'locale_preferred': false,
+            'name_type': 'Fully Specified'
+          });
+        };
+
+        $scope.getLocaleDisplayName = function(locale) {
+          return locale.display_name + ' [' + locale.locale + ']';
+        };
+      }
+  };
+});
+
+app.directive('conceptDescription', function() {
+  return {
+      restrict: 'E',
+      scope: {
+        descriptions: "="
+      },
+      replace: true,
+      template: '' +
+      '<div class="form-group" ng-init="addDescription()">' +
+        '<input name="descriptions" class="form-control" type="hidden" value="{{ descriptions }}">'+
+        '<div class="form-group" ng-repeat="description in descriptions">' +
+          '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeDescription($index)"></span>'+
+          '<label class="control-label col-md-12">Description</label>' +
+          '<div class="form-group required col-md-3">' +
+            '<label class="control-label">Locale</label>' +
+            '<select class="form-control" ng-model="description.locale" ng-options="l.locale as getLocaleDisplayName(l) for l in locales"' +
+                     'required="required" title="Choose the locale for the initial name and description">' +
+            '</select>' +
+            '<span class="help-block"><small>Choose the locale for the initial name and description</small></span>' +
+          '</div>' +
+
+          '<div class="form-group required col-md-3">' +
+            '<label class="control-label">Type</label>' +
+            '<select class="form-control" required="required" ng-model="description.description_type" ng-options="t.display_name as t.display_name for t in types"></select>' + 
+          '</div>' +
+
+          '<div class="form-group required col-md-3">' +
+            '<label class="control-label">Description</label>' +
+            '<textarea class="form-control" ng-model="description.description"' +
+                    'placeholder="e.g. Tuberculosis of lung, confirmed by sputum microscopy with or without culture" required="required"></textarea>' +
+          '</div>' +
+
+          '<div class="form-group col-md-3">' +
+            '<label class="control-label"></label>' +
+            '<div class="checkbox">' +
+              '<label>' +
+                '<input checked="checked" type="checkbox" ng-model="description.locale_preferred">' +
+                'Locale Preferred' +
+              '</label>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="form-group col-md-12">'+
+            '<a ng-click="addDescription()" style="cursor: pointer;"> <span class="glyphicon glyphicon-plus"></span> Add Description</a>'+
+        '</div>'+
+
+      '</div>',
+      controller: function($scope, $http) {
+
+        $http.get('/orgs/OCL/sources/Locales/concepts/?limit=0')
+          .then(function(result) {
+            $scope.locales = result.data.items.filter(function(locale) {
+              return locale.locale;
+            });
+          });
+
+        $http.get('/orgs/OCL/sources/NameTypes/concepts/?limit=0')
+          .then(function(result) {
+            $scope.types = result.data.items
+          });
+
+        $scope.removeDescription = function(index) {
+          $scope.descriptions.splice(index, 1);
+        };
+
+        $scope.addDescription = function() {
+          $scope.descriptions = $scope.descriptions || [];
+          $scope.descriptions.push({
+            'description': '',
+            'locale': 'en',
+            'locale_preferred': false,
+            'description_type': 'Fully Specified'
+          });
+        };
+
+        $scope.getLocaleDisplayName = function(locale) {
+          return locale.display_name + ' [' + locale.locale + ']';
+        };
+      }
+  };
+});
+
 
 $('a.delete-reference').on('click', function () {
     var selectedReferences = $("input[name='reference']:checked"),

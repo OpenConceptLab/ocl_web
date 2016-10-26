@@ -449,18 +449,14 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             'datatype': form.cleaned_data.get('datatype'),
             'external_id': form.cleaned_data.get('external_id', '')
         }
-        names = [{
-            'name': form.cleaned_data.get('name'),
-            'locale': form.cleaned_data.get('name_locale'),
-            'locale_preferred': form.cleaned_data.get('name_locale_preferred'),
-            'name_type': form.cleaned_data.get('name_type')
-        }]
-        descriptions = [{
-            'description': form.cleaned_data.get('description').strip(),
-            'locale': form.cleaned_data.get('description_locale'),
-            'locale_preferred': form.cleaned_data.get('description_locale_preferred'),
-            'description_type': form.cleaned_data.get('description_type')
-        }]
+
+        names = json.loads(
+            self.request.POST.get('names', [])
+        )
+        descriptions = json.loads(
+            self.request.POST.get('descriptions', [])
+        )
+
         extras = {}
         if 'extras' in self.request.POST:
             extras_dict_list = json.loads(self.request.POST.get('extras'))
@@ -745,6 +741,8 @@ class ConceptEditView(UserOrOrgMixin, FormView):
     def get_context_data(self, *args, **kwargs):
         """ Supply related data for the add form """
         context = super(ConceptEditView, self).get_context_data(*args, **kwargs)
+        self.concept['names'] = json.dumps(self.concept['names'])
+        self.concept['descriptions'] = json.dumps(self.concept['descriptions'])
 
         self.get_args()
         temp = []
@@ -804,18 +802,12 @@ class ConceptEditView(UserOrOrgMixin, FormView):
         data['extras'] = extras
         api = OclApi(self.request, debug=True)
 
-        names = [{
-            'locale': data.pop('name_locale'),
-            'locale_preferred': data.pop('name_locale_preferred'),
-            'name': data.pop('name'),
-            'name_type': data.pop('name_type')
-        }]
-        descriptions = [{
-            'locale': data.pop('description_locale'),
-            'locale_preferred': data.pop('description_locale_preferred'),
-            'description': data.pop('description'),
-            'description_type': data.pop('description_type')
-        }]
+        names = json.loads(
+            self.request.POST.get('names', [])
+        )
+        descriptions = json.loads(
+            self.request.POST.get('descriptions', [])
+        )
 
         if self.from_org:
             result = api.update_concept('orgs', self.org_id, self.source_id, self.concept_id, data, names, descriptions)

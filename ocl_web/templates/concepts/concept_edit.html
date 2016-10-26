@@ -34,10 +34,14 @@
 			<form class="form" name="concept_form" autocomplete="off" method="post" action=".">
 				{% csrf_token %}
 				{% bootstrap_form form %}
-                <custom-attributes extras="{{ extras }}"></custom-attributes>
+        <concept-name-synonym names="{{ concept.names }}"></concept-name-synonym>
+        <concept-description descriptions="{{ concept.descriptions }}"></concept-description>
+        <custom-attributes extras="{{ extras }}"></custom-attributes>
 				{% buttons %}
-					<button type="submit" class="btn btn-primary">{% trans "Update Concept" %}</button>
-					<a href="{{ concept_url }}" class="btn bstn-default">{% trans "Cancel" %}</a>
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary">{% trans "Update Concept" %}</button>
+            <a href="{{ concept_url }}" class="btn bstn-default">{% trans "Cancel" %}</a>
+          </div>
 				{% endbuttons %}
 			</form>
 		</div>

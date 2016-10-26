@@ -26,11 +26,15 @@
 		<div class="col-md-8">
 			<form class="form" name="concept_form" autocomplete="off" method="post" action=".">
 				{% csrf_token %}
-				{% bootstrap_form form %}
-                <custom-attributes extras="[{key:'', value:''}]"></custom-attributes>
+        {% bootstrap_form form %}
+        <concept-name-synonym names="[{'name':'', 'locale':'en', 'locale_preferred':false, 'name_type':'Fully Specified'}]"></concept-name-synonym>
+        <concept-description descriptions="[{'description':'', 'locale':'en', 'locale_preferred':false, 'description_type':'Fully Specified'}]"></concept-description>
+        <custom-attributes extras="[{key:'', value:''}]"></custom-attributes>
 				{% buttons %}
-					<button type="submit" class="btn btn-primary">{% trans "Create Concept" %}</button>
-					<a href="{{ source_concepts_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary">{% trans "Create Concept" %}</button>
+            <a href="{{ source_concepts_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+          </div>
 				{% endbuttons %}
 			</form>
 		</div>
