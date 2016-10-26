@@ -1145,6 +1145,7 @@ app.directive('conceptDescription', function() {
 
       '</div>',
       controller: function($scope, $http) {
+        $scope.locales = [{display_name: 'English', locale: 'en'}];
 
         $http.get('/orgs/OCL/sources/Locales/concepts/?limit=0')
           .then(function(result) {
