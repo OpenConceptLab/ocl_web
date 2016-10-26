@@ -54,6 +54,18 @@
                               <div class="pull-right">
                                   <a href="{{ source_version_edit_url }}" class="btn btn-link" title="Edit Source Version"><span class="glyphicon glyphicon-pencil"></span></a>
                                   <button class="btn btn-link source_version_delete glyphicon glyphicon-trash no-text-decoration" title="Delete Source Version" data-id="{{ source_version.id }}"></button>
+
+                                  <div class="btn-group">
+                                      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                                          <span class="glyphicon glyphicon-download-alt"></span>
+                                          <span class="caret"></span>
+                                      </a>
+                                      <ul class="dropdown-menu">
+                                          <li style="cursor: pointer;"><a data-uri="{{ source_version.version_url }}concepts?csv=true" onclick="triggerDownload(this)"><span class="glyphicon glyphicon-file"></span> Concepts</a></li>
+                                          <li style="cursor: pointer;"><a data-uri="{{ source_version.version_url }}mappings?csv=true" onclick="triggerDownload(this)"><span class="glyphicon glyphicon-file"></span> Mappings</a></li>
+                                      </ul>
+                                  </div>
+
                               </div>
                             {% endif %}
                         {% endif_can_change source %}

@@ -84,6 +84,19 @@
                                           value="{{ collection_version.id }}"
                                           {% if collection_version.retired %}checked{% endif %} /> Retire
                                 {% endif %}
+
+
+                                  <div class="btn-group">
+                                      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                                          <span class="glyphicon glyphicon-download-alt"></span>
+                                          <span class="caret"></span>
+                                      </a>
+                                      <ul class="dropdown-menu">
+                                          <li style="cursor: pointer;"><a data-uri="{{ collection_version.version_url }}concepts?csv=true" onclick="triggerDownload(this)"><span class="glyphicon glyphicon-file"></span> Concepts</a></li>
+                                          <li style="cursor: pointer;"><a data-uri="{{ collection_version.version_url }}mappings?csv=true" onclick="triggerDownload(this)"><span class="glyphicon glyphicon-file"></span> Mappings</a></li>
+                                      </ul>
+                                  </div>
+
                             </div>
                         {% endif_can_change collection %}
 

@@ -1206,6 +1206,29 @@ if ($('#new_concept_base_url').length > 0) {
     $('#id_concept_id').keyup(function () { updateHelpText(); });
 }
 
+var fireDownload = function (url) {
+    alertify.success('Preparing CSV...');
+    $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: "json",
+        success: function (json) {
+            if (json && json.url) {
+                window.location.href = json.url;
+                $('.alertify-notifier.ajs-top.ajs-right').children().click();
+            } else {
+                alertify.error('Something unexpected happened!', 3);
+            }
+
+        },
+        error: function (err) {
+            alertify.error('Something unexpected happened!', 3);
+            console.dir(err);
+        }
+    });
+};
+
+
 if($('.download-csv').length > 0) {
     $('a.download-csv').on('click', function (el) {
         var downloadCaller = $('input#download-origin').val(),
@@ -1232,7 +1255,7 @@ if($('.download-csv').length > 0) {
                 return entity;
             },
 
-            constructUrl = function () {
+            getURL = function () {
                 if (downloadCaller) {
                     var entity = getSearchEntity();
 
@@ -1242,26 +1265,7 @@ if($('.download-csv').length > 0) {
                 }
             };
 
-        alertify.success('Preparing CSV...');
-
-        $.ajax({
-            type: 'GET',
-            url: constructUrl(),
-            dataType: "json",
-            success: function (json) {
-                if (json && json.url) {
-                    window.location.href = json.url;
-                    $('.alertify-notifier.ajs-top.ajs-right').children().click();
-                } else {
-                    alertify.error('Something unexpected happened!', 3);
-                }
-
-            },
-            error: function (err) {
-                alertify.error('Something unexpected happened!', 3);
-                console.dir(err);
-            }
-        });
+        fireDownload(getURL());
     });
 };
 
@@ -1287,3 +1291,9 @@ $('form#collection_delete_form .delete-collection').on('click', function (ev) {
       }, function() {}
     ).set('labels', {ok:'Yes', cancel:'No'});
 });
+
+var triggerDownload = function (el) {
+    var $el = $(el),
+        url = 'http://' + window.location.hostname + ':8000' + $el.data('uri');
+    fireDownload(url);
+};
