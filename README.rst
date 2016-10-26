@@ -107,8 +107,10 @@ OclWeb Setup:
 
 Tests:
     1. Inside ocl_web virtualenv -- run 'python ocl_web/manage.py test' // this will run the unit test
-    2. To run E2E tests, run './ocl_web/run_ui_tests.sh'.
-    To run these tests locally, set 'baseURL' in 'ocl_web/tests/ui_tests/conf.js' to 'http://<localhost>:<port>'.
+    2. To run E2E tests,
+       Exexute './ocl_web/run_ui_tests.sh' - this will run tests on showcase env using phantomjs (headless mode)
+       To run these tests locally on chrome, execute command from 'ocl_web'
+       'browser=chrome env=local username=<username> password=<pwd> ./node_modules/protractor/bin/protractor ./ocl_web/tests/ui_tests/conf.js'
 
 
 ---------------------------------------------------------------------
