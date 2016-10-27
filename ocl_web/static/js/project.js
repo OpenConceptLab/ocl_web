@@ -988,7 +988,7 @@ app.controller('CustomAttributesController', ['$scope', function($scope) {
       replace: true,
       controller: 'CustomAttributesController',
       template: '<div class="form-group">' +
-                      '<label class="control-label">Custom Attributes </label>'+
+                      '<label class="control-label col-md-12">Custom Attributes </label>'+
                        '<div class="col-md-12">'+
                           '<input name="extras" id="extras" class="form-control" type="hidden" value="{{ extras }}">'+
                           '<div class="form-group row" ng-repeat="extra in extras">'+
