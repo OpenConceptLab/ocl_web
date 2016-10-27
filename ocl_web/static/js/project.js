@@ -1097,23 +1097,23 @@ app.directive('conceptDescription', function() {
         '<div class="form-group" ng-repeat="description in descriptions">' +
           '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeDescription($index)"></span>'+
           '<label class="control-label col-md-12">Description</label>' +
-          '<div class="form-group required col-md-3">' +
+          '<div class="form-group col-md-3">' +
             '<label class="control-label">Locale</label>' +
             '<select class="form-control" ng-model="description.locale" ng-options="l.code as l.name for l in locales"' +
-                     'required="required" title="Choose the locale for the initial name and description">' +
+                     'title="Choose the locale for the initial name and description">' +
             '</select>' +
             '<span class="help-block"><small>Choose the locale for the initial name and description</small></span>' +
           '</div>' +
 
-          '<div class="form-group required col-md-3">' +
+          '<div class="form-group col-md-3">' +
             '<label class="control-label">Type</label>' +
-            '<select class="form-control" required="required" ng-model="description.description_type" ng-options="t as t for t in types"></select>' + 
+            '<select class="form-control" ng-model="description.description_type" ng-options="t as t for t in types"></select>' + 
           '</div>' +
 
-          '<div class="form-group required col-md-3">' +
+          '<div class="form-group col-md-3">' +
             '<label class="control-label">Description</label>' +
             '<textarea class="form-control" ng-model="description.description"' +
-                    'placeholder="e.g. Tuberculosis of lung, confirmed by sputum microscopy with or without culture" required="required"></textarea>' +
+                    'placeholder="e.g. Tuberculosis of lung, confirmed by sputum microscopy with or without culture"></textarea>' +
           '</div>' +
 
           '<div class="form-group col-md-3">' +
@@ -1143,7 +1143,7 @@ app.directive('conceptDescription', function() {
             'description': '',
             'locale': $scope.defaultLocale,
             'locale_preferred': false,
-            'description_type': 'Fully Specified'
+            'description_type': 'None'
           });
         };
       }
