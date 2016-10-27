@@ -32,7 +32,7 @@
         capabilities: getBrowserCapabilities(),
 
         jasmineNodeOpts: {
-            defaultTimeoutInterval: 60000
+            defaultTimeoutInterval: 360000
         },
 
         'onPrepare' : function () {
