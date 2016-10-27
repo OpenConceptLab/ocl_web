@@ -249,7 +249,7 @@ a.resource-label:hover {
 .resource-label.collection .resource-label-name {
   background-color: #5cb85c;
 }
-.resource-label.source_version .resource-label-name, 
+.resource-label.source_version .resource-label-name,
 .resource-label.collection_version .resource-label-name,
 .resource-label.repository_version .resource-label-name {
   background-color: #eee;
