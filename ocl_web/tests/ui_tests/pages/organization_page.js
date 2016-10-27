@@ -153,9 +153,9 @@ var OrganizationPage = function() {
         this.newConceptLink.click();
         this.createConcept.click();
         this.conceptId.sendKeys(id);
-        this.select_name_locale.$('[value="'+ locale +'"]').click();
+        this.select_name_locale.$('[label="'+ locale +'"]').click();
         this.conceptName.sendKeys(name);
-        this.select_desc_locale.$('[value="'+ locale +'"]').click();
+        this.select_desc_locale.$('[label="'+ locale +'"]').click();
         this.conceptDesc.sendKeys(desc);
         this.key.sendKeys(key);
         this.createConceptButton.click();
