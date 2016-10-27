@@ -68,37 +68,41 @@
 {##}
 {#		                    {% if collection_version.is_processing %}<span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">{% trans "Processing" %}</span></span>{% endif %}#}
 		                </h4>
-                        {% if_can_change collection %}
-                            <div class='pull-right release_unrelease_section' style="font-size: small;">
+                        <div class='pull-right release_unrelease_section' style="font-size: small;">
+                            {% if_can_change collection %}
                                 {% if not collection_version.id == 'HEAD' %}
                                     <input id="id_release"
                                            type="checkbox"
                                            name="release"
                                            value="{{ collection_version.id }}"
                                            {% if collection_version.retired %}disabled{% endif %}
-                                           {% if collection_version.released %}checked{% endif %} /> Release
+                                           {% if collection_version.released %}checked{% endif %}/> Release
                                     &nbsp;&nbsp;
                                     <input class="resource_retire"
-                                          type="checkbox"
-                                          name="release"
-                                          value="{{ collection_version.id }}"
-                                          {% if collection_version.retired %}checked{% endif %} /> Retire
+                                           type="checkbox"
+                                           name="release"
+                                           value="{{ collection_version.id }}"
+                                           {% if collection_version.retired %}checked{% endif %}/> Retire
                                 {% endif %}
+                            {% endif_can_change collection %}
 
-
-                                  <div class="btn-group">
-                                      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                                          <span class="glyphicon glyphicon-download-alt"></span>
-                                          <span class="caret"></span>
-                                      </a>
-                                      <ul class="dropdown-menu">
-                                          <li style="cursor: pointer;"><a data-uri="{{ collection_version.version_url }}concepts?csv=true" onclick="triggerDownload(this)"><span class="glyphicon glyphicon-file"></span> Concepts</a></li>
-                                          <li style="cursor: pointer;"><a data-uri="{{ collection_version.version_url }}mappings?csv=true" onclick="triggerDownload(this)"><span class="glyphicon glyphicon-file"></span> Mappings</a></li>
-                                      </ul>
-                                  </div>
-
+                            <div class="btn-group">
+                                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <span class="glyphicon glyphicon-download-alt"></span>
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li style="cursor: pointer;"><a
+                                            data-uri="{{ collection_version.version_url }}concepts?csv=true"
+                                            onclick="triggerDownload(this)"><span
+                                            class="glyphicon glyphicon-file"></span> Concepts</a></li>
+                                    <li style="cursor: pointer;"><a
+                                            data-uri="{{ collection_version.version_url }}mappings?csv=true"
+                                            onclick="triggerDownload(this)"><span
+                                            class="glyphicon glyphicon-file"></span> Mappings</a></li>
+                                </ul>
                             </div>
-                        {% endif_can_change collection %}
+                        </div>
 
 
 		                <p class="small">

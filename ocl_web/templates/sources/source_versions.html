@@ -49,30 +49,39 @@
 		                <div class="search-result-col-icon pull-left" style="padding-top:0;padding-right:14px;margin-bottom:20px;"><span class="search-result-icon"><span class="glyphicon glyphicon-asterisk"></span></span></div>
 		                {% endcomment %}
 
-                        {% if_can_change source %}
+                        <div class="pull-right">
                             {% if not source_version.is_processing %}
-                              <div class="pull-right">
-                                {% if source_version.id != 'HEAD' %}
-                                  <a href="{{ source_version_edit_url }}" class="btn btn-link" title="Edit Source Version"><span class="glyphicon glyphicon-pencil"></span></a>
-                                  <button class="btn btn-link source_version_delete glyphicon glyphicon-trash no-text-decoration" title="Delete Source Version" data-id="{{ source_version.id }}"></button>
-                                {% endif %}
+                                {% if_can_change source %}
+                                    {% if source_version.id != 'HEAD' %}
+                                        <a href="{{ source_version_edit_url }}" class="btn btn-link"
+                                           title="Edit Source Version"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <button class="btn btn-link source_version_delete glyphicon glyphicon-trash no-text-decoration"
+                                                title="Delete Source Version"
+                                                data-id="{{ source_version.id }}"></button>
+                                    {% endif %}
+                                {% endif_can_change source %}
 
-                                  <div class="btn-group">
-                                      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                                          <span class="glyphicon glyphicon-download-alt"></span>
-                                          <span class="caret"></span>
-                                      </a>
-                                      <ul class="dropdown-menu">
-                                          <li style="cursor: pointer;"><a data-uri="{{ source_version.version_url }}concepts?csv=true" onclick="triggerDownload(this)"><span class="glyphicon glyphicon-file"></span> Concepts</a></li>
-                                          <li style="cursor: pointer;"><a data-uri="{{ source_version.version_url }}mappings?csv=true" onclick="triggerDownload(this)"><span class="glyphicon glyphicon-file"></span> Mappings</a></li>
-                                      </ul>
-                                  </div>
+                                <div class="btn-group">
+                                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                                        <span class="glyphicon glyphicon-download-alt"></span>
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li style="cursor: pointer;"><a
+                                                data-uri="{{ source_version.version_url }}concepts?csv=true"
+                                                onclick="triggerDownload(this)"><span
+                                                class="glyphicon glyphicon-file"></span> Concepts</a></li>
+                                        <li style="cursor: pointer;"><a
+                                                data-uri="{{ source_version.version_url }}mappings?csv=true"
+                                                onclick="triggerDownload(this)"><span
+                                                class="glyphicon glyphicon-file"></span> Mappings</a></li>
+                                    </ul>
+                                </div>
 
-                              </div>
                             {% endif %}
-                        {% endif_can_change source %}
+                        </div>
 
-		                <h4>
+                        <h4>
 							{% generic_resource_label resource_type='source_version' resource_id=source.id resource_version_id=source_version.id resource_url=source_version_concepts_url resource_retired=source_version.retired owner_type=source_version.owner_type owner_id=source_version.owner label_size='small' display_breadcrumb=True %}
 
                             <span class="release-label-container">
