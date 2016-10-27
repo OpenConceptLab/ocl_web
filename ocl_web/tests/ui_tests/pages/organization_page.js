@@ -149,13 +149,13 @@ var OrganizationPage = function() {
       this.retireButton.click();
     };
 
-    this.createNewConcept = function (id, name, desc, key) {
+    this.createNewConcept = function (id, name, desc, key, locale) {
         this.newConceptLink.click();
         this.createConcept.click();
         this.conceptId.sendKeys(id);
-        this.select_name_locale.$('[value="string:ab"]').click();
+        this.select_name_locale.$('[label="'+ locale +'"]').click();
         this.conceptName.sendKeys(name);
-        this.select_desc_locale.$('[value="string:ab"]').click();
+        this.select_desc_locale.$('[label="'+ locale +'"]').click();
         this.conceptDesc.sendKeys(desc);
         this.key.sendKeys(key);
         this.createConceptButton.click();

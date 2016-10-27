@@ -46,7 +46,7 @@ describe('OCL Org Page', function () {
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key);
+        orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key, data.locale1);
 
         browser.wait(EC.presenceOf(orgPage.status),1000);
         expect((orgPage.status).getText()).toEqual('Concept created.');
@@ -113,7 +113,7 @@ describe('OCL Org Page', function () {
     it('should create concept', function () {
 
         orgPage.createNewConcept(data.concept_id + id,
-            data.concept_name, data.concept_desc, data.key);
+            data.concept_name, data.concept_desc, data.key, data.locale2);
 
         browser.wait(EC.presenceOf(orgPage.status),1000);
         expect((orgPage.status).getText()).toEqual('Concept created.');
@@ -138,86 +138,86 @@ describe('OCL Org Page', function () {
         element(by.linkText('  ' + data.org_short_code + id)).click();
     });
 
-    it('should create collection under org', function () {
-        orgPage.createNewOrgCollection(data.short_code + id,
-            data.col_name,
-            data.full_name,
-            data.supported_locale
-        );
-        expect((orgPage.status).getText()).toEqual('Collection created');
-    });
-
-    it('should create collection version', function () {
-
-        collectionPage.createNewCollectionVersion('V1', 'version 1');
-
-        expect((orgPage.status).getText()).toEqual('Collection version created!');
-    });
-
-    it('should release a collection version', function () {
-        orgPage.releaseVersion();
-
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), 1000);
-        expect(orgPage.notification.getText()).toEqual('Successfully Released.');
-
-        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 1000);
-        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
-
-        orgPage.notification.click();
-    });
-
-    it('should retire org collection version', function () {
-        orgPage.retireVersion();
-
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired.'), 1000);
-        expect(orgPage.notification.getText()).toEqual('Successfully Retired.');
-
-        browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), 1000);
-        expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
-
-        orgPage.notification.click();
-    });
-
-    it('should un-retire org collection version', function () {
-        orgPage.retireVersion();
-
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), 1000);
-        expect(orgPage.notification.getText()).toEqual('Successfully Un-Retired.');
-
-        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 1000);
-        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
-
-        orgPage.notification.click();
-    });
-
-    it('should un-release a collection version', function () {
-        orgPage.releaseVersion();
-
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), 1000);
-        expect(orgPage.notification.getText()).toEqual('Successfully Un-Released.');
-
-        orgPage.notification.click();
-    });
-
-    it('should delete org colection version', function () {
-        orgPage.deleteCollectionVersion();
-
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed collection version.'), 1000);
-        expect(orgPage.notification.getText()).toEqual('Successfully removed collection version.');
-
-        orgPage.notification.click();
-    });
-
-
-    it('should add a reference of concept to a collection', function () {
-        var concept_expression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
-        orgPage.createNewReference(concept_expression);
-
-        var newlyAddedReference = element(by.css('a[title="Collection Reference"]'));
-        browser.wait(EC.presenceOf(newlyAddedReference), 1000);
-
-        expect(orgPage.countOfReferences.count()).toEqual(1);
-    });
+    // it('should create collection under org', function () {
+    //     orgPage.createNewOrgCollection(data.short_code + id,
+    //         data.col_name,
+    //         data.full_name,
+    //         data.supported_locale
+    //     );
+    //     expect((orgPage.status).getText()).toEqual('Collection created');
+    // });
+    //
+    // it('should create collection version', function () {
+    //
+    //     collectionPage.createNewCollectionVersion('V1', 'version 1');
+    //
+    //     expect((orgPage.status).getText()).toEqual('Collection version created!');
+    // });
+    //
+    // it('should release a collection version', function () {
+    //     orgPage.releaseVersion();
+    //
+    //     browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), 1000);
+    //     expect(orgPage.notification.getText()).toEqual('Successfully Released.');
+    //
+    //     browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 1000);
+    //     expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
+    //
+    //     orgPage.notification.click();
+    // });
+    //
+    // it('should retire org collection version', function () {
+    //     orgPage.retireVersion();
+    //
+    //     browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired.'), 1000);
+    //     expect(orgPage.notification.getText()).toEqual('Successfully Retired.');
+    //
+    //     browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), 1000);
+    //     expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
+    //
+    //     orgPage.notification.click();
+    // });
+    //
+    // it('should un-retire org collection version', function () {
+    //     orgPage.retireVersion();
+    //
+    //     browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), 1000);
+    //     expect(orgPage.notification.getText()).toEqual('Successfully Un-Retired.');
+    //
+    //     browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 1000);
+    //     expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
+    //
+    //     orgPage.notification.click();
+    // });
+    //
+    // it('should un-release a collection version', function () {
+    //     orgPage.releaseVersion();
+    //
+    //     browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), 1000);
+    //     expect(orgPage.notification.getText()).toEqual('Successfully Un-Released.');
+    //
+    //     orgPage.notification.click();
+    // });
+    //
+    // it('should delete org colection version', function () {
+    //     orgPage.deleteCollectionVersion();
+    //
+    //     browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed collection version.'), 1000);
+    //     expect(orgPage.notification.getText()).toEqual('Successfully removed collection version.');
+    //
+    //     orgPage.notification.click();
+    // });
+    //
+    //
+    // it('should add a reference of concept to a collection', function () {
+    //     var concept_expression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
+    //     orgPage.createNewReference(concept_expression);
+    //
+    //     var newlyAddedReference = element(by.css('a[title="Collection Reference"]'));
+    //     browser.wait(EC.presenceOf(newlyAddedReference), 1000);
+    //
+    //     expect(orgPage.countOfReferences.count()).toEqual(1);
+    // });
 
     // it('should add multiple reference', function () {
     //     element(by.linkText('References')).click();
