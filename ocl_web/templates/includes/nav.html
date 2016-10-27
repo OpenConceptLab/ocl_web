@@ -28,7 +28,7 @@
         <!--li><a href="{% url 'explore' %}">{% trans "Explore" %}</a></li-->
         <li><a href="{% url 'features' %}">{% trans "Features" %}</a></li>
         <!--li><a href="http://maternalconceptlab.tumblr.com/" target="_new">{% trans "Blog" %}</a></li-->
-        <!--li><a href="{% url 'help' %}">{% trans "Learning Center" %}</a></li-->
+        <li><a href="https://github.com/OpenConceptLab/ocl_web/wiki">{% trans "Help" %}</a></li>
 
         {% if request.user.is_authenticated %}
           <li><a href="{% url 'users:detail' request.user.username %}" title="User Profile: {{ user.email }}"><span class="glyphicon glyphicon-user"></span>&nbsp;{{ user.username }}</a></li>
