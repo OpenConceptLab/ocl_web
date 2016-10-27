@@ -27,12 +27,12 @@
 			<form class="form" name="concept_form" autocomplete="off" method="post" action=".">
 				{% csrf_token %}
         {% bootstrap_form form %}
-        <concept-name-synonym names="[{'name':'', 'locale':'{{ source.default_locale }}', 'locale_preferred':false, 'name_type':'Fully Specified'}]"
+        <concept-name-synonym names="[{'name':'', 'locale':'{{ source.default_locale }}', 'locale_preferred':true, 'name_type':'Fully Specified'}]"
                               types="{{ name_types }}"
                               default-locale="'{{ source.default_locale }}'"
                               locales="{{ locales }}"></concept-name-synonym>
 
-        <concept-description descriptions="[{'description':'', 'locale':'{{ source.default_locale }}', 'locale_preferred':false, 'description_type':'None'}]"
+        <concept-description descriptions="[{'description':'', 'locale':'{{ source.default_locale }}', 'locale_preferred':true, 'description_type':'None'}]"
                              default-locale="'{{ source.default_locale }}'"
                              types="{{ description_types }}" locales="{{ locales }}"></concept-description>
 
