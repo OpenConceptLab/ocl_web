@@ -27,5 +27,7 @@
   "concept_id":"C1.1.1.2-",
   "concept_name":"Life Expectancy at Birth(years)",
   "concept_desc":"Concept description",
-  "key": "key1"
+  "key1": "key1",
+  "locale1": "Afrikaans [af]",
+  "locale2": "English [en]"
 }

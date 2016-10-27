@@ -43,7 +43,7 @@ describe('OCL User Source Page', function () {
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key);
+        orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key1, data.locale2);
 
         expect((orgPage.status).getText()).toEqual('Concept created.');
 
