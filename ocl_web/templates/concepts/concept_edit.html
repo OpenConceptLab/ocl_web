@@ -34,8 +34,14 @@
 			<form class="form" name="concept_form" autocomplete="off" method="post" action=".">
 				{% csrf_token %}
 				{% bootstrap_form form %}
-        <concept-name-synonym names="{{ concept.names }}" types="{{ name_types }}" locales="{{ locales }}"></concept-name-synonym>
-        <concept-description descriptions="{{ concept.descriptions }}" types="{{ name_types }}" locales="{{ locales }}"></concept-description>
+        <concept-name-synonym names="{{ concept.names }}"
+                              types="{{ name_types }}"
+                              default-locale="'{{ source.default_locale }}'"
+                              locales="{{ locales }}"></concept-name-synonym>
+        <concept-description descriptions="{{ concept.descriptions }}"
+                             types="{{ name_types }}"
+                              default-locale="'{{ source.default_locale }}'"
+                             locales="{{ locales }}"></concept-description>
         <custom-attributes extras="{{ extras }}"></custom-attributes>
 				{% buttons %}
           <div class="col-md-12">

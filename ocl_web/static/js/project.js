@@ -1020,6 +1020,7 @@ app.directive('conceptNameSynonym', function() {
         names: '=',
         types: '=',
         locales: '=',
+        defaultLocale: '=',
       },
       template: '' +
       '<div class="form-group" ng-init="addName()">' +
@@ -1063,7 +1064,7 @@ app.directive('conceptNameSynonym', function() {
         '</div>'+
 
       '</div>',
-      controller: function($scope, $http) {
+      controller: function($scope) {
         $scope.removeName = function(index) {
           $scope.names.splice(index, 1);
         };
@@ -1071,7 +1072,7 @@ app.directive('conceptNameSynonym', function() {
         $scope.addName = function() {
           $scope.names.push({
             'name': '',
-            'locale': 'en',
+            'locale': $scope.defaultLocale,
             'locale_preferred': false,
             'name_type': 'Fully Specified'
           });
@@ -1087,6 +1088,7 @@ app.directive('conceptDescription', function() {
         descriptions: "=",
         types: '=',
         locales: '=',
+        defaultLocale: '=',
       },
       replace: true,
       template: '' +
@@ -1130,7 +1132,7 @@ app.directive('conceptDescription', function() {
         '</div>'+
 
       '</div>',
-      controller: function($scope, $http) {
+      controller: function($scope) {
         $scope.removeDescription = function(index) {
           $scope.descriptions.splice(index, 1);
         };
@@ -1139,7 +1141,7 @@ app.directive('conceptDescription', function() {
           $scope.descriptions = $scope.descriptions || [];
           $scope.descriptions.push({
             'description': '',
-            'locale': 'en',
+            'locale': $scope.defaultLocale,
             'locale_preferred': false,
             'description_type': 'Fully Specified'
           });
