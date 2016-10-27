@@ -171,10 +171,10 @@ var OrganizationPage = function() {
     };
 
     this.deleteSrcVersion = function () {
-        browser.wait(EC.visibilityOf(this.deleteSrcVersionIcon), 1000);
+        browser.wait(EC.visibilityOf(this.deleteSrcVersionIcon), 1500);
         this.deleteSrcVersionIcon.click();
 
-        browser.wait(EC.visibilityOf(this.okButton, 1200));
+        browser.wait(EC.visibilityOf(this.okButton, 1500));
         this.okButton.click();
     };
 
