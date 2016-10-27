@@ -1005,9 +1005,9 @@ app.directive('conceptNameSynonym', function() {
       template: '' +
       '<div class="form-group" ng-init="addName()">' +
         '<input name="names" class="form-control" type="hidden" value="{{ names }}">'+
+        '<label class="control-label col-md-12">Names & Synonyms</label>' +
         '<div class="form-group" ng-repeat="name in names">' +
           '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeName($index)"></span>'+
-          '<label class="control-label col-md-12">Names & Synonyms</label>' +
           '<div class="form-group required col-md-2">' +
             '<label class="control-label">Locale</label>' +
             '<select class="form-control" ng-model="name.locale" ng-options="l.code as l.name for l in locales"' +
@@ -1078,9 +1078,9 @@ app.directive('conceptDescription', function() {
       template: '' +
       '<div class="form-group" ng-init="addDescription()">' +
         '<input name="descriptions" class="form-control" type="hidden" value="{{ descriptions }}">'+
+        '<label class="control-label col-md-12">Description</label>' +
         '<div class="form-group" ng-repeat="description in descriptions">' +
           '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeDescription($index)"></span>'+
-          '<label class="control-label col-md-12">Description</label>' +
           '<div class="form-group col-md-2">' +
             '<label class="control-label">Locale</label>' +
             '<select class="form-control" ng-model="description.locale" ng-options="l.code as l.name for l in locales"' +
