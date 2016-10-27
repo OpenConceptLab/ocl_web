@@ -1026,7 +1026,7 @@ app.directive('conceptNameSynonym', function() {
                     'placeholder="e.g. Tuberculosis of lung, confirmed by sputum microscopy with or without culture" required="required" title="" type="text">' +
           '</div>' +
 
-          '<div class="form-group required col-md-2">' +
+          '<div class="form-group col-md-2">' +
             '<label class="control-label">External ID</label>' +
             '<input class="form-control" ng-model="name.external_id" placeholder="Exernal ID" type="text">' +
           '</div>' +
@@ -1099,7 +1099,7 @@ app.directive('conceptDescription', function() {
                     'placeholder="e.g. Tuberculosis of lung, confirmed by sputum microscopy with or without culture"></textarea>' +
           '</div>' +
 
-          '<div class="form-group required col-md-2">' +
+          '<div class="form-group col-md-2">' +
             '<label class="control-label">External ID</label>' +
             '<input class="form-control" ng-model="description.external_id" placeholder="Exernal ID" type="text">' +
           '</div>' +
