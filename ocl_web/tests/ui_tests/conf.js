@@ -4,8 +4,8 @@
     };
 
     var phantomJSCapabilities = {
-        browserName: 'phantomjs'//,
-        // 'phantomjs.binary.path': 'node_modules/phantomjs/bin/phantomjs'
+        browserName: 'phantomjs',
+        'phantomjs.binary.path': 'node_modules/phantomjs/bin/phantomjs'
     };
 
     var invalidBrowserCapabilities = {
@@ -28,18 +28,12 @@
     exports.config = {
         framework: 'jasmine',
         seleniumAddress: 'http://localhost:4444/wd/hub',
-        specs: ['./specs/organization_spec.js'],//'./specs/user_source_spec.js','./specs/collections_spec.js','./specs/user_source_validation_spec.js'],
-        //capabilities: getBrowserCapabilities(),
-        capabilities: {
-            'browserName': 'chrome'
-        },
+        specs: ['./specs/organization_spec.js','./specs/user_source_spec.js','./specs/collections_spec.js','./specs/user_source_validation_spec.js'],
+        capabilities: getBrowserCapabilities(),
 
         jasmineNodeOpts: {
             defaultTimeoutInterval: 60000
         },
-
-        troubleshoot: true,
-        baseUrl: "http://showcase.openconceptlab.org/",
 
         'onPrepare' : function () {
             browser.driver.manage().window().setSize(1280, 1024);
