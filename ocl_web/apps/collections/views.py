@@ -34,7 +34,9 @@ class CollectionsBaseView(UserOrOrgMixin):
     def get_collection_data(self, owner_type, owner_id, collection_id, field_name,
                             collection_version_id=None, search_params=None):
 
-        searcher = OclSearch(search_type=field_name, params=search_params)
+        searcher = OclSearch(search_type=field_name,
+                             search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
+                             params=search_params)
         api = OclApi(self.request, debug=True, facets=True)
 
         if collection_version_id:
@@ -53,7 +55,7 @@ class CollectionsBaseView(UserOrOrgMixin):
 
         # Process the results
         searcher.process_search_results(
-            search_type=None, search_response=search_response,
+            search_type=searcher.search_type, search_response=search_response,
             search_params=search_params)
 
         return searcher
@@ -140,7 +142,6 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
         params = self.request.GET.copy()
         params['verbose'] = 'true'
         params['limit'] = '10'
-        params['includeRetired'] = 'true'
 
         versions = self.get_collection_versions(
             self.owner_type, self.owner_id, self.collection_id,
@@ -210,7 +211,6 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         params = self.request.GET.copy()
         params['verbose'] = 'true'
         params['limit'] = '10'
-        params['includeRetired'] = 'true'
 
         # to fetch all , set limit to 0
         versions = self.get_collection_versions(

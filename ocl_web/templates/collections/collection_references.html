@@ -25,23 +25,6 @@
 
     <div class="col-md-3">
 
-<!-- Filters -->
-
-        {% for search_filter in search_filters %}
-        <div class="filter-group">
-            <div class="filter-group-header">{{ search_filter.filter_name }}</div>
-            <div class="filter-group-body">
-                {% for filter_option in search_filter.options %}
-                    {% if filter_option.option_num > 0 or search_filter.attrs.show_zeroed_options %}
-                        <div class="checkbox"><label><input type="checkbox" name="{{ search_filter.filter_id }}" value="{{ filter_option.option_value }}" {% if filter_option.selected %}checked{% endif %}>{{ filter_option.option_name }}{% if not search_filter.attrs.hide_numbers %}&nbsp;&nbsp;&nbsp;&nbsp;{% endif %}</label></div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-        {% endfor %}
-
-<!-- End left column -->
-
     </div>
 
 <!-- Start right column -->
