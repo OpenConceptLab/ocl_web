@@ -10,6 +10,7 @@ from django.contrib import messages
 from apps.collections.forms import CollectionCreateForm, CollectionEditForm, CollectionDeleteForm, \
     CollectionVersionAddForm, CollectionVersionsEditForm
 from libs.ocl import OclApi, OclSearch, OclConstants
+from libs.ocl.search import SearchFilterList
 import views
 from unittest import skip
 
@@ -374,7 +375,7 @@ class CollectionConceptViewTest(TestCase):
         self.assertEquals(context['results'], collection)
         self.assertEquals(context['pagination_url'], '/foobar')
         self.assertEquals(context['search_query'], '')
-        self.assertEquals(context['search_filters'], None)
+        self.assertIsInstance(context['search_filters'], SearchFilterList)
         self.assertEquals(context['search_sort_options'], ['Best Match', 'Last Update (Desc)', 'Last Update (Asc)', 'Name (Asc)', 'Name (Desc)'])
         self.assertEquals(context['search_sort'], '')
         self.assertEquals(context['search_facets_json'], None)
@@ -403,7 +404,7 @@ class CollectionMappingsViewTest(TestCase):
         self.assertEquals(context['results'], collection)
         self.assertEquals(context['pagination_url'], '/foobar')
         self.assertEquals(context['search_query'], '')
-        self.assertEquals(context['search_filters'], None)
+        self.assertIsInstance(context['search_filters'], SearchFilterList)
         self.assertEquals(context['search_sort_options'], ['Best Match', 'Last Update (Desc)', 'Last Update (Asc)', 'Name (Asc)', 'Name (Desc)'])
         self.assertEquals(context['search_sort'], '')
         self.assertEquals(context['search_facets_json'], None)
