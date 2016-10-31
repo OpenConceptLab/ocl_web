@@ -8,38 +8,38 @@
 <div class="container" style="margin-top: 20px;">
 <div class="row">
 
-	<!-- collection attributes -->
-	<div class="col-md-8">
-		<div class="panel panel-default">
-			<div class="panel-heading"><h3 class="panel-title">collection Details</h3></div>
+    <!-- collection attributes -->
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">collection Details</h3></div>
             <div class="panel-body">
-				{% field_label 'Short Code' collection.short_code %}
-				{% field_label 'Name' collection.name %}
-				{% field_label 'Full Name' collection.full_name %}
-				<hr />
-				<div id="id_coll_description">{% field_label 'Description' collection.description %}</div>
-				{% field_label 'collection Type' collection.collection_type %}
-				{% field_label 'Website' collection.website url=True %}
-				{% field_label 'Public Access' collection.public_access %}
-				<hr />
-				{% field_label 'Default Locale' collection.default_locale %}
+                {% field_label 'Short Code' collection.short_code %}
+                {% field_label 'Name' collection.name %}
+                {% field_label 'Full Name' collection.full_name %}
+                <hr />
+                <div id="id_coll_description">{% field_label 'Description' collection.description %}</div>
+                {% field_label 'collection Type' collection.collection_type %}
+                {% field_label 'Website' collection.website url=True %}
+                {% field_label 'Public Access' collection.public_access %}
+                <hr />
+                {% field_label 'Default Locale' collection.default_locale %}
                 {% field_label 'Supported Locales' collection.supported_locales|join:"," %}
-
-				<div id="id_coll_externalId">{% if collection.external_id %}<hr />{% field_label 'External ID' collection.external_id %}{% endif %}</div>
-				<hr />
-				{% field_label 'Created by' collection.created_by %}
-				{% field_label 'Created on' collection.created_on|smart_date %}
-				{% field_label 'Updated by' collection.created_by %}
-				{% field_label 'Updated on' collection.created_on|smart_date %}
-            	{% if collection.extras and collection.extras.items %}
-            		<hr />
-            		{% for k, v in collection.extras.items %}
-            			{% field_label k v %}
-            		{% endfor %}
-            	{% endif %}
+                {% field_label 'Custom Validation Schema' collection.custom_validation_schema %}
+                <div id="id_coll_externalId">{% if collection.external_id %}<hr />{% field_label 'External ID' collection.external_id %}{% endif %}</div>
+                <hr />
+                {% field_label 'Created by' collection.created_by %}
+                {% field_label 'Created on' collection.created_on|smart_date %}
+                {% field_label 'Updated by' collection.created_by %}
+                {% field_label 'Updated on' collection.created_on|smart_date %}
+                {% if collection.extras and collection.extras.items %}
+                    <hr />
+                    {% for k, v in collection.extras.items %}
+                        {% field_label k v %}
+                    {% endfor %}
+                {% endif %}
             </div>
-		</div>
-	</div>
+        </div>
+    </div>
 
 
 </div>

@@ -42,6 +42,18 @@ describe('OCL Collections Page', function () {
         expect((collectionPage.status).getText()).toEqual('Collection created');
     });
 
+    it('should create collection with openmrs validation schema', function () {
+        id = orgPage.getRandomString(2);
+        collectionPage.createNewUserCollection(data.short_code + id,
+            data.col_name,
+            data.full_name,
+            data.supported_locale,
+            data.custom_validation_schema
+        );
+
+        expect((collectionPage.status).getText()).toEqual('Collection created');
+    });
+
     it('should create collection version', function () {
 
         collectionPage.createNewCollectionVersion('V1', 'Version 1');
