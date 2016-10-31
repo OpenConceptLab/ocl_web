@@ -105,7 +105,7 @@ describe('OCL Org Page', function () {
     it('should delete a source version', function () {
         orgPage.deleteSrcVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'version.'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed source version.'), 1500);
 
         orgPage.notification.click();
     });
