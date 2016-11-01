@@ -58,7 +58,10 @@ describe('OCL Org Page', function () {
         orgPage.createNewSourceVersion(data.id, data.description);
 
         browser.wait(EC.presenceOf(orgPage.status), 500);
+
         expect((orgPage.status).getText()).toEqual('Source version created!');
+        browser.refresh();
+
     });
 
     it('should release a org source version', function () {
@@ -105,7 +108,7 @@ describe('OCL Org Page', function () {
     it('should delete a source version', function () {
         orgPage.deleteSrcVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'version.'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed source version.'), 1500);
 
         orgPage.notification.click();
     });
