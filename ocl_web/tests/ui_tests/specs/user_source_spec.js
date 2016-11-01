@@ -55,6 +55,8 @@ describe('OCL User Source Page', function () {
 
         browser.wait(EC.presenceOf(orgPage.status), 500);
         expect((orgPage.status).getText()).toEqual('Source version created!');
+
+        browser.refresh()
     });
 
     it('should release a user source version', function () {
