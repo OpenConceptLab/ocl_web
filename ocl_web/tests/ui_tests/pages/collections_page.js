@@ -6,6 +6,7 @@ var CollectionsPage = function() {
     this.collName = $('#id_name');
     this.fullName = $('#id_full_name');
     this.supportedLocale = $('#id_supported_locales');
+    this.customValidationSchema = $('#id_custom_validation_schema');
     this.addCollectionButton = element(by.buttonText('Add'));
     this.status = $('.alert-info');
 
@@ -45,6 +46,10 @@ var CollectionsPage = function() {
         this.supportedLocale.sendKeys(locale)
     };
 
+    this.setCustomValidationSchema = function (custom_validation_schema) {
+       this.customValidationSchema.sendKeys(custom_validation_schema)
+    };
+
     this.setDescription = function (description) {
         this.description.sendKeys(description);
     };
@@ -77,13 +82,14 @@ var CollectionsPage = function() {
         this.deleteIcon.click();
     };
 
-    this.createNewUserCollection = function (short_code, name, full_name, locale) {
+    this.createNewUserCollection = function (short_code, name, full_name, locale, custom_validation_schema) {
         this.clickNewCollection();
         this.setShortCode(short_code);
         this.setCollName(name);
         this.setFullName(full_name);
         this.setSupportedLocale(locale);
         this.clickAddCollection();
+        this.setCustomValidationSchema(custom_validation_schema);
     };
 
     this.createNewCollectionVersion = function (id, description) {
@@ -107,5 +113,6 @@ var CollectionsPage = function() {
         this.clickDeleteCollection();
         this.deleteConfirm.click();
     };
+
 };
 module.exports = CollectionsPage;
