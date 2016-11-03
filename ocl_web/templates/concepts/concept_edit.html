@@ -45,8 +45,8 @@
         <custom-attributes extras="{{ extras }}"></custom-attributes>
 				{% buttons %}
           <div class="col-md-12">
-            <button type="submit" class="btn btn-primary">{% trans "Update Concept" %}</button>
-            <a href="{{ concept_url }}" class="btn bstn-default">{% trans "Cancel" %}</a>
+            <button id="update-concept" type="submit" class="btn btn-primary">{% trans "Update Concept" %}</button>
+            <a href="{{ concept_url }}" id="cancel-update" class="btn btn-default">{% trans "Cancel" %}</a>
           </div>
 				{% endbuttons %}
 			</form>
