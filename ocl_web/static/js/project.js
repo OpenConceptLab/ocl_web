@@ -1006,36 +1006,36 @@ app.directive('conceptNameSynonym', function() {
       '<div class="form-group" ng-init="addName()">' +
         '<input name="names" class="form-control" type="hidden" value="{{ names }}">'+
         '<label class="control-label col-md-12">Names & Synonyms</label>' +
-        '<div class="form-group" ng-repeat="name in names">' +
-          '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeName($index)"></span>'+
+        '<div id="names-and-synonyms" class="form-group" ng-repeat="name in names">' +
+          '<span class="delete-name-button glyphicon glyphicon-trash pull-right" ng-click="removeName($index)"></span>'+
           '<div class="form-group required col-md-2">' +
             '<label class="control-label">Locale</label>' +
-            '<select class="form-control" ng-model="name.locale" ng-options="l.code as l.name for l in locales"' +
+            '<select class="name-locale form-control" ng-model="name.locale" ng-options="l.code as l.name for l in locales"' +
                      'required="required" title="Choose the locale for the initial name and description">' +
             '</select>' +
           '</div>' +
 
           '<div class="form-group required col-md-3">' +
             '<label class="control-label">Type</label>' +
-            '<select class="form-control" required="required" ng-model="name.name_type" ng-options="t as t for t in types"></select>' + 
+            '<select class="name-type form-control" required="required" ng-model="name.name_type" ng-options="t as t for t in types"></select>' +
           '</div>' +
 
           '<div class="form-group required col-md-3">' +
             '<label class="control-label">Name</label>' +
-            '<input class="form-control" ng-model="name.name"' +
+            '<input class="name-content form-control" ng-model="name.name"' +
                     'placeholder="e.g. Tuberculosis of lung, confirmed by sputum microscopy with or without culture" required="required" title="" type="text">' +
           '</div>' +
 
           '<div class="form-group col-md-2">' +
             '<label class="control-label">External ID</label>' +
-            '<input class="form-control" ng-model="name.external_id" placeholder="Exernal ID" type="text">' +
+            '<input class="name-external-id form-control" ng-model="name.external_id" placeholder="External ID" type="text">' +
           '</div>' +
 
           '<div class="form-group col-md-2">' +
             '<label class="control-label"></label>' +
             '<div class="checkbox">' +
               '<label>' +
-                '<input checked="checked" type="checkbox" ng-model="name.locale_preferred">' +
+                '<input class="name-locale-preferred" checked="checked" type="checkbox" ng-model="name.locale_preferred">' +
                 'Locale Preferred' +
               '</label>' +
             '</div>' +
@@ -1044,7 +1044,7 @@ app.directive('conceptNameSynonym', function() {
         '</div>' +
 
         '<div class="form-group col-md-12">'+
-          '<a ng-click="addName()" style="cursor: pointer;"> <span class="glyphicon glyphicon-plus"></span> Add name/synonym</a>'+
+          '<a class="add-name" ng-click="addName()" style="cursor: pointer;"> <span class="glyphicon glyphicon-plus"></span> Add name/synonym</a>'+
         '</div>'+
 
       '</div>',
@@ -1090,7 +1090,7 @@ app.directive('conceptDescription', function() {
 
           '<div class="form-group col-md-3">' +
             '<label class="control-label">Type</label>' +
-            '<select class="form-control" ng-model="description.description_type" ng-options="t as t for t in types"></select>' + 
+            '<select class="form-control" ng-model="description.description_type" ng-options="t as t for t in types"></select>' +
           '</div>' +
 
           '<div class="form-group col-md-3">' +

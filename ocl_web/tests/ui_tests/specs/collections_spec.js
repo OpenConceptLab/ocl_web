@@ -60,7 +60,7 @@ describe('OCL Collections Page', function () {
         collectionPage.createNewCollectionVersion('V1', 'Version 1');
 
         expect((orgPage.status).getText()).toEqual('Collection version created!');
-        browser.refresh()
+        browser.refresh();
     });
 
     it('should release a user collection version', function () {
