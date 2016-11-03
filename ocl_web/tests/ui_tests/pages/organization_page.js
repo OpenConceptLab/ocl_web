@@ -171,19 +171,35 @@ var OrganizationPage = function() {
     };
 
     this.deleteSrcVersion = function () {
-        browser.wait(EC.visibilityOf(this.deleteSrcVersionIcon), 1500);
-        this.deleteSrcVersionIcon.click();
+        var clickDelete = function(){
+            this.deleteSrcVersionIcon.click();
 
-        browser.wait(EC.visibilityOf(this.okButton, 1500));
-        this.okButton.click();
+            browser.wait(EC.visibilityOf(this.okButton, 1500));
+            this.okButton.click();
+        }.bind(this);
+
+        browser.wait(EC.visibilityOf(this.deleteSrcVersionIcon), 1500).then(function(){
+            clickDelete();
+        }, function () {
+            browser.refresh();
+            clickDelete();
+        });
     };
 
     this.deleteCollectionVersion = function () {
-        browser.wait(EC.visibilityOf(this.deleteColVersionIcon), 1000);
-        this.deleteColVersionIcon.click();
+        var clickDelete = function(){
+            this.deleteColVersionIcon.click();
 
-        browser.wait(EC.visibilityOf(this.okButton), 1000);
-        this.okButton.click();
+            browser.wait(EC.visibilityOf(this.okButton, 1500));
+            this.okButton.click();
+        }.bind(this);
+
+        browser.wait(EC.visibilityOf(this.deleteColVersionIcon), 1500).then(function(){
+            clickDelete();
+        }, function () {
+            browser.refresh();
+            clickDelete();
+        });
     };
     //
     // this.waitForAjax = function () {
