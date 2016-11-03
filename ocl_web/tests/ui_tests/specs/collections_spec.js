@@ -43,6 +43,7 @@ describe('OCL Collections Page', function () {
     });
 
     it('should create collection with openmrs validation schema', function () {
+        collectionPage.userHomeLink.click();
         id = orgPage.getRandomString(2);
         collectionPage.createNewUserCollection(data.short_code + id,
             data.col_name,
@@ -59,6 +60,7 @@ describe('OCL Collections Page', function () {
         collectionPage.createNewCollectionVersion('V1', 'Version 1');
 
         expect((orgPage.status).getText()).toEqual('Collection version created!');
+        browser.refresh()
     });
 
     it('should release a user collection version', function () {
