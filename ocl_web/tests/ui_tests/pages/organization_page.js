@@ -178,36 +178,18 @@ var OrganizationPage = function() {
             this.okButton.click();
         }.bind(this);
 
-        browser.wait(EC.visibilityOf(this.deleteSrcVersionIcon), 1500).then(function(){
-            clickDelete();
-        }, function () {
+        browser.wait(EC.visibilityOf(this.deleteSrcVersionIcon), 1500).then(clickDelete, function () {
             browser.refresh();
             clickDelete();
         });
     };
 
     this.deleteCollectionVersion = function () {
-        var clickDelete = function(){
-            this.deleteColVersionIcon.click();
+        browser.wait(EC.visibilityOf(this.deleteColVersionIcon), 1000);
+        this.deleteColVersionIcon.click();
 
-            browser.wait(EC.visibilityOf(this.okButton, 1500));
-            this.okButton.click();
-        }.bind(this);
-
-        browser.wait(EC.visibilityOf(this.deleteColVersionIcon), 1500).then(function(){
-            clickDelete();
-        }, function () {
-            browser.refresh();
-            clickDelete();
-        });
+        browser.wait(EC.visibilityOf(this.okButton), 1000);
+        this.okButton.click();
     };
-    //
-    // this.waitForAjax = function () {
-    //     setInterval(function () {
-    //         if ($.active == 0) {
-    //             return;
-    //         }
-    //     }, 1000)
-    // }
 };
 module.exports = OrganizationPage;
