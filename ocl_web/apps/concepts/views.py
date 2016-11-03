@@ -489,7 +489,7 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         else:
             errors = list(chain.from_iterable(json.loads(result.content).values()))
             messages.add_message(self.request, messages.ERROR,
-                                 _('Error occurred: ' + "\n".join(errors)))
+                                 _("\n".join(errors)))
             logger.warning('Concept create POST failed: %s' % result.content)
             return super(ConceptNewView, self).form_invalid(form)
 
