@@ -75,7 +75,7 @@ describe('Concept edits', function () {
         nameInput.sendKeys(protractor.Key.BACK_SPACE +  '1');
         conceptEditPage.updateButton.click();
 
-        expect(conceptEditPage.errorBox.getText()).toEqual('Concept preferred name should be unique for same source and locale');
+        expect(conceptEditPage.errorBox.getText()).toEqual('Concept preferred name must be unique for same source and locale');
 
         conceptEditPage.cancelUpdateButton.click();
         done()
