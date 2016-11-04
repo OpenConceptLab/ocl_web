@@ -70,6 +70,7 @@ var OrganizationPage = function() {
     this.select_desc_locale = element(by.model('description.locale'));
     this.conceptDesc = element(by.model('description.description'));
     this.key = element(by.model('extra.key'));
+    this.addNameSynonymLink = $('#add-name-synonym');
 
     //create mapping locators
     this.newMappingLink = element(by.linkText('Mappings'));

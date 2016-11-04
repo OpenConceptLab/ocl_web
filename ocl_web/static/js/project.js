@@ -1044,7 +1044,7 @@ app.directive('conceptNameSynonym', function() {
         '</div>' +
 
         '<div class="form-group col-md-12">'+
-          '<a class="add-name" ng-click="addName()" style="cursor: pointer;"> <span class="glyphicon glyphicon-plus"></span> Add name/synonym</a>'+
+          '<a class="add-name" ng-click="addName()" id="add-name-synonym" style="cursor: pointer;"> <span class="glyphicon glyphicon-plus"></span> Add name/synonym</a>'+
         '</div>'+
 
       '</div>',
