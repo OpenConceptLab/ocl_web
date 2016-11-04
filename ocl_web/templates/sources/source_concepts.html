@@ -55,7 +55,7 @@
 					{% endif %}
                     {% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
                         <div class="pull-left">
-                            <a class="btn btn-link btn-sm" style="font-weight:300;letter-spacing:-0.1pt;" href="{{ new_concept_url }}" title="Add New Concept to Source"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'New Concept' %}</a>
+                            <a class="btn btn-link btn-sm" id="id-new-concept" style="font-weight:300;letter-spacing:-0.1pt;" href="{{ new_concept_url }}" title="Add New Concept to Source"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'New Concept' %}</a>
                         </div>
                     {% endif %}
 				{% endif_can_change source %}
