@@ -149,7 +149,7 @@ describe('Concept', function () {
             return conceptCreatePage.errorBox.getText();
         }
 
-        it('concept create with more then one preferred name should get an error', function () {
+        it('#241 concept create with more then one preferred name should get an error', function () {
 
             prepareToCreateConcept();
             setConceptId("1");
@@ -168,7 +168,7 @@ describe('Concept', function () {
             expect(getErrorText()).toEqual('Custom validation rules require a concept to have exactly one preferred name');
         });
 
-        it('concept create with short preferred name should get an error', function () {
+        it('#241 concept create with short preferred name should get an error', function () {
 
             prepareToCreateConcept();
 
@@ -183,7 +183,7 @@ describe('Concept', function () {
             expect(getErrorText()).toEqual('Custom validation rules require a preferred name to be different than a short name');
         });
 
-        it('concept create with more then one preferred name should get an error', function () {
+        it('#241 concept create with more then one preferred name should get an error', function () {
 
             prepareToCreateConcept();
 
@@ -198,7 +198,7 @@ describe('Concept', function () {
             expect(getErrorText()).toEqual('Concept preferred name must be unique for same source and locale');
         });
 
-        it('concept create with unique short names should return success', function () {
+        it('#241 concept create with unique short names should return success', function () {
 
             prepareToCreateConcept();
 
@@ -218,6 +218,59 @@ describe('Concept', function () {
             createConcept();
             expect((orgPage.status).getText()).toEqual('Concept created.');
         });
+
+        it('#242 concept create with same preferred name in same source & locale should get an error', function () {
+            prepareToCreateConcept();
+
+            setConceptId("2");
+
+            setName(getNamesAndSynonyms().first(), "sameName", "Fully Specified", true);
+
+            element(by.model('description.description')).sendKeys("desc");
+
+            createConcept();
+
+            prepareToCreateConcept();
+
+            setConceptId("3");
+
+            setName(getNamesAndSynonyms().first(), "sameName", "Fully Specified", true);
+
+            createConcept();
+
+            expect(getErrorText()).toEqual('Concept preferred name must be unique for same source and locale');
+
+        });
+
+        it('#242 concept create with same fully specified name in same source & locale should get an error', function () {
+
+            prepareToCreateConcept();
+
+            setConceptId("3");
+
+            setName(getNamesAndSynonyms().first(), "sameFullySpecified", "Fully Specified", true);
+
+            element(by.model('description.description')).sendKeys("desc");
+
+            createConcept();
+
+            prepareToCreateConcept();
+
+            setConceptId("4");
+
+            addNamesAndSynonyms(1);
+
+            var names = getNamesAndSynonyms();
+
+            setName(names.first(), "requiredFullySpecified", "Fully Specified", true);
+            setName(names.last(), "sameFullySpecified", "Fully Specified", false);
+
+            createConcept();
+
+            expect(getErrorText()).toEqual('Custom validation rules require fully specified name should be unique for same locale and source');
+
+        });
+
 
     });
 
