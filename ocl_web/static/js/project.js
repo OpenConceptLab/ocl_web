@@ -1434,7 +1434,7 @@ $('form#collection_delete_form .delete-collection').on('click', function (ev) {
 var triggerDownload = function (el) {
     var $el = $(el),
         user = $("meta[name='user']").attr('content'),
-        url = '//' + window.location.hostname +portInfo + $el.data('uri') + '&user=' + user;
+        url = '//' + window.location.hostname +':8000' + $el.data('uri') + '&user=' + user;
         url=httpURL(url);
     fireDownload(url);
 };
