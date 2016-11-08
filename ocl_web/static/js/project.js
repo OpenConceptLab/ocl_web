@@ -1433,8 +1433,10 @@ $('form#collection_delete_form .delete-collection').on('click', function (ev) {
 
 var triggerDownload = function (el) {
     var $el = $(el),
-        user = $("meta[name='user']").attr('content'),
-        url = '//' + window.location.hostname +':8000' + $el.data('uri') + '&user=' + user;
-        url=httpURL(url);
+        user = $("meta[name='user']").attr('content');
+        if (_.includes(window.location.protocol,'https:'))
+            url = '//api.' + window.location.hostname + $el.data('uri') + '&user=' + user;
+        else
+            url = '//' + window.location.hostname +':8000' + $el.data('uri') + '&user=' + user;
     fireDownload(url);
 };
