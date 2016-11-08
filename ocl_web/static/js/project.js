@@ -1368,7 +1368,7 @@ if($('.download-csv').length > 0) {
             user = $("meta[name='user']").attr('content'),
             portInfo = ':8000',
             exactMatch = $("input[name='exact_match']:checked").size() > 0,
-            url = 'http://' + window.location.hostname + portInfo,
+            url = '//' + window.location.hostname + portInfo,
 
             getQueryParams = function (extraParams) {
                 extraParams = extraParams || '';
@@ -1428,6 +1428,6 @@ $('form#collection_delete_form .delete-collection').on('click', function (ev) {
 var triggerDownload = function (el) {
     var $el = $(el),
         user = $("meta[name='user']").attr('content'),
-        url = 'https://' + window.location.hostname + ':8000' + $el.data('uri') + '&user=' + user;
+        url = '//' + window.location.hostname + ':8001' + $el.data('uri') + '&user=' + user;
     fireDownload(url);
 };
