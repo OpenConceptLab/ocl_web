@@ -1366,9 +1366,8 @@ if($('.download-csv').length > 0) {
         var downloadCaller = $('input#download-origin').val(),
             selectedTab = $('div.list-group a.active').text(),
             user = $("meta[name='user']").attr('content'),
-            portInfo = ':8000',
             exactMatch = $("input[name='exact_match']:checked").size() > 0,
-            url = '//' + window.location.hostname + portInfo,
+            url = '//api.' + window.location.hostname,
 
             getQueryParams = function (extraParams) {
                 extraParams = extraParams || '';
@@ -1428,6 +1427,6 @@ $('form#collection_delete_form .delete-collection').on('click', function (ev) {
 var triggerDownload = function (el) {
     var $el = $(el),
         user = $("meta[name='user']").attr('content'),
-        url = '//' + window.location.hostname + ':8001' + $el.data('uri') + '&user=' + user;
+        url = '//api.' + window.location.hostname + $el.data('uri') + '&user=' + user;
     fireDownload(url);
 };
