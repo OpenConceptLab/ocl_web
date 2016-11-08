@@ -1360,14 +1360,21 @@ $.urlParam = function(name){
     return results[1] || 0;
 };
 
+var httpURL= function (url) {
+    if (_.includes(window.location.protocol,'https:'))
+        url = '//api.' + window.location.hostname;
+    return url;
+}
 
 if($('.download-csv').length > 0) {
     $('a.download-csv').on('click', function (el) {
         var downloadCaller = $('input#download-origin').val(),
             selectedTab = $('div.list-group a.active').text(),
             user = $("meta[name='user']").attr('content'),
+            portInfo = ':8000',
             exactMatch = $("input[name='exact_match']:checked").size() > 0,
-            url = '//api.' + window.location.hostname,
+            url = '//' + window.location.hostname + portInfo;
+            url=httpURL(url);
 
             getQueryParams = function (extraParams) {
                 extraParams = extraParams || '';
@@ -1427,6 +1434,7 @@ $('form#collection_delete_form .delete-collection').on('click', function (ev) {
 var triggerDownload = function (el) {
     var $el = $(el),
         user = $("meta[name='user']").attr('content'),
-        url = '//api.' + window.location.hostname + $el.data('uri') + '&user=' + user;
+        url = '//' + window.location.hostname +portInfo + $el.data('uri') + '&user=' + user;
+        url=httpURL(url);
     fireDownload(url);
 };
