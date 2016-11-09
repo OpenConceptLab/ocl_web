@@ -59,7 +59,6 @@
                                                 title="Delete Source Version"
                                                 data-id="{{ source_version.id }}"></button>
                                     {% endif %}
-                                {% endif_can_change source %}
 
                                 <div class="btn-group">
                                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -77,6 +76,7 @@
                                                 class="glyphicon glyphicon-file"></span> Mappings</a></li>
                                     </ul>
                                 </div>
+                               {% endif_can_change source %}
 
                             {% endif %}
                         </div>
