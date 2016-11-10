@@ -1007,7 +1007,7 @@ app.directive('conceptNameSynonym', function() {
         '<input name="names" class="form-control" type="hidden" value="{{ names }}">'+
         '<label class="control-label col-md-12">Names & Synonyms</label>' +
         '<div id="names-and-synonyms" class="form-group" ng-repeat="name in names">' +
-          '<span class="delete-name-button glyphicon glyphicon-trash pull-right" ng-click="removeName($index)"></span>'+
+          '<span id="id-delete-name" class="delete-name-button glyphicon glyphicon-trash pull-right" ng-click="removeName($index)"></span>'+
           '<div class="form-group required col-md-2">' +
             '<label class="control-label">Locale</label>' +
             '<select class="name-locale form-control" ng-model="name.locale" ng-options="l.code as l.name for l in locales"' +
