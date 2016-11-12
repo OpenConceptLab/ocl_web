@@ -10,25 +10,16 @@ var EC = require('protractor').ExpectedConditions;
 
 describe('OCL Collections Page', function () {
 
-    var loginPage;
-    var logoutPage;
-    var collectionPage;
-    var orgPage;
+    var loginPage = new LoginPage();
+    var logoutPage = new LogoutPage();
+    var collectionPage = new CollectionPage();
+    var orgPage = new OrgPage();
     var id = '';
+    browser.ignoreSynchronization = true;
 
-    beforeEach(function () {
-        loginPage = new LoginPage();
-        logoutPage = new LogoutPage();
-        collectionPage = new CollectionPage();
-        orgPage = new OrgPage();
-        return browser.ignoreSynchronization = true;
-    });
-
-    it('should login', function () {
+    beforeAll(function () {
         loginPage.visit();
         loginPage.login();
-
-        expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as ' + configuration.get("username") + '.');
     });
 
     it('should create collection', function () {
@@ -51,8 +42,22 @@ describe('OCL Collections Page', function () {
             data.supported_locale,
             data.custom_validation_schema
         );
-
         expect((collectionPage.status).getText()).toEqual('Collection created');
+    });
+
+    it('should update collection to openmrs validation schema', function () {
+        collectionPage.userHomeLink.click();
+        id = orgPage.getRandomString(2);
+        collectionPage.createNewUserCollection(data.short_code + id,
+            data.col_name,
+            data.full_name,
+            data.supported_locale
+        );
+
+        collectionPage.clickEditIcon();
+        collectionPage.setCustomValidationSchema(data.customValidationSchema);
+        collectionPage.clickUpdateCollection();
+        expect((collectionPage.status).getText()).toEqual('Collection updated');
     });
 
     it('should create collection version', function () {
