@@ -263,49 +263,49 @@ describe('Concept', function () {
 
         describe('concept edit with openmrs validation', function () {
 
-            it('#278 concept edit with more then one preferred name should get an error', function () {
+            /*  it('#278 concept edit with more then one preferred name should get an error', function () {
 
-                createConceptWithFullySpecifiedName("21", "name1");
+             createConceptWithFullySpecifiedName("21", "name1");
 
-                createConceptWithFullySpecifiedName("22", "name2");
+             createConceptWithFullySpecifiedName("22", "name2");
 
-                element(by.id("edit-concept")).click();
+             element(by.id("edit-concept")).click();
 
-                conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
+             conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
 
-                var nameInput = conceptEditPage.namesDiv.element(by.css('.name-content'));
+             var nameInput = conceptEditPage.namesDiv.element(by.css('.name-content'));
 
-                nameInput.clear().sendKeys('name1');
+             nameInput.clear().sendKeys('name1');
 
-                conceptEditPage.updateButton.click();
+             conceptEditPage.updateButton.click();
 
-                expect(conceptEditPage.errorBox.getText()).toEqual('Concept preferred name must be unique for same source and locale');
-            });
+             expect(conceptEditPage.errorBox.getText()).toEqual('Concept preferred name must be unique for same source and locale');
+             });
 
-            it('#278 concept edit adding one preferred name should get an error', function () {
+             it('#278 concept edit adding one preferred name should get an error', function () {
 
-                createConceptWithFullySpecifiedName("25", "name25");
+             createConceptWithFullySpecifiedName("25", "name25");
 
-                element(by.id("edit-concept")).click();
+             element(by.id("edit-concept")).click();
 
-                conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
+             conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
 
-                addNamesAndSynonyms(1);
+             addNamesAndSynonyms(1);
 
-                var names = element.all(by.repeater('name in names'))
+             var names = element.all(by.repeater('name in names'))
 
-                var nameInput = names.last().element(by.css('.name-content'));
+             var nameInput = names.last().element(by.css('.name-content'));
 
-                nameInput.clear().sendKeys('name278');
+             nameInput.clear().sendKeys('name278');
 
-                names.last().element(by.model('name.locale_preferred')).click();
+             names.last().element(by.model('name.locale_preferred')).click();
 
-                conceptEditPage.updateButton.click();
+             conceptEditPage.updateButton.click();
 
-                expect(getErrorText()).toEqual('Custom validation rules require a concept to have exactly one preferred name');
-            });
+             expect(getErrorText()).toEqual('Custom validation rules require a concept to have exactly one preferred name');
+             });
 
-            /*  TODO:  it('#278 concept edit deleting one preferred name should get an error', function () {
+             TODO:  it('#278 concept edit deleting one preferred name should get an error', function () {
 
              createConceptWithFullySpecifiedName("23", "name12");
 
