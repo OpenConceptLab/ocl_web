@@ -7,7 +7,7 @@ var CollectionPage = require('../pages/collections_page.js');
 var data = require('../fixtures/test_data.json');
 var configuration = require('../utilities/configuration.js');
 var EC = require('protractor').ExpectedConditions;
-
+var timeout = 5000;
 
 describe('OCL Org Page', function () {
     var loginPage;
@@ -15,7 +15,6 @@ describe('OCL Org Page', function () {
     var orgPage;
     var collectionPage;
     var id = '';
-    var mapping_id;
 
     beforeEach(function () {
         loginPage = new LoginPage();
@@ -48,7 +47,7 @@ describe('OCL Org Page', function () {
     it('should create concept', function () {
         orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key1, data.locale1);
 
-        browser.wait(EC.presenceOf(orgPage.status),1000);
+        browser.wait(EC.presenceOf(orgPage.status), timeout);
         expect((orgPage.status).getText()).toEqual('Concept created.');
 
         element(by.linkText('  ' + data.src_code)).click();
@@ -57,7 +56,7 @@ describe('OCL Org Page', function () {
     it('should create source version', function () {
         orgPage.createNewSourceVersion(data.id, data.description);
 
-        browser.wait(EC.presenceOf(orgPage.status), 500);
+        browser.wait(EC.presenceOf(orgPage.status), timeout);
 
         expect((orgPage.status).getText()).toEqual('Source version created!');
         browser.refresh();
@@ -67,10 +66,10 @@ describe('OCL Org Page', function () {
     it('should release a org source version', function () {
         orgPage.releaseVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), timeout);
         expect(orgPage.notification.getText()).toEqual('Successfully Released.');
 
-        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 500);
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), timeout);
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
 
         orgPage.notification.click();
@@ -79,10 +78,10 @@ describe('OCL Org Page', function () {
     it('should retire org source version', function () {
         orgPage.retireVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired.'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired.'), timeout);
         expect(orgPage.notification.getText()).toEqual('Successfully Retired.');
 
-        browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), timeout);
         expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
 
         orgPage.notification.click();
@@ -91,8 +90,8 @@ describe('OCL Org Page', function () {
     it('should un-retire org source version', function () {
         orgPage.retireVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), 1000);
-        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), timeout);
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), timeout);
 
         orgPage.notification.click();
     });
@@ -100,7 +99,7 @@ describe('OCL Org Page', function () {
     it('should un-release a source version', function () {
         orgPage.releaseVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), timeout);
 
         orgPage.notification.click();
     });
@@ -108,7 +107,7 @@ describe('OCL Org Page', function () {
     it('should delete a source version', function () {
         orgPage.deleteSrcVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed source version.'), 1500);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed source version.'), timeout);
 
         orgPage.notification.click();
     });
@@ -118,7 +117,7 @@ describe('OCL Org Page', function () {
         orgPage.createNewConcept(data.concept_id + id,
             data.concept_name, data.concept_desc, data.key1, data.locale2);
 
-        browser.wait(EC.presenceOf(orgPage.status),1000);
+        browser.wait(EC.presenceOf(orgPage.status), timeout);
         expect((orgPage.status).getText()).toEqual('Concept created.');
 
         element(by.linkText('  ' + data.src_code)).click();
@@ -160,10 +159,10 @@ describe('OCL Org Page', function () {
     it('should release a collection version', function () {
         orgPage.releaseVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), timeout);
         expect(orgPage.notification.getText()).toEqual('Successfully Released.');
 
-        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), timeout);
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
 
         orgPage.notification.click();
@@ -172,10 +171,10 @@ describe('OCL Org Page', function () {
     it('should retire org collection version', function () {
         orgPage.retireVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired.'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired.'), timeout);
         expect(orgPage.notification.getText()).toEqual('Successfully Retired.');
 
-        browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), timeout);
         expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
 
         orgPage.notification.click();
@@ -184,10 +183,10 @@ describe('OCL Org Page', function () {
     it('should un-retire org collection version', function () {
         orgPage.retireVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), timeout);
         expect(orgPage.notification.getText()).toEqual('Successfully Un-Retired.');
 
-        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), timeout);
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
 
         orgPage.notification.click();
@@ -196,7 +195,7 @@ describe('OCL Org Page', function () {
     it('should un-release a collection version', function () {
         orgPage.releaseVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), timeout);
         expect(orgPage.notification.getText()).toEqual('Successfully Un-Released.');
 
         orgPage.notification.click();
@@ -205,7 +204,7 @@ describe('OCL Org Page', function () {
     it('should delete org colection version', function () {
         orgPage.deleteCollectionVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed collection version.'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed collection version.'), timeout);
         expect(orgPage.notification.getText()).toEqual('Successfully removed collection version.');
 
         orgPage.notification.click();
@@ -217,7 +216,7 @@ describe('OCL Org Page', function () {
         orgPage.createNewReference(concept_expression);
 
         var newlyAddedReference = element(by.css('a[title="Collection Reference"]'));
-        browser.wait(EC.presenceOf(newlyAddedReference), 1000);
+        browser.wait(EC.presenceOf(newlyAddedReference), timeout);
 
         expect(orgPage.countOfReferences.count()).toEqual(1);
     });
