@@ -367,8 +367,7 @@ class OclApi(object):
         list_data = []
         for name in names:
             list_data.append(name)
-        if len(list_data) > 0:
-            data['names'] = list_data
+        data['names'] = list_data
 
         list_data = []
         for desc in descriptions:
