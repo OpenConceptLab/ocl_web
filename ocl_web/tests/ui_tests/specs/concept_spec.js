@@ -333,6 +333,48 @@ describe('Concept', function () {
                 expect(getErrorText()).toEqual('Custom validation rules require a preferred name to be different than a short name');
             });
 
+            it('#278 concept edit with same short names should return success', function () {
+
+                createConceptWithFullySpecifiedName("26", "name26");
+
+                element(by.id("edit-concept")).click();
+
+                addNamesAndSynonyms(2);
+
+                var names = getNamesAndSynonyms();
+
+                setName(names.first(), "name", "Fully Specified", true);
+
+                names.each(function (item, index) {
+                    if (index > 0) {
+                        setName(item, "shortName", "Short", false);
+                    }
+                });
+
+                conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
+                conceptEditPage.updateButton.click();
+                expect((orgPage.status).getText()).toEqual('Concept updated');
+            });
+
+            it('#278 concept edit with same fully specified name in same source & locale should get an error', function () {
+
+                createConceptWithFullySpecifiedName("27", "fullySpecified1");
+                createConceptWithFullySpecifiedName("28", "fullySpecified2");
+
+                element(by.id("edit-concept")).click();
+
+                addNamesAndSynonyms(1);
+
+                var names = getNamesAndSynonyms();
+
+                setName(names.last(), "fullySpecified1", "Fully Specified", false);
+
+                conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
+                conceptEditPage.updateButton.click();
+                expect(getErrorText()).toEqual('Custom validation rules require fully specified name should be unique for same locale and source');
+
+            });
+
         });
 
     });
