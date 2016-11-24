@@ -56,7 +56,7 @@ describe('Concept', function () {
 
             conceptEditPage.updateButton.click();
 
-            expect(conceptEditPage.errorBox.getText()).toEqual('Concept requires at least one fully specified name');
+            expect(conceptEditPage.errorBox.getText()).toEqual('A concept must have at least one fully specified name (across all locales)');
 
             conceptEditPage.cancelUpdateButton.click();
 
@@ -200,7 +200,7 @@ describe('Concept', function () {
 
                 createConcept();
 
-                expect(getErrorText()).toEqual('Custom validation rules require a concept to have exactly one preferred name');
+                expect(getErrorText()).toEqual('A concept may not have more than one preferred name (per locale)');
             });
 
             it('#241 concept create with short preferred name should get an error', function () {
@@ -217,7 +217,7 @@ describe('Concept', function () {
                 element(by.model('description.description')).sendKeys("desc");
 
                 createConcept();
-                expect(getErrorText()).toEqual('Custom validation rules require a preferred name to be different than a short name');
+                expect(getErrorText()).toEqual('A short name cannot be marked as locale preferred');
             });
 
             it('#241 concept create with more then one preferred name should get an error', function () {
@@ -234,28 +234,7 @@ describe('Concept', function () {
                 element(by.model('description.description')).sendKeys("desc");
 
                 createConcept();
-                expect(getErrorText()).toEqual('Custom validation rules require a concept to have exactly one preferred name');
-            });
-
-            it('#241 concept create with same short names should return success', function () {
-
-                prepareToCreateConcept();
-
-                setConceptId("1");
-                addNamesAndSynonyms(2);
-
-                var names = getNamesAndSynonyms();
-                setName(names.first(), "name", "Fully Specified", true);
-
-                names.each(function (item, index) {
-                    if (index > 0) {
-                        setName(item, "shortName", "Short", false);
-                    }
-                });
-
-                element(by.model('description.description')).sendKeys("desc");
-                createConcept();
-                expect((orgPage.status).getText()).toEqual('Concept created.');
+                expect(getErrorText()).toEqual('A concept may not have more than one preferred name (per locale)');
             });
 
             it('#242 concept create with same preferred name in same source & locale should get an error', function () {
@@ -287,7 +266,7 @@ describe('Concept', function () {
 
                 createConcept();
 
-                expect(getErrorText()).toEqual('Custom validation rules require fully specified name should be unique for same locale and source');
+                expect(getErrorText()).toEqual('A concept may not have more than one fully specified name in any locale');
 
             });
 
@@ -326,11 +305,11 @@ describe('Concept', function () {
 
                 var names = element.all(by.repeater('name in names'));
 
-                setName(names.last(), "bmvshdg", "Short", true)
+                setName(names.last(), "bmvshdg", "Short", true);
 
                 conceptEditPage.updateButton.click();
 
-                expect(getErrorText()).toEqual('Custom validation rules require a concept to have exactly one preferred name');
+                expect(getErrorText()).toEqual('A concept may not have more than one preferred name (per locale)');
             });
 
             it('#278 concept edit adding one preferred short name should get an error', function () {
@@ -350,30 +329,7 @@ describe('Concept', function () {
 
                 conceptEditPage.updateButton.click();
 
-                expect(getErrorText()).toEqual('Custom validation rules require a preferred name to be different than a short name');
-            });
-
-            it('#278 concept edit with same short names should return success', function () {
-
-                createConceptWithFullySpecifiedName("26", "name26");
-
-                element(by.id("edit-concept")).click();
-
-                addNamesAndSynonyms(2);
-
-                var names = getNamesAndSynonyms();
-
-                setName(names.first(), "name", "Fully Specified", true);
-
-                names.each(function (item, index) {
-                    if (index > 0) {
-                        setName(item, "shortName", "Short", false);
-                    }
-                });
-
-                conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
-                conceptEditPage.updateButton.click();
-                expect((orgPage.status).getText()).toEqual('Concept updated');
+                expect(getErrorText()).toEqual('A short name cannot be marked as locale preferred');
             });
 
             it('#278 concept edit with same fully specified name in same source & locale should get an error', function () {
@@ -391,7 +347,7 @@ describe('Concept', function () {
 
                 conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
                 conceptEditPage.updateButton.click();
-                expect(getErrorText()).toEqual('Custom validation rules require fully specified name should be unique for same locale and source');
+                expect(getErrorText()).toEqual('A concept may not have more than one fully specified name in any locale');
 
             });
 
