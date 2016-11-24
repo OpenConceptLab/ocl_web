@@ -8,8 +8,6 @@ var UserSourcePage = require('../pages/user_source_page');
 var ConceptEditPage = require('../pages/concept_edit_page');
 var ConceptCreatePage = require('../pages/concept_create_page');
 var configuration = require('../utilities/configuration.js');
-var EC = require('protractor').ExpectedConditions;
-
 
 describe('Concept', function () {
     var loginPage = new LoginPage();
@@ -79,6 +77,24 @@ describe('Concept', function () {
             conceptEditPage.cancelUpdateButton.click();
         });
 
+        it('#238 concept create should not get an error', function () {
+            prepareToCreateConcept();
+
+            setConceptId("29");
+            addNamesAndSynonyms(1);
+
+            var names = getNamesAndSynonyms();
+            setName(names.first(), "en_fr_name", "Short", false, "French [fr]");
+            setName(names.last(), "name2", "Fully Specified", false, "English [en]");
+
+            element(by.model('description.description')).sendKeys("desc");
+            createConcept();
+
+            createConceptWithFullySpecifiedName("30", "en_fr_name")
+            expect((orgPage.status).getText()).toEqual('Concept created.');
+
+        });
+
         afterAll(function () {
             element(by.css('.resource-label.user')).click();
         });
@@ -121,10 +137,18 @@ describe('Concept', function () {
         item.element(by.model('name.name_type')).element(by.cssContainingText("option", option)).click();
     }
 
-    function setName(item, nameText, nameType, localePreferred) {
+    function setNameLocale(item, option) {
+        if (option == undefined) {
+            option = "English [en]"
+        }
+        item.element(by.model('name.locale')).element(by.cssContainingText("option", option)).click();
+    }
+
+    function setName(item, nameText, nameType, localePreferred, nameLocale) {
         setNameText(item, nameText);
         setNameType(item, nameType);
         setLocalePreferred(item, localePreferred);
+        setNameLocale(item, nameLocale)
     }
 
     function createConcept() {
@@ -138,7 +162,7 @@ describe('Concept', function () {
     function createConceptWithFullySpecifiedName(id, name) {
         prepareToCreateConcept();
         setConceptId(id);
-        setName(getNamesAndSynonyms().first(), name, "Fully Specified", true);
+        setName(getNamesAndSynonyms().first(), name, "Fully Specified", true, "English [en]");
         element(by.model('description.description')).sendKeys("desc");
         createConcept();
     }
@@ -292,7 +316,7 @@ describe('Concept', function () {
 
             it('#278 concept edit adding one preferred name should get an error', function () {
 
-                createConceptWithFullySpecifiedName("25", "name25");
+                createConceptWithFullySpecifiedName("25", "gdgdgdbgd");
 
                 element(by.id("edit-concept")).click();
 
@@ -302,11 +326,7 @@ describe('Concept', function () {
 
                 var names = element.all(by.repeater('name in names'));
 
-                var nameInput = names.last().element(by.css('.name-content'));
-
-                nameInput.clear().sendKeys('name278');
-
-                names.last().element(by.model('name.locale_preferred')).click();
+                setName(names.last(), "bmvshdg", "Short", true)
 
                 conceptEditPage.updateButton.click();
 
