@@ -56,7 +56,7 @@ describe('Concept', function () {
 
             conceptEditPage.updateButton.click();
 
-            expect(conceptEditPage.errorBox.getText()).toEqual('A concept must have at least one fully specified name (across all locales)');
+            expect(getErrorText()).toEqual('A concept must have at least one fully specified name (across all locales)');
 
             conceptEditPage.cancelUpdateButton.click();
 
@@ -72,12 +72,12 @@ describe('Concept', function () {
             nameInput.sendKeys(protractor.Key.BACK_SPACE + '1');
             conceptEditPage.updateButton.click();
 
-            expect(conceptEditPage.errorBox.getText()).toEqual('Concept preferred name must be unique for same source and locale');
+            expect(getErrorText()).toEqual('Concept preferred name must be unique for same source and locale');
 
             conceptEditPage.cancelUpdateButton.click();
         });
 
-        it('#238 concept create should not get an error', function () {
+        it('#238 concept create - same names with different locales should not get an error', function () {
             prepareToCreateConcept();
 
             setConceptId("29");
@@ -92,7 +92,46 @@ describe('Concept', function () {
 
             createConceptWithFullySpecifiedName("30", "en_fr_name")
             expect((orgPage.status).getText()).toEqual('Concept created.');
+        });
 
+        it('#342 concept create - basic validation order at least one fully specified name', function () {
+            prepareToCreateConcept();
+            setConceptId("32");
+            setName(getNamesAndSynonyms().first(), "sdfsdf", "Short", true, "English [en]");
+            element(by.model('description.description')).sendKeys("desc");
+            createConcept();
+
+            expect(getErrorText()).toEqual('A concept must have at least one fully specified name (across all locales)');
+        });
+
+        it('#342 concept create - source validation order preferred name should be unique', function () {
+            createConceptWithFullySpecifiedName("33", "name33");
+            createConceptWithFullySpecifiedName("34", "name33");
+
+            expect(getErrorText()).toEqual('Concept preferred name must be unique for same source and locale');
+        });
+
+        it('#342 concept edit - basic validation order at least one fully specified name', function () {
+            createConceptWithFullySpecifiedName("34", "askjhdsajkhdkjsahd");
+            element(by.id("edit-concept")).click();
+
+            conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
+            setNameType(getNamesAndSynonyms().first(), 'Short')
+
+            conceptEditPage.updateButton.click();
+            expect(getErrorText()).toEqual('A concept must have at least one fully specified name (across all locales)');
+        });
+
+        it('#342 concept edit - source validation order preferred name should be unique', function () {
+            createConceptWithFullySpecifiedName("35", "name35");
+            createConceptWithFullySpecifiedName("36", "name36");
+            element(by.id("edit-concept")).click();
+
+            conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
+            setNameText(getNamesAndSynonyms().first(), 'name35')
+
+            conceptEditPage.updateButton.click();
+            expect(getErrorText()).toEqual('Concept preferred name must be unique for same source and locale');
         });
 
         afterAll(function () {
@@ -122,7 +161,7 @@ describe('Concept', function () {
     }
 
     function setNameText(item, name) {
-        item.element(by.model('name.name')).sendKeys(name);
+        item.element(by.model('name.name')).clear().sendKeys(name);
     }
 
     function setLocalePreferred(item, select) {
@@ -138,7 +177,7 @@ describe('Concept', function () {
     }
 
     function setNameLocale(item, option) {
-        if (option == undefined) {
+        if (option === undefined) {
             option = "English [en]"
         }
         item.element(by.model('name.locale')).element(by.cssContainingText("option", option)).click();
@@ -290,7 +329,7 @@ describe('Concept', function () {
 
                 conceptEditPage.updateButton.click();
 
-                expect(conceptEditPage.errorBox.getText()).toEqual('Concept preferred name must be unique for same source and locale');
+                expect(getErrorText()).toEqual('Concept preferred name must be unique for same source and locale');
             });
 
             it('#278 concept edit adding one preferred name should get an error', function () {
