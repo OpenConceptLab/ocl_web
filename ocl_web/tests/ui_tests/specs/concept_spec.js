@@ -111,6 +111,17 @@ describe('Concept', function () {
             expect(getErrorText()).toEqual('Concept preferred name must be unique for same source and locale');
         });
 
+        it('#338 concept edit - deleting fully specified name should get corresponding error', function () {
+            createConceptWithFullySpecifiedName("40", "derfgtyh");
+            element(by.id("edit-concept")).click();
+
+            conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
+             element(by.id("id-delete-name")).click();
+
+            conceptEditPage.updateButton.click();
+            expect(getErrorText()).toEqual('A concept must have at least one fully specified name (across all locales)');
+        });
+
         it('#342 concept edit - basic validation order at least one fully specified name', function () {
             createConceptWithFullySpecifiedName("34", "askjhdsajkhdkjsahd");
             element(by.id("edit-concept")).click();
