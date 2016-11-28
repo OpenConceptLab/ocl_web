@@ -1079,8 +1079,8 @@ app.directive('conceptDescription', function() {
       '<div class="form-group" ng-init="addDescription()">' +
         '<input name="descriptions" class="form-control" type="hidden" value="{{ descriptions }}">'+
         '<label class="control-label col-md-12">Description</label>' +
-        '<div class="form-group" ng-repeat="description in descriptions">' +
-          '<span class="glyphicon glyphicon-trash pull-right" ng-click="removeDescription($index)"></span>'+
+        '<div id="descriptions" class="form-group" ng-repeat="description in descriptions">' +
+          '<span id="id-delete-description" class="delete-description-button glyphicon glyphicon-trash pull-right" ng-click="removeDescription($index)"></span>'+
           '<div class="form-group col-md-2">' +
             '<label class="control-label">Locale</label>' +
             '<select class="form-control" ng-model="description.locale" ng-options="l.code as l.name for l in locales"' +
