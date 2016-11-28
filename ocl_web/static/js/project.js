@@ -1088,15 +1088,15 @@ app.directive('conceptDescription', function() {
             '</select>' +
           '</div>' +
 
-          '<div class="form-group col-md-3 required">' +
+          '<div class="form-group col-md-3">' +
             '<label class="control-label">Type</label>' +
             '<select class="form-control" ng-model="description.description_type" ng-options="t as t for t in types"></select>' +
           '</div>' +
 
-          '<div class="form-group col-md-3 required">' +
+          '<div class="form-group col-md-3">' +
             '<label class="control-label">Description</label>' +
             '<textarea class="form-control" ng-model="description.description"' +
-                    'placeholder="e.g. Tuberculosis of lung, confirmed by sputum microscopy with or without culture" required="required" title="" type="text"></textarea>' +
+                    'placeholder="e.g. Tuberculosis of lung, confirmed by sputum microscopy with or without culture"></textarea>' +
           '</div>' +
 
           '<div class="form-group col-md-2">' +
