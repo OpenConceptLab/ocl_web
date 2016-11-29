@@ -326,17 +326,9 @@ class OclApi(object):
         if len(list_data) > 0:
             data['names'] = list_data
 
-        list_data = []
-        for desc in descriptions:
-            list_data.append(desc)
-        if len(list_data) > 0:
-            data['descriptions'] = list_data
+        if descriptions:
+            data['descriptions'] = descriptions
 
-        # list_data = []
-        # for extra in extras:
-        #     list_data.append(extra)
-        # if len(list_data) > 0:
-        #     data['extras'] = list_data
         if extras:
             data['extras'] = extras
         result = self.post(
@@ -369,10 +361,8 @@ class OclApi(object):
             list_data.append(name)
         data['names'] = list_data
 
-        list_data = []
-        for desc in descriptions:
-            list_data.append(desc)
-        data['descriptions'] = list_data
+        if descriptions:
+            data['descriptions'] = descriptions
 
         list_data = []
         for extra in extras:
