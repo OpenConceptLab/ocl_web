@@ -9,14 +9,6 @@ var ConceptEditPage = require('../pages/concept_edit_page');
 var ConceptCreatePage = require('../pages/concept_create_page');
 var configuration = require('../utilities/configuration.js');
 
-var fs = require('fs');
-
-function writeScreenShot(data, filename) {
-    var stream = fs.createWriteStream(filename);
-    stream.write(new Buffer(data, 'base64'));
-    stream.end();
-}
-
 describe('Concept', function () {
     var loginPage = new LoginPage();
     var logoutPage = new LogoutPage();
