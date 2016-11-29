@@ -485,6 +485,22 @@ describe('Concept', function () {
                 expect(getErrorText()).toEqual('Concept requires at least one description');
             });
 
+            it('#341 concept create without description - edit no ', function () {
+                prepareToCreateConcept();
+                setConceptId("49");
+                setName(getNamesAndSynonyms().first(), "owowohyhyhywowo", "Fully Specified", true, "English [en]");
+                element(by.id("id-delete-description")).click();
+
+                createConcept();
+
+                element(by.id("edit-concept")).click();
+
+                conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
+
+                conceptEditPage.updateButton.click();
+                expect((orgPage.status).getText()).toEqual('Concept updated');
+            });
+
         });
 
     });

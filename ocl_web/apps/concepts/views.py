@@ -457,9 +457,10 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         names = json.loads(
             self.request.POST.get('names', [])
         )
-        descriptions = json.loads(
-            self.request.POST.get('descriptions', [])
-        )
+        try:
+            descriptions = json.loads(self.request.POST.get('descriptions', []))
+        except ValueError:
+            descriptions = None
 
         extras = {}
         if 'extras' in self.request.POST:
@@ -813,9 +814,11 @@ class ConceptEditView(UserOrOrgMixin, FormView):
         names = json.loads(
             self.request.POST.get('names', [])
         )
-        descriptions = json.loads(
-            self.request.POST.get('descriptions', [])
-        )
+
+        try:
+            descriptions = json.loads(self.request.POST.get('descriptions', []))
+        except ValueError:
+            descriptions = None
 
         if self.from_org:
             result = api.update_concept('orgs', self.org_id, self.source_id, self.concept_id, data, names, descriptions)
