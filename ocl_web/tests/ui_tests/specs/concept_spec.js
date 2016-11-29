@@ -382,6 +382,83 @@ describe('Concept', function () {
                 expect(getErrorText()).toEqual('Concept requires at least one description');
             });
 
+            it('#335 concept create with more then one fully specified name in same source & locale should get an error', function () {
+
+                prepareToCreateConcept();
+                setConceptId("77");
+                addNamesAndSynonyms(1);
+                setName(getNamesAndSynonyms().first(), "plokijuhyg", "Fully Specified", true, "English [en]");
+                setName(getNamesAndSynonyms().last(), "cvdfv", "Fully Specified", false, "English [en]");
+                element(by.model('description.description')).sendKeys("desc");
+                createConcept();
+
+                expect(getErrorText()).toEqual('A concept may not have more than one fully specified name in any locale');
+            });
+
+            it('#335 concept create without fully specified name should get an error', function () {
+
+                prepareToCreateConcept();
+                setConceptId("77");
+                setName(getNamesAndSynonyms().first(), "plokijuhyg", "Short", true, "English [en]");
+                element(by.model('description.description')).sendKeys("desc");
+                createConcept();
+
+                expect(getErrorText()).toEqual('A concept must have at least one fully specified name (across all locales)');
+            });
+
+
+            it('#335 concept create with more then one preferred name should get an error', function () {
+
+                prepareToCreateConcept();
+                setConceptId("77");
+                addNamesAndSynonyms(1);
+                setName(getNamesAndSynonyms().first(), "plokijuhyg", "Fully Specified", true, "English [en]");
+                setName(getNamesAndSynonyms().last(), "fvfb", "Short", true, "English [en]");
+                element(by.model('description.description')).sendKeys("desc");
+                createConcept();
+
+                expect(getErrorText()).toEqual('A concept may not have more than one preferred name (per locale)');
+            });
+
+            it('#335 concept create with preferred short name should get an error', function () {
+
+                prepareToCreateConcept();
+                setConceptId("77");
+                addNamesAndSynonyms(1);
+                setName(getNamesAndSynonyms().first(), "plokijuhyg", "Fully Specified", false, "English [en]");
+                setName(getNamesAndSynonyms().last(), "fvfb", "Short", true, "English [en]");
+                element(by.model('description.description')).sendKeys("desc");
+                createConcept();
+
+                expect(getErrorText()).toEqual('A short name cannot be marked as locale preferred');
+            });
+
+            it('#335 concept create with 2 non-short names having the same text should get an error', function () {
+
+                prepareToCreateConcept();
+                setConceptId("77");
+                addNamesAndSynonyms(1);
+                setName(getNamesAndSynonyms().first(), "sameText", "Fully Specified", true, "English [en]");
+                setName(getNamesAndSynonyms().last(), "sameText", "Fully Specified", false, "English [en]");
+                element(by.model('description.description')).sendKeys("desc");
+                createConcept();
+
+                expect(getErrorText()).toEqual('All names except short names must unique for a concept and locale');
+            });
+
+            it('#335 concept create with 2 non-short & short names having the same text should be created successfully', function () {
+
+                prepareToCreateConcept();
+                setConceptId("77");
+                addNamesAndSynonyms(1);
+                setName(getNamesAndSynonyms().first(), "sameText", "Fully Specified", true, "English [en]");
+                setName(getNamesAndSynonyms().last(), "sameText", "Short", false, "English [en]");
+                element(by.model('description.description')).sendKeys("desc");
+                createConcept();
+
+                expect((orgPage.status).getText()).toEqual('Concept created.');
+            });
+
         });
 
         describe('concept edit with openmrs validation', function () {
