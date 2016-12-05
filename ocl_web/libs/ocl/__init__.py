@@ -303,6 +303,17 @@ class OclApi(object):
         result = self.post('users/%s/' % user.username, hashed_password=user.password)
         return result
 
+    def extract_names(self, names):
+        if names is None:
+            return []
+        return names
+
+    def extract_descriptions(self, descriptions):
+        if descriptions is None:
+            return None
+        if len(descriptions) is 1 and not descriptions[0]['description']:
+            return None
+        return descriptions
 
     def create_concept(self, source_owner_type, source_owner_id, source_id, base_data,
                        names=[], descriptions=[], extras=None):
@@ -320,14 +331,8 @@ class OclApi(object):
         data = {}
         data.update(base_data)
 
-        list_data = []
-        for name in names:
-            list_data.append(name)
-        if len(list_data) > 0:
-            data['names'] = list_data
-
-        if descriptions:
-            data['descriptions'] = descriptions
+        data['names'] = self.extract_names(names)
+        data['descriptions'] = self.extract_descriptions(descriptions)
 
         if extras:
             data['extras'] = extras
@@ -335,7 +340,6 @@ class OclApi(object):
             source_owner_type, source_owner_id, 'sources', source_id,
             'concepts', **data)
         return result
-
 
     def update_concept(self, source_owner_type, source_owner_id, source_id,
                        concept_id, base_data,
@@ -361,8 +365,7 @@ class OclApi(object):
             list_data.append(name)
         data['names'] = list_data
 
-        if descriptions:
-            data['descriptions'] = descriptions
+        data['descriptions'] = self.extract_descriptions(descriptions)
 
         list_data = []
         for extra in extras:
