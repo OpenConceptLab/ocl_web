@@ -143,33 +143,12 @@ describe('Concept', function () {
             expect((orgPage.status).getText()).toEqual('Concept updated');
         });
 
-        it('#341 concept create - empty description field should get an error', function () {
-            prepareToCreateConcept();
-            setConceptId("44");
-            setName(getNamesAndSynonyms().first(), "owowowowo", "Fully Specified", true, "English [en]");
-            element(by.model('description.description')).clear().sendKeys("");
-            createConcept();
-
-            expect(getErrorText()).toEqual('Concept requires at least one description');
-        });
-
-        it('#341 concept edit - empty description field should get an error', function () {
-            createConceptWithFullySpecifiedName("45", "jsjsjsjsj");
-            element(by.id("edit-concept")).click();
-
-            conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
-            element(by.model('description.description')).clear().sendKeys("");
-
-            conceptEditPage.updateButton.click();
-            expect(getErrorText()).toEqual('Concept requires at least one description');
-        });
-
         it('#342 concept edit - basic validation order at least one fully specified name', function () {
             createConceptWithFullySpecifiedName("34", "askjhdsajkhdkjsahd");
             element(by.id("edit-concept")).click();
 
             conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
-            setNameType(getNamesAndSynonyms().first(), 'Short')
+            setNameType(getNamesAndSynonyms().first(), 'Short');
 
             conceptEditPage.updateButton.click();
             expect(getErrorText()).toEqual('A concept must have at least one fully specified name (across all locales)');
@@ -181,7 +160,7 @@ describe('Concept', function () {
             element(by.id("edit-concept")).click();
 
             conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
-            setNameText(getNamesAndSynonyms().first(), 'name35')
+            setNameText(getNamesAndSynonyms().first(), 'name35');
 
             conceptEditPage.updateButton.click();
             expect(getErrorText()).toEqual('Concept preferred name must be unique for same source and locale');
@@ -372,16 +351,6 @@ describe('Concept', function () {
                 expect((orgPage.status).getText()).toEqual('Concept created.');
             });
 
-            it('#341 concept create - empty description field should get an error', function () {
-                prepareToCreateConcept();
-                setConceptId("47");
-                setName(getNamesAndSynonyms().first(), "owowohyhyhywowo", "Fully Specified", true, "English [en]");
-                element(by.model('description.description')).clear().sendKeys("");
-                createConcept();
-
-                expect(getErrorText()).toEqual('Concept requires at least one description');
-            });
-
             it('#335 concept create with more then one fully specified name in same source & locale should get an error', function () {
 
                 prepareToCreateConcept();
@@ -549,17 +518,6 @@ describe('Concept', function () {
 
                 conceptEditPage.updateButton.click();
                 expect((orgPage.status).getText()).toEqual('Concept updated');
-            });
-
-            it('#341 concept edit - empty description field should get an error', function () {
-                createConceptWithFullySpecifiedName("48", "jsjsjsskdjfdjsj");
-                element(by.id("edit-concept")).click();
-
-                conceptEditPage.fillInUpdateText("Update Concept " + orgPage.getRandomString(3));
-                element(by.model('description.description')).clear().sendKeys("");
-
-                conceptEditPage.updateButton.click();
-                expect(getErrorText()).toEqual('Concept requires at least one description');
             });
 
             it('#341 concept create without description - edit no ', function () {
