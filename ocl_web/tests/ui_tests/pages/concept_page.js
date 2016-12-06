@@ -14,7 +14,7 @@ var ConceptPage = function() {
     this.deleteNameAreaButton = element(by.id("id-delete-name"));
 
     this.conceptsLink = element(by.linkText('Concepts'));
-    this.conceptsLink = element(by.linkText(' New Concept'));
+    this.newConceptLink = element(by.linkText(' New Concept'));
     this.conceptId = $('#id_concept_id');
     this.addNameSynonymLink = $('#add-name-synonym');
 
@@ -54,7 +54,7 @@ var ConceptPage = function() {
     this.prepareToCreateConcept = function () {
         element(by.css(".resource-label.source")).click();
         this.conceptsLink.click();
-        this.conceptsLink.click();
+        this.newConceptLink.click();
         this.setConceptId(this.getRandomId());
     }
 
@@ -102,7 +102,7 @@ var ConceptPage = function() {
         this.setNameLocale(item, nameLocale)
     }
 
-    this.newConceptLink = function () {
+    this.createConcept = function () {
         this.createButton.click();
     }
 
@@ -115,7 +115,7 @@ var ConceptPage = function() {
         this.setConceptId(id);
         this.setName(this.getNamesAndSynonyms().first(), name, "Fully Specified", true, "English [en]");
         this.fillDescriptionField();
-        this.newConceptLink();
+        this.createConcept();
     }
 };
 

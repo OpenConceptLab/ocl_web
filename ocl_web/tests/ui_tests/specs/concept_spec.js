@@ -81,7 +81,7 @@ describe('Concept', function () {
             conceptPage.setName(names.last(), "name2", "Fully Specified", false, "English [en]");
 
             conceptPage.fillDescriptionField();
-            conceptPage.newConceptLink();
+            conceptPage.createConcept();
 
             conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "en_fr_name")
             expect(conceptPage.getStatus()).toEqual('Concept created.');
@@ -90,9 +90,8 @@ describe('Concept', function () {
         it('#342 concept create - basic validation order at least one fully specified name', function () {
             conceptPage.prepareToCreateConcept();
             conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Short", true, "English [en]");
-            browser.takeScreenshot().then(function (png) { writeScreenShot(png, 'ayse.png'); });
             conceptPage.fillDescriptionField();
-            conceptPage.newConceptLink();
+            conceptPage.createConcept();
 
             expect(conceptPage.getError()).toEqual('A concept must have at least one fully specified name (across all locales)');
         });
@@ -118,7 +117,7 @@ describe('Concept', function () {
             conceptPage.prepareToCreateConcept();
             conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Fully Specified", true, "English [en]");
             conceptPage.deleteDescriptionArea();
-            conceptPage.newConceptLink();
+            conceptPage.createConcept();
 
             expect(conceptPage.getStatus()).toEqual('Concept created.');
         });
@@ -192,7 +191,7 @@ describe('Concept', function () {
 
                 conceptPage.fillDescriptionField();
 
-                conceptPage.newConceptLink();
+                conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual('A concept may not have more than one preferred name (per locale)');
             });
@@ -208,7 +207,7 @@ describe('Concept', function () {
 
                 conceptPage.fillDescriptionField();
 
-                conceptPage.newConceptLink();
+                conceptPage.createConcept();
                 expect(conceptPage.getError()).toEqual('A short name cannot be marked as locale preferred');
             });
 
@@ -223,7 +222,7 @@ describe('Concept', function () {
 
                 conceptPage.fillDescriptionField();
 
-                conceptPage.newConceptLink();
+                conceptPage.createConcept();
                 expect(conceptPage.getError()).toEqual('A concept may not have more than one preferred name (per locale)');
             });
 
@@ -252,7 +251,7 @@ describe('Concept', function () {
 
                 conceptPage.fillDescriptionField();
 
-                conceptPage.newConceptLink();
+                conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual('A concept may not have more than one fully specified name in any locale');
 
@@ -262,7 +261,7 @@ describe('Concept', function () {
                 conceptPage.prepareToCreateConcept();
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Fully Specified", true, "English [en]");
                 conceptPage.deleteDescriptionArea();
-                conceptPage.newConceptLink();
+                conceptPage.createConcept();
 
                 expect(conceptPage.getStatus()).toEqual('Concept created.');
             });
@@ -274,7 +273,7 @@ describe('Concept', function () {
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Fully Specified", true, "English [en]");
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().last(), conceptPage.getRandomName(), "Fully Specified", false, "English [en]");
                 conceptPage.fillDescriptionField();
-                conceptPage.newConceptLink();
+                conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual('A concept may not have more than one fully specified name in any locale');
             });
@@ -284,7 +283,7 @@ describe('Concept', function () {
                 conceptPage.prepareToCreateConcept();
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Short", true, "English [en]");
                 conceptPage.fillDescriptionField();
-                conceptPage.newConceptLink();
+                conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual('A concept must have at least one fully specified name (across all locales)');
             });
@@ -296,7 +295,7 @@ describe('Concept', function () {
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Fully Specified", true, "English [en]");
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().last(), conceptPage.getRandomName(), "Short", true, "English [en]");
                 conceptPage.fillDescriptionField();
-                conceptPage.newConceptLink();
+                conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual('A concept may not have more than one preferred name (per locale)');
             });
@@ -308,7 +307,7 @@ describe('Concept', function () {
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Fully Specified", false, "English [en]");
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().last(), conceptPage.getRandomName(), "Short", true, "English [en]");
                 conceptPage.fillDescriptionField();
-                conceptPage.newConceptLink();
+                conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual('A short name cannot be marked as locale preferred');
             });
@@ -320,7 +319,7 @@ describe('Concept', function () {
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), "sameText", "Fully Specified", true, "English [en]");
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().last(), "sameText", "Fully Specified", false, "English [en]");
                 conceptPage.fillDescriptionField();
-                conceptPage.newConceptLink();
+                conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual('All names except short names must unique for a concept and locale');
             });
@@ -332,7 +331,7 @@ describe('Concept', function () {
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), "sameText", "Fully Specified", true, "English [en]");
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().last(), "sameText", "Short", false, "English [en]");
                 conceptPage.fillDescriptionField();
-                conceptPage.newConceptLink();
+                conceptPage.createConcept();
 
                 expect(conceptPage.getStatus()).toEqual('Concept created.');
             });
@@ -426,7 +425,7 @@ describe('Concept', function () {
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Fully Specified", true, "English [en]");
                 conceptPage.deleteDescriptionArea();
 
-                conceptPage.newConceptLink();
+                conceptPage.createConcept();
 
                 conceptPage.prepareToEditConcept();
 
