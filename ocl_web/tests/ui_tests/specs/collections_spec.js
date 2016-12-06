@@ -2,8 +2,8 @@
 
 var LoginPage = require('../pages/login_page.js');
 var LogoutPage = require('../pages/logout_page.js');
-var CollectionPage = require('../pages/collections_page.js');
-var OrgPage = require('../pages/organization_page');
+var collectionPage = require('../pages/collections_page.js');
+var orgPage = require('../pages/organization_page');
 var data = require('../fixtures/test_data.json');
 var configuration = require('../utilities/configuration.js');
 var EC = require('protractor').ExpectedConditions;
@@ -12,8 +12,6 @@ describe('OCL Collections Page', function () {
 
     var loginPage = new LoginPage();
     var logoutPage = new LogoutPage();
-    var collectionPage = new CollectionPage();
-    var orgPage = new OrgPage();
     var id = '';
     browser.ignoreSynchronization = true;
 
@@ -23,31 +21,31 @@ describe('OCL Collections Page', function () {
     });
 
     it('should create collection', function () {
-        id = orgPage.getRandomString(2);
+        id = orgPage.getRandomId();
         collectionPage.createNewUserCollection(data.short_code + id,
             data.col_name,
             data.full_name,
             data.supported_locale
         );
 
-        expect((collectionPage.status).getText()).toEqual('Collection created');
+        expect(collectionPage.getStatus()).toEqual('Collection created');
     });
 
     it('should create collection with openmrs validation schema', function () {
         collectionPage.userHomeLink.click();
-        id = orgPage.getRandomString(2);
+        id = orgPage.getRandomId();
         collectionPage.createNewUserCollection(data.short_code + id,
             data.col_name,
             data.full_name,
             data.supported_locale,
             data.custom_validation_schema
         );
-        expect((collectionPage.status).getText()).toEqual('Collection created');
+        expect(collectionPage.getStatus()).toEqual('Collection created');
     });
 
     it('should update collection to openmrs validation schema', function () {
         collectionPage.userHomeLink.click();
-        id = orgPage.getRandomString(2);
+        id = orgPage.getRandomId();
         collectionPage.createNewUserCollection(data.short_code + id,
             data.col_name,
             data.full_name,
@@ -57,7 +55,7 @@ describe('OCL Collections Page', function () {
         collectionPage.clickEditIcon();
         collectionPage.setCustomValidationSchema(data.customValidationSchema);
         collectionPage.clickUpdateCollection();
-        expect((collectionPage.status).getText()).toEqual('Collection updated');
+        expect(collectionPage.getStatus()).toEqual('Collection updated');
     });
 
     it('should create collection version', function () {
@@ -120,7 +118,7 @@ describe('OCL Collections Page', function () {
     it('should edit collection', function () {
         collectionPage.editCollection(data.col_desc, data.ext_id);
 
-        expect((collectionPage.status).getText()).toEqual('Collection updated');
+        expect(collectionPage.getStatus()).toEqual('Collection updated');
         expect((collectionPage.updatedDescValue).getText()).toContain('collection description');
         expect((collectionPage.updatedExtIdValue).getText()).toContain('1.1');
     });
@@ -128,7 +126,7 @@ describe('OCL Collections Page', function () {
     it('should delete collection', function () {
         collectionPage.deleteCollection();
 
-        expect((collectionPage.status).getText()).toEqual('Collection Deleted');
+        expect(collectionPage.getStatus()).toEqual('Collection Deleted');
     });
 
     it('should logout', function () {

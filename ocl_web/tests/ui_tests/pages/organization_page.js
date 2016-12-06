@@ -1,3 +1,4 @@
+var BasePage = require('./base_page.js');
 var EC = require('protractor').ExpectedConditions;
 
 var OrganizationPage = function() {
@@ -12,7 +13,6 @@ var OrganizationPage = function() {
     this.orgCompany = $('#id_company');
     this.orgLocation = $('#id_location');
     this.createOrgButton = element(by.buttonText('Create Organization'));
-    this.status = $('.alert-info');
     this.customValidationSchema = $('#id_custom_validation_schema');
 
     // create collection under org locators
@@ -62,8 +62,8 @@ var OrganizationPage = function() {
     this.okButton = element(by.buttonText('OK'));
 
     // create concept locators
-    this.newConceptLink = element(by.linkText('Concepts'));
-    this.createConcept = element(by.linkText(' New Concept'));
+    this.conceptsLink = element(by.linkText('Concepts'));
+    this.newConceptLink = element(by.linkText(' New Concept'));
     this.conceptId = $('#id_concept_id');
     this.createConceptButton = element(by.buttonText('Create Concept'));
     this.select_name_locale = element(by.model('name.locale'));
@@ -79,16 +79,6 @@ var OrganizationPage = function() {
     this.mapType = $('#id_map_type');
     this.toConcept = $('#id_internal_to_concept_url');
     this.createMappingButton = element(by.buttonText('Create Mapping'));
-
-    // for random string as name of org
-    this.getRandomString = function(length) {
-        var string = '';
-        var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        for (var i = 0; i < length; i++) {
-            string += letters.charAt(Math.floor(Math.random() * letters.length));
-        }
-        return string;
-    };
 
     this.createNewOrg = function (org_ShortCode, org_name, website, company, loc ) {
         this.orgTab.click();
@@ -151,8 +141,8 @@ var OrganizationPage = function() {
     };
 
     this.createNewConcept = function (id, name, desc, key, locale) {
+        this.conceptsLink.click();
         this.newConceptLink.click();
-        this.createConcept.click();
         this.conceptId.sendKeys(id);
         this.select_name_locale.$('[label="'+ locale +'"]').click();
         this.conceptName.sendKeys(name);
@@ -193,4 +183,5 @@ var OrganizationPage = function() {
         this.okButton.click();
     };
 };
-module.exports = OrganizationPage;
+OrganizationPage.prototype = BasePage;
+module.exports = new OrganizationPage();
