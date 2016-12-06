@@ -31,9 +31,6 @@ var CollectionsPage = function() {
     this.deleteButton = element(by.buttonText('Delete'));
     this.deleteConfirm = element(by.buttonText('Yes'));
 
-    // user home page link
-    this.userHomeLink = element(by.css('.resource-label.user'));
-
     this.setShortCode = function (code) {
         this.shortCode.sendKeys(code);
     };
