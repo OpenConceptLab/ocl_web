@@ -1,3 +1,5 @@
+var BasePage = require('./base_page.js');
+
 var CollectionsPage = function() {
 
     // create collection locators
@@ -8,7 +10,6 @@ var CollectionsPage = function() {
     this.supportedLocale = $('#id_supported_locales');
     this.customValidationSchema = $('#id_custom_validation_schema');
     this.addCollectionButton = element(by.buttonText('Add'));
-    this.status = $('.alert-info');
 
     // create collection version locators
     this.versionTab = element(by.linkText('Versions'));
@@ -118,4 +119,5 @@ var CollectionsPage = function() {
     };
 
 };
-module.exports = CollectionsPage;
+CollectionsPage.prototype = BasePage;
+module.exports = new CollectionsPage();

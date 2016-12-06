@@ -11,7 +11,8 @@
     "load-grunt-tasks": "~0.4.0",
     "phantomjs": "^2.1.7",
     "protractor": "~4.0.3",
-    "time-grunt": "~0.2.10"
+    "time-grunt": "~0.2.10",
+    "chance": "^1.0.4"
   },
   "engines": {
     "node": ">=0.8.0"

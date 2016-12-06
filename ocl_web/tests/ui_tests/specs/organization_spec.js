@@ -2,8 +2,8 @@
 
 var LoginPage = require('../pages/login_page.js');
 var LogoutPage = require('../pages/logout_page.js');
-var OrgPage = require('../pages/organization_page');
-var CollectionPage = require('../pages/collections_page.js');
+var orgPage = require('../pages/organization_page');
+var collectionPage = require('../pages/collections_page.js');
 var data = require('../fixtures/test_data.json');
 var configuration = require('../utilities/configuration.js');
 var EC = require('protractor').ExpectedConditions;
@@ -12,15 +12,11 @@ var timeout = 5000;
 describe('OCL Org Page', function () {
     var loginPage;
     var logoutPage;
-    var orgPage;
-    var collectionPage;
     var id = '';
 
     beforeEach(function () {
         loginPage = new LoginPage();
         logoutPage = new LogoutPage();
-        collectionPage = new CollectionPage();
-        orgPage = new OrgPage();
         return browser.ignoreSynchronization = true;
     });
 
@@ -32,23 +28,23 @@ describe('OCL Org Page', function () {
     });
 
     it('should create organization', function () {
-        id = orgPage.getRandomString(5);
+        id = orgPage.getRandomId();
         orgPage.createNewOrg(data.org_short_code + id, data.org_name, data.website, data.company, data.org_location);
 
-        expect((orgPage.status).getText()).toEqual('Organization Added');
+        expect(orgPage.getStatus()).toEqual('Organization Added');
     });
 
     it('should create source', function () {
         orgPage.createNewSource(data.src_code, data.src_full_name, data.supported_locale);
 
-        expect((orgPage.status).getText()).toEqual('Source created');
+        expect(orgPage.getStatus()).toEqual('Source created');
     });
 
     it('should create concept', function () {
         orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key1, data.locale1);
 
         browser.wait(EC.presenceOf(orgPage.status), timeout);
-        expect((orgPage.status).getText()).toEqual('Concept created.');
+        expect(orgPage.getStatus()).toEqual('Concept created.');
 
         element(by.linkText('  ' + data.src_code)).click();
     });
@@ -58,7 +54,7 @@ describe('OCL Org Page', function () {
 
         browser.wait(EC.presenceOf(orgPage.status), timeout);
 
-        expect((orgPage.status).getText()).toEqual('Source version created!');
+        expect(orgPage.getStatus()).toEqual('Source version created!');
         browser.refresh();
 
     });
@@ -118,7 +114,7 @@ describe('OCL Org Page', function () {
             data.concept_name, data.concept_desc, data.key1, data.locale2);
 
         browser.wait(EC.presenceOf(orgPage.status), timeout);
-        expect((orgPage.status).getText()).toEqual('Concept created.');
+        expect(orgPage.getStatus()).toEqual('Concept created.');
 
         element(by.linkText('  ' + data.src_code)).click();
     });
@@ -133,7 +129,7 @@ describe('OCL Org Page', function () {
             toConceptURL
         );
 
-        expect((orgPage.status).getText()).toEqual('Mapping created.');
+        expect(orgPage.getStatus()).toEqual('Mapping created.');
 
         // mapping_id = element(by.css('#mapping_id .row .field-label-value')).getText();
         // console.log(mapping_id);
@@ -146,14 +142,14 @@ describe('OCL Org Page', function () {
             data.full_name,
             data.supported_locale
         );
-        expect((orgPage.status).getText()).toEqual('Collection created');
+        expect(orgPage.getStatus()).toEqual('Collection created');
     });
 
     it('should create collection version', function () {
 
         collectionPage.createNewCollectionVersion('V1', 'version 1');
 
-        expect((orgPage.status).getText()).toEqual('Collection version created!');
+        expect(orgPage.getStatus()).toEqual('Collection version created!');
     });
 
     it('should release a collection version', function () {
@@ -257,7 +253,7 @@ describe('OCL Org Page', function () {
     //     orgPage.createNewReference(mapping_expression);
     //     console.log(mapping_expression);
     //
-    //     expect((orgPage.status).getText()).toEqual('Expression added.');
+    //     expect(orgPage.getStatus()).toEqual('Expression added.');
     //     // expect(element(by.linkText(' '+expression)).isPresent()).toBe(true);
     // });
 
