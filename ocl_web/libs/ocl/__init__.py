@@ -360,11 +360,7 @@ class OclApi(object):
         data = {}
         data.update(base_data)
 
-        list_data = []
-        for name in names:
-            list_data.append(name)
-        data['names'] = list_data
-
+        data['names'] = self.extract_names(names)
         data['descriptions'] = self.extract_descriptions(descriptions)
 
         list_data = []
