@@ -389,11 +389,6 @@ describe('Concept', function () {
             });
 
         });
-
-        afterAll(function () {
-            conceptPage.returnToHomePage();
-        });
-
     });
 
     afterAll(function () {
