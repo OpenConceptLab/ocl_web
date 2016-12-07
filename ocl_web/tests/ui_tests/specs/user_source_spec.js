@@ -22,7 +22,6 @@ describe('OCL User Source Page', function () {
     });
 
     it('should login', function () {
-        loginPage.visit();
         loginPage.login();
 
         expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as ' + configuration.get("username") + '.');
@@ -36,14 +35,14 @@ describe('OCL User Source Page', function () {
             data.supported_locale
         );
 
-        expect((orgPage.status).getText()).toEqual('Source created');
+        expect(orgPage.getStatus()).toEqual('Source created');
         expect((orgPage.customValidationSchema).getText()).toEqual('None')
     });
 
     it('should create concept', function () {
         orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key1, data.locale2);
 
-        expect((orgPage.status).getText()).toEqual('Concept created.');
+        expect(orgPage.getStatus()).toEqual('Concept created.');
 
         element(by.linkText('  '+data.src_code+srcShortCode)).click();
     });
@@ -52,7 +51,7 @@ describe('OCL User Source Page', function () {
         orgPage.createNewSourceVersion(data.id, data.description);
 
         browser.wait(EC.presenceOf(orgPage.status), 500);
-        expect((orgPage.status).getText()).toEqual('Source version created!');
+        expect(orgPage.getStatus()).toEqual('Source version created!');
 
         browser.refresh()
     });
