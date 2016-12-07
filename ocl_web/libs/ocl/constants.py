@@ -289,42 +289,50 @@ class OclConstants(object):
             'int':RESOURCE_ID_SOURCE,
             'name':RESOURCE_NAME_SOURCE,
             'display_name':'source',
-            'facets':True},
+            'facets':True,
+            'show_on_global_search':True},
         RESOURCE_NAME_COLLECTIONS:{
             'int':RESOURCE_ID_COLLECTION,
             'name':RESOURCE_NAME_COLLECTION,
             'display_name':'collection',
-            'facets':True},
+            'facets':True,
+            'show_on_global_search':True},
         RESOURCE_NAME_ORGS:{
             'int':RESOURCE_ID_ORG,
             'name':RESOURCE_NAME_ORG,
             'display_name':'organization',
-            'facets':False},
+            'facets':False,
+            'show_on_global_search':True},
         RESOURCE_NAME_USERS:{
             'int':RESOURCE_ID_USER,
             'name':RESOURCE_NAME_USER,
             'display_name':'user',
-            'facets':False},
+            'facets':False,
+            'show_on_global_search':True},
         RESOURCE_NAME_SOURCE_VERSIONS:{
             'int':RESOURCE_ID_SOURCE_VERSION,
             'name':RESOURCE_NAME_SOURCE_VERSION,
             'display_name':'version',
-            'facets':False},
+            'facets':False,
+            'show_on_global_search':False},
         RESOURCE_NAME_COLLECTION_VERSIONS: {
             'int': RESOURCE_ID_COLLECTION_VERSION,
             'name': RESOURCE_NAME_COLLECTION_VERSION,
             'display_name': 'version',
-            'facets': False},
+            'facets': False,
+            'show_on_global_search':False},
         RESOURCE_NAME_CONCEPT_VERSIONS:{
             'int':RESOURCE_ID_CONCEPT_VERSION,
             'mnemonic':RESOURCE_NAME_CONCEPT_VERSION,
             'display_name':'concept version',
-            'facets':False},
+            'facets':False,
+            'show_on_global_search':False},
         RESOURCE_NAME_MAPPING_VERSIONS:{
             'int':RESOURCE_ID_MAPPING_VERSION,
             'mnemonic':RESOURCE_NAME_MAPPING_VERSION,
             'display_name':'mapping version',
-            'facets':False},
+            'facets':False,
+            'show_on_global_search':False},
     }
 
 

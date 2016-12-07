@@ -88,7 +88,7 @@ class GlobalSearchView(TemplateView):
             if resource_type == searcher.search_type:
                 # Primary search has already been performed, so just set value from above
                 resource_count[searcher.search_type] = searcher.num_found
-            else:
+            elif OclConstants.RESOURCE_TYPE_INFO[resource_type]['show_on_global_search']:
                 # Get resource count applying transferrable search criteria
                 count_response = api.head(resource_type, params=other_resource_search_params)
                 if 'num_found' in count_response.headers:
