@@ -108,11 +108,9 @@
 				<div class="label-container">
 					{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
 				</div>
-				<p>
-					<label>Class:</label> <span class="resource-attr">{{ result.concept_class }}</span>, <label>Datatype:</label> <span class="resource-attr">{{ result.datatype }}</span>
-					{% if result.description %}<p>{{ result.description }}</p>{% endif %}
-					<br /><span class="text-muted"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>
-				</p>
+				<div class="resource-attributes"><span class="resource-attr"><label>Class:</label> {{ result.concept_class }}</span>, <span class="resource-attr"><label>Datatype:</label> {{ result.datatype }}</span></div>
+				{% if result.description %}<div class="resource-description">{{ result.description }}</div>{% endif %}
+				<div class="resource-metadata"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</div>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 
@@ -140,9 +138,7 @@
 						<span class="text-muted small">To:</span>&nbsp;&nbsp;{% mapping_to_concept_label result label_size="small" %}
 					</div>
 				</div>
-				<p>
-					<span class="text-muted"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>
-				</p>
+				<div class="resource-metadata"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</div>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 
@@ -171,11 +167,9 @@
 				<div class="label-container">
 					{% generic_resource_label resource_type='source' resource_id=result.short_code resource_name=result.name resource_url=result_home_url owner_type=result.owner_type owner_id=result.owner label_size='small' display_breadcrumb=True %}
 				</div>
-				<p>
-					<label>Source Type:</label> <span class="resource-attr">{{ result.source_type|default:"None" }}</span><br />
-					{% if result.description %}{{ result.description }}<br />{% endif %}
-					{% if result.updated_on %}<span class="text-muted"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
-				</p>
+				<div class="resource-attributes"><span class="resource-attr"><label>Source Type:</label> {{ result.source_type|default:"None" }}</span></div>
+				{% if result.description %}<div class="resource-description">{{ result.description }}</div>{% endif %}
+				{% if result.updated_on %}<div class="resource-metadata"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</div>{% endif %}
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 
@@ -204,11 +198,9 @@
 				<div class="label-container">
 					{% generic_resource_label resource_type='collection' resource_id=result.short_code resource_name=result.name resource_url=result_home_url owner_type=result.owner_type owner_id=result.owner label_size='small' display_breadcrumb=True %}
 				</div>
-				<p>
-					<label>Collection Type:</label> <span class="resource-attr">{{ result.collection_type|default:"None" }}</span><br />
-					{% if result.description %}{{ result.description }}<br />{% endif %}
-					{% if result.updated_on %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
-				</p>
+				<div class="resource-attributes"><span class="resource-attr"><label>Collection Type:</label> {{ result.collection_type|default:"None" }}</span></div>
+				{% if result.description %}<div class="resource-description">{{ result.description }}</div>{% endif %}
+				{% if result.updated_on %}<div class="resource-metadata"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</div>{% endif %}
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 
@@ -227,14 +219,12 @@
 				<div class="label-container">
 					{% generic_resource_label resource_type='org' resource_id=result.id resource_name=result.name resource_url=result_url label_size='small' display_breadcrumb=True %}
 				</div>
-				<p>
-					{% if result.description %}<p>{{ result.description|truncatechars:180 }}</p>{% endif %}
-					<span class="text-muted">
+					{% if result.description %}<div class="resource-description">{{ result.description|truncatechars:180 }}</div>{% endif %}
+					<div class="resource-metadata">
 						{% if result.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ result.location }}
 						&nbsp;&nbsp;&nbsp;&nbsp;{% endif %}
 						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ result.created_on|smart_date }}
-					</span>
-				</p>
+					</div>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 
@@ -255,13 +245,11 @@
 				<div class="label-container">
 					{% generic_resource_label resource_type='user' resource_id=result.username resource_name=result.name resource_url=result_url label_size='small' display_breadcrumb=True %}
 				</div>
-				<p>
-					<span class="text-muted">
-						{% if result.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ result.location }}
-						&nbsp;&nbsp;&nbsp;{% endif %}
-						<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined on {{ result.created_on|smart_date}}
-					</span>
-				</p>
+				<div class="resource-metadata">
+					{% if result.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ result.location }}
+					&nbsp;&nbsp;&nbsp;{% endif %}
+					<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Joined on {{ result.created_on|smart_date}}
+				</div>
 				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
 

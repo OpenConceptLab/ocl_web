@@ -95,7 +95,7 @@ form div.input-group {
 /* SEARCH RESULTS */
 .row-search-result {
   border-top:1px solid #e5e5e5;
-  padding-bottom:0;
+  padding-bottom:6px;
   padding-top:3px;
 }
 .row-search-result .search-result-col-checkbox {
@@ -111,14 +111,22 @@ form div.input-group {
   color:#e5e5e5;
 }
 .row-search-result .search-result-col-content { }
-.row-search-result .search-result-col-content p {
+.row-search-result .search-result-col-content .resource-attributes {
   font-size:9pt;
-  margin-bottom:2px;
 }
-.row-search-result .search-result-col-content label {
+.row-search-result .search-result-col-content .resource-attributes label {
   font-weight: 300;
   font-style: italic;
+  margin-bottom: 0;
 }
+.row-search-result .search-result-col-content .resource-description {
+  font-size:9pt;
+}
+.row-search-result .search-result-col-content .resource-metadata {
+  font-size:8pt;
+  color: #777;
+}
+
 .row-search-result .search-result-col-content .resource-attr {
 }
 .row-pagination {
