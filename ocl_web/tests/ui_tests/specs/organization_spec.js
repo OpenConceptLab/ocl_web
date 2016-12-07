@@ -21,7 +21,6 @@ describe('OCL Org Page', function () {
     });
 
     it('should login', function () {
-        loginPage.visit();
         loginPage.login();
 
         expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as ' + configuration.get("username") + '.');

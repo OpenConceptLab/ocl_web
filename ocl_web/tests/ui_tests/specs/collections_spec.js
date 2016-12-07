@@ -16,7 +16,6 @@ describe('OCL Collections Page', function () {
     browser.ignoreSynchronization = true;
 
     beforeAll(function () {
-        loginPage.visit();
         loginPage.login();
     });
 
@@ -62,7 +61,7 @@ describe('OCL Collections Page', function () {
 
         collectionPage.createNewCollectionVersion('V1', 'Version 1');
 
-        expect((orgPage.status).getText()).toEqual('Collection version created!');
+        expect((orgPage.getStatus())).toEqual('Collection version created!');
         browser.refresh();
     });
 

@@ -22,7 +22,6 @@ describe('OCL User Source Page', function () {
     });
 
     it('should login', function () {
-        loginPage.visit();
         loginPage.login();
 
         expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as ' + configuration.get("username") + '.');
@@ -37,7 +36,7 @@ describe('OCL User Source Page', function () {
             data.custom_validation_schema
         );
 
-        expect((orgPage.status).getText()).toEqual('Source created');
+        expect(orgPage.getStatus()).toEqual('Source created');
         expect((orgPage.customValidationSchema).getText()).toEqual('OpenMRS')
     });
 
