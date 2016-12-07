@@ -279,12 +279,14 @@ class OclConstants(object):
             'int':RESOURCE_ID_CONCEPT,
             'name':RESOURCE_NAME_CONCEPT,
             'display_name':'concept',
-            'facets':True},
+            'facets':True,
+            'show_on_global_search':True},
         RESOURCE_NAME_MAPPINGS:{
             'int':RESOURCE_ID_MAPPING,
             'name':RESOURCE_NAME_MAPPING,
             'display_name':'mapping',
-            'facets':True},
+            'facets':True,
+            'show_on_global_search':True},
         RESOURCE_NAME_SOURCES:{
             'int':RESOURCE_ID_SOURCE,
             'name':RESOURCE_NAME_SOURCE,
