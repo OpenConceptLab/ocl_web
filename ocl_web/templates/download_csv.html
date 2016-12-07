@@ -10,7 +10,7 @@
 {% elif type == 'search' %}
 	{% if request.user.is_authenticated and results %}
 		<input id='download-origin' type="hidden" value="{{ type }}">
-		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-download-alt"></span> <span class="caret"></span></button>
+		<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-download-alt"></span> <span class="caret"></span></button>
 		<ul class="dropdown-menu" role="menu">
 			<li><a class="download-csv"><span class="glyphicon glyphicon-file"></span> Formatted CSV</a></li>
 		</ul>

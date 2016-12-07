@@ -86,6 +86,10 @@ form div.input-group {
 }
 
 
+/* GLOBAL SEARCH */
+.global-resource-selector .badge {
+  font-weight:normal;
+}
 
 
 /* SEARCH RESULTS */
@@ -94,19 +98,26 @@ form div.input-group {
   padding-bottom:0;
   padding-top:3px;
 }
-.search-result-col-checkbox {
+.row-search-result .search-result-col-checkbox {
   text-align:right;
   padding-top:14px;
 }
-.search-result-col-icon {
+.row-search-result .search-result-col-icon {
   text-align:right;
   padding-top:14px;
 }
-.search-result-icon {
+.row-search-result .search-result-icon {
   font-size:32pt;
   color:#e5e5e5;
 }
-.search-result-col-content {
+.row-search-result .search-result-col-content { }
+.row-search-result .search-result-col-content p {
+  font-size:9pt;
+  margin-bottom:2px;
+}
+.row-search-result .search-result-col-content label {
+}
+.row-search-result .search-result-col-content .resource-attr {
 }
 .row-pagination {
   text-align:center;
@@ -118,11 +129,10 @@ form div.input-group {
 /* FILTERS */
 
 .filter-group {
-
 }
 .filter-group .filter-group-header {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 9pt;
   font-weight: normal;
   height: auto;
   line-height: 13.5px;
@@ -130,11 +140,38 @@ form div.input-group {
   border-bottom:1px solid #e5e5e5;
   padding-bottom:5px;
   margin-top:20px;
+  margin-bottom:6px;
   color: rgb(153, 153, 153);
 }
 .filter-group .filter-group-body {
-  padding-left:15px;
-  padding-right:15px;
+  font-size:9pt;
+  padding-left:0;
+  padding-right:0;
+}
+.filter-group .filter-group-body .checkbox {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 0;
+  padding-top:3px;
+}
+.filter-group .filter-group-body input[type='checkbox'] {
+  cursor: pointer;
+}
+.filter-group .filter-group-body div.checkbox:hover,
+.filter-group .filter-group-body div.checkbox:active {
+  background-color: #fff5cc;
+}
+.filter-group .filter-group-body .checkbox label {
+  width: 100%;
+  display: inline-block;
+}
+.filter-group .filter-group-body .checkbox .count {
+  color: #777;
+  float: right !important;
+}
+.filter-group .filter-group-body .checkbox input {
+  margin-top:2px;
 }
 
 
@@ -296,10 +333,10 @@ a.resource-label:hover {
 .resource-header.resource-header-org
 {
   background-color:rgb(252,252,252);
-  padding-top:20px;
-  padding-bottom:20px;
+  padding-top:3px;
+  padding-bottom:3px;
   border-bottom:1px solid #e5e5e5;
-  margin-bottom:20px;
+  margin-bottom:15px;
 }
 .resource-header .resource-header-label {
   display:inline-block;
