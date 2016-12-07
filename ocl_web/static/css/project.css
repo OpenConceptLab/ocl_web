@@ -116,6 +116,8 @@ form div.input-group {
   margin-bottom:2px;
 }
 .row-search-result .search-result-col-content label {
+  font-weight: 300;
+  font-style: italic;
 }
 .row-search-result .search-result-col-content .resource-attr {
 }
