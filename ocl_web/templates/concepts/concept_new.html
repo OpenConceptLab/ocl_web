@@ -27,16 +27,16 @@
 			<form class="form" name="concept_form" autocomplete="off" method="post" action=".">
 				{% csrf_token %}
         {% bootstrap_form form %}
-        <concept-name-synonym names="[{'name':'', 'locale':'{{ source.default_locale }}', 'locale_preferred':true, 'name_type':'Fully Specified'}]"
+        <concept-name-synonym names="{{ names }}"
                               types="{{ name_types }}"
                               default-locale="'{{ source.default_locale }}'"
                               locales="{{ locales }}"></concept-name-synonym>
 
-        <concept-description descriptions="[{'description':'', 'locale':'{{ source.default_locale }}', 'locale_preferred':true, 'description_type':'None'}]"
+        <concept-description descriptions="{{ descriptions }}"
                              default-locale="'{{ source.default_locale }}'"
                              types="{{ description_types }}" locales="{{ locales }}"></concept-description>
 
-        <custom-attributes extras="[{key:'', value:''}]"></custom-attributes>
+        <custom-attributes extras="{{ extras }}"></custom-attributes>
 				{% buttons %}
           <div class="col-md-12">
             <button type="submit" class="btn btn-primary">{% trans "Create Concept" %}</button>

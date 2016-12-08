@@ -76,6 +76,10 @@ var ConceptPage = function() {
         item.element(by.model('name.name')).clear().sendKeys(name);
     };
 
+    this.getNameText = function (item, name) {
+        return item.element(by.model('name.name')).getText();
+    }
+
     this.setLocalePreferred = function (item, select) {
         item.element(by.model('name.locale_preferred')).isSelected().then(function (selected) {
             if ((!selected && select) || (selected && !select)) {

@@ -27,6 +27,8 @@ describe('Concept', function () {
     browser.ignoreSynchronization = true;
 
     beforeAll(function () {
+        // Login
+        loginPage.visit();
         loginPage.login();
     });
 
@@ -84,6 +86,20 @@ describe('Concept', function () {
                 conceptPage.createConcept();
 
                 expect(conceptPage.getStatus()).toEqual('Concept created.');
+            });
+
+            it('#352 concept create - form should retain data after unsuccessful creation', function () {
+                conceptPage.prepareToCreateConcept();
+                conceptPage.addNamesAndSynonyms(1);
+                var expectedName = conceptPage.getRandomName();
+                conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), expectedName, "Short", true, "English [en]");
+                conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), expectedName, "Short", true, "English [en]");
+                conceptPage.fillDescriptionField();
+                conceptPage.createConcept();
+
+                expect(conceptPage.getError()).toEqual('A concept must have at least one fully specified name (across all locales)');
+                expect(conceptPage.getNamesAndSynonyms().first().getText()).toEqual(expectedName);
+                expect(conceptPage.getNamesAndSynonyms().last().getText()).toEqual(expectedName);
             });
         });
 
@@ -316,7 +332,7 @@ describe('Concept', function () {
 
                 var names = conceptPage.getNamesAndSynonyms();
 
-                conceptPage.setNameText(names.first(),"name1");
+                conceptPage.setNameText(names.first(), "name1");
 
                 conceptPage.updateConcept();
 
