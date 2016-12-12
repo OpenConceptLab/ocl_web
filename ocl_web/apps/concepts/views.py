@@ -15,10 +15,10 @@ from django.core.urlresolvers import reverse
 from django.template.response import TemplateResponse
 from apps.core.views import _get_locale_list, _get_name_type_list, _get_description_type_list
 import json
-#from django.core.paginator import Paginator
+# from django.core.paginator import Paginator
 
 from braces.views import (LoginRequiredMixin, JsonRequestResponseMixin)
-#from braces.views importCsrfExemptMixin
+# from braces.views importCsrfExemptMixin
 
 from .forms import (ConceptNewForm, ConceptEditForm, ConceptNewMappingForm, ConceptRetireForm)
 from libs.ocl import OclApi, OclSearch, OclConstants
@@ -104,7 +104,6 @@ class ConceptReadBaseView(TemplateView):
         return searcher
 
 
-
 class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
     """
     Concept details view.
@@ -132,7 +131,6 @@ class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
         context['concept'] = concept
 
         return context
-
 
 
 class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
@@ -165,7 +163,6 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
 
         return data
 
-
     def get_context_data(self, *args, **kwargs):
         """ Loads the concept details. """
 
@@ -180,7 +177,7 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
             include_mappings=True, include_inverse_mappings=True)
 
         # Process mappings relative to current concept
-        # TODO(paynejd@gmail.com): This entire section needs to be re-written
+        # TODO(paynejd@gmail.com): Move processing code to concept/mapping class objects
         mappings = {
             'Direct Internal Mapping': [],
             'Direct External Mapping': [],
@@ -191,100 +188,99 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
             'Set Parent': [],
             'Other': [],
         }
-        if 'mappings' in concept and concept['mappings']:
-            for mapping in concept['mappings']:
-                mapping['is_direct_mapping'] = False
-                mapping['is_inverse_mapping'] = False
-                mapping['is_internal_mapping'] = False
-                mapping['is_external_mapping'] = False
-                mapping['mapping_category'] = None
-                mapping['to_url'] = None
-                mapping['from_url'] = None
-                mapping['mapping_url'] = None
+        for mapping in concept['mappings']:
+            mapping['is_direct_mapping'] = False
+            mapping['is_inverse_mapping'] = False
+            mapping['is_internal_mapping'] = False
+            mapping['is_external_mapping'] = False
+            mapping['mapping_category'] = None
+            mapping['to_url'] = None
+            mapping['from_url'] = None
+            mapping['mapping_url'] = None
 
-                # TODO: Set the mapping_url
-                mapping_url_args = {}
-                if mapping['owner_type'] == 'Organization':
-                    mapping_url_args['org'] = mapping['owner']
-                else:
-                    mapping_url_args['user'] = mapping['owner']
-                mapping_url_args['source'] = mapping['source']
-                mapping_url_args['mapping'] = mapping['id']
-                mapping['mapping_url'] = reverse('mapping-home', kwargs=mapping_url_args)
+            # TODO: Set the mapping_url
+            mapping_url_args = {}
+            if mapping['owner_type'] == 'Organization':
+                mapping_url_args['org'] = mapping['owner']
+            else:
+                mapping_url_args['user'] = mapping['owner']
+            mapping_url_args['source'] = mapping['source']
+            mapping_url_args['mapping'] = mapping['id']
+            mapping['mapping_url'] = reverse('mapping-home', kwargs=mapping_url_args)
 
-                # this concept == from_concept
-                if (self.proper_owner_type == mapping['from_source_owner_type'] and
+            # this concept == from_concept
+            if (self.proper_owner_type == mapping['from_source_owner_type'] and
                         self.owner_id == mapping['from_source_owner'] and
                         self.source_id == mapping['from_source_name'] and
                         self.concept_id == mapping['from_concept_code']):
 
-                    # Setup the arguments to reverse to_concept URL - URL reversed in next block
-                    to_concept_url_args = {}
-                    if mapping['to_source_owner_type'] == 'Organization':
-                        to_concept_url_args['org'] = mapping['to_source_owner']
-                    else:
-                        to_concept_url_args['user'] = mapping['to_source_owner']
-                    to_concept_url_args['source'] = mapping['to_source_name']
-
-                    # Set mapping attributes relative to the current concept
-                    mapping['is_direct_mapping'] = True
-                    if mapping['to_concept_url']:
-                        mapping['is_internal_mapping'] = True
-                        to_concept_url_args['concept'] = mapping['to_concept_code']
-                        mapping['to_url'] = reverse('concept-home', kwargs=to_concept_url_args)
-                    else:
-                        mapping['is_external_mapping'] = True
-                        mapping['to_url'] = reverse('source-home', kwargs=to_concept_url_args)
-
-                    # Determine the mapping category relative to current concept
-                    if mapping['map_type'] == 'Q-AND-A':
-                        mapping['mapping_category'] = 'Linked Answer'
-                        mappings['Linked Answer'].append(mapping)
-                    elif mapping['map_type'] == 'CONCEPT-SET':
-                        mapping['mapping_category'] = 'Set Member'
-                        mappings['Set Member'].append(mapping)
-                    elif mapping['to_concept_url']:
-                        mapping['mapping_category'] = 'Direct Internal Mapping'
-                        mappings['Direct Internal Mapping'].append(mapping)
-                    else:
-                        mapping['mapping_category'] = 'Direct External Mapping'
-                        mappings['Direct External Mapping'].append(mapping)
-
-                # this concept == to_concept (internal mapping)
-                elif (self.proper_owner_type == mapping['to_source_owner_type'] and
-                      self.owner_id == mapping['to_source_owner'] and
-                      self.source_id == mapping['to_source_name'] and
-                      self.concept_id == mapping['to_concept_code']):
-
-                    # Setup the arguments to reverse from_concept URL - which must be in OCL
-                    from_concept_url_args = {}
-                    if mapping['from_source_owner_type'] == 'Organization':
-                        from_concept_url_args['org'] = mapping['from_source_owner']
-                    else:
-                        from_concept_url_args['user'] = mapping['from_source_owner']
-                    from_concept_url_args['source'] = mapping['from_source_name']
-                    from_concept_url_args['concept'] = mapping['from_concept_code']
-                    mapping['from_url'] = reverse('concept-home', kwargs=from_concept_url_args)
-
-                    # Set mapping attributes relative to the current concept
-                    mapping['is_inverse_mapping'] = True
-                    mapping['is_internal_mapping'] = True
-
-                    # Determine the mapping category
-                    if mapping['map_type'] == 'Q-AND-A':
-                        mapping['mapping_category'] = 'Linked Question'
-                        mappings['Linked Question'].append(mapping)
-                    elif mapping['map_type'] == 'CONCEPT-SET':
-                        mapping['mapping_category'] = 'Set Parent'
-                        mappings['Set Parent'].append(mapping)
-                    else:
-                        mapping['mapping_category'] = 'Inverse Mapping'
-                        mappings['Inverse Mapping'].append(mapping)
-
-                # this concept != from_concept or to_concept! something's wrong
+                # Setup the arguments to reverse to_concept URL - URL reversed in next block
+                to_concept_url_args = {}
+                if mapping['to_source_owner_type'] == 'Organization':
+                    to_concept_url_args['org'] = mapping['to_source_owner']
                 else:
-                    mapping['mapping_category'] = 'Other'
-                    mappings['Other'].append(mapping)
+                    to_concept_url_args['user'] = mapping['to_source_owner']
+                to_concept_url_args['source'] = mapping['to_source_name']
+
+                # Set mapping attributes relative to the current concept
+                mapping['is_direct_mapping'] = True
+                if mapping['to_concept_url']:
+                    mapping['is_internal_mapping'] = True
+                    to_concept_url_args['concept'] = mapping['to_concept_code']
+                    mapping['to_url'] = reverse('concept-home', kwargs=to_concept_url_args)
+                else:
+                    mapping['is_external_mapping'] = True
+                    mapping['to_url'] = reverse('source-home', kwargs=to_concept_url_args)
+
+                # Determine the mapping category relative to current concept
+                if mapping['map_type'] == 'Q-AND-A':
+                    mapping['mapping_category'] = 'Linked Answer'
+                    mappings['Linked Answer'].append(mapping)
+                elif mapping['map_type'] == 'CONCEPT-SET':
+                    mapping['mapping_category'] = 'Set Member'
+                    mappings['Set Member'].append(mapping)
+                elif mapping['to_concept_url']:
+                    mapping['mapping_category'] = 'Direct Internal Mapping'
+                    mappings['Direct Internal Mapping'].append(mapping)
+                else:
+                    mapping['mapping_category'] = 'Direct External Mapping'
+                    mappings['Direct External Mapping'].append(mapping)
+
+            # this concept == to_concept (internal mapping)
+            elif (self.proper_owner_type == mapping['to_source_owner_type'] and
+                          self.owner_id == mapping['to_source_owner'] and
+                          self.source_id == mapping['to_source_name'] and
+                          self.concept_id == mapping['to_concept_code']):
+
+                # Setup the arguments to reverse from_concept URL - which must be in OCL
+                from_concept_url_args = {}
+                if mapping['from_source_owner_type'] == 'Organization':
+                    from_concept_url_args['org'] = mapping['from_source_owner']
+                else:
+                    from_concept_url_args['user'] = mapping['from_source_owner']
+                from_concept_url_args['source'] = mapping['from_source_name']
+                from_concept_url_args['concept'] = mapping['from_concept_code']
+                mapping['from_url'] = reverse('concept-home', kwargs=from_concept_url_args)
+
+                # Set mapping attributes relative to the current concept
+                mapping['is_inverse_mapping'] = True
+                mapping['is_internal_mapping'] = True
+
+                # Determine the mapping category
+                if mapping['map_type'] == 'Q-AND-A':
+                    mapping['mapping_category'] = 'Linked Question'
+                    mappings['Linked Question'].append(mapping)
+                elif mapping['map_type'] == 'CONCEPT-SET':
+                    mapping['mapping_category'] = 'Set Parent'
+                    mappings['Set Parent'].append(mapping)
+                else:
+                    mapping['mapping_category'] = 'Inverse Mapping'
+                    mappings['Inverse Mapping'].append(mapping)
+
+            # this concept != from_concept or to_concept! something's wrong
+            else:
+                mapping['mapping_category'] = 'Other'
+                mappings['Other'].append(mapping)
 
         # Set the context
         context['kwargs'] = self.kwargs
@@ -295,7 +291,6 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
         context['form'] = ConceptNewMappingForm()
 
         return context
-
 
     def form_valid(self, form, *args, **kwargs):
         """ Submits the validated form data: A new Concept Mapping """
@@ -316,7 +311,8 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
             org_concept_format = r'^/orgs/([a-zA-Z0-9\-]+)/sources/([a-zA-Z0-9\-\.]+)/concepts/([a-zA-Z0-9\-\.]+)/$'
             if not (re.compile(user_concept_format).match(base_data['to_concept_url']) or
                         re.compile(org_concept_format).match(base_data['to_concept_url'])):
-                emsg = 'Invalid format of "To Concept URL" \'%s\'. valid url format is /[orgs or users]/[:org or :user]/sources/:source/concepts/:concept/' % base_data['to_concept_url']
+                emsg = 'Invalid format of "To Concept URL" \'%s\'. valid url format is /[orgs or users]/[:org or :user]/sources/:source/concepts/:concept/' % \
+                       base_data['to_concept_url']
                 messages.add_message(self.request, messages.ERROR, emsg)
                 return super(ConceptMappingsView, self).form_invalid(form)
         elif mapping_destination == 'External':
@@ -346,7 +342,6 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
             return super(ConceptMappingsView, self).form_invalid(form)
 
 
-
 # CLEAN
 class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
     """
@@ -371,8 +366,8 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
         # Load the concept version history
         searcher = self.get_concept_history(
             self.owner_type, self.owner_id, self.source_id, self.concept_id)
-        #search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
-        #search_results_current_page = search_results_paginator.page(searcher.current_page)
+        # search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        # search_results_current_page = search_results_paginator.page(searcher.current_page)
 
         # Set the context
         context['kwargs'] = self.kwargs
@@ -380,11 +375,10 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
         context['selected_tab'] = 'History'
         context['concept'] = concept
         context['concept_versions'] = searcher.search_results
-        #context['current_page'] = search_results_current_page
-        #context['pagination_url'] = self.request.get_full_path()
+        # context['current_page'] = search_results_current_page
+        # context['pagination_url'] = self.request.get_full_path()
 
         return context
-
 
 
 # CLEAN
@@ -415,7 +409,6 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
         return data
 
-
     def get_context_data(self, *args, **kwargs):
         """ Loads the context data for creating a new concept. """
 
@@ -440,8 +433,24 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         context['name_types'] = json.dumps(_get_name_type_list())
         context['description_types'] = json.dumps(_get_description_type_list())
 
-        return context
+        names = [
+            {'name': '', 'locale': source['default_locale'], 'locale_preferred': True, 'name_type': 'Fully Specified'}]
 
+        descriptions = [{'description': '', 'locale': source['default_locale'], 'locale_preferred': True,
+                         'description_type': 'None'}]
+
+        extras = [{'key': '', 'value': ''}]
+
+        if self.request.method == 'POST':
+            names = json.loads(self.request.POST.get('names'))
+            descriptions = json.loads(self.request.POST.get('descriptions'))
+            extras = json.loads(self.request.POST.get('extras'))
+
+        context['names'] = json.dumps(names)
+        context['descriptions'] = json.dumps(descriptions)
+        context['extras'] = json.dumps(extras)
+
+        return context
 
     def form_valid(self, form, *args, **kwargs):
         """ Submits the validated form data: A new Concept """
@@ -496,7 +505,6 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             return super(ConceptNewView, self).form_invalid(form)
 
 
-
 # TODO(paynejd@gmail.com): Retire ConceptCreateJsonView ASAP
 class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
                             TemplateView):
@@ -532,7 +540,6 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
         else:
             return TemplateResponse(request, 'concepts/concept_edit.html', data)
 
-
     def get_success_url(self):
         """Get success URL
         """
@@ -546,7 +553,6 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
                            kwargs={"user": self.user_id,
                                    'source': self.kwargs.get('source')})
 
-
     def clean_concept_id(self, request, concept_id):
         """ concept ID must be unique
         """
@@ -559,7 +565,6 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
             return _('This Concept ID is already used.')
         else:
             return None
-
 
     def add(self):
         """Create new concept
@@ -596,7 +601,6 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
             # TODO: If successful, redirect browser to new concept details page
             return self.render_json_response({'message': _('Concept created!')})
 
-
     def edit(self):
         """Edit concept
         """
@@ -622,7 +626,6 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
             # TODO: If successful, redirect browser to concept details page
             return self.render_json_response({'message': _('Concept updated!')})
 
-
     def post(self, *args, **kwargs):
         """Post create or new concept
         """
@@ -634,7 +637,6 @@ class ConceptCreateJsonView(UserOrOrgMixin, JsonRequestResponseMixin,
             return self.edit()
         else:
             return self.add()
-
 
 
 # CLEAN
@@ -695,7 +697,6 @@ class ConceptRetireView(UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.get_success_url())
 
 
-
 # CLEAN
 class ConceptEditView(UserOrOrgMixin, FormView):
     """
@@ -730,7 +731,6 @@ class ConceptEditView(UserOrOrgMixin, FormView):
 
         return ConceptEditForm
 
-
     def get_success_url(self):
         """ Get success URL """
         if self.from_org:
@@ -744,10 +744,10 @@ class ConceptEditView(UserOrOrgMixin, FormView):
                                    'source': self.kwargs.get('source'),
                                    'concept': self.concept_id})
 
-
     def get_context_data(self, *args, **kwargs):
         """ Supply related data for the add form """
         context = super(ConceptEditView, self).get_context_data(*args, **kwargs)
+
         self.concept['names'] = json.dumps(self.concept['names'])
         self.concept['descriptions'] = json.dumps(self.concept['descriptions'])
 
@@ -755,8 +755,14 @@ class ConceptEditView(UserOrOrgMixin, FormView):
         temp = []
         if 'extras' in self.concept and self.concept['extras']:
             for key, value in self.concept.get('extras').iteritems():
-                temp.append({'key':key, 'value':value})
+                temp.append({'key': key, 'value': value})
             self.concept['extras'] = temp
+
+        if self.request.method == 'POST':
+            self.concept['names'] = self.request.POST.get('names')
+            self.concept['descriptions'] = self.request.POST.get('descriptions')
+            temp = json.loads(self.request.POST.get('extras'))
+
         context['kwargs'] = self.kwargs
         context['source'] = self.source
         context['concept'] = self.concept
@@ -764,8 +770,8 @@ class ConceptEditView(UserOrOrgMixin, FormView):
         context['locales'] = json.dumps(_get_locale_list())
         context['name_types'] = json.dumps(_get_name_type_list())
         context['description_types'] = json.dumps(_get_description_type_list())
-        return context
 
+        return context
 
     def get_initial(self):
         """
@@ -796,7 +802,6 @@ class ConceptEditView(UserOrOrgMixin, FormView):
 
         data.update(self.concept)
         return data
-
 
     def form_valid(self, form, *args, **kwargs):
         """ Submit the edited concept data using the API """
@@ -835,12 +840,10 @@ class ConceptEditView(UserOrOrgMixin, FormView):
                     error_fields.remove('non_field_errors')
                 emsg = data[error_fields[0]][0]
             messages.add_message(self.request, messages.ERROR, emsg or 'Error')
-            return HttpResponseRedirect(self.request.path)
-
+            return super(ConceptEditView, self).form_invalid(form)
         else:
             messages.add_message(self.request, messages.INFO, _('Concept updated'))
             return HttpResponseRedirect(self.get_success_url())
-
 
 
 # TODO(paynejd): Recreate ConceptItemView, ConceptDescView, ConceptNameView, and ConceptExtraView
@@ -887,7 +890,6 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             result = api.get(
                 self.owner_type, self.owner_id, 'sources', self.source_id,
                 'concepts', self.concept_id, self.item_name)
-
 
         if not result.ok:
             print result
@@ -957,7 +959,6 @@ class ConceptItemView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             {'message': _('deleted')})
 
 
-
 # TODO(paynejd): Resurrect ConceptDescView
 class ConceptDescView(ConceptItemView):
     """ Concept description view """
@@ -966,14 +967,12 @@ class ConceptDescView(ConceptItemView):
     field_names = ['description', 'description_type', 'external_id', 'locale', 'locale_preferred']
 
 
-
 # TODO(paynejd): Resurrect ConceptNameView
 class ConceptNameView(ConceptItemView):
     """ Concept name view """
     item_name = 'names'
     kwarg_name = 'name'
     field_names = ['name', 'name_type', 'external_id', 'locale', 'locale_preferred']
-
 
 
 # TODO(paynejd): Resurrect ConceptExtraView
@@ -1082,8 +1081,6 @@ class ConceptExtraView(JsonRequestResponseMixin, UserOrOrgMixin, View):
             return self.render_bad_request_response(result.content)
 
         return self.render_json_response({'message': _('extra deleted')})
-
-
 
 # TODO(paynejd): Replace ConceptMappingView with Mapping*Views
 # TODO(paynejd): Allow some mapping operations from the Concept Mappings page
