@@ -27,8 +27,6 @@ describe('Concept', function () {
     browser.ignoreSynchronization = true;
 
     beforeAll(function () {
-        // Login
-        loginPage.visit();
         loginPage.login();
     });
 
