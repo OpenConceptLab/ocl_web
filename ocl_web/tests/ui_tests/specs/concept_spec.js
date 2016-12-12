@@ -13,7 +13,7 @@ const PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE = 'Concept preferred name must be 
 const SHORT_NAME_CANNOT_BE_PREFERRED = 'A short name cannot be marked as locale preferred';
 const NO_MORE_THAN_ONE_FULLY_SPECIFIED_PER_LOCALE = 'A concept may not have more than one fully specified name in any locale';
 const NO_MORE_THAN_ONE_PREFERRED_NAME_PER_LOCALE = 'A concept may not have more than one preferred name (per locale)';
-const NON_SHORT_NAMES_MUST_BE_UNIQUE = 'All names except short names must unique for a concept and locale';
+const NON_SHORT_NAMES_MUST_BE_UNIQUE = 'All names except short names must be unique for a concept and locale';
 
 function addNameDetailsToWarning(warning, name, locale, preferred) {
     return warning + ': ' + name + ' (locale: ' + locale + ', preferred: ' + (preferred ? 'yes' : 'no') + ')';
