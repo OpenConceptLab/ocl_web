@@ -44,7 +44,7 @@ describe('Concept', function () {
         });
 
         describe('Create // ', function () {
-            it('#238 concept create - same names with different locales should not get an error', function () {
+            it('same names with different locales should not get an error #238', function () {
                 conceptPage.prepareToCreateConcept();
 
                 conceptPage.addNamesAndSynonyms(1);
@@ -85,7 +85,7 @@ describe('Concept', function () {
                 expect(conceptPage.getStatus()).toEqual('Concept created.');
             });
 
-            it('concept create - form should retain data after unsuccessful creation #352', function () {
+            it('form should retain data after unsuccessful creation #352', function () {
                 conceptPage.prepareToCreateConcept();
                 conceptPage.addNamesAndSynonyms(1);
                 var expectedName = conceptPage.getRandomName();
@@ -145,7 +145,7 @@ describe('Concept', function () {
                 expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE, 'name35', 'en', true));
             });
 
-            it('concept edit - form should retain data after unsuccessful editing #352 ', function () {
+            it('form should retain data after unsuccessful editing #352 ', function () {
                 conceptPage.createConceptFullySpecifiedRandomly();
                 conceptPage.prepareToEditConcept();
 
@@ -252,7 +252,7 @@ describe('Concept', function () {
 
             });
 
-            it('// deleting description field should not get error (#341)', function () {
+            it('deleting description field should not get error (#341)', function () {
                 conceptPage.prepareToCreateConcept();
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Fully Specified", true, "English [en]");
                 conceptPage.deleteDescriptionArea();
@@ -334,7 +334,7 @@ describe('Concept', function () {
                 expect(conceptPage.getStatus()).toEqual('Concept created.');
             });
 
-            it('concept create - form should retain data after unsuccessful creation #352', function () {
+            it('form should retain data after unsuccessful creation #352', function () {
                 conceptPage.prepareToCreateConcept();
                 conceptPage.addNamesAndSynonyms(1);
                 var expectedName = conceptPage.getRandomName();
@@ -425,7 +425,7 @@ describe('Concept', function () {
 
             });
 
-            it('edit - deleting description field should not get error #341', function () {
+            it('deleting description field should not get error #341', function () {
                 conceptPage.createConceptFullySpecifiedRandomly();
                 conceptPage.prepareToEditConcept();
 
@@ -435,7 +435,7 @@ describe('Concept', function () {
                 expect(conceptPage.getStatus()).toEqual('Concept updated');
             });
 
-            it('concept edit - form should retain data after unsuccessful editing #352 ', function () {
+            it('form should retain data after unsuccessful editing #352 ', function () {
                 conceptPage.createConceptFullySpecifiedRandomly();
                 conceptPage.prepareToEditConcept();
 
