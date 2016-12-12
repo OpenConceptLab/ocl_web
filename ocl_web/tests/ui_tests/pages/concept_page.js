@@ -76,6 +76,14 @@ var ConceptPage = function() {
         item.element(by.model('name.name')).clear().sendKeys(name);
     };
 
+    this.getNameText = function (item) {
+        return item.element(by.model('name.name')).getAttribute('value');
+    };
+
+    this.getNameType = function (item) {
+        return item.element(by.model('name.name_type')).getAttribute('value');
+    };
+
     this.setLocalePreferred = function (item, select) {
         item.element(by.model('name.locale_preferred')).isSelected().then(function (selected) {
             if ((!selected && select) || (selected && !select)) {
