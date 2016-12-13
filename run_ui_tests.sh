@@ -12,7 +12,7 @@ echo "Updating web driver manager"
 nohup ./node_modules/protractor/bin/webdriver-manager update
 
 echo "Starting server"
-nohup  ./node_modules/protractor/bin/webdriver-manager start --standalone > nohup.out 2>&1 &
+nohup  ./node_modules/protractor/bin/webdriver-manager start --standalone > nohup_tests.out 2>&1 &
 
 sleep 3
 
