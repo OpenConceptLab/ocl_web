@@ -19,7 +19,7 @@ var ConceptPage = function() {
     this.addNameSynonymLink = $('#add-name-synonym');
 
     this.fillInUpdateText = function(updateMsg){
-        this.updateCommentTextArea.sendKeys(updateMsg);
+        this.updateCommentTextArea.clear().sendKeys(updateMsg);
     };
 
     this.fillInUpdateTextRandomly = function(){
@@ -59,7 +59,7 @@ var ConceptPage = function() {
     };
 
     this.setConceptId = function (id) {
-        this.conceptId.sendKeys(id);
+        this.conceptId.clear().sendKeys(id);
     };
 
     this.addNamesAndSynonyms = function (namesAndSynonymsNumber) {
