@@ -468,6 +468,3 @@ describe('Concept', function () {
         logoutPage.logout();
     });
 });
-
-
-
