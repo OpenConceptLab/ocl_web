@@ -8,6 +8,15 @@ var UserSourcePage = require('../pages/user_source_page');
 var conceptPage = require('../pages/concept_page');
 var configuration = require('../utilities/configuration.js');
 
+var fs = require('fs');
+
+function writeScreenShot(data, filename) {
+    var stream = fs.createWriteStream(filename);
+    stream.write(new Buffer(data, 'base64'));
+    stream.end();
+}
+
+
 const ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT = 'A concept must have at least one fully specified name (across all locales)';
 const PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE = 'Concept preferred name must be unique for same source and locale';
 const FULLY_SPECIFIED_NAME_UNIQUE_PER_SOURCE_LOCALE = 'Concept fully specified name must be unique for same source and locale';
@@ -184,7 +193,6 @@ describe('Concept', function () {
                 conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), expectedName);
                 conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), expectedName);
                 expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE, expectedName, 'en', true));
-
             });
 
             it('with same fully specified name in same source & locale should get an error (#242)', function () {
@@ -321,7 +329,6 @@ describe('Concept', function () {
             it('source validation order preferred and fully specified name should be unique #342', function () {
                 conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "name33");
                 conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "name33");
-
                 expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE, 'name33', 'en', true));
             });
         });
@@ -342,7 +349,18 @@ describe('Concept', function () {
 
                 conceptPage.updateConcept();
 
-                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE, 'name1', 'en', true));
+                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(FULLY_SPECIFIED_NAME_UNIQUE_PER_SOURCE_LOCALE, 'name1', 'en', true));
+            });
+
+            it('order at least one fully specified name #342', function () {
+                var expectedName = conceptPage.getRandomName();
+                conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), expectedName);
+                conceptPage.prepareToEditConcept();
+
+                conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), expectedName, 'Short', false);
+
+                conceptPage.updateConcept();
+                expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
             });
 
             it('order at least one fully specified name #342', function () {
