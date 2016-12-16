@@ -10,7 +10,6 @@ var configuration = require('../utilities/configuration.js');
 
 const ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT = 'A concept must have at least one fully specified name (across all locales)';
 const PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE = 'Concept preferred name must be unique for same source and locale';
-const FULLY_SPECIFIED_NAME_UNIQUE_PER_SOURCE_LOCALE = 'Concept fully specified name must be unique for same source and locale';
 const SHORT_NAME_CANNOT_BE_PREFERRED = 'A short name cannot be marked as locale preferred';
 const NO_MORE_THAN_ONE_FULLY_SPECIFIED_PER_LOCALE = 'A concept may not have more than one fully specified name in any locale';
 const NO_MORE_THAN_ONE_PREFERRED_NAME_PER_LOCALE = 'A concept may not have more than one preferred name (per locale)';
@@ -25,7 +24,6 @@ describe('Concept', function () {
     var logoutPage = new LogoutPage();
     var usrSrcPage = new UserSourcePage();
     var srcShortCode = '';
-
     browser.ignoreSynchronization = true;
 
     beforeAll(function () {
@@ -62,6 +60,22 @@ describe('Concept', function () {
                 expect(conceptPage.getStatus()).toEqual('Concept created.');
             });
 
+            it('order at least one fully specified name #342', function () {
+                conceptPage.prepareToCreateConcept();
+                conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Short", true, "English [en]");
+                conceptPage.fillDescriptionField();
+                conceptPage.createConcept();
+
+                expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
+            });
+
+            it('source validation order preferred name should be unique #342', function () {
+                conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "name33");
+                conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "name33");
+
+                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE, 'name33', 'en', true));
+            });
+
             it('deleting description field should not get error #341', function () {
                 conceptPage.prepareToCreateConcept();
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Fully Specified", true, "English [en]");
@@ -72,26 +86,33 @@ describe('Concept', function () {
             });
 
             it('form should retain data after unsuccessful creation #352', function () {
+                conceptPage.prepareToCreateConcept();
+                conceptPage.addNamesAndSynonyms(1);
                 var expectedName = conceptPage.getRandomName();
-
-                conceptPage.prepareToCreateConcept();
-                conceptPage.setConceptId(expectedName);
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), expectedName, "Short", true, "English [en]");
-                conceptPage.createConcept();
-
-                conceptPage.prepareToCreateConcept();
-                conceptPage.setConceptId(expectedName);
-                conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), expectedName, "Short", true, "English [en]");
+                conceptPage.setName(conceptPage.getNamesAndSynonyms().last(), expectedName, "Short", true, "English [en]");
                 conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
                 expect(conceptPage.getNameText(conceptPage.getNamesAndSynonyms().first())).toEqual(expectedName);
-                expect(conceptPage.getNameType(conceptPage.getNamesAndSynonyms().first())).toContain('Short');
+                expect(conceptPage.getNameText(conceptPage.getNamesAndSynonyms().last())).toEqual(expectedName);
+                expect(conceptPage.getNameType(conceptPage.getNamesAndSynonyms().last())).toContain('Short');
+                expect(conceptPage.getNameType(conceptPage.getNamesAndSynonyms().last())).toContain('Short');
+                expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
             });
         });
 
-
         describe('Edit //', function () {
+
+            it('deleting fully specified name should get corresponding error #338', function () {
+                conceptPage.createConceptFullySpecifiedRandomly();
+                conceptPage.prepareToEditConcept();
+
+                conceptPage.deleteNameArea();
+
+                conceptPage.updateConcept();
+                expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
+            });
 
             it('deleting description field should not get error #341', function () {
                 conceptPage.createConceptFullySpecifiedRandomly();
@@ -103,23 +124,44 @@ describe('Concept', function () {
                 expect(conceptPage.getStatus()).toEqual('Concept updated');
             });
 
+            it('order at least one fully specified name #342', function () {
+                conceptPage.createConceptFullySpecifiedRandomly();
+                conceptPage.prepareToEditConcept();
+
+                conceptPage.setNameType(conceptPage.getNamesAndSynonyms().first(), 'Short');
+
+                conceptPage.updateConcept();
+                expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
+            });
+
+            it('source validation order preferred name should be unique #342', function () {
+                conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "name35");
+                conceptPage.createConceptFullySpecifiedRandomly();
+                conceptPage.prepareToEditConcept();
+
+                conceptPage.setNameText(conceptPage.getNamesAndSynonyms().first(), 'name35');
+
+                conceptPage.updateConcept();
+                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE, 'name35', 'en', true));
+            });
+
             it('form should retain data after unsuccessful editing #352 ', function () {
+                conceptPage.createConceptFullySpecifiedRandomly();
+                conceptPage.prepareToEditConcept();
+
                 var expectedName = conceptPage.getRandomName();
                 var conceptNameArea = conceptPage.getNamesAndSynonyms().first();
                 var expectedNameType = 'Short';
 
-                conceptPage.createConceptFullySpecifiedRandomly();
-                conceptPage.prepareToEditConcept();
-                conceptPage.fillInUpdateText('');
                 conceptPage.setNameType(conceptNameArea, expectedNameType);
                 conceptPage.setNameText(conceptNameArea, expectedName);
                 conceptPage.updateConcept();
 
+                expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
                 expect(conceptPage.getNameText(conceptNameArea)).toEqual(expectedName);
                 expect(conceptPage.getNameType(conceptNameArea)).toContain(expectedNameType);
             });
         });
-
 
         afterAll(function () {
             conceptPage.returnToHomePage();
@@ -180,10 +222,12 @@ describe('Concept', function () {
             });
 
             it('with same preferred name in same source & locale should get an error (#242)', function () {
-                var expectedName = 'sameName';
-                conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), expectedName);
-                conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), expectedName);
-                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE, expectedName, 'en', true));
+
+                conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "sameName");
+
+                conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "sameName");
+
+                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE, 'sameName', 'en', true));
 
             });
 
@@ -233,7 +277,7 @@ describe('Concept', function () {
             it('without fully specified name should get an error (#335)', function () {
 
                 conceptPage.prepareToCreateConcept();
-                conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Short", false, "English [en]");
+                conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Short", true, "English [en]");
                 conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
@@ -291,44 +335,25 @@ describe('Concept', function () {
             });
 
             it('form should retain data after unsuccessful creation #352', function () {
-                var expectedName = conceptPage.getRandomName();
-
-                conceptPage.prepareToCreateConcept();
-                conceptPage.setConceptId(expectedName);
-                conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), expectedName, "Short", true, "English [en]");
-                conceptPage.createConcept();
-
                 conceptPage.prepareToCreateConcept();
                 conceptPage.addNamesAndSynonyms(1);
-                conceptPage.setConceptId(expectedName);
+                var expectedName = conceptPage.getRandomName();
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), expectedName, "Short", true, "English [en]");
+                conceptPage.setName(conceptPage.getNamesAndSynonyms().last(), expectedName, "Short", true, "English [en]");
                 conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
                 expect(conceptPage.getNameText(conceptPage.getNamesAndSynonyms().first())).toEqual(expectedName);
-                expect(conceptPage.getNameType(conceptPage.getNamesAndSynonyms().first())).toContain('Short');
-            });
-
-            it('order at least one fully specified name #342', function () {
-                conceptPage.prepareToCreateConcept();
-                conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Short", false, "English [en]");
-                conceptPage.fillDescriptionField();
-                conceptPage.createConcept();
-
+                expect(conceptPage.getNameText(conceptPage.getNamesAndSynonyms().last())).toEqual(expectedName);
+                expect(conceptPage.getNameType(conceptPage.getNamesAndSynonyms().last())).toContain('Short');
+                expect(conceptPage.getNameType(conceptPage.getNamesAndSynonyms().last())).toContain('Short');
                 expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
-            });
-
-            it('source validation order preferred and fully specified name should be unique #342', function () {
-                conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "name33");
-                conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "name33");
-
-                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE, 'name33', 'en', true));
             });
         });
 
         describe('Edit', function () {
 
-            it('with more then one preferred and fully specified name should get an error #278', function () {
+            it('with more then one preferred name should get an error #278', function () {
 
                 conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "name1");
 
@@ -343,17 +368,6 @@ describe('Concept', function () {
                 conceptPage.updateConcept();
 
                 expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE, 'name1', 'en', true));
-            });
-
-            it('order at least one fully specified name #342', function () {
-                var expectedName = conceptPage.getRandomName();
-                conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), expectedName);
-                conceptPage.prepareToEditConcept();
-
-                conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), expectedName, 'Short', false);
-
-                conceptPage.updateConcept();
-                expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
             });
 
             it('adding one preferred name should get an error #278', function () {
@@ -411,17 +425,6 @@ describe('Concept', function () {
 
             });
 
-            it('deleting fully specified name should get corresponding error #338', function () {
-                conceptPage.createConceptFullySpecifiedRandomly();
-                conceptPage.prepareToEditConcept();
-
-                conceptPage.deleteNameArea();
-
-                conceptPage.updateConcept();
-
-                expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
-            });
-
             it('deleting description field should not get error #341', function () {
                 conceptPage.createConceptFullySpecifiedRandomly();
                 conceptPage.prepareToEditConcept();
@@ -432,34 +435,21 @@ describe('Concept', function () {
                 expect(conceptPage.getStatus()).toEqual('Concept updated');
             });
 
-            it('source validation order preferred and fully specified name should be unique #342', function () {
-                conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "name35");
+            it('form should retain data after unsuccessful editing #352 ', function () {
                 conceptPage.createConceptFullySpecifiedRandomly();
                 conceptPage.prepareToEditConcept();
 
-                conceptPage.setNameText(conceptPage.getNamesAndSynonyms().first(), 'name35');
-
-                conceptPage.updateConcept();
-                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE, 'name35', 'en', true));
-            });
-
-            it('form should retain data after unsuccessful editing #352 ', function () {
                 var expectedName = conceptPage.getRandomName();
+                var conceptNameArea = conceptPage.getNamesAndSynonyms().first();
+                var expectedNameType = 'Short';
 
-                conceptPage.prepareToCreateConcept();
-                conceptPage.setConceptId(expectedName);
-                conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), expectedName, "Short", true, "English [en]");
-                conceptPage.createConcept();
+                conceptPage.setNameType(conceptNameArea, expectedNameType);
+                conceptPage.setNameText(conceptNameArea, expectedName);
+                conceptPage.updateConcept();
 
-                conceptPage.prepareToCreateConcept();
-                conceptPage.addNamesAndSynonyms(1);
-                conceptPage.setConceptId(expectedName);
-                conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), expectedName, "Short", true, "English [en]");
-                conceptPage.fillDescriptionField();
-                conceptPage.createConcept();
-
-                expect(conceptPage.getNameText(conceptPage.getNamesAndSynonyms().first())).toEqual(expectedName);
-                expect(conceptPage.getNameType(conceptPage.getNamesAndSynonyms().first())).toContain('Short');
+                expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
+                expect(conceptPage.getNameText(conceptNameArea)).toEqual(expectedName);
+                expect(conceptPage.getNameType(conceptNameArea)).toContain(expectedNameType);
             });
         });
     });
