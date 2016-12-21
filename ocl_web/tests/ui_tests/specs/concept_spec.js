@@ -41,7 +41,7 @@ describe('Concept', function () {
         loginPage.login();
     });
 
-    describe('// Basic validation //', function () {
+    describe('Basic validation', function () {
 
         beforeAll(function () {
             // Create Source
@@ -54,7 +54,7 @@ describe('Concept', function () {
             );
         });
 
-        describe('Create // ', function () {
+        describe('Create', function () {
             it('same names with different locales should not get an error #238', function () {
                 conceptPage.prepareToCreateConcept();
 
@@ -101,7 +101,7 @@ describe('Concept', function () {
         });
 
 
-        describe('Edit //', function () {
+        describe('Edit', function () {
 
             it('deleting description field should not get error #341', function () {
                 conceptPage.createConceptFullySpecifiedRandomly();
@@ -137,7 +137,7 @@ describe('Concept', function () {
 
     });
 
-    describe('// OpenMRS validations // ', function () {
+    describe('OpenMRS validations', function () {
 
         beforeAll(function () {
             // Create Source with openMRS
@@ -150,7 +150,7 @@ describe('Concept', function () {
             );
         });
 
-        describe('Create // ', function () {
+        describe('Create', function () {
 
             it('with more than one preferred name should get an error (#241)', function () {
 
