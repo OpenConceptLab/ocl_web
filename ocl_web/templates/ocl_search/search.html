@@ -20,7 +20,7 @@
 	<div class="col-sm-3">
 
 		<!-- Search Categories -->
-		<div class="list-group global-resource-selector">
+		<div class="hidden-xs list-group global-resource-selector">
 			<a href="{% url 'search' %}?type=concepts{{ other_resource_search_params }}" class="list-group-item {% if search_type == 'concepts' %}active{% endif %}" title="Concepts"><span class="glyphicon glyphicon-tag"></span><span class="">&nbsp;&nbsp;Concepts </span><span class="badge">{{ resource_count.concepts|intcomma }}</span></a>
 			<a href="{% url 'search' %}?type=mappings{{ other_resource_search_params }}" class="list-group-item {% if search_type == 'mappings' %}active{% endif %}" title="Mappings"><span class="glyphicon glyphicon-link"></span><span class="">&nbsp;&nbsp;Mappings </span><span class="badge">{{ resource_count.mappings|intcomma }}</span></a>
 			<a href="{% url 'search' %}?type=sources{{ other_resource_search_params }}" class="list-group-item {% if search_type == 'sources' %}active{% endif %}" title="Sources"><span class="glyphicon glyphicon-th-list"></span><span class="">&nbsp;&nbsp;Sources </span><span class="badge">{{ resource_count.sources|intcomma }}</span></a>
@@ -30,7 +30,7 @@
 		</div>
 
 		<!-- Search Filters -->
-		<div role="form">
+		<div role="form" class="hidden-xs">
 			{% for search_filter in search_filters %}
 			<div class="filter-group">
 				<div class="filter-group-header">{{ search_filter.filter_name }}</div>
@@ -62,7 +62,7 @@
 
 				{% if results %}
 				<!-- Sorting -->
-				<div class="btn-group pull-right" style="margin-right:8px;">
+				<div class="hidden-xs btn-group pull-right" style="margin-right:8px;">
 					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-sort"></span> <span class="caret"></span></button>
 					<ul class="dropdown-menu" role="menu">
 						{% for sort_option_def in search_sort_option_defs %}
@@ -78,14 +78,29 @@
 				{% endif %}
 
 				<!-- Exact match checkbox (always show) -->
-				<div class="btn-group pull-right" style="margin-top:6px;margin-right:8px;">
+				<div class="btn-group pull-right" style="padding-left:4px;margin-top:6px;margin-right:8px;">
 					<label for="exact_match_global_search" style="font-weight:300;cursor:pointer;"><input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search" style="cursor:pointer;">&nbsp;<span class="small">Exact match</span></label>
 				</div>
 
 				<!-- Search bar (always show) -->
-				<div class="input-group" style="width:auto;padding-right:4px;">
-          			<input name="q" id="global_search" type="text" class="form-control input-sm" placeholder="Search OCL" style="width:100%;" {% if request.GET.q %}value="{{ search_query }}"{% endif %}>
-          			<span class="input-group-btn"><button class="btn btn-default btn-sm" type="submit"><span class="glyphicon glyphicon-search"></span></button></span>
+				<div class="input-group input-group-sm" style="width:auto;">
+
+					<!-- Reproduce resource selector for small mobile displays -->
+					<div class="hidden-sm hidden-md hidden-lg input-group-btn">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon {{ search_type_icon }}"></span>&nbsp;{{ search_type_name|capfirst }}s&nbsp;&nbsp;<span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li {% if search_type == 'concepts' %} class="active"{% endif %}><a href="{% url 'search' %}?type=concepts{{ other_resource_search_params }}"><span class="glyphicon glyphicon-tag"></span><span class="">&nbsp;&nbsp;Concepts</span></a></li>
+							<li {% if search_type == 'mappings' %} class="active"{% endif %}><a href="{% url 'search' %}?type=mappings{{ other_resource_search_params }}"><span class="glyphicon glyphicon-link"></span><span class="">&nbsp;&nbsp;Mappings </span></a></li>
+							<li {% if search_type == 'sources' %} class="active"{% endif %}><a href="{% url 'search' %}?type=sources{{ other_resource_search_params }}"><span class="glyphicon glyphicon-th-list"></span><span class="">&nbsp;&nbsp;Sources </span></a></li>
+							<li {% if search_type == 'collections' %} class="active"{% endif %}><a href="{% url 'search' %}?type=collections{{ other_resource_search_params }}"><span class="glyphicon glyphicon-tags"></span><span class="">&nbsp;&nbsp;Collections </span></a></li>
+							<li {% if search_type == 'orgs' %} class="active"{% endif %}><a href="{% url 'search' %}?type=orgs{{ other_resource_search_params }}"><span class="glyphicon glyphicon-home"></span><span class="">&nbsp;&nbsp;Organizations </span></a></li>
+							<li {% if search_type == 'users' %} class="active"{% endif %}><a href="{% url 'search' %}?type=users{{ other_resource_search_params }}"><span class="glyphicon glyphicon-user"></span><span class="">&nbsp;&nbsp;Users </span></a></li>
+						</ul>
+					</div>
+
+					<!-- Search input and button -->
+          			<input name="q" id="global_search" type="text" class="form-control" placeholder="Search OCL" style="width:100%;" {% if request.GET.q %}value="{{ search_query }}"{% endif %}>
+          			<span class="input-group-btn"><button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button></span>
 				</div>
 
 			</div><!-- /.col-md-12 -->

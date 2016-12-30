@@ -18,9 +18,9 @@
     <div class="collapse navbar-collapse" id="ocl-navbar-collapse">
       {% if not hide_nav_search %}
       <form class="navbar-form navbar-left hidden-xs" role="search" action="{% url 'search'%}" method="get">
-        <div class="input-group">
-          <input name="q" id="global_search" type="text" class="form-control input-sm" placeholder="Search OCL" value="{{ search_query }}" />
-          <span class="input-group-btn" style="width:30px;"><button class="btn btn-default btn-sm" type="submit"><span class="glyphicon glyphicon-search"></span></button></span>
+        <div class="input-group input-group-sm">
+          <input name="q" id="global_search" type="text" class="form-control" placeholder="Search OCL" value="{{ search_query }}" />
+          <span class="input-group-btn" style="width:30px;"><button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button></span>
         </div><!-- /.form-group -->
         <div class="checkbox navbar-btn"><label for="exact_match_global_search" class="navbar-link" style="font-weight:300;"><input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search" />&nbsp;<span class="small">{% trans "Exact match" %}</span></label></div>
         {% if request.GET.type %}<input type="hidden" name="type" value="{{ request.GET.type }}" />{% endif %}
@@ -29,20 +29,20 @@
       {% endif %}
 
       <ul class="nav navbar-nav navbar-right ocl-nav-menu">
-        <li><a href="{% url 'features' %}">{% trans "Features" %}</a></li>
-        {% if not hide_nav_search %}<li class="hidden-sm hidden-md hidden-lg"><a href="{% url 'search' %}">{% trans "Search" %}</a></li>{% endif %}
-        <li><a href="https://github.com/OpenConceptLab/ocl_web/wiki" target="_new">{% trans "Help" %}</a></li>
+        <li><a href="{% url 'features' %}"><span class="hidden-sm hidden-md hidden-lg"><span class="glyphicon glyphicon-grain"></span>&nbsp;&nbsp;</span>{% trans "Features" %}</a></li>
+        {% if not hide_nav_search %}<li class="hidden-sm hidden-md hidden-lg"><a href="{% url 'search' %}"><span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;{% trans "Search" %}</a></li>{% endif %}
+        <li><a href="https://github.com/OpenConceptLab/ocl_web/wiki" target="_new"><span class="hidden-sm hidden-md hidden-lg"><span class="glyphicon glyphicon-question-sign"></span>&nbsp;&nbsp;</span>{% trans "Help" %}</a></li>
         {% if request.user.is_authenticated %}
-        <li><a href="{% url 'users:detail' request.user.username %}" title="User Profile: {{ user.email }}"><span class="glyphicon glyphicon-user"></span>&nbsp;{{ user.username }}</a></li>
+        <li><a href="{% url 'users:detail' request.user.username %}" title="User Profile: {{ user.email }}"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ user.username }}</a></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="Create New Resource Menu"><span class="glyphicon glyphicon-plus"></span> <b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="Create New Resource Menu"><span class="glyphicon glyphicon-plus"></span><span class="hidden-sm hidden-md hidden-lg">&nbsp;&nbsp;{% trans "New Resource" %}</span> <b class="caret"></b></a>
           <ul class="dropdown-menu dropdown-menu-right" role="menu">
             <li><a href="{% url 'org-new' %}"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{% trans "New Organization" %}</a></li>
           </ul>
         </li>
-        <li><a href="{% url 'account_logout' %}" title="{% trans "Sign Out" %}"><span class="glyphicon glyphicon-log-out"></span></a></li>
+        <li><a href="{% url 'account_logout' %}" title="{% trans "Sign Out" %}"><span class="glyphicon glyphicon-log-out"></span><span class="hidden-sm hidden-md hidden-lg">&nbsp;&nbsp;{% trans "Sign Out" %}</span></a></li>
         {% else %}
-        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>{% trans "Sign In" %}</b> <span class="caret"></span></a>
+        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="hidden-sm hidden-md hidden-lg"><span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp;</span><b>{% trans "Sign In" %}</b> <span class="caret"></span></a>
             <ul id="login-dp" class="dropdown-menu dropdown-menu-right" style="padding:14px 14px 0;min-width:250px;">
               <li>
                 <div class="row">

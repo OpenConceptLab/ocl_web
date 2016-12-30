@@ -60,6 +60,7 @@ class GlobalSearchView(TemplateView):
         context['pagination_url'] = self.request.get_full_path()
         context['search_type'] = searcher.search_type
         context['search_type_name'] = OclConstants.resource_display_name(searcher.search_type)
+        context['search_type_icon'] = OclConstants.resource_display_icon(searcher.search_type)
         context['search_sort_option_defs'] = searcher.get_sort_option_definitions()
         context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.search_filter_list
