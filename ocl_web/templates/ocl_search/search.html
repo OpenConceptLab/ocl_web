@@ -78,7 +78,7 @@
 				{% endif %}
 
 				<!-- Exact match checkbox (always show) -->
-				<div class="btn-group pull-right" style="padding-left:4px;margin-top:6px;margin-right:8px;">
+				<div class="hidden-xs btn-group pull-right" style="padding-left:4px;margin-top:6px;margin-right:8px;">
 					<label for="exact_match_global_search" style="font-weight:300;cursor:pointer;"><input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search" style="cursor:pointer;">&nbsp;<span class="small">Exact match</span></label>
 				</div>
 
@@ -172,7 +172,7 @@
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-th-list search-result-icon"></span></div>
 			<div class="col-xs-12 col-sm-11 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
+				<div class="hidden-xs pull-right small text-muted" style="padding-top:12px;">
 					<a href="{{ result_concepts_url }}" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="{{ result_mappings_url }}" title="Active mappings in source"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;{{ result.active_mappings|intcomma }}</a>
@@ -203,7 +203,7 @@
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-tags search-result-icon"></span></div>
 			<div class="col-xs-12 col-sm-11 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
+				<div class="hidden-xs pull-right small text-muted" style="padding-top:12px;">
 					<a href="{{ result_concepts_url }}" title="Active concepts in collection"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="{{ result_mappings_url }}" title="Active mappings in collections"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;{{ result.active_mappings|intcomma }}</a>
@@ -224,7 +224,7 @@
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-home search-result-icon"></span></div>
 			<div class="col-xs-12 col-sm-11 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
+				<div class="hidden-xs pull-right small text-muted" style="padding-top:12px;">
 					<a href="{{ result_url }}#members" title="Members in organization"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.members|intcomma }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="{% url 'org-sources' org=result.id %}" title="Public sources owned by organization"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources|intcomma }}</a>
@@ -246,11 +246,9 @@
 	{% elif search_type == 'users' %}
 			{% url 'users:detail' result.username as result_url %}
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
-			<div class="hidden-xs col-sm-1 search-result-col-icon">
-				<span class="glyphicon glyphicon-user search-result-icon"></span>
-			</div>
+			<div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-user search-result-icon"></span></div>
 			<div class="col-xs-12 col-sm-11 search-result-col-content">
-				<div class="pull-right small text-muted" style="padding-top:12px;">
+				<div class="hidden-xs pull-right small text-muted" style="padding-top:12px;">
 					<a href="{{ result_url }}?tab=Organizations" title="Organization membership"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;{{ result.orgs|intcomma }}</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="{{ result_url }}" title="Public sources owned by user"><span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;{{ result.public_sources|intcomma }}</a>
