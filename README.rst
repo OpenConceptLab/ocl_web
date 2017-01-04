@@ -66,6 +66,7 @@ For getting this running on your local machine:
 3. Install Grunt Dependencies.
 
     npm install
+    npm install -g grunt-cli
 
 4. Run development server. (For browser auto-reload, use Livereload_ plugins.)
 
