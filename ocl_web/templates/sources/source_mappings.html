@@ -6,156 +6,190 @@
 
 
 {% block tab-content %}
-<div class="container">
+<div class="container-fluid">
 <div class="row" ng-controllerx="SourceSearchController">
 <form action="." method="get">
 
-<!-- Start left column -->
+	<!-- Start left column -->
+	<div class="col-md-3">
 
-    <div class="col-md-3">
+		<!-- Search Filters -->
+		<div role="form" class="hidden-xs">
+			{% for search_filter in search_filters %}
+			<div class="filter-group">
+				<div class="filter-group-header">{{ search_filter.filter_name }}</div>
+				<div class="filter-group-body">
+					{% for filter_option in search_filter.options %}
+						{% if filter_option.option_num > 0 or search_filter.attrs.show_zeroed_options %}
+							<div class="checkbox"><label><input type="checkbox" name="{{ search_filter.filter_id }}" value="{{ filter_option.option_value }}" {% if filter_option.selected %}checked{% endif %}>{{ filter_option.option_name }}{% if not search_filter.attrs.hide_numbers %}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ filter_option.option_num|intcomma }}</span>{% endif %}</label></div>
+						{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+			{% endfor %}
+		</div>
 
-<!-- Filters -->
-
-        {% for search_filter in search_filters %}
-        <div class="filter-group">
-            <div class="filter-group-header">{{ search_filter.filter_name }}</div>
-            <div class="filter-group-body">
-                {% for filter_option in search_filter.options %}
-                    {% if filter_option.option_num > 0 or search_filter.attrs.show_zeroed_options %}
-                        <div class="checkbox"><label><input type="checkbox" name="{{ search_filter.filter_id }}" value="{{ filter_option.option_value }}" {% if filter_option.selected %}checked{% endif %}>{{ filter_option.option_name }}{% if not search_filter.attrs.hide_numbers %}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ filter_option.option_num|intcomma }}</span>{% endif %}</label></div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-        {% endfor %}
-
-<!-- End left column -->
-
+	<!-- End left column -->
 	</div>
 
-<!-- Start right column -->
-
+	<!-- Start right column: Search results section -->
 	<div class="col-md-9">
 
-<!-- Search Toolbar -->
+		<!-- Search Bar, Actions, Sorting and Paging -->
+		<div class="row" style="margin-bottom:10px;margin-top:10px;">
+			<div class="col-xs-12">
 
-		<div class="row" style="padding:15px 0;">
-			<div class="col-md-12" style="padding-left:0;padding-right:0;">
-
+				{% if results %}
 				<!-- Simple pager -->
-                {% simple_pager current_page 'mapping' url=pagination_url pager_size='small' %}
+				{% simple_pager current_page 'mapping' url=pagination_url pager_size='small' %}
+				{% endif %}
 
-				<!-- New Mapping Button -->
-				{% if_can_change source %}
-					{# TODO: Only allow if viewing "HEAD" -- mapping is always added to head #}
-					{% if source.owner_type == 'Organization' %}
-						{% url 'mapping-new' org=source.owner source=source.id as new_mapping_url %}
-					{% else %}
-						{% url 'mapping-new' user=source.owner source=source.id as new_mapping_url %}
-					{% endif %}
-				<div class="pull-left">
-					<a class="btn btn-link btn-sm" title="Add New Mapping to Source" style="font-weight:300;letter-spacing:-0.1pt;" href="{{ new_mapping_url }}"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'New Mapping' %}</a>
+				{% if results %}
+				<!-- Sort By Dropdown -->
+				<div class="hidden-xs btn-group pull-right" style="margin-right:8px;">
+					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-sort"></span> <span class="caret"></span></button>
+					<ul class="dropdown-menu" role="menu">
+					{% for sort_option_def in search_sort_option_defs %}
+						{% if source.owner_type == 'Organization' %}
+							{% if kwargs and "source_version" in kwargs %}
+								{% url 'source-version-mappings' org=source.owner source=source.id source_version=kwargs.source_version as source_mappings_url %}
+							{% else %}
+								{% url 'source-mappings' org=source.owner source=source.id as source_mappings_url %}
+							{% endif %}
+						{% else %}
+							{% if kwargs and "source_version" in kwargs %}
+								{% url 'source-version-mappings' user=source.owner source=source.id source_version=kwargs.source_version as source_mappings_url %}
+							{% else %}
+								{% url 'source-mappings' org=source.owner source=source.id as source_mappings_url %}
+							{% endif %}
+						{% endif %}
+						<li {% if search_sort == sort_option_def.value %}class="active"{% endif %}><a href="{{ source_mappings_url }}?{{ transferrable_search_params }}&amp;sort={{ sort_option_def.value|urlencode }}"><span class="glyphicon {{ sort_option_def.icon }}"></span>&nbsp;{{ sort_option_def.display }}</a></li>
+					{% endfor %}
+					</ul>
 				</div>
+				{% endif %}
+
+				{% if results %}
+				<!-- Search results download -->
+				{% include "download_csv.html" with type='repository_search' %}
+				{% endif %}
+
+				<!-- Exact match checkbox (always render, but hide on xs display) -->
+				<div class="hidden-xs btn-group pull-right" style="padding-left:4px;margin-top:6px;margin-right:8px;">
+					<label for="exact_match_repository_search" style="font-weight:300;cursor:pointer;">
+						<input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_repository_search" style="cursor:pointer;" />
+						<span class="small">Exact match</span>
+					</label>
+				</div>
+
+				{% if_can_change source %}
+					{% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
+						<!-- New Mapping Button -->
+						{% if source.owner_type == 'Organization' %}
+							{% url 'mapping-new' org=source.owner source=source.id as new_resource_url %}
+						{% else %}
+							{% url 'mapping-new' user=source.owner source=source.id as new_resource_url %}
+						{% endif %}
+						<div class="pull-left">
+							<a class="btn btn-link btn-sm" id="id-new-mapping" style="font-weight:300;letter-spacing:-0.1pt;" href="{{ new_resource_url }}" title="Add New Mapping to Source"><span class="glyphicon glyphicon-plus"></span><span class="hidden-xs">&nbsp;{% trans 'New Mapping' %}</span></a>
+						</div>
+					{% endif %}
 				{% endif_can_change %}
 
-				<!-- Source version dropdown -->
-				<div class="btn-group pull-left" style="padding-right:5px;">
-				  	<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" style="white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:clip;">
-				    	<span class="text-muted" style="letter-spacing:-0.1pt;font-weight:300;">Source Version:</span>
-				    	<span style="font-weight:400;letter-spacing:-0.1pt;">{% if source_version %}{{ source_version }}{% else %}HEAD{% endif %}</span>
-				    	<span class="caret"></span>
-				  	</button>
-				  	<ul class="dropdown-menu" role="menu">
-            {% for source_version in source_versions %}
-              {% if source.owner_type == 'Organization' %}
-                {% url 'source-version-mappings' org=source.owner source=source.id source_version=source_version.id as source_version_url %}
-              {% else %}
-                {% url 'source-version-mappings' user=source.owner source=source.id source_version=source_version.id as source_version_url %}
-              {% endif %}
-              <li {% if source_version == source_version.id %}class="active"{% endif %}>
-                <a href="{{ source_version_url }}">
-                  <span {% if source_version.retired %}class="strikethrough"{% endif %}>
-                    {% if source_version.released and not source_version.retired %}
-                    <strong>{% endif %}{{ source_version.id }}</strong>
-                  </span>
-                  {% if source_version.released and not source_version.retired %}<span class="text-muted">(Released)</span>{% endif %}
-                  {% if source_version.retired %}<span class="text-muted">(Retired)</span>{% endif %}
-                </a>
-              </li>
-            {% endfor %}
-				  	</ul>
-				</div>
+				<!-- Source Mappings Search (always show) -->
+				<div class="input-group input-group-sm" style="width:auto;margin-right:6px;">
 
-				<!-- Source Mappings Search -->
-		        <div class="input-group input-group-sm pull-left" style="width:180px;">
-		            <input type="text" name="q" class="form-control" placeholder="Search mappings within source" value="{{ search_query }}">
-		            <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-                    </span>
-                </div>
+					<!-- Source Version Dropdown -->
+					<div class="input-group-btn">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="white-space:nowrap;max-width:230px;min-width:140px;text-align:left;overflow:hidden;text-overflow:ellipsis;padding-left:7px;padding-right:5px;">
+							<span class="pull-right"><span class="caret"></span></span>
+							<span style="letter-spacing:-0.1pt;">
+								<span class="text-muted" style="font-weight:300;">Source Version:</span>
+								<span style="font-weight:400;">{% if source_version %}{{ source_version }}{% else %}HEAD{% endif %}</span>
+							</span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+						{% for source_version_i in source_versions %}
+							{% if source.owner_type == 'Organization' %}
+								{% url 'source-version-mappings' org=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
+							{% else %}
+								{% url 'source-version-mappings' user=source.owner source=source.id source_version=source_version_i.id as source_version_i_url %}
+							{% endif %}
+							<li {% if source_version == source_version_i.id %}class="active"{% endif %}>
+								<a href="{{ source_version_i_url }}">
+									<span {% if source_version_i.retired %}class="strikethrough"{% endif %}>{% if source_version_i.released and not source_version_i.retired %}<strong>{% endif %}{{ source_version_i.id }}</strong></span>
+									{% if source_version_i.released and not source_version_i.retired %}<span class="text-muted">(Released)</span>{% endif %}{% if source_version_i.retired %}<span class="text-muted">(Retired)</span>{% endif %}
+								</a>
+							</li>
+						{% endfor %}
+						</ul>
+					</div>
 
-				<!-- Sort By Dropdown -->
-				<div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;letter-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
-				<div class="btn-group pull-left" style="padding-top:5px;">
-				  	<select name="sort" class="btn btn-default btn-sm xdropdown-toggle">
-				  		{% for sort_option in search_sort_options %}
-				    	<option {% if search_sort == sort_option %}selected{% endif %}>{{ sort_option }}</option>
-				    	{% endfor %}
-				  	</select>
-				</div>
-                {% include "download_csv.html" %}
-			</div>
-		</div>
+					<!-- Search input and submit button -->
+					<input type="text" name="q" class="form-control" placeholder="Search mappings within source" value="{{ search_query }}">
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+					</span>
+				</div><!-- /.input-group -->
+
+			</div><!-- /.col-sm-12 -->
+		</div><!-- /.row -->
 
 
 <!-- Search results -->
-
-        {% for result in results %}
-			{% if result.owner_type == 'Organization' %}
-				{% url 'mapping-home' org=result.owner source=result.source mapping=result.id as mapping_url %}
+{% for result in results %}
+		<div class="row row-search-result">
+			{% if source.owner_type == 'Organization' %}
+				{% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
+					{% url 'mapping-home' org=result.owner source=result.source mapping=result.id as result_url %}
+				{% else %}
+					{% url 'mapping-home-versioned' org=result.owner source=result.source mapping=result.id mapping_version=result.version as result_url %}
+				{% endif %}
 			{% else %}
-				{% url 'mapping-home' user=result.owner source=result.source mapping=result.id as mapping_url %}
+				{% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
+					{% url 'mapping-home' user=result.owner source=result.source mapping=result.id as result_url %}
+				{% else %}
+					{% url 'mapping-home-versioned' user=result.owner source=result.source mapping=result.id mapping_version=result.version as result_url %}
+				{% endif %}
 			{% endif %}
+			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
+			<div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-link search-result-icon"></span></div>
+			<div class="col-xs-12 col-sm-11 search-result-col-content">
+				<div class="label-container">
+					<!-- map_type label -->
+					{% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
+						{% generic_resource_label resource_type='mapping' resource_id=result.versioned_object_id resource_name=result.map_type resource_url=result_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+					{% else %}
+						{% generic_resource_label resource_type='mapping' resource_id=result.versioned_object_id resource_name=result.map_type resource_version_id=result.version resource_url=result_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+					{% endif %}
 
-			<div class="row row-search-result">
-				<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
-				<div class="col-md-1 search-result-col-icon"><span class="glyphicon glyphicon-link search-result-icon"></span></div>
-				<div class="col-md-10 search-result-col-content">
-					<div class="label-container">
-						<!-- map_type label -->
-{#						{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=mapping_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}#}
-                        {% generic_resource_label resource_type='mapping' resource_id=result.versioned_object_id resource_name=result.map_type resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %} / [ {{ result.version }} ]
-						<!-- from_concept label -->
-						{# TODO: we do not know if this concept is retired #}
-						<div style="padding: 8px 0 8px 20px;">
-							<span class="text-muted small">From:</span>&nbsp;&nbsp;{% mapping_from_concept_label result label_size="small" %}
-						</div>
-
-						<!-- to_concept label -->
-						<div style="padding: 0 0 8px 20px;">
-							<span class="text-muted small">To:</span>&nbsp;&nbsp;{% mapping_to_concept_label result label_size="small" %}
-						</div>
+					<!-- from_concept label -->
+					{# TODO: we do not know if this concept is retired #}
+					<div style="padding: 8px 0 8px 20px;">
+						<span class="text-muted small">From:</span>&nbsp;&nbsp;{% mapping_from_concept_label result label_size="small" %}
 					</div>
-					<p>
-						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>
-					</p>
-					{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+
+					<!-- to_concept label -->
+					<div style="padding: 0 0 8px 20px;">
+						<span class="text-muted small">To:</span>&nbsp;&nbsp;{% mapping_to_concept_label result label_size="small" %}
+					</div>
 				</div>
+				<div class="resource-metadata"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</div>
+				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
 			</div>
-		{% empty %}
-			<h3><small>{% trans 'No mappings found' %}</small></h3>
-		{% endfor %}
+		</div>
+{% empty %}
+		<h3><small>{% trans 'No mappings found' %}</small></h3>
+{% endfor %}
 
-<!-- Pagination -->
-
-        {% if results %}
-			<div class="row" style="text-align:center;">
-				{% bootstrap_pagination current_page url=pagination_url %}
-			</div>
+		<!-- Pagination -->
+		{% if results %}
+		<div class="row" style="text-align:center;">
+			{% bootstrap_pagination current_page url=pagination_url %}
+		</div>
 		{% endif %}
 
-<!-- End right column -->
-
+	<!-- End right column: Search results section -->
 	</div>
 
 </form>

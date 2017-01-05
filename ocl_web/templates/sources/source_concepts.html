@@ -82,16 +82,16 @@
 					</label>
 				</div>
 
-				<!-- New Concept Button -->
 				{% if_can_change source %}
-					{% if source.owner_type == 'Organization' %}
-						{% url 'concept-new' org=source.owner source=source.id as new_concept_url %}
-					{% else %}
-						{% url 'concept-new' user=source.owner source=source.id as new_concept_url %}
-					{% endif %}
 					{% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
+						<!-- New Concept Button -->
+						{% if source.owner_type == 'Organization' %}
+							{% url 'concept-new' org=source.owner source=source.id as new_resource_url %}
+						{% else %}
+							{% url 'concept-new' user=source.owner source=source.id as new_resource_url %}
+						{% endif %}
 						<div class="pull-left">
-							<a class="btn btn-link btn-sm" id="id-new-concept" style="font-weight:300;letter-spacing:-0.1pt;" href="{{ new_concept_url }}" title="Add New Concept to Source"><span class="glyphicon glyphicon-plus"></span><span class="hidden-xs">&nbsp;{% trans 'New Concept' %}</span></a>
+							<a class="btn btn-link btn-sm" id="id-new-concept" style="font-weight:300;letter-spacing:-0.1pt;" href="{{ new_resource_url }}" title="Add New Concept to Source"><span class="glyphicon glyphicon-plus"></span><span class="hidden-xs">&nbsp;{% trans 'New Concept' %}</span></a>
 						</div>
 					{% endif %}
 				{% endif_can_change source %}
@@ -117,9 +117,7 @@
 							{% endif %}
 							<li {% if source_version == source_version_i.id %}class="active"{% endif %}>
 								<a href="{{ source_version_i_url }}">
-									<span {% if source_version_i.retired %}class="strikethrough"{% endif %}>
-										{% if source_version_i.released and not source_version_i.retired %}<strong>{% endif %}{{ source_version_i.id }}</strong>
-									</span>
+									<span {% if source_version_i.retired %}class="strikethrough"{% endif %}>{% if source_version_i.released and not source_version_i.retired %}<strong>{% endif %}{{ source_version_i.id }}</strong></span>
 									{% if source_version_i.released and not source_version_i.retired %}<span class="text-muted">(Released)</span>{% endif %}
 									{% if source_version_i.retired %}<span class="text-muted">(Retired)</span>{% endif %}
 								</a>
@@ -128,12 +126,12 @@
 						</ul>
 					</div>
 
-					<!-- Search input and button -->
+					<!-- Search input and submit button -->
 					<input type="text" name="q" class="form-control" placeholder="Search concepts within source" value="{{ search_query }}">
 					<span class="input-group-btn">
 						<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
 					</span>
-				</div>
+				</div><!-- /.input-group -->
 
 			</div><!-- /.col-sm-12 -->
 		</div><!-- /.row -->
