@@ -282,8 +282,7 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         #   easily be appended onto URL links on the search page
         context['transferrable_search_params'] = ''
         if transferrable_search_params:
-            context['transferrable_search_params'] = (
-                '&' + urlencode(transferrable_search_params))
+            context['transferrable_search_params'] = urlencode(transferrable_search_params)
 
         # Set the context
         context['kwargs'] = self.kwargs

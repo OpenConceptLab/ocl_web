@@ -6,7 +6,7 @@
 
 
 {% block tab-content %}
-<div class="container">
+<div class="container-fluid">
 <div class="row" ng-controllerx="SourceSearchController">
 	<form action="." method="get">
 
@@ -36,7 +36,7 @@
 	<div class="col-sm-9">
 
 		<!-- Search Bar, Actions, Sorting and Paging -->
-		<div class="row" style="margin-bottom:10px;">
+		<div class="row" style="margin-bottom:10px;margin-top:10px;">
 			<div class="col-xs-12">
 
 				{% if results %}
@@ -49,9 +49,22 @@
 				<div class="hidden-xs btn-group pull-right" style="margin-right:8px;">
 					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-sort"></span> <span class="caret"></span></button>
 					<ul class="dropdown-menu" role="menu">
-						{% for sort_option_def in search_sort_option_defs %}
-						<li {% if search_sort == sort_option_def.value %}class="active"{% endif %}><a href="{% url 'search' %}?{{ transferrable_search_params }}&amp;sort={{ sort_option_def.value|urlencode }}"><span class="glyphicon {{ sort_option_def.icon }}"></span>&nbsp;{{ sort_option_def.display }}</a></li>
-						{% endfor %}
+					{% for sort_option_def in search_sort_option_defs %}
+						{% if source.owner_type == 'Organization' %}
+							{% if kwargs and "source_version" in kwargs %}
+								{% url 'source-version-concepts' org=source.owner source=source.id source_version=kwargs.source_version as source_concepts_url %}
+							{% else %}
+								{% url 'source-concepts' org=source.owner source=source.id as source_concepts_url %}
+							{% endif %}
+						{% else %}
+							{% if kwargs and "source_version" in kwargs %}
+								{% url 'source-version-concepts' user=source.owner source=source.id source_version=kwargs.source_version as source_concepts_url %}
+							{% else %}
+								{% url 'source-concepts' org=source.owner source=source.id as source_concepts_url %}
+							{% endif %}
+						{% endif %}
+						<li {% if search_sort == sort_option_def.value %}class="active"{% endif %}><a href="{{ source_concepts_url }}?{{ transferrable_search_params }}&amp;sort={{ sort_option_def.value|urlencode }}"><span class="glyphicon {{ sort_option_def.icon }}"></span>&nbsp;{{ sort_option_def.display }}</a></li>
+					{% endfor %}
 					</ul>
 				</div>
 				{% endif %}
@@ -88,7 +101,7 @@
 
 					<!-- Source Version Dropdown -->
 					<div class="input-group-btn">
-						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="white-space:nowrap;max-width:190px;overflow:hidden;text-overflow:ellipsis;padding-left:7px;padding-right:5px;">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="white-space:nowrap;max-width:230px;min-width:140px;text-align:left;overflow:hidden;text-overflow:ellipsis;padding-left:7px;padding-right:5px;">
 							<span class="pull-right"><span class="caret"></span></span>
 							<span style="letter-spacing:-0.1pt;">
 								<span class="text-muted" style="font-weight:300;">Source Version:</span>
