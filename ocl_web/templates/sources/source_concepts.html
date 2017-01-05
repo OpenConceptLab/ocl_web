@@ -101,7 +101,7 @@
 
 					<!-- Source Version Dropdown -->
 					<div class="input-group-btn">
-						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="white-space:nowrap;max-width:230px;min-width:140px;text-align:left;overflow:hidden;text-overflow:ellipsis;padding-left:7px;padding-right:5px;">
+						<button type="button" class="btn btn-default dropdown-toggle repo-version-selector" data-toggle="dropdown">
 							<span class="pull-right"><span class="caret"></span></span>
 							<span style="letter-spacing:-0.1pt;">
 								<span class="text-muted" style="font-weight:300;">Source Version:</span>
@@ -117,7 +117,7 @@
 							{% endif %}
 							<li {% if source_version == source_version_i.id %}class="active"{% endif %}>
 								<a href="{{ source_version_i_url }}">
-									<span {% if source_version_i.retired %}class="strikethrough"{% endif %}>{% if source_version_i.released and not source_version_i.retired %}<strong>{% endif %}{{ source_version_i.id }}</strong></span>
+									<span class="{% if source_version_i.retired %}repo-version-retired{% elif source_version_i.released %}repo-version-released{% endif %}">{{ source_version_i.id }}</span>
 									{% if source_version_i.released and not source_version_i.retired %}<span class="text-muted">(Released)</span>{% endif %}
 									{% if source_version_i.retired %}<span class="text-muted">(Retired)</span>{% endif %}
 								</a>
