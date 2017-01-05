@@ -1,12 +1,16 @@
 /* django template tag: field_label */
 
 .field-label-key {
-  text-align:right;
+  text-align:left;
   font-weight:300;
   color:#aaa;
 }
 .field-label-value {
 
+}
+
+.list-repository-versions {
+  style="padding-left:0;
 }
 
 /* line 5, ../sass/project.scss */
