@@ -6,9 +6,9 @@
 
 {% block tab-content %}
 {% if source.owner_type == 'Organization' %}
-	{% url 'source-version-new' org=source.owner source=source.id as source_version_new_url %}
+	{% url 'source-version-new' org=source.owner source=source.id as repo_version_new_url %}
 {% else %}
-	{% url 'source-version-new' user=source.owner source=source.id as source_version_new_url %}
+	{% url 'source-version-new' user=source.owner source=source.id as repo_version_new_url %}
 {% endif %}
 
 <div class="container-fluid" style="margin-top: 20px;">
@@ -21,50 +21,38 @@
 			{% simple_pager current_page 'source version' url=pagination_url pager_size='small' %}
 			<div class="btn-group" style="margin-left:40px;padding-right:10px;">
 				{% if_can_change source %}
-					<a href="{{ source_version_new_url }}" class="small" style="padding-right:10px;"><span class="glyphicon glyphicon-plus"></span> {% trans "New Source Version" %}</a>&nbsp;&nbsp;&nbsp;
+					<a href="{{ repo_version_new_url }}" class="small" style="padding-right:10px;"><span class="glyphicon glyphicon-plus"></span> {% trans "New Source Version" %}</a>&nbsp;&nbsp;&nbsp;
 				{% endif_can_change source %}
+
+				{% include "download_csv.html" with results=source_versions versions=True %}
 			</div>
 		</div><!-- /.form-group -->
 
 		<!-- Source version search results -->
 		<ul class="list-repository-versions">
-		{% for source_version in source_versions %}
-			{% if source_version.owner_type == 'Organization' %}
-				{% url 'source-version-concepts' org=source_version.owner source=source.id source_version=source_version.id as source_version_concepts_url %}
-				{% url 'source-version-edit' org=source_version.owner source=source.id source_version=source_version.id as source_version_edit_url %}
-				{% comment %}{% url 'source-version-retire' org=source_version.owner source=source.id source_version=source_version.id as source_version_retire_url %}{% endcomment %}
+		{% for repo_version in source_versions %}
+			{% if repo_version.owner_type == 'Organization' %}
+				{% url 'source-version-concepts' org=repo_version.owner source=source.id source_version=repo_version.id as repo_version_concepts_url %}
+				{% url 'source-version-edit' org=repo_version.owner source=source.id source_version=repo_version.id as repo_version_edit_url %}
 			{% else %}
-				{% url 'source-version-concepts' user=source_version.owner source=source.id source_version=source_version.id as source_version_concepts_url %}
-				{% url 'source-version-edit' user=source_version.owner source=source.id source_version=source_version.id as source_version_edit_url %}
-				{% comment %}{% url 'source-version-retire' user=source_version.owner source=source.id source_version=source_version.id as source_version_retire_url %}{% endcomment %}
+				{% url 'source-version-concepts' user=repo_version.owner source=source.id source_version=repo_version.id as repo_version_concepts_url %}
+				{% url 'source-version-edit' user=repo_version.owner source=source.id source_version=repo_version.id as repo_version_edit_url %}
 			{% endif %}
 
 			<li class="list-group-item">
-				{% comment %}
-				<div class="search-result-col-icon pull-left" style="padding-top:0;padding-right:14px;margin-bottom:20px;"><span class="search-result-icon"><span class="glyphicon glyphicon-asterisk"></span></span></div>
-				{% endcomment %}
-
 				<div class="pull-right">
-				{% if not source_version.is_processing %}
+				{% if not repo_version.is_processing %}
 					{% if_can_change source %}
-						{% if source_version.id != 'HEAD' %}
-							<a href="{{ source_version_edit_url }}" class="btn btn-link" title="Edit Source Version"><span class="glyphicon glyphicon-pencil"></span></a>
-							<button class="btn btn-link source_version_delete glyphicon glyphicon-trash no-text-decoration" title="Delete Source Version" data-id="{{ source_version.id }}"></button>
+						{% if repo_version.id != 'HEAD' %}
+							<a href="{{ repo_version_edit_url }}" class="btn btn-link" title="Edit Source Version"><span class="glyphicon glyphicon-pencil"></span></a>
+							<button class="btn btn-link source_version_delete glyphicon glyphicon-trash no-text-decoration" title="Delete Source Version" data-id="{{ repo_version.id }}"></button>
 						{% endif %}
 						<div class="btn-group">
-							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-									<span class="glyphicon glyphicon-download-alt"></span>
-									<span class="caret"></span>
+							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-download-alt"></span>&nbsp;<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
-									<li style="cursor: pointer;"><a
-													data-uri="{{ source_version.version_url }}concepts/?csv=true"
-													onclick="triggerDownload(this)"><span
-													class="glyphicon glyphicon-file"></span> Concepts</a></li>
-									<li style="cursor: pointer;"><a
-													data-uri="{{ source_version.version_url }}mappings/?csv=true"
-													onclick="triggerDownload(this)"><span
-													class="glyphicon glyphicon-file"></span> Mappings</a></li>
+								<li style="cursor: pointer;"><a data-uri="{{ repo_version.version_url }}concepts/?csv=true" onclick="triggerDownload(this)"><span class="glyphicon glyphicon-file"></span> Concepts</a></li>
+								<li style="cursor: pointer;"><a data-uri="{{ repo_version.version_url }}mappings/?csv=true" onclick="triggerDownload(this)"><span class="glyphicon glyphicon-file"></span> Mappings</a></li>
 							</ul>
 						</div>
 					{% endif_can_change source %}
@@ -72,34 +60,34 @@
 				</div><!-- /.pull-right -->
 
 				<h4>
-					{% generic_resource_label resource_type='source_version' resource_id=source.id resource_version_id=source_version.id resource_url=source_version_concepts_url resource_retired=source_version.retired owner_type=source_version.owner_type owner_id=source_version.owner label_size='small' display_breadcrumb=True %}
+					{% generic_resource_label resource_type='source_version' resource_id=source.id resource_version_id=repo_version.id resource_url=repo_version_concepts_url resource_retired=repo_version.retired owner_type=repo_version.owner_type owner_id=repo_version.owner label_size='small' display_breadcrumb=True %}
 					<span class="release-label-container">
 						&nbsp;&nbsp;&nbsp;&nbsp;
-						<span class="label label-primary release-label {% if not source_version.released or source_version.retired %}hide{% endif %}">{% trans "Released" %}</span>
+						<span class="label label-primary release-label {% if not repo_version.released or repo_version.retired %}hide{% endif %}">{% trans "Released" %}</span>
 						&nbsp;&nbsp;&nbsp;&nbsp;
-						<span class="label label-danger retire-label {% if not source_version.retired %}hide{% endif %}">{% trans "Retired" %}</span>
+						<span class="label label-danger retire-label {% if not repo_version.retired %}hide{% endif %}">{% trans "Retired" %}</span>
 						&nbsp;&nbsp;&nbsp;&nbsp;
-						{% if source_version.is_processing %}
+						{% if repo_version.is_processing %}
 							<span class="label label-warning release-label" title="This source version is processing">{% trans "Processing" %}</span>
 						{% endif %}
 					</span>
 				</h4>
 
 				{% if_can_change source %}
-				<div class='pull-right release_unrelease_section' style="font-size: small;">
-					{% if not source_version.id == 'HEAD' %}
-						<input id="id_release" type="checkbox" name="release" value="{{ source_version.id }}" {% if source_version.retired %}disabled{% endif %}{% if source_version.released %}checked{% endif %} /> Release&nbsp;&nbsp;<input class="resource_retire" type="checkbox" name="release" value="{{ source_version.id }}" {% if source_version.retired %}checked{% endif %} /> Retire
+				<div class="pull-right release_unrelease_section small">
+					{% if not repo_version.id == 'HEAD' %}
+						<input id="id_release" type="checkbox" name="release" value="{{ repo_version.id }}" {% if repo_version.retired %}disabled{% endif %}{% if repo_version.released %}checked{% endif %} /> Release&nbsp;&nbsp;<input class="resource_retire" type="checkbox" name="release" value="{{ repo_version.id }}" {% if repo_version.retired %}checked{% endif %} /> Retire
 					{% endif %}
 				</div>
 				{% endif_can_change source %}
 
 				<p class="small">
-					{% if source_version.description %}<span>{{ source_version.description }}<br /></span>{% endif %}
-					<span class="text-muted"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;{% trans "Created on" %} {{ source_version.created_on|smart_datetime }}</span>
+					{% if repo_version.description %}<span>{{ repo_version.description }}<br /></span>{% endif %}
+					<span class="text-muted"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;{% trans "Created on" %} {{ repo_version.created_on|smart_datetime }}</span>
 				</p>
 			</li>
 		{% empty %}
-			<li class="list-group-item"><h3><small>{% trans "No source versions." %}</small></h3></li>
+			<li class="list-group-item"><h3><small>{% trans "No source versions" %}</small></h3></li>
 		{% endfor %}
 		</ul>
 
@@ -118,8 +106,8 @@
 		</div>
 	</div><!-- /.col-sm-4 -->
 
-	</div> <!-- /row -->
-</div> <!-- /container -->
+	</div><!-- /row -->
+</div><!-- /container -->
 {% endblock tab-content %}
 
 

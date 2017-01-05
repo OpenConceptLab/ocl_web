@@ -346,7 +346,7 @@ def convert_to_id(label):
 ## Custom Tags: PAGINATION
 
 @register.inclusion_tag('includes/simple_pager_incl.html')
-def simple_pager(page, name, url=None, pager_size=''):
+def simple_pager(page, name, url=None, pager_size='', hide_xs=False):
     """
         Display a simple pager with N-M of P {name}[<] [>]
 
@@ -379,7 +379,8 @@ def simple_pager(page, name, url=None, pager_size=''):
         'page': page,
         'name': name,
         'url': url,
-        'pager_size': css_size_class
+        'pager_size': css_size_class,
+        'hide_xs': bool(hide_xs)
     }
 
 
