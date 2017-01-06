@@ -297,9 +297,6 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         context['search_query'] = original_search_string
         context['search_filters'] = searcher.search_filter_list
 
-        # TODO: Remove this after tests are revised
-        context['search_sort_options'] = searcher.get_sort_options()
-
         # Set debug variables
         context['url_params'] = self.request.GET
         context['search_params'] = searcher.search_params
@@ -395,8 +392,6 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         context['search_query'] = original_search_string
         context['search_filters'] = searcher.search_filter_list
 
-        # TODO: Remove this after tests are revised
-        context['search_sort_options'] = searcher.get_sort_options()
 
         # Set debug variables
         context['url_params'] = self.request.GET
@@ -449,11 +444,28 @@ class SourceExternalReferencesView(UserOrOrgMixin, SourceReadBaseView):
             source_version_id=self.source_version_id)
 
         # Load external mappings that point to this source, applying search criteria
+        original_search_string = self.request.GET.get('q', '')
+        # TODO: SearchStringFormatter.add_wildcard(self.request)
         searcher = self.get_source_extrefs(
             self.owner_type, self.owner_id, self.source_id,
             source_version_id=self.source_version_id, search_params=self.request.GET)
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
+
+        # Build URL params
+        transferrable_search_params = {}
+        for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
+            if param in self.request.GET:
+                if param == 'q':
+                    transferrable_search_params[param] = original_search_string
+                else:
+                    transferrable_search_params[param] = self.request.GET.get(param)
+
+        # Encode the search parameters into a single URL-encoded string so that it can
+        #   easily be appended onto URL links on the search page
+        context['transferrable_search_params'] = ''
+        if transferrable_search_params:
+            context['transferrable_search_params'] = urlencode(transferrable_search_params)
 
         # Set the context
         context['kwargs'] = self.kwargs
@@ -467,7 +479,7 @@ class SourceExternalReferencesView(UserOrOrgMixin, SourceReadBaseView):
         context['pagination_url'] = self.request.get_full_path()
         context['search_query'] = searcher.get_query()
         context['search_filters'] = searcher.search_filter_list
-        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort_option_defs'] = searcher.get_sort_option_definitions()
         context['search_sort'] = searcher.get_sort()
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)

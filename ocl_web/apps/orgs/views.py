@@ -189,9 +189,6 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
 
-        # TODO: Remove this after tests are revised
-        context['search_sort_options'] = searcher.get_sort_options()
-
         return context
 
     def get(self, request, *args, **kwargs):
@@ -255,9 +252,6 @@ class OrganizationCollectionsView(OrganizationReadBaseView):
         context['search_params'] = searcher.search_params
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
-
-        # TODO: Remove this after tests are revised
-        context['search_sort_options'] = searcher.get_sort_options()
 
         return context
 

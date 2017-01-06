@@ -11,10 +11,10 @@
 <form action="." method="get">
 
 	<!-- Start left column -->
-	<div class="col-sm-3">
+	<div class="col-sm-3 hidden-xs">
 
 		<!-- Search Filters -->
-		<div role="form" class="hidden-xs">
+		<div role="form">
 			{% for search_filter in search_filters %}
 			<div class="filter-group">
 				<div class="filter-group-header">{{ search_filter.filter_name }}</div>
