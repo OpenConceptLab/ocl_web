@@ -66,6 +66,9 @@ class GlobalSearchView(TemplateView):
         context['search_query'] = original_search_string
         context['hide_nav_search'] = True
 
+        # TODO: Remove this after tests are revised
+        context['search_sort_options'] = searcher.get_sort_options()
+
         # Build URL params for navigating to other resources
         other_resource_search_params = {}
         for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:

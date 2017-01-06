@@ -157,6 +157,9 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         context['search_query'] = searcher.get_query()
         context['search_filters'] = searcher.search_filter_list
 
+        # TODO: Remove this after tests are revised
+        context['search_sort_options'] = searcher.get_sort_options()
+
         # Set debug variables
         context['url_params'] = self.request.GET
         context['search_params'] = searcher.search_params
@@ -230,6 +233,9 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
         context['search_sort'] = searcher.get_sort()
         context['search_query'] = searcher.get_query()
         context['search_filters'] = searcher.search_filter_list
+
+        # TODO: Remove this after tests are revised
+        context['search_sort_options'] = searcher.get_sort_options()
 
         # Set debug variables
         context['url_params'] = self.request.GET
@@ -328,6 +334,9 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         context['search_sort'] = searcher.get_sort()
         context['search_query'] = self.search_string if hasattr(self, 'search_string') else ''
         context['search_filters'] = searcher.search_filter_list
+
+        # TODO: Remove this after tests are revised
+        context['search_sort_options'] = searcher.get_sort_options()
 
         # Set debug variables
         context['url_params'] = self.request.GET

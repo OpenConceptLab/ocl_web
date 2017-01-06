@@ -296,6 +296,9 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         context['search_query'] = original_search_string
         context['search_filters'] = searcher.search_filter_list
 
+        # TODO: Remove this after tests are revised
+        context['search_sort_options'] = searcher.get_sort_options()
+
         # Set debug variables
         context['url_params'] = self.request.GET
         context['search_params'] = searcher.search_params
@@ -390,6 +393,9 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         context['search_sort'] = searcher.get_sort()
         context['search_query'] = original_search_string
         context['search_filters'] = searcher.search_filter_list
+
+        # TODO: Remove this after tests are revised
+        context['search_sort_options'] = searcher.get_sort_options()
 
         # Set debug variables
         context['url_params'] = self.request.GET
