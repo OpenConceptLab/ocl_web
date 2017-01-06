@@ -152,18 +152,35 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         org = self.get_org_details(org_id)
 
         # Load the sources in this org, applying search parameters
+        original_search_string = self.request.GET.get('q', '')
+        # TODO: SearchStringFormatter.add_wildcard(self.request)
         searcher = self.get_org_sources(org_id, search_params=self.request.GET)
         search_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_current_page = search_paginator.page(searcher.current_page)
 
-        # Set the context for the sources
+        # Build URL params
+        transferrable_search_params = {}
+        for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
+            if param in self.request.GET:
+                if param == 'q':
+                    transferrable_search_params[param] = original_search_string
+                else:
+                    transferrable_search_params[param] = self.request.GET.get(param)
+
+        # Encode the search parameters into a single URL-encoded string so that it can
+        #   easily be appended onto URL links on the search page
+        context['transferrable_search_params'] = ''
+        if transferrable_search_params:
+            context['transferrable_search_params'] = urlencode(transferrable_search_params)
+
+        # Set the context
         context['selected_tab'] = 'Sources'
         context['org'] = org
         context['sources'] = searcher.search_results
         context['source_page'] = search_current_page
         context['source_pagination_url'] = self.request.get_full_path()
         context['source_q'] = self.search_string
-        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort_option_defs'] = searcher.get_sort_option_definitions()
         context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.search_filter_list
         context['search_type'] = searcher.search_type
@@ -171,6 +188,9 @@ class OrganizationSourcesView(OrganizationReadBaseView):
         context['search_params'] = searcher.search_params
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
+
+        # TODO: Remove this after tests are revised
+        context['search_sort_options'] = searcher.get_sort_options()
 
         return context
 
@@ -199,18 +219,35 @@ class OrganizationCollectionsView(OrganizationReadBaseView):
         org = self.get_org_details(org_id)
 
         # Load the sources in this org, applying search parameters
+        original_search_string = self.request.GET.get('q', '')
+        # TODO: SearchStringFormatter.add_wildcard(self.request)
         searcher = self.get_org_collections(org_id, search_params=self.request.GET)
         search_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_current_page = search_paginator.page(searcher.current_page)
 
-        # Set the context for the collections
+        # Build URL params
+        transferrable_search_params = {}
+        for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
+            if param in self.request.GET:
+                if param == 'q':
+                    transferrable_search_params[param] = original_search_string
+                else:
+                    transferrable_search_params[param] = self.request.GET.get(param)
+
+        # Encode the search parameters into a single URL-encoded string so that it can
+        #   easily be appended onto URL links on the search page
+        context['transferrable_search_params'] = ''
+        if transferrable_search_params:
+            context['transferrable_search_params'] = urlencode(transferrable_search_params)
+
+        # Set the context
         context['selected_tab'] = 'Collections'
         context['org'] = org
         context['collections'] = searcher.search_results
         context['collection_page'] = search_current_page
         context['collection_pagination_url'] = self.request.get_full_path()
         context['collection_q'] = searcher.get_query()
-        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort_option_defs'] = searcher.get_sort_option_definitions()
         context['search_sort'] = searcher.get_sort()
         context['search_filters'] = searcher.search_filter_list
         context['search_type'] = searcher.search_type
@@ -218,6 +255,9 @@ class OrganizationCollectionsView(OrganizationReadBaseView):
         context['search_params'] = searcher.search_params
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
+
+        # TODO: Remove this after tests are revised
+        context['search_sort_options'] = searcher.get_sort_options()
 
         return context
 
