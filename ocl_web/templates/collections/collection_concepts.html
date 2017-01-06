@@ -75,10 +75,10 @@
 				{% endif %}
 
 				<!-- Exact match checkbox (always render, but hide on xs display) -->
-				<div class="pull-left small" style="width:250px;margin-left:167px">
-					<label for="exact_match_repository_search">
-						<input name="exact_match" type="checkbox" class="pull-left form-control" tooltip="Exact match" id="exact_match_repository_search" {% if request.GET.exact_match %}checked="checked"{% endif %} style="width:11px;box-shadow:none;margin-top:-10px;margin-right:2px;" />
-						<span style="font-weight:300">Exact match</span>
+				<div class="hidden-xs btn-group pull-right" style="padding-left:4px;margin-top:6px;margin-right:8px;">
+					<label for="exact_match_repository_search" style="font-weight:300;cursor:pointer;">
+						<input name="exact_match" type="checkbox" tooltip="Exact match" id="exact_match_repository_search" {% if request.GET.exact_match %}checked="checked"{% endif %} style="cursor:pointer;" />
+						<span class="small">Exact match</span>
 					</label>
 				</div>
 

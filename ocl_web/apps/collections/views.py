@@ -26,6 +26,8 @@ logger = logging.getLogger('oclweb')
 
 
 class CollectionsBaseView(UserOrOrgMixin):
+    """ Base class for Collection views. """
+
     def get_args(self):
         super(CollectionsBaseView, self).get_args()
         self.collection_id = self.kwargs.get('collection')
@@ -33,6 +35,9 @@ class CollectionsBaseView(UserOrOrgMixin):
 
     def get_collection_data(self, owner_type, owner_id, collection_id, field_name,
                             collection_version_id=None, search_params=None):
+        """
+        Load collection resources from the API and return OclSearch instance with results.
+        """
 
         searcher = OclSearch(search_type=field_name,
                              search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
@@ -46,7 +51,8 @@ class CollectionsBaseView(UserOrOrgMixin):
                 params=searcher.search_params)
         else:
             search_response = api.get(
-                owner_type, owner_id, 'collections', collection_id, field_name,
+                owner_type, owner_id, 'collections', collection_id,
+                field_name,
                 params=searcher.search_params)
         if search_response.status_code == 404:
             raise Http404
@@ -61,6 +67,10 @@ class CollectionsBaseView(UserOrOrgMixin):
         return searcher
 
     def get_collection_versions(self, owner_type, owner_id, collection_id, search_params=None):
+        """
+        Load collection versions from the API and return OclSearch instance with results.
+        """
+
         # Perform the search
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_COLLECTION_VERSIONS,
                              search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
@@ -83,26 +93,34 @@ class CollectionsBaseView(UserOrOrgMixin):
         return searcher
 
 
+
 class CollectionReferencesView(CollectionsBaseView, TemplateView):
     """ collection concept view. """
     template_name = "collections/collection_references.html"
 
     def get_context_data(self, *args, **kwargs):
+        """ Loads the references that are in the collection. """
+
+        # Setup the context and args
         context = super(CollectionReferencesView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
+        # Load the collection details
         api = OclApi(self.request, debug=True)
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
 
-        params = self.request.GET.copy()
-        params['verbose'] = 'true'
-        params['limit'] = '10'
-
+        # Load collection versions (to fetch all, set limit to 0)
         versions = self.get_collection_versions(
             self.owner_type, self.owner_id, self.collection_id,
             search_params={'limit': '0'})
 
+        # Load the references in this collection, applying search parameters
+        original_search_string = self.request.GET.get('q', '')
+        # TODO: SearchStringFormatter.add_wildcard(self.request)
+        params = self.request.GET.copy()
+        params['verbose'] = 'true'
+        params['limit'] = '10'
         searcher = self.get_collection_data(
             self.owner_type, self.owner_id, self.collection_id, 'references',
             collection_version_id=self.collection_version_id,
@@ -110,66 +128,114 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
-        context['kwargs'] = self.kwargs
-        context['url_params'] = self.request.GET
-        context['selected_tab'] = 'References'
-        context['collection'] = collection
-        context['references'] = searcher.search_results
-        context['results'] = searcher.search_results
-        context['current_page'] = search_results_current_page
-        context['pagination_url'] = self.request.get_full_path()
-        context['search_query'] = searcher.get_query()
-        context['search_filters'] = searcher.search_filter_list
-        context['search_sort_options'] = searcher.get_sort_options()
-        context['search_sort'] = self.request.GET.get('search_sort', 'ASC')
-        context['search_facets_json'] = searcher.search_facets
-        context['search_filters_debug'] = str(searcher.search_filter_list)
-        context['collection_versions'] = versions.search_results
-        return context
+        # Build URL params
+        transferrable_search_params = {}
+        for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
+            if param in self.request.GET:
+                if param == 'q':
+                    transferrable_search_params[param] = original_search_string
+                else:
+                    transferrable_search_params[param] = self.request.GET.get(param)
 
-
-class CollectionMappingsView(CollectionsBaseView, TemplateView):
-    """ collection concept view. """
-    template_name = "collections/collection_mappings.html"
-    def get_context_data(self, *args, **kwargs):
-
-        context = super(CollectionMappingsView, self).get_context_data(*args, **kwargs)
-        self.get_args()
-        api = OclApi(self.request, debug=True)
-        results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
-        collection = results.json()
-        # to fetch all , set limit to 0
-        params = self.request.GET.copy()
-        params['verbose'] = 'true'
-        params['limit'] = '10'
-
-        versions = self.get_collection_versions(
-            self.owner_type, self.owner_id, self.collection_id,
-            search_params={'limit': '0'})
-        searcher = self.get_collection_data(
-            self.owner_type, self.owner_id, self.collection_id, OclConstants.RESOURCE_NAME_MAPPINGS,
-            collection_version_id=self.collection_version_id,
-            search_params=params)
-
-        search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
-        search_results_current_page = search_results_paginator.page(searcher.current_page)
+        # Encode the search parameters into a single URL-encoded string so that it can
+        #   easily be appended onto URL links on the search page
+        context['transferrable_search_params'] = ''
+        if transferrable_search_params:
+            context['transferrable_search_params'] = urlencode(transferrable_search_params)
 
         # Set the context
         context['kwargs'] = self.kwargs
-        context['url_params'] = self.request.GET
-        context['selected_tab'] = 'Mappings'
         context['collection'] = collection
         context['collection_version'] = self.collection_version_id
+        context['collection_versions'] = versions.search_results
+        context['selected_tab'] = 'References'
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
+        context['search_sort_option_defs'] = searcher.get_sort_option_definitions()
+        context['search_sort'] = self.request.GET.get('search_sort', 'ASC')
         context['search_query'] = searcher.get_query()
         context['search_filters'] = searcher.search_filter_list
-        context['search_sort_options'] = searcher.get_sort_options()
-        context['search_sort'] = searcher.get_sort()
+
+        # Set debug variables
+        context['url_params'] = self.request.GET
+        context['search_params'] = searcher.search_params
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
+
+        return context
+
+
+
+class CollectionMappingsView(CollectionsBaseView, TemplateView):
+    """ collection mappings view. """
+    template_name = "collections/collection_mappings.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """ Loads the mappings that are in the collection. """
+
+        # Setup the context and args
+        context = super(CollectionMappingsView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the collection details
+        api = OclApi(self.request, debug=True)
+        results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
+        collection = results.json()
+
+        # Load collection versions (to fetch all, set limit to 0)
+        versions = self.get_collection_versions(
+            self.owner_type, self.owner_id, self.collection_id,
+            search_params={'limit': '0'})
+
+        # Load the mappings in this collection, applying search parameters
+        original_search_string = self.request.GET.get('q', '')
+        # TODO: SearchStringFormatter.add_wildcard(self.request)
+        params = self.request.GET.copy()
+        params['verbose'] = 'true'
+        params['limit'] = '10'
+        searcher = self.get_collection_data(
+            self.owner_type, self.owner_id, self.collection_id,
+            OclConstants.RESOURCE_NAME_MAPPINGS,
+            collection_version_id=self.collection_version_id,
+            search_params=params)
+        search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
+        search_results_current_page = search_results_paginator.page(searcher.current_page)
+
+        # Build URL params
+        transferrable_search_params = {}
+        for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
+            if param in self.request.GET:
+                if param == 'q':
+                    transferrable_search_params[param] = original_search_string
+                else:
+                    transferrable_search_params[param] = self.request.GET.get(param)
+
+        # Encode the search parameters into a single URL-encoded string so that it can
+        #   easily be appended onto URL links on the search page
+        context['transferrable_search_params'] = ''
+        if transferrable_search_params:
+            context['transferrable_search_params'] = urlencode(transferrable_search_params)
+
+        # Set the context
+        context['kwargs'] = self.kwargs
+        context['collection'] = collection
+        context['collection_version'] = self.collection_version_id
         context['collection_versions'] = versions.search_results
+        context['selected_tab'] = 'Mappings'
+        context['results'] = searcher.search_results
+        context['current_page'] = search_results_current_page
+        context['pagination_url'] = self.request.get_full_path()
+        context['search_sort_option_defs'] = searcher.get_sort_option_definitions()
+        context['search_sort'] = searcher.get_sort()
+        context['search_query'] = searcher.get_query()
+        context['search_filters'] = searcher.search_filter_list
+
+        # Set debug variables
+        context['url_params'] = self.request.GET
+        context['search_params'] = searcher.search_params
+        context['search_facets_json'] = searcher.search_facets
+        context['search_filters_debug'] = str(searcher.search_filter_list)
 
         return context
 
@@ -197,49 +263,77 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
         return super(CollectionMappingsView, self).get(self, *args, **kwargs)
 
 
+
 class CollectionConceptsView(CollectionsBaseView, TemplateView):
     """ collection concept view. """
     template_name = "collections/collection_concepts.html"
 
     def get_context_data(self, *args, **kwargs):
+        """ Loads the concepts that are in the collection. """
 
+        # Setup the context and args
         context = super(CollectionConceptsView, self).get_context_data(*args, **kwargs)
         self.get_args()
+
+        # Load the source details
         api = OclApi(self.request, debug=True)
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
-        params = self.request.GET.copy()
-        params['verbose'] = 'true'
-        params['limit'] = '10'
 
-        # to fetch all , set limit to 0
+        # Load collection versions (to fetch all, set limit to 0)
         versions = self.get_collection_versions(
             self.owner_type, self.owner_id, self.collection_id,
             search_params={'limit': '0'})
+
+        # Load the concepts in this collection, applying search parameters
+        original_search_string = self.request.GET.get('q', '')
+        # TODO: SearchStringFormatter.add_wildcard(self.request)
+        params = self.request.GET.copy()
+        params['verbose'] = 'true'
+        params['limit'] = '10'
         searcher = self.get_collection_data(
-            self.owner_type, self.owner_id, self.collection_id, OclConstants.RESOURCE_NAME_CONCEPTS,
+            self.owner_type, self.owner_id, self.collection_id,
+            OclConstants.RESOURCE_NAME_CONCEPTS,
             collection_version_id=self.collection_version_id,
             search_params=params)
-
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
+        # Build URL params
+        transferrable_search_params = {}
+        for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
+            if param in self.request.GET:
+                if param == 'q':
+                    transferrable_search_params[param] = original_search_string
+                else:
+                    transferrable_search_params[param] = self.request.GET.get(param)
+
+        # Encode the search parameters into a single URL-encoded string so that it can
+        #   easily be appended onto URL links on the search page
+        context['transferrable_search_params'] = ''
+        if transferrable_search_params:
+            context['transferrable_search_params'] = urlencode(transferrable_search_params)
+
         # Set the context
         context['kwargs'] = self.kwargs
-        context['url_params'] = self.request.GET
         context['selected_tab'] = 'Concepts'
         context['collection'] = collection
         context['collection_version'] = self.collection_version_id
+        context['collection_versions'] = versions.search_results
+        context['selected_tab'] = 'Concepts'
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
+        context['search_sort_option_defs'] = searcher.get_sort_options()
+        context['search_sort'] = searcher.get_sort()
         context['search_query'] = self.search_string if hasattr(self, 'search_string') else ''
         context['search_filters'] = searcher.search_filter_list
-        context['search_sort_options'] = searcher.get_sort_options()
-        context['search_sort'] = searcher.get_sort()
+
+        # Set debug variables
+        context['url_params'] = self.request.GET
+        context['search_params'] = searcher.search_params
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
-        context['collection_versions'] = versions.search_results
 
         return context
 
