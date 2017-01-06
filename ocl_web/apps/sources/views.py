@@ -20,6 +20,7 @@ from .forms import (
     SourceVersionsNewForm, SourceVersionsEditForm, SourceVersionsRetireForm, SourceDeleteForm)
 from apps.core.views import UserOrOrgMixin
 from apps.core.utils import SearchStringFormatter
+from django.utils.http import urlencode
 
 logger = logging.getLogger('oclweb')
 

@@ -17,6 +17,7 @@ from django.core.paginator import Paginator
 from braces.views import LoginRequiredMixin
 from braces.views import JsonRequestResponseMixin
 from django.http import HttpResponse
+from django.utils.http import urlencode
 
 from apps.core.utils import SearchStringFormatter
 from .forms import (OrganizationNewForm, OrganizationEditForm)

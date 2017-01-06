@@ -18,6 +18,7 @@ from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, View
 from django.views.generic.edit import FormView
 from libs.ocl import OclApi, OclSearch, OclConstants
+from django.utils.http import urlencode
 
 from .forms import (CollectionCreateForm, CollectionEditForm,
                     CollectionDeleteForm, CollectionVersionAddForm, CollectionVersionsEditForm)
