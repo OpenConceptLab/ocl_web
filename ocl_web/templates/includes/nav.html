@@ -22,7 +22,7 @@
           <input name="q" id="global_search" type="text" class="form-control" placeholder="Search OCL" value="{{ search_query }}" />
           <span class="input-group-btn" style="width:30px;"><button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button></span>
         </div><!-- /.form-group -->
-        <div class="checkbox navbar-btn"><label for="exact_match_global_search" class="navbar-link" style="font-weight:300;"><input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search" />&nbsp;<span class="small">{% trans "Exact match" %}</span></label></div>
+        <div class="checkbox navbar-btn"><label for="exact_match_global_search" class="navbar-link" style="font-weight:300;"><input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search" style="cursor:pointer;" />&nbsp;<span class="small">{% trans "Exact match" %}</span></label></div>
         {% if request.GET.type %}<input type="hidden" name="type" value="{{ request.GET.type }}" />{% endif %}
         {% if request.GET.debug %}<input type="hidden" name="debug" value="{{ request.GET.debug }}" />{% endif %}
       </form><!-- /.navbar-form -->

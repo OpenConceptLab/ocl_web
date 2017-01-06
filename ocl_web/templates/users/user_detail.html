@@ -8,6 +8,21 @@
 
 {% block content %}
 <div class="container">
+
+	{% if object == request.user %}
+	<!-- Action buttons -->
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="pull-right">
+				<a class="btn btn-sm btn-primary" href="{% url 'users:update' ocl_user.username %}">Edit Profile</a>
+				<a class="btn btn-sm" href="{% url 'account_email' %}">E-Mail</a>
+				<a class="btn btn-sm" href="{% url 'avatar_change' %}">Avatar</a>
+			</div>
+		</div>
+	</div>
+	<!-- End Action buttons -->
+	{% endif %}
+
 	<div class="row">
 
 		<!-- User details -->
@@ -26,23 +41,10 @@
 
 		<div class="col-sm-9">
 
-			<!-- Action buttons -->
-			{% if object == request.user %}
-			<div class="row">
-				<div class="pull-right">
-					<a class="btn btn-sm btn-primary" href="{% url 'users:update' ocl_user.username %}">Edit Profile</a>
-					<a class="btn btn-sm" href="{% url 'account_email' %}">E-Mail</a>
-					<a class="btn btn-sm" href="{% url 'avatar_change' %}">Avatar</a>
-				</div>
-			</div>
-			{% endif %}
-			<!-- End Action buttons -->
-
-
 			<!-- Tabs -->
 			{% url 'users:detail' username=ocl_user.username as user_url %}
 			<div class="row" style="margin:12px 0;">
-				<ul class="nav nav-tabs">
+				<ul class="nav nav-tabs small">
 					<li role="presentation" {% if selected_tab == "repositories" %}class="active"{% endif %}><a href="{{ user_url }}?tab=Repositories">User Repositories</a></li>
 					<li role="presentation" {% if selected_tab == "organizations" %}class="active"{% endif %}><a href="{{ user_url }}?tab=Organizations">Organization Membership</a></li>
 				</ul>
