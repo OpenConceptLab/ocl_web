@@ -31,7 +31,7 @@
       <ul class="nav navbar-nav navbar-right ocl-nav-menu">
         <li><a href="{% url 'features' %}"><span class="hidden-sm hidden-md hidden-lg"><span class="glyphicon glyphicon-grain"></span>&nbsp;&nbsp;</span>{% trans "Features" %}</a></li>
         {% if not hide_nav_search %}<li class="hidden-sm hidden-md hidden-lg"><a href="{% url 'search' %}"><span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;{% trans "Search" %}</a></li>{% endif %}
-        <li><a href="https://github.com/OpenConceptLab/ocl_web/wiki" target="_new"><span class="hidden-sm hidden-md hidden-lg"><span class="glyphicon glyphicon-question-sign"></span>&nbsp;&nbsp;</span>{% trans "Help" %}</a></li>
+        <li><a href="https://github.com/OpenConceptLab/ocl_web/wiki" target="_blank"><span class="hidden-sm hidden-md hidden-lg"><span class="glyphicon glyphicon-question-sign"></span>&nbsp;&nbsp;</span>{% trans "Help" %}</a></li>
         {% if request.user.is_authenticated %}
         <li><a href="{% url 'users:detail' request.user.username %}" title="User Profile: {{ user.email }}"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ user.username }}</a></li>
         <li class="dropdown">

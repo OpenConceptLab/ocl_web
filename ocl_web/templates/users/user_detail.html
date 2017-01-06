@@ -6,8 +6,8 @@
 
 {% block title %}{{ object.username }} - Open Concept Lab{% endblock %}
 
-{% block content %}
-<div class="container">
+{% block content-no-container %}
+<div class="container-fluid" style="margin-top:10px;">
 
 	{% if object == request.user %}
 	<!-- Action buttons -->
@@ -26,7 +26,7 @@
 	<div class="row">
 
 		<!-- User details -->
-		<div class="col-sm-3">
+		<div class="col-sm-3" style="padding-top:10px;">
 			<div>{% avatar object size=200 %}</div>
 			<h2>{{ ocl_user.name }}<br /><small>{{ object.username }}</small></h2>
 			<hr />

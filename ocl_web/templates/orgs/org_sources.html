@@ -40,12 +40,12 @@
         <div class="row" style="margin-bottom:10px;margin-top:10px;">
             <div class="col-xs-12">
 
-                {% if results %}
+                {% if sources %}
                 <!-- Simple Pager -->
                 {% simple_pager source_page 'source' url=source_pagination_url pager_size='small' hide_xs=1 %}
                 {% endif %}
 
-                {% if results %}
+                {% if sources %}
                 <!-- Sort dropdown -->
                 <div class="hidden-xs btn-group pull-right" style="margin-right:8px;">
                     <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-sort"></span> <span class="caret"></span></button>
@@ -58,7 +58,7 @@
                 </div>
                 {% endif %}
 
-                {% if results %}
+                {% if sources %}
                 {# TODO: Confirm that this works for org sources #}
                 <!-- Search results CSV download -->
                 {% include "download_csv.html" with type='repository_search' %}
