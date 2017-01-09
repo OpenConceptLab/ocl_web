@@ -1,13 +1,36 @@
 /* django template tag: field_label */
 
 .field-label-key {
-  text-align:right;
+  text-align:left;
   font-weight:300;
   color:#aaa;
 }
 .field-label-value {
 
 }
+
+
+.list-repository-versions {
+  padding-left:0;
+}
+.input-group .input-group-btn .repo-version-selector {
+  white-space:nowrap;
+  max-width:230px;
+  min-width:155px;
+  text-align:left;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  padding-left:7px;
+  padding-right:5px;
+}
+
+.repo-version-retired {
+  text-decoration: line-through;
+}
+.repo-version-released {
+  font-weight: bold;
+}
+
 
 /* line 5, ../sass/project.scss */
 .alert-debug {

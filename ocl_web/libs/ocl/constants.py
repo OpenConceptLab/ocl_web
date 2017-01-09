@@ -280,60 +280,70 @@ class OclConstants(object):
             'name':RESOURCE_NAME_CONCEPT,
             'display_name':'concept',
             'facets':True,
+            'icon': 'glyphicon-tag',
             'show_on_global_search':True},
         RESOURCE_NAME_MAPPINGS:{
             'int':RESOURCE_ID_MAPPING,
             'name':RESOURCE_NAME_MAPPING,
             'display_name':'mapping',
             'facets':True,
+            'icon': 'glyphicon-link',
             'show_on_global_search':True},
         RESOURCE_NAME_SOURCES:{
             'int':RESOURCE_ID_SOURCE,
             'name':RESOURCE_NAME_SOURCE,
             'display_name':'source',
             'facets':True,
+            'icon': 'glyphicon-th-list',
             'show_on_global_search':True},
         RESOURCE_NAME_COLLECTIONS:{
             'int':RESOURCE_ID_COLLECTION,
             'name':RESOURCE_NAME_COLLECTION,
             'display_name':'collection',
             'facets':True,
+            'icon': 'glyphicon-tags',
             'show_on_global_search':True},
         RESOURCE_NAME_ORGS:{
             'int':RESOURCE_ID_ORG,
             'name':RESOURCE_NAME_ORG,
             'display_name':'organization',
             'facets':False,
+            'icon': 'glyphicon-home',
             'show_on_global_search':True},
         RESOURCE_NAME_USERS:{
             'int':RESOURCE_ID_USER,
             'name':RESOURCE_NAME_USER,
             'display_name':'user',
             'facets':False,
+            'icon': 'glyphicon-user',
             'show_on_global_search':True},
         RESOURCE_NAME_SOURCE_VERSIONS:{
             'int':RESOURCE_ID_SOURCE_VERSION,
             'name':RESOURCE_NAME_SOURCE_VERSION,
             'display_name':'version',
             'facets':False,
+            'icon': 'glyphicon-asterisk',
             'show_on_global_search':False},
         RESOURCE_NAME_COLLECTION_VERSIONS: {
             'int': RESOURCE_ID_COLLECTION_VERSION,
             'name': RESOURCE_NAME_COLLECTION_VERSION,
             'display_name': 'version',
             'facets': False,
+            'icon': 'glyphicon-asterisk',
             'show_on_global_search':False},
         RESOURCE_NAME_CONCEPT_VERSIONS:{
             'int':RESOURCE_ID_CONCEPT_VERSION,
             'mnemonic':RESOURCE_NAME_CONCEPT_VERSION,
             'display_name':'concept version',
             'facets':False,
+            'icon': 'glyphicon-th',
             'show_on_global_search':False},
         RESOURCE_NAME_MAPPING_VERSIONS:{
             'int':RESOURCE_ID_MAPPING_VERSION,
             'mnemonic':RESOURCE_NAME_MAPPING_VERSION,
             'display_name':'mapping version',
             'facets':False,
+            'icon': 'glyphicon-th',
             'show_on_global_search':False},
     }
 
@@ -381,6 +391,14 @@ class OclConstants(object):
         """Get singular display name of the resource."""
         if resource_type in cls.RESOURCE_TYPE_INFO:
             return cls.RESOURCE_TYPE_INFO[resource_type]['display_name']
+        else:
+            return ''
+
+    @classmethod
+    def resource_display_icon(cls, resource_type):
+        """Get singular display icon of the resource."""
+        if resource_type in cls.RESOURCE_TYPE_INFO:
+            return cls.RESOURCE_TYPE_INFO[resource_type]['icon']
         else:
             return ''
 
