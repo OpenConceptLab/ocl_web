@@ -267,21 +267,28 @@ def _get_collection_type_list():
         'Indicator Registry'
     ]
 
-
+locale_list = []
 def _get_locale_list():
     """Return a list of locales only for those having 2-letter codes
     """
+    global locale_list
+    if len(locale_list) > 0:
+        return locale_list
+
     response = api.get('orgs', 'OCL', 'sources', 'Locales', 'concepts', params={'limit': 0})
     if response.status_code == 404:
-        return [{'code': 'en', 'name': 'en - English'}]
+        locale_list = [{'code': 'en', 'name': 'en - English'}]
+        return locale_list
 
-    return [
+    locale_list =  [
         {
             'code': locale['locale'],
             'name': locale['display_name'] + ' [' + locale['locale'] + ']'
         }
         for locale in response.json() if locale['locale']
         ]
+
+    return locale_list
 
 
 def _get_name_type_list():

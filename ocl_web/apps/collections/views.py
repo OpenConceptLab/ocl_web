@@ -6,6 +6,10 @@ import re
 
 import requests
 import simplejson as json
+
+from apps.collections.validation_messages import POSTED_HEAD_VERSION_OF_SOURCE, POSTED_NON_HEAD_VERSION_OF_SOURCE, \
+    ENTERED_WITH_VERSION_NUMBER_FOR_CONCEPT, ENTERED_WITHOUT_VERSION_NUMBER_FOR_CONCEPT, \
+    ENTERED_WITH_VERSION_NUMBER_FOR_MAPPING, ENTERED_WITHOUT_VERSION_NUMBER_FOR_MAPPING
 from apps.core.utils import SearchStringFormatter
 from apps.core.views import UserOrOrgMixin
 from braces.views import LoginRequiredMixin
@@ -110,6 +114,11 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
+        add_reference_warning = self.request.session.get('add_reference_warning', None)
+        add_reference_success = self.request.session.get('add_reference_success', None)
+        self.request.session['add_reference_warning'] = None
+        self.request.session['add_reference_success'] = None
+
         context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'References'
@@ -125,14 +134,17 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
         context['collection_versions'] = versions.search_results
+
+        context['warning'] = add_reference_warning
+        context['success'] = add_reference_success
         return context
 
 
 class CollectionMappingsView(CollectionsBaseView, TemplateView):
     """ collection concept view. """
     template_name = "collections/collection_mappings.html"
-    def get_context_data(self, *args, **kwargs):
 
+    def get_context_data(self, *args, **kwargs):
         context = super(CollectionMappingsView, self).get_context_data(*args, **kwargs)
         self.get_args()
         api = OclApi(self.request, debug=True)
@@ -202,7 +214,6 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
     template_name = "collections/collection_concepts.html"
 
     def get_context_data(self, *args, **kwargs):
-
         context = super(CollectionConceptsView, self).get_context_data(*args, **kwargs)
         self.get_args()
         api = OclApi(self.request, debug=True)
@@ -273,6 +284,7 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
 class CollectionVersionsView(CollectionsBaseView, TemplateView):
     """ collection About view. """
     template_name = "collections/collection_versions.html"
+
     def get_context_data(self, *args, **kwargs):
         context = super(CollectionVersionsView, self).get_context_data(*args, **kwargs)
 
@@ -319,6 +331,7 @@ class CollectionVersionsView(CollectionsBaseView, TemplateView):
 class CollectionAboutView(CollectionsBaseView, TemplateView):
     """ Collection About view. """
     template_name = "collections/collection_about.html"
+
     def get_context_data(self, *args, **kwargs):
         context = super(CollectionAboutView, self).get_context_data(*args, **kwargs)
 
@@ -328,7 +341,7 @@ class CollectionAboutView(CollectionsBaseView, TemplateView):
         collection = results.json()
         about = None
         if ('extras' in collection and isinstance(collection['extras'], dict) and
-                'about' in collection['extras']):
+                    'about' in collection['extras']):
             about = collection['extras'].get('about')
 
         # Set the context
@@ -339,6 +352,7 @@ class CollectionAboutView(CollectionsBaseView, TemplateView):
         context['about'] = about
 
         return context
+
 
 class CollectionDetailView(CollectionsBaseView, TemplateView):
     """ Collection detail views """
@@ -364,7 +378,6 @@ class CollectionDetailView(CollectionsBaseView, TemplateView):
         context['collection'] = collection
         context['selected_tab'] = 'Details'
         return context
-
 
 
 class CollectionCreateView(CollectionsBaseView, FormView):
@@ -444,7 +457,6 @@ class CollectionCreateView(CollectionsBaseView, FormView):
             return HttpResponseRedirect(self.request.path)
 
 
-
 class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
     template_name = "collections/collection_add_reference.html"
 
@@ -462,17 +474,15 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
 
         return context
 
-
     def get_success_url(self):
         """ Return URL for redirecting browser """
         if self.from_org:
             return reverse('collection-references',
-                           kwargs={'org': self.org_id, 'collection':self.collection_id})
-
+                           kwargs={'org': self.org_id, 'collection': self.collection_id})
         else:
             return reverse(
                 'collection-references',
-                kwargs={"user": self.request.user.username, 'collection':self.collection_id})
+                kwargs={"user": self.request.user.username, 'collection': self.collection_id})
 
     def post(self, request, *args, **kwargs):
         self.get_args()
@@ -487,15 +497,73 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
             'references',
             data=data
         )
-        errors = result.json() if result.status_code == requests.codes.bad else []
+
+        results = result.json()
+        errors = results if result.status_code == requests.codes.bad else [{result['expression']: result['message']} for result in results if not result['added']]
+
+        if self.adding_single_reference(data):
+            # Version Information is getting from api but it isn't getting from form
+            expression_from_form = data['expressions'][0]
+            expression_from_api = results[0]['expression']
+            self.send_message_by_version_information_for_single_reference(request, expression_from_form,
+                                                                          expression_from_api)
+        else:
+            self.send_message_by_source_version_information_for_multiple_reference(request, data)
+
         return HttpResponse(
             json.dumps({
+                'update_results': results,
                 'success_url': self.get_success_url(),
-                'errors': errors
+                'errors': errors,
             }),
             content_type="application/json"
         )
 
+    def adding_head_version(self, data):
+        return data['uri'].split('/')[5] == 'HEAD'
+
+    def adding_single_reference(self, data):
+        return data.has_key('expressions')
+
+    def version_specified(self, expression):
+        return len(expression.split('/')) == 9
+
+    def get_reference_type_in_expression(self, expression):
+        return expression.split('/')[5]
+
+    def get_mnemonic_in_expression(self, expression):
+        return expression.split('/')[6]
+
+    def get_version_information_in_expression(self, expression):
+        return expression.split('/')[7]
+
+    def added_without_version_information_warning_message_by_reference_type(self, reference_type, mnemonic, version_number):
+        if reference_type == 'concepts':
+            return ENTERED_WITHOUT_VERSION_NUMBER_FOR_CONCEPT.format(mnemonic, version_number)
+        else:
+            return ENTERED_WITHOUT_VERSION_NUMBER_FOR_MAPPING.format(mnemonic, version_number)
+
+    def added_with_version_information_success_message_by_reference_type(self, reference_type, mnemonic, version_number):
+        if reference_type == 'concepts':
+            return ENTERED_WITH_VERSION_NUMBER_FOR_CONCEPT.format(mnemonic, version_number)
+        else:
+            return ENTERED_WITH_VERSION_NUMBER_FOR_MAPPING.format(mnemonic, version_number)
+
+    def send_message_by_version_information_for_single_reference(self, request, expression_from_form, expression_from_api):
+        reference_type = self.get_reference_type_in_expression(expression_from_api)
+        mnemonic = self.get_mnemonic_in_expression(expression_from_api)
+        version_number = self.get_version_information_in_expression(expression_from_api)
+
+        if self.version_specified(expression_from_form):
+            request.session['add_reference_success'] = self.added_with_version_information_success_message_by_reference_type(reference_type, mnemonic, version_number)
+        else:
+            request.session['add_reference_warning'] = self.added_without_version_information_warning_message_by_reference_type(reference_type, mnemonic, version_number)
+
+    def send_message_by_source_version_information_for_multiple_reference(self, request, data):
+        if self.adding_head_version(data):
+            request.session['add_reference_warning'] = POSTED_HEAD_VERSION_OF_SOURCE
+        else:
+            request.session['add_reference_success'] = POSTED_NON_HEAD_VERSION_OF_SOURCE
 
 
 class CollectionReferencesDeleteView(CollectionsBaseView, TemplateView):
@@ -507,7 +575,6 @@ class CollectionReferencesDeleteView(CollectionsBaseView, TemplateView):
         res = api.delete(self.owner_type, self.owner_id, 'collections',
                          self.collection_id, 'references', **data)
         return HttpResponse(res.content, status=200)
-
 
 
 class CollectionDeleteView(CollectionsBaseView, FormView):
@@ -573,7 +640,6 @@ class CollectionDeleteView(CollectionsBaseView, FormView):
             messages.add_message(self.request, messages.INFO, _('Collection Deleted'))
 
             return HttpResponseRedirect(self.get_success_url())
-
 
 
 class CollectionEditView(CollectionsBaseView, FormView):
@@ -649,9 +715,7 @@ class CollectionEditView(CollectionsBaseView, FormView):
                                                         'collection': self.collection_id}))
 
 
-
 class CollectionVersionsNewView(CollectionsBaseView, UserOrOrgMixin, FormView):
-
     form_class = CollectionVersionAddForm
     template_name = "collections/collection_versions_new.html"
 
@@ -724,7 +788,6 @@ class CollectionVersionsNewView(CollectionsBaseView, UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.request.path)
 
 
-
 class CollectionVersionEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     """ View to edit collection version """
     form_class = CollectionVersionsEditForm
@@ -735,7 +798,7 @@ class CollectionVersionEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         self.get_args()
         api = OclApi(self.request, debug=True)
         self.collection_version = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id,
-                                      self.collection_version_id).json()
+                                          self.collection_version_id).json()
         return CollectionVersionsEditForm
 
     def get_initial(self):
@@ -765,7 +828,7 @@ class CollectionVersionEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
         # Submit updated collection version description to the API
         data = {
-            'description':form.cleaned_data.get('description')
+            'description': form.cleaned_data.get('description')
         }
         api = OclApi(self.request, debug=True)
         result = api.update_resource_version(self.owner_type, self.owner_id, self.collection_id,
@@ -787,6 +850,7 @@ class CollectionVersionEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             messages.add_message(self.request, messages.ERROR, emsg)
             return HttpResponseRedirect(self.request.path)
 
+
 class CollectionVersionEditJsonView(CollectionsBaseView, TemplateView):
     def put(self, request, *args, **kwargs):
         self.get_args()
@@ -799,7 +863,6 @@ class CollectionVersionEditJsonView(CollectionsBaseView, TemplateView):
                                           'collections',
                                           data)
         return HttpResponse(res.content, status=200)
-
 
 
 class CollectionVersionDeleteView(CollectionsBaseView, View):
