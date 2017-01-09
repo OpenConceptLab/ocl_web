@@ -68,7 +68,7 @@
 	{% url 'source-versions' user=source.owner source=source.id as source_versions_url %}
 	{% url 'source-about' user=source.owner source=source.id as source_about_url %}
 {% endif %}
-<div class="container">
+<div class="container-fluid">
     <ul class="nav nav-tabs">
     	{% if source.source_type != 'External' %}
 	        <li role="presentation" {% if selected_tab == "Concepts" %}class="active"{% endif %}><a href="{{ source_concepts_url }}">Concepts</a></li>

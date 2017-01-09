@@ -20,6 +20,7 @@ from .forms import (
     SourceVersionsNewForm, SourceVersionsEditForm, SourceVersionsRetireForm, SourceDeleteForm)
 from apps.core.views import UserOrOrgMixin
 from apps.core.utils import SearchStringFormatter
+from django.utils.http import urlencode
 
 logger = logging.getLogger('oclweb')
 
@@ -29,11 +30,10 @@ class SourceReadBaseView(TemplateView):
     """ Base class for Source Read views. """
 
     def get_source_details(self, owner_type, owner_id, source_id, source_version_id=None):
-        """
-        Load source details from the API and return as dictionary.
-        """
+        """ Load source details from the API and return as dictionary. """
         # TODO(paynejd@gmail.com): Load details from source version, if applicable (or remove?)
         # TODO(paynejd@gmail.com): Validate the input parameters
+
         api = OclApi(self.request, debug=True)
         search_response = api.get(owner_type, owner_id, 'sources', source_id)
         if search_response.status_code == 404:
@@ -74,7 +74,6 @@ class SourceReadBaseView(TemplateView):
         """
         Load source concepts from the API and return OclSearch instance with results.
         """
-        # TODO(paynejd@gmail.com): Validate the input parameters
 
         # Perform the search, applying source_version_id if not None
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_CONCEPTS,
@@ -96,7 +95,8 @@ class SourceReadBaseView(TemplateView):
 
         # Process the results
         searcher.process_search_results(
-            search_type=searcher.search_type, search_response=search_response,
+            search_type=searcher.search_type,
+            search_response=search_response,
             search_params=search_params)
 
         return searcher
@@ -106,9 +106,8 @@ class SourceReadBaseView(TemplateView):
         """
         Load source mappings from the API and return OclSearch instance with results.
         """
-        # TODO(paynejd@gmail.com): Validate the input parameters
 
-        # Perform the search
+        # Perform the search, applying source_version_id if not None
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_MAPPINGS,
                              search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
                              params=search_params)
@@ -128,7 +127,8 @@ class SourceReadBaseView(TemplateView):
 
         # Process the results
         searcher.process_search_results(
-            search_type=searcher.search_type, search_response=search_response,
+            search_type=searcher.search_type,
+            search_response=search_response,
             search_params=search_params)
 
         return searcher
@@ -138,9 +138,8 @@ class SourceReadBaseView(TemplateView):
         """
         Load external mappings that reference this source from the API, return OclSearch instance.
         """
-        # TODO(paynejd@gmail.com): Validate the input parameters
 
-        # Get search_params into a mutable QueryDict format so that I can add values
+        # Get search_params into a mutable QueryDict format so that we can add values
         if isinstance(search_params, QueryDict):
             params = search_params.copy()
         elif isinstance(search_params, basestring):
@@ -180,14 +179,13 @@ class SourceReadBaseView(TemplateView):
         return searcher
 
 
+
 class SourceDetailsView(UserOrOrgMixin, SourceReadBaseView):
     """ Source Details view. """
     template_name = "sources/source_details.html"
 
     def get_context_data(self, *args, **kwargs):
-        """
-        Loads the source details.
-        """
+        """ Loads the source details. """
 
         # Setup the context and args
         context = super(SourceDetailsView, self).get_context_data(*args, **kwargs)
@@ -256,6 +254,8 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
             source_version_id=self.source_version_id)
 
         # Load the concepts in this source, applying search parameters
+        original_search_string = self.request.GET.get('q', '')
+        # TODO: SearchStringFormatter.add_wildcard(self.request)
         searcher = self.get_source_concepts(
             self.owner_type, self.owner_id, self.source_id,
             source_version_id=self.source_version_id,
@@ -268,20 +268,38 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
             self.owner_type, self.owner_id, self.source_id,
             search_params={'limit': '0'})
 
+        # Build URL params
+        transferrable_search_params = {}
+        for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
+            if param in self.request.GET:
+                if param == 'q':
+                    transferrable_search_params[param] = original_search_string
+                else:
+                    transferrable_search_params[param] = self.request.GET.get(param)
+
+        # Encode the search parameters into a single URL-encoded string so that it can
+        #   easily be appended onto URL links on the search page
+        context['transferrable_search_params'] = ''
+        if transferrable_search_params:
+            context['transferrable_search_params'] = urlencode(transferrable_search_params)
+
         # Set the context
         context['kwargs'] = self.kwargs
-        context['url_params'] = self.request.GET
-        context['selected_tab'] = 'Concepts'
         context['source'] = source
         context['source_version'] = self.source_version_id
         context['source_versions'] = source_version_searcher.search_results
+        context['selected_tab'] = 'Concepts'
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
-        context['search_query'] = self.search_string
-        context['search_filters'] = searcher.search_filter_list
-        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort_option_defs'] = searcher.get_sort_option_definitions()
         context['search_sort'] = searcher.get_sort()
+        context['search_query'] = original_search_string
+        context['search_filters'] = searcher.search_filter_list
+
+        # Set debug variables
+        context['url_params'] = self.request.GET
+        context['search_params'] = searcher.search_params
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
 
@@ -313,14 +331,13 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         return super(SourceConceptsView, self).get(self, *args, **kwargs)
 
 
+
 class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
     """ Source Mappings view. """
     template_name = "sources/source_mappings.html"
 
     def get_context_data(self, *args, **kwargs):
-        """
-        Loads the mappings that are in the source.
-        """
+        """ Loads the mappings that are in the source. """
 
         # Setup the context and args
         context = super(SourceMappingsView, self).get_context_data(*args, **kwargs)
@@ -332,9 +349,12 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
             source_version_id=self.source_version_id)
 
         # Load the mappings in this source, applying search parameters
+        original_search_string = self.request.GET.get('q', '')
+        # TODO: SearchStringFormatter.add_wildcard(self.request)
         searcher = self.get_source_mappings(
             self.owner_type, self.owner_id, self.source_id,
-            source_version_id=self.source_version_id, search_params=self.request.GET)
+            source_version_id=self.source_version_id,
+            search_params=self.request.GET)
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
@@ -343,20 +363,39 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
             self.owner_type, self.owner_id, self.source_id,
             search_params={'limit': '0'})
 
+        # Build URL params
+        transferrable_search_params = {}
+        for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
+            if param in self.request.GET:
+                if param == 'q':
+                    transferrable_search_params[param] = original_search_string
+                else:
+                    transferrable_search_params[param] = self.request.GET.get(param)
+
+        # Encode the search parameters into a single URL-encoded string so that it can
+        #   easily be appended onto URL links on the search page
+        context['transferrable_search_params'] = ''
+        if transferrable_search_params:
+            context['transferrable_search_params'] = urlencode(transferrable_search_params)
+
         # Set the context
         context['kwargs'] = self.kwargs
-        context['url_params'] = self.request.GET
-        context['selected_tab'] = 'Mappings'
         context['source'] = source
         context['source_version'] = self.source_version_id
         context['source_versions'] = source_version_searcher.search_results
+        context['selected_tab'] = 'Mappings'
         context['results'] = searcher.search_results
         context['current_page'] = search_results_current_page
         context['pagination_url'] = self.request.get_full_path()
-        context['search_query'] = searcher.get_query()
-        context['search_filters'] = searcher.search_filter_list
-        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort_option_defs'] = searcher.get_sort_option_definitions()
         context['search_sort'] = searcher.get_sort()
+        context['search_query'] = original_search_string
+        context['search_filters'] = searcher.search_filter_list
+
+
+        # Set debug variables
+        context['url_params'] = self.request.GET
+        context['search_params'] = searcher.search_params
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
 
@@ -385,6 +424,7 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         return super(SourceMappingsView, self).get(self, *args, **kwargs)
 
 
+
 class SourceExternalReferencesView(UserOrOrgMixin, SourceReadBaseView):
     """ Source External References view. """
     template_name = "sources/source_extrefs.html"
@@ -404,11 +444,28 @@ class SourceExternalReferencesView(UserOrOrgMixin, SourceReadBaseView):
             source_version_id=self.source_version_id)
 
         # Load external mappings that point to this source, applying search criteria
+        original_search_string = self.request.GET.get('q', '')
+        # TODO: SearchStringFormatter.add_wildcard(self.request)
         searcher = self.get_source_extrefs(
             self.owner_type, self.owner_id, self.source_id,
             source_version_id=self.source_version_id, search_params=self.request.GET)
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
+
+        # Build URL params
+        transferrable_search_params = {}
+        for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
+            if param in self.request.GET:
+                if param == 'q':
+                    transferrable_search_params[param] = original_search_string
+                else:
+                    transferrable_search_params[param] = self.request.GET.get(param)
+
+        # Encode the search parameters into a single URL-encoded string so that it can
+        #   easily be appended onto URL links on the search page
+        context['transferrable_search_params'] = ''
+        if transferrable_search_params:
+            context['transferrable_search_params'] = urlencode(transferrable_search_params)
 
         # Set the context
         context['kwargs'] = self.kwargs
@@ -422,7 +479,7 @@ class SourceExternalReferencesView(UserOrOrgMixin, SourceReadBaseView):
         context['pagination_url'] = self.request.get_full_path()
         context['search_query'] = searcher.get_query()
         context['search_filters'] = searcher.search_filter_list
-        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort_option_defs'] = searcher.get_sort_option_definitions()
         context['search_sort'] = searcher.get_sort()
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
@@ -805,6 +862,8 @@ class SourceEditView(UserOrOrgMixin, FormView):
                                                 kwargs={'user': self.user_id,
                                                         'source': self.source_id}))
 
+
+
 class SourceDeleteView(UserOrOrgMixin, FormView):
     """
     View for deleting Source.
@@ -856,6 +915,7 @@ class SourceDeleteView(UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.get_success_url())
 
 
+
 class SourceVersionEditJsonView(UserOrOrgMixin, TemplateView):
     def put(self, request, *args, **kwargs):
         api = OclApi(self.request, debug=True)
@@ -875,6 +935,7 @@ class SourceVersionEditJsonView(UserOrOrgMixin, TemplateView):
                                           'sources',
                                           data)
         return HttpResponse(res.content, status=res.status_code)
+
 
 
 class SourceVersionDeleteView(UserOrOrgMixin, TemplateView):

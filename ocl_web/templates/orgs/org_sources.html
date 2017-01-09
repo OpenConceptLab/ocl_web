@@ -6,127 +6,134 @@
 
 
 {% block tab-content %}
-<div class="container">
+<div class="container-fluid">
 <div class="row">
 <form action="." method="get">
     <input type="hidden" name="resource_type" value="source" />
 
-<!-- Start left column -->
+    <!-- Start left column -->
+    <div class="col-sm-3 hidden-xs">
 
-    <div class="col-md-3">
-
-<!-- Filters -->
-
-        {% for search_filter in search_filters %}
-        <div class="filter-group">
-            <div class="filter-group-header">{{ search_filter.filter_name }}</div>
-            <div class="filter-group-body">
-                {% for filter_option in search_filter.options %}
-                    {% if filter_option.option_num > 0 or search_filter.attrs.show_zeroed_options %}
-                        <div class="checkbox"><label><input type="checkbox" name="{{ search_filter.filter_id }}" value="{{ filter_option.option_value }}" {% if filter_option.selected %}checked{% endif %}>{{ filter_option.option_name }}{% if not search_filter.attrs.hide_numbers %}&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted">{{ filter_option.option_num|intcomma }}</span>{% endif %}</label></div>
-                    {% endif %}
-                {% endfor %}
+        <!-- Search Filters -->
+        <div role="form">
+            {% for search_filter in search_filters %}
+            <div class="filter-group">
+                <div class="filter-group-header">{{ search_filter.filter_name }}</div>
+                <div class="filter-group-body">
+                    {% for filter_option in search_filter.options %}
+                        {% if filter_option.option_num > 0 or search_filter.attrs.show_zeroed_options %}
+                            <div class="checkbox"><label>{% if not search_filter.attrs.hide_numbers %}<span class="count">{{ filter_option.option_num|intcomma }}</span>{% endif %}<input type="checkbox" name="{{ search_filter.filter_id }}" value="{{ filter_option.option_value }}" {% if filter_option.selected %}checked{% endif %}>{{ filter_option.option_name }}</label></div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
 
-<!-- End left column -->
-
+    <!-- End left column -->
     </div>
 
-<!-- Start right column -->
+    <!-- Start right column: Search results section -->
+    <div class="col-sm-9">
 
-    <div class="col-md-9">
+        <!-- Search Bar, Actions, Sorting and Paging -->
+        <div class="row" style="margin-bottom:10px;margin-top:10px;">
+            <div class="col-xs-12">
 
-<!-- Search toolbar -->
-
-        <div class="row" style="padding-top:15px;">
-            <div class="col-md-12" style="padding-left:0;">
-
+                {% if sources %}
                 <!-- Simple Pager -->
-                {% simple_pager source_page 'source' url=source_pagination_url pager_size='small' %}
+                {% simple_pager source_page 'source' url=source_pagination_url pager_size='small' hide_xs=1 %}
+                {% endif %}
 
-                <!-- New Organization Button -->
-                <div class="pull-left">
-                    {% if user.is_authenticated %}
-                    {# TBD: need a more complete tag to check for access #}
-                    <a href="{% url 'source-new' org=org.id %}" class="btn btn-link btn-sm" title="Add New Source to Organization" style="font-weight:300;letter-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span>&nbsp;{% trans 'New Source' %}</a>
-                    {% endif %}
-                </div>
-
-                <!-- Org Sources Search -->
-                <div class="form-group pull-left">
-                    <div class="input-group input-group-sm" style="width:250px;">
-                        <input name="q" id="resourceFilter" type="text" value="{{ source_q }}" class="form-control" placeholder="Search sources within organization" />
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-                        </span>
-                    </div>
-                </div>
-
+                {% if sources %}
                 <!-- Sort dropdown -->
-                <div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;letter-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
-                <div class="btn-group pull-left" style="padding-top:5px;">
-                    <select name="sort" class="btn btn-default btn-sm xdropdown-toggle">
-                        {% for o in search_sort_options %}
-                        <option {% if search_sort == o %}selected{% endif %}>{{ o }}</option>
-                        {% endfor %}
-                    </select>
+                <div class="hidden-xs btn-group pull-right" style="margin-right:8px;">
+                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-sort"></span> <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu">
+                    {% for sort_option_def in search_sort_option_defs %}
+                        {% url 'org-sources' org.id as sort_url %}
+                        <li {% if search_sort == sort_option_def.value %}class="active"{% endif %}><a href="{{ sort_url }}?{{ transferrable_search_params }}&amp;sort={{ sort_option_def.value|urlencode }}"><span class="glyphicon {{ sort_option_def.icon }}"></span>&nbsp;{{ sort_option_def.display }}</a></li>
+                    {% endfor %}
+                    </ul>
                 </div>
-                <div class="pull-left small" style="width:425px;margin:-10px 0 0 100px">
-                    <label for="exact_match_repository_search">
-                        <input name="exact_match" type="checkbox" class="pull-left form-control" tooltip="Exact match" id="exact_match_repository_search" style="width:11px;box-shadow:none;margin-top:-10px;margin-right:2px;" {% if request.GET.exact_match %}checked="checked"{% endif %} />
-                        <span style="font-weight:300;">Exact match</span>
+                {% endif %}
+
+                {% if sources %}
+                {# TODO: Confirm that this works for org sources #}
+                <!-- Search results CSV download -->
+                {% include "download_csv.html" with type='repository_search' %}
+                {% endif %}
+
+                <!-- Exact match checkbox (always render, but hide on xs display) -->
+                <div class="hidden-xs btn-group pull-right" style="padding-left:4px;margin-top:6px;margin-right:8px;">
+                    <label for="exact_match_repository_search" style="font-weight:300;cursor:pointer;">
+                        <input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_repository_search" style="cursor:pointer;" />
+                        <span class="small">Exact match</span>
                     </label>
                 </div>
 
-            </div> <!-- /col-md-12-->
+                {% if_can_change org %}
+                <!-- New Source Button -->
+                <div class="pull-left">
+                    <a href="{% url 'source-new' org=org.id %}" id="id-new-source" class="btn btn-link btn-sm" title="Add New Source to Organization" style="font-weight:300;letter-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span><span class="hidden-xs">&nbsp;{% trans 'New Source' %}</span></a>
+                </div>
+                {% endif_can_change org %}
+
+                <!-- Org Sources Search -->
+                <div class="input-group input-group-sm" style="width:auto;margin-right:6px;">
+                    <input name="q" id="resourceFilter" type="text" value="{{ source_q }}" class="form-control" placeholder="Search sources within organization" />
+                    <span class="input-group-btn"><button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button></span>
+                </div>
+
+            </div> <!-- /col-sm-12-->
         </div> <!-- /row -->
 
+
 <!-- Search results -->
+{% for result in sources %}
+        {% if result.owner_type == 'Organization' %}
+            {% url 'source-home' org=result.owner source=result.short_code as result_home_url %}
+            {% url 'source-concepts' org=result.owner source=result.short_code as result_concepts_url %}
+            {% url 'source-mappings' org=result.owner source=result.short_code as result_mappings_url %}
+            {% url 'source-versions' org=result.owner source=result.short_code as result_versions_url %}
+        {% else %}
+            {% url 'source-home' user=result.owner source=result.short_code as result_home_url %}
+            {% url 'source-concepts' user=result.owner source=result.short_code as result_concepts_url %}
+            {% url 'source-mappings' user=result.owner source=result.short_code as result_mappings_url %}
+            {% url 'source-versions' user=result.owner source=result.short_code as result_versions_url %}
+        {% endif %}
 
-        {% for result in sources %}
-            {% if result.owner_type == 'Organization' %}
-                {% url 'source-home' org=result.owner source=result.short_code as result_home_url %}
-                {% url 'source-concepts' org=result.owner source=result.short_code as result_concepts_url %}
-                {% comment %}{% url 'source-mappings' org=result.owner source=result.short_code as result_mappings_url %}{% endcomment %}
-            {% else %}
-                {% url 'source-home' user=result.owner source=result.short_code as result_home_url %}
-                {% url 'source-concepts' user=result.owner source=result.short_code as result_concepts_url %}
-                {% comment %}{% url 'source-mappings' user=result.owner source=result.short_code as result_mappings_url %}{% endcomment %}
-            {% endif %}
-
-            <div class="row row-search-result">
-                <div class="col-md-1 search-result-col-icon">
-                    <span class="glyphicon glyphicon-th-list search-result-icon"></span>
+        <div class="row row-search-result">
+            <div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-th-list search-result-icon"></span></div>
+            <div class="col-xs-12 col-sm-11 search-result-col-content">
+                <div class="hidden-xs pull-right small text-muted" style="padding-top:12px;">
+                    <a href="{{ result_concepts_url }}" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="{{ result_mappings_url }}" title="Active mappings in source"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;{{ result.active_mappings|intcomma }}</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="{{ result_versions_url }}" title="Source versions"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;{{ result.versions|intcomma }}</a>
                 </div>
-                <div class="col-md-11 search-result-col-content">
-                    <div class="pull-right small text-muted" style="padding-top:12px;">
-                        <a href="{{ result_concepts_url }}" title="Active concepts in source"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}</a>
-                    </div>
-                    <div class="label-container">
-                        {% generic_resource_label resource_type='source' resource_id=result.short_code resource_name=result.name resource_url=result_home_url owner_type=result.owner_type owner_id=result.owner label_size='small' display_breadcrumb=True %}
-                    </div>
-                    <p>
-                        <em>Source Type:</em> {{ result.source_type|default:"None" }}<br />
-                        {% if result.description %}{{ result.description }}<br />{% endif %}
-                        {% if result.updated_on %}<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</span>{% endif %}
-                    </p>
-                    {% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+                <div class="label-container">
+                    {% generic_resource_label resource_type='source' resource_id=result.short_code resource_name=result.name resource_url=result_home_url owner_type=result.owner_type owner_id=result.owner label_size='small' display_breadcrumb=True %}
                 </div>
+                <div class="resource-attributes"><span class="resource-attr"><label>Source Type:</label> {{ result.source_type|default:"None" }}</span></div>
+                {% if result.description %}<div class="resource-description">{{ result.description }}</div>{% endif %}
+                {% if result.updated_on %}<div class="resource-metadata"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</div>{% endif %}
+                {% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
             </div>
-        {% endfor %}
+        </div>
+{% empty %}
+        <h3><small>{% trans 'No sources found' %}</small></h3>
+{% endfor %}
 
-<!-- Pagination -->
-
+        <!-- Pagination -->
         {% if sources %}
         <div class="row" style="text-align:center;">
             {% bootstrap_pagination source_page url=source_pagination_url %}
         </div>
         {% endif %}
 
-<!-- End right column -->
-
+    <!-- End right column -->
     </div> {# col-md-9 #}
 
 </form>
