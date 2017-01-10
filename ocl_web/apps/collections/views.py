@@ -670,6 +670,7 @@ class CollectionReferencesDeleteView(CollectionsBaseView, TemplateView):
         return HttpResponse(res.content, status=200)
 
 
+
 class CollectionDeleteView(CollectionsBaseView, FormView):
     """
     View for deleting Collection.
