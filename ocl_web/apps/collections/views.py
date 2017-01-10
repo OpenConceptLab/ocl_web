@@ -6,6 +6,10 @@ import re
 
 import requests
 import simplejson as json
+
+from apps.collections.validation_messages import POSTED_HEAD_VERSION_OF_SOURCE, POSTED_NON_HEAD_VERSION_OF_SOURCE, \
+    ENTERED_WITH_VERSION_NUMBER_FOR_CONCEPT, ENTERED_WITH_VERSION_NUMBER_FOR_MAPPING, \
+    ENTERED_WITHOUT_VERSION_NUMBER_FOR_CONCEPT, ENTERED_WITHOUT_VERSION_NUMBER_FOR_MAPPING
 from apps.core.utils import SearchStringFormatter
 from apps.core.views import UserOrOrgMixin
 from braces.views import LoginRequiredMixin
@@ -584,16 +588,10 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
         )
 
         results = result.json()
-        errors = results if result.status_code == requests.codes.bad else [{result['expression']: result['message']} for result in results if not result['added']]
+        errors = results if result.status_code == requests.codes.bad else None
 
-        if self.adding_single_reference(data):
-            # Version Information is getting from api but it isn't getting from form
-            expression_from_form = data['expressions'][0]
-            expression_from_api = results[0]['expression']
-            self.send_message_by_version_information_for_single_reference(request, expression_from_form,
-                                                                          expression_from_api)
-        else:
-            self.send_message_by_source_version_information_for_multiple_reference(request, data)
+        if len(filter(lambda result: result['added'], results)) > 0:
+            self.add_version_warning_to_session(data, request, results)
 
         return HttpResponse(
             json.dumps({
@@ -603,6 +601,16 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
             }),
             content_type="application/json"
         )
+
+    def add_version_warning_to_session(self, data, request, results):
+        if self.adding_single_reference(data):
+            # Version Information is getting from api but it isn't getting from form
+            expression_from_form = data['expressions'][0]
+            expression_from_api = results[0]['expression']
+            self.send_message_by_version_information_for_single_reference(request, expression_from_form,
+                                                                          expression_from_api)
+        else:
+            self.send_message_by_source_version_information_for_multiple_reference(request, data)
 
     def adding_head_version(self, data):
         return data['uri'].split('/')[5] == 'HEAD'
@@ -660,7 +668,6 @@ class CollectionReferencesDeleteView(CollectionsBaseView, TemplateView):
         res = api.delete(self.owner_type, self.owner_id, 'collections',
                          self.collection_id, 'references', **data)
         return HttpResponse(res.content, status=200)
-
 
 
 class CollectionDeleteView(CollectionsBaseView, FormView):
