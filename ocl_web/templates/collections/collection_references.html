@@ -121,9 +121,7 @@
 
 <!-- Search results -->
 
-        {% for result in references %}
-
-
+        {% for result in results %}
             <div class="row row-search-result references">
             {% if_can_change collection %}
                 {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
