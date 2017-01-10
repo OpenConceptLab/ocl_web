@@ -28,14 +28,14 @@
                 </div>
                 <ul class="list-group" ng-if="errors">
                     <li class="list-group-item" ng-repeat="(key, error) in errors">
-                        <strong>[[ key ]]</strong> - [[ error ]]
+                        <strong>[[ key ]]:</strong> [[ error ]]
                     </li>
                 </ul>
 
-                <div class="alert alert-success" ng-if="!addingSingle && added">
-                    Valid references, if any, have been added successfully.
+                <div class="alert alert-success" ng-if="!addingSingle && added && added.length > 0">
+                    Following references were added to the collection:
                 </div>
-                <ul class="list-group">
+                <ul class="list-group" ng-if="added && added.length > 0">
                     <li class="list-group-item" ng-repeat="addedReference in added">
                         <strong>[[ addedReference.expression ]]</strong>
                     </li>
@@ -63,13 +63,13 @@
         <div class="row">
             <div class="col-lg-12">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#addsinglereftab">Add Single Reference</a></li>
-                    <li><a data-toggle="tab" href="#addmultiplereftab">Add Multiple References</a></li>
+                    <li><a data-toggle="tab" href="#addsinglereftab">Add Single Reference</a></li>
+                    <li class="active"><a data-toggle="tab" href="#addmultiplereftab">Add Multiple References</a></li>
                 </ul>
             </div>
         </div>
         <div class="tab-content">
-            <div id="addsinglereftab" class="tab-pane fade in active">
+            <div id="addsinglereftab" class="tab-pane fade">
                 <div class="row">
                     <div class="col-lg-12">
                         <br/>
@@ -80,7 +80,9 @@
                                        class="form-control"
                                        id="expression"
                                        ng-model="singleReference"
-                                       placeholder="e.g. /orgs/WHO/sources/ICD-10/concepts/A15.0/" required>
+                                       placeholder="e.g. /orgs/WHO/sources/ICD-10/concepts/A15.0/"
+                                       pattern="/(orgs|users)/[a-zA-Z0-9-]+/sources/[a-zA-Z0-9-]+/(concepts|mappings)/[a-zA-Z0-9-\.]+/(?: [a-zA-Z0-9-\.]+/){0,1}$"
+                                       required>
                                 <span class="help-block">Any URL which is valid in OCL</span> <br/>
                                 <button id="add-single-reference" type="submit"
                                         class="btn btn-primary">{% trans "Add" %}</button>
@@ -93,7 +95,7 @@
                 </div>
                 {# row #}
             </div>
-            <div id="addmultiplereftab" class="tab-pane fade">
+            <div id="addmultiplereftab" class="tab-pane fade in active">
 
                 <div class="row">
                     <div class="col-lg-2" ng-init="getOwners()">

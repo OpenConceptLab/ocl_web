@@ -834,7 +834,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
     $scope.addSingleReferences = function () {
         var payload = {
             expressions: [$scope.singleReference]
-        }
+        };
         $scope.addReferences(payload, true);
     }
 
@@ -867,15 +867,24 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
                 $scope.added = result.update_results.filter(function(result) {
                     return result.added;
                 });
-                $scope.errors = result.errors;
-                $scope.openErrorModal();
 
-                if (!_.size(result.errors)) {
+                $scope.errors = result.errors || result.update_results.filter(function(result) {
+                        return !result.added;
+                    }).reduce(function(hash, curr){
+                        hash[curr.expression] = curr.message[0];
+                        return hash
+                    }, {});
+
+                if(_.size($scope.errors))
+                    $scope.openErrorModal();
+
+                if (!_.size($scope.errors))
                     location.pathname = result.success_url;
-                }
+
             })
             .error(function (error) {
-                window.alert(error);
+                console.log("Error when adding references: " + error);
+                console.log(error)
             })
             .finally(function () {
                 $scope.loading = false;
@@ -1218,7 +1227,7 @@ $('div.release_unrelease_section .resource_retire').on('click', function (ev) {
     var releaseCheckboxElem = retireCheckboxElem.siblings('#id_release');
     var retireLable = retireCheckboxElem.parents('li')
         .find('.release-label-container .retire-label');
-    var releaseLable = releaseCheckboxElem.parents('li')
+    var releaseLabel = releaseCheckboxElem.parents('li')
         .find('.release-label-container .release-label');
     var breadCrumbLabel = retireCheckboxElem.closest('.list-group-item').find('.resource-label-id-code');
     var retired = retireCheckboxElem.prop('checked');
@@ -1239,7 +1248,7 @@ $('div.release_unrelease_section .resource_retire').on('click', function (ev) {
         releaseCheckboxElem.prop({disabled: data.retired});
         if (data.retired) {
             setTimeout(function () {
-                releaseLable.addClass('hide')
+                releaseLabel.addClass('hide')
             }, 0); // 0 timeout to tell the browser to execute it in the end.
             retireLable.removeClass('hide');
             breadCrumbLabel.addClass('strikethrough');
@@ -1251,9 +1260,9 @@ $('div.release_unrelease_section .resource_retire').on('click', function (ev) {
         }
 
         if (data.released) {
-            releaseLable.removeClass('hide');
+            releaseLabel.removeClass('hide');
         } else {
-            releaseLable.addClass('hide');
+            releaseLabel.addClass('hide');
         }
     }).fail(function () {
         alertify.error('Something unexpected happened!', 3);
