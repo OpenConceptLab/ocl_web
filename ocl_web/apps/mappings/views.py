@@ -20,7 +20,7 @@ from libs.ocl import OclSearch
 from .forms import (MappingNewForm, MappingEditForm, MappingRetireForm)
 from braces.views import LoginRequiredMixin
 from libs.ocl import OclApi
-from apps.core.views import UserOrOrgMixin
+from apps.core.views import UserOrOrgMixin, _get_map_type_list
 
 logger = logging.getLogger('oclweb')
 
@@ -246,12 +246,11 @@ class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         context = super(MappingEditView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
-        # TODO: Load list of map types
-
         # Set the context
         context['kwargs'] = self.kwargs
         context['source'] = self.source
         context['mapping'] = self.mapping
+        context['map_types'] = _get_map_type_list()
 
         return context
 
@@ -326,6 +325,7 @@ class MappingNewView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         # Set the context
         context['kwargs'] = self.kwargs
         context['source'] = source
+        context['map_types'] = _get_map_type_list()
 
         return context
 
