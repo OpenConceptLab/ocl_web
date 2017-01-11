@@ -1,7 +1,7 @@
 var BasePage = require('./base_page.js');
 var EC = require('protractor').ExpectedConditions;
 
-var OrganizationPage = function() {
+var OrganizationPage = function () {
 
     // create org locators
     this.orgTab = element(by.linkText('Organization Membership'));
@@ -26,9 +26,17 @@ var OrganizationPage = function() {
     // create reference locators
     this.references = element(by.linkText('References'));
     this.addNewReferenceLink = element(by.id('add-reference'));
+    this.singleReferences = element(by.linkText('Add Single Reference'));
     this.expression = $('#expression');
     this.addReferenceButton = element(by.id('add-single-reference'));
     this.countOfReferences = element.all(by.css('a[title="Collection Reference"]'));
+
+    this.successModal = element(by.css('.alert.alert-success'));
+    this.warningModal = element(by.css('.alert.alert-warning'));
+    this.duplicateErrorModal = element(by.css('.list-group-item.ng-binding.ng-scope'));
+    this.conceptVersionUrl = element(by.css('.concept-version-url .field-label-value'));
+
+
 
     // create source under org locators
     this.newOrgSourceLink = element(by.linkText('Sources'));
@@ -80,7 +88,7 @@ var OrganizationPage = function() {
     this.toConcept = $('#id_internal_to_concept_url');
     this.createMappingButton = element(by.buttonText('Create Mapping'));
 
-    this.createNewOrg = function (org_ShortCode, org_name, website, company, loc ) {
+    this.createNewOrg = function (org_ShortCode, org_name, website, company, loc) {
         this.orgTab.click();
         this.createNewOrgLink.click();
         this.shortCode.sendKeys(org_ShortCode);
@@ -91,7 +99,7 @@ var OrganizationPage = function() {
         this.createOrgButton.click();
     };
 
-    this.createNewOrgCollection = function (short_code, coll_name, full_name, locale ) {
+    this.createNewOrgCollection = function (short_code, coll_name, full_name, locale) {
         this.newOrgCollectionLink.click();
         this.createNewCollection.click();
         this.collShortCode.sendKeys(short_code);
@@ -101,9 +109,19 @@ var OrganizationPage = function() {
         this.addOrgCollectionButton.click();
     };
 
-    this.createNewReference = function (expression) {
+    this.createNewSingleReference = function (expression) {
         this.references.click();
         this.addNewReferenceLink.click();
+        this.singleReferences.click();
+        browser.sleep(500);
+        this.expression.sendKeys(expression);
+        return this.addReferenceButton.click();
+    };
+
+    this.createNewMultipleReference = function (expression) {
+        this.references.click();
+        this.addNewReferenceLink.click();
+        browser.sleep(500);
         this.expression.sendKeys(expression);
         this.addReferenceButton.click();
     };
@@ -133,20 +151,20 @@ var OrganizationPage = function() {
     };
 
     this.releaseVersion = function () {
-      this.releaseButton.click();
+        this.releaseButton.click();
     };
 
     this.retireVersion = function () {
-      this.retireButton.click();
+        this.retireButton.click();
     };
 
     this.createNewConcept = function (id, name, desc, key, locale) {
         this.conceptsLink.click();
         this.newConceptLink.click();
         this.conceptId.sendKeys(id);
-        this.select_name_locale.$('[label="'+ locale +'"]').click();
+        this.select_name_locale.$('[label="' + locale + '"]').click();
         this.conceptName.sendKeys(name);
-        this.select_desc_locale.$('[label="'+ locale +'"]').click();
+        this.select_desc_locale.$('[label="' + locale + '"]').click();
         this.conceptDesc.sendKeys(desc);
         this.key.sendKeys(key);
         this.createConceptButton.click();
@@ -162,7 +180,7 @@ var OrganizationPage = function() {
     };
 
     this.deleteSrcVersion = function () {
-        var clickDelete = function(){
+        var clickDelete = function () {
             this.deleteSrcVersionIcon.click();
 
             browser.wait(EC.visibilityOf(this.okButton, 1500));

@@ -5,205 +5,231 @@
 
 
 {% block tab-content %}
-{% if collection.owner_type == 'Organization' %}
-	{% url 'collection-version-new' org=collection.owner collection=collection.id as collection_version_new_url %}
-	{% url 'collection-addreference' org=collection.owner collection=collection.id as collection_addreference_url %}
-{% else %}
-	{% url 'collection-version-new' user=collection.owner collection=collection.id as collection_version_new_url %}
-	{% url 'collection-addreference' user=collection.owner collection=collection.id as collection_addreference_url %}
-{% endif %}
+    {% if collection.owner_type == 'Organization' %}
+        {% url 'collection-version-new' org=collection.owner collection=collection.id as collection_version_new_url %}
+        {% url 'collection-addreference' org=collection.owner collection=collection.id as collection_addreference_url %}
+    {% else %}
+        {% url 'collection-version-new' user=collection.owner collection=collection.id as collection_version_new_url %}
+        {% url 'collection-addreference' user=collection.owner collection=collection.id as collection_addreference_url %}
+    {% endif %}
 
 
-<div class="container-fluid">
-<div class="row">
-<form action="." method="get">
-	<input type="hidden" name="resource_type" value="collection" />
+    <div class="container-fluid">
+        <div class="row">
+            <form action="." method="get">
+                <input type="hidden" name="resource_type" value="collection"/>
 
-	<!-- Start left column -->
-	<div class="hidden-sm hidden-xs col-md-3"><!-- Empty --></div>
+                <!-- Start left column -->
+                <div class="hidden-sm hidden-xs col-md-3"><!-- Empty --></div>
 
-	<!-- Start right column -->
-	<div class="col-md-9">
+                <!-- Start right column -->
+                <div class="col-md-9">
+                    {% if warning %}
+                        <div style="margin-top:12px; " class="alert alert-warning">
+                            {{ warning }}
+                        </div>
+                    {% endif %}
 
-		<!-- Search toolbar -->
-		<div class="row" style="margin-bottom:10px;margin-top:10px;">
-			<div class="col-md-12">
 
-				{% if results %}
-				<!-- Simple Pager -->
-				{% simple_pager current_page 'reference' url=pagination_url pager_size='small' hide_xs=1 %}
-				{% endif %}
+                    {% if success %}
+                        <div style="margin-top:12px;" class="alert alert-success">
+                            {{ success }}
+                        </div>
+                    {% endif %}
+                    <!-- Search toolbar -->
+                    <div class="row" style="margin-bottom:10px;margin-top:10px;">
+                        <div class="col-md-12">
 
-				{% if results %}
-				<!-- Sort dropdown -->
-				<div class="hidden-xs btn-group pull-right" style="margin-right:8px;">
-					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-sort"></span> <span class="caret"></span></button>
-					<ul class="dropdown-menu" role="menu">
-					{% for sort_option_def in search_sort_option_defs %}
-						{% if collection.owner_type == 'Organization' %}
-							{% if kwargs and "collection_version" in kwargs %}
-								{% url 'collection-version-references' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_references_url %}
-							{% else %}
-								{% url 'collection-references' org=collection.owner collection=collection.id as collection_references_url %}
-							{% endif %}
-						{% else %}
-							{% if kwargs and "collection_version" in kwargs %}
-								{% url 'collection-version-references' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_references_url %}
-							{% else %}
-								{% url 'collection-references' org=collection.owner collection=collection.id as collection_references_url %}
-							{% endif %}
-						{% endif %}
-						<li {% if search_sort == sort_option_def.value %}class="active"{% endif %}><a href="{{ collection_references_url }}?{{ transferrable_search_params }}&amp;sort={{ sort_option_def.value|urlencode }}"><span class="glyphicon {{ sort_option_def.icon }}"></span>&nbsp;{{ sort_option_def.display }}</a></li>
-					{% endfor %}
-					</ul>
-				</div>
-				{% endif %}
+                            {% if results %}
+                                <!-- Simple Pager -->
+                                {% simple_pager current_page 'reference' url=pagination_url pager_size='small' hide_xs=1 %}
+                            {% endif %}
 
-				{% comment %}
-				<div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;letter-spacing:-0.1pt;"><span>Sort by:&nbsp;</span></div>
-				<div class="btn-group pull-left" style="padding-top:5px;">
-					<select name="search_sort" class="btn btn-default btn-sm xdropdown-toggle">
-						<option {% if search_sort == 'ASC' %}selected{% endif %} value="ASC">Last Created (Asc)</option>
-						<option {% if search_sort == 'DESC' %}selected{% endif %} value="DESC">Last Created (Desc)</option>
-					</select>
-				</div>
-				{% endcomment %}
+                            {% if results %}
+                                <!-- Sort dropdown -->
+                                <div class="hidden-xs btn-group pull-right" style="margin-right:8px;">
+                                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span
+                                            class="glyphicon glyphicon-sort"></span> <span class="caret"></span></button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        {% for sort_option_def in search_sort_option_defs %}
+                                            {% if collection.owner_type == 'Organization' %}
+                                                {% if kwargs and "collection_version" in kwargs %}
+                                                    {% url 'collection-version-references' org=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_references_url %}
+                                                {% else %}
+                                                    {% url 'collection-references' org=collection.owner collection=collection.id as collection_references_url %}
+                                                {% endif %}
+                                            {% else %}
+                                                {% if kwargs and "collection_version" in kwargs %}
+                                                    {% url 'collection-version-references' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_references_url %}
+                                                {% else %}
+                                                    {% url 'collection-references' org=collection.owner collection=collection.id as collection_references_url %}
+                                                {% endif %}
+                                            {% endif %}
+                                            <li {% if search_sort == sort_option_def.value %}class="active"{% endif %}><a
+                                                    href="{{ collection_references_url }}?{{ transferrable_search_params }}&amp;sort={{ sort_option_def.value|urlencode }}"><span
+                                                    class="glyphicon {{ sort_option_def.icon }}"></span>&nbsp;{{ sort_option_def.display }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
 
-				{% if results %}
-				<!-- Search results download -->
-				{% include "download_csv.html" with type='repository_search' %}
-				{% endif %}
+                            {% comment %}
+                                <div class="btn-group pull-left small" style="padding-left:6px;padding-top:6px;font-weight:300;letter-spacing:-0.1pt;">
+                                    <span>Sort by:&nbsp;</span></div>
+                                <div class="btn-group pull-left" style="padding-top:5px;">
+                                    <select name="search_sort" class="btn btn-default btn-sm xdropdown-toggle">
+                                        <option {% if search_sort == 'ASC' %}selected{% endif %} value="ASC">Last Created (Asc)</option>
+                                        <option {% if search_sort == 'DESC' %}selected{% endif %} value="DESC">Last Created (Desc)</option>
+                                    </select>
+                                </div>
+                            {% endcomment %}
 
-				{% if_can_change collection %}
-					{% if not kwargs or not "collection_version" in kwargs or kwargs.collection_version == 'HEAD' %}
-						<!-- New reference button -->
-						<div class="pull-left">
-							<a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" id="add-reference" title="Add New Reference to Collection" style="font-weight:300;letter-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span><span class="hidden-xs">&nbsp;{% trans 'New Reference' %}</span></a>
-						</div>
-					{% endif %}
-				{% endif_can_change collection %}
+                            {% if results %}
+                                <!-- Search results download -->
+                                {% include "download_csv.html" with type='repository_search' %}
+                            {% endif %}
 
-				<!-- Collection References Search (always show) -->
-				<div class="input-group input-group-sm search-container" style="width:auto;padding-right:6px;">
+                            {% if_can_change collection %}
+                                {% if not kwargs or not "collection_version" in kwargs or kwargs.collection_version == 'HEAD' %}
+                                    <!-- New reference button -->
+                                    <div class="pull-left">
+                                        <a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" id="add-reference" title="Add New Reference to Collection"
+                                           style="font-weight:300;letter-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span><span
+                                                class="hidden-xs">&nbsp;{% trans 'New Reference' %}</span></a>
+                                    </div>
+                                {% endif %}
+                            {% endif_can_change collection %}
 
-					<!-- Collection Version Dropdown -->
-					<div class="input-group-btn">
-						<button type="button" class="btn btn-default btn-sm dropdown-toggle repo-version-selector" data-toggle="dropdown">
-							<span class="pull-right"><span class="caret"></span></span>
-							<span style="letter-spacing:-0.1pt;">
+                            <!-- Collection References Search (always show) -->
+                            <div class="input-group input-group-sm search-container" style="width:auto;padding-right:6px;">
+
+                                <!-- Collection Version Dropdown -->
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default btn-sm dropdown-toggle repo-version-selector" data-toggle="dropdown">
+                                        <span class="pull-right"><span class="caret"></span></span>
+                                        <span style="letter-spacing:-0.1pt;">
 								<span class="text-muted" style="font-weight:300;">Collection Version:</span>
 								<span style="font-weight:400;">{% if collection_version %}{{ collection_version }}{% else %}HEAD{% endif %}</span>
 							</span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-						{% for collection_version_i in collection_versions %}
-							{% if collection.owner_type == 'Organization' %}
-								{% url 'collection-version-references' org=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
-							{% else %}
-								{% url 'collection-version-references' user=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
-							{% endif %}
-							<li {% if collection_version == collection_version_i.id %}class="active"{% endif %}>
-							  <a href="{{ collection_version_i_url }}">
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        {% for collection_version_i in collection_versions %}
+                                            {% if collection.owner_type == 'Organization' %}
+                                                {% url 'collection-version-references' org=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
+                                            {% else %}
+                                                {% url 'collection-version-references' user=collection.owner collection=collection.id collection_version=collection_version_i.id as collection_version_i_url %}
+                                            {% endif %}
+                                            <li {% if collection_version == collection_version_i.id %}class="active"{% endif %}>
+                                                <a href="{{ collection_version_i_url }}">
 								<span {% if collection_version_i.retired %}class="strikethrough"{% endif %}>
 								  {% if collection_version_i.released and not collection_version_i.retired %}
-								  <strong>{% endif %}{{ collection_version_i.id }}</strong>
+                                      <strong>{% endif %}{{ collection_version_i.id }}</strong>
 								</span>
-								{% if collection_version_i.released and not collection_version_i.retired %}<span class="text-muted">(Released)</span>{% endif %}
-								{% if collection_version_i.retired %}<span class="text-muted">(Retired)</span>{% endif %}
-							  </a>
-							</li>
-						{% endfor %}
-						</ul>
-					</div>
+                                                    {% if collection_version_i.released and not collection_version_i.retired %}
+                                                        <span class="text-muted">(Released)</span>{% endif %}
+                                                    {% if collection_version_i.retired %}<span class="text-muted">(Retired)</span>{% endif %}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
 
-					<!-- Search input and submit button -->
-					<div class="input-group input-group-sm">
-						<input name="q" id="resourceFilter" type="text" value="{{ search_query }}" class="form-control" placeholder="Search" />
-						<span class="input-group-btn">
+                                <!-- Search input and submit button -->
+                                <div class="input-group input-group-sm">
+                                    <input name="q" id="resourceFilter" type="text" value="{{ search_query }}" class="form-control" placeholder="Search"/>
+                                    <span class="input-group-btn">
 							<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
 						</span>
-					</div>
-				</div><!-- /.input-group -->
+                                </div>
+                            </div><!-- /.input-group -->
 
-				{% if_can_change collection %}
-					{% if not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
-						<!-- Delete references action button -->
-						<div class="btn-group">
-							<a class="btn delete-reference">Delete</a>
-						</div>
-					{% endif %}
-				{% endif_can_change collection %}
+                            {% if_can_change collection %}
+                                {% if not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
+                                    <!-- Delete references action button -->
+                                    <div class="btn-group">
+                                        <a class="btn delete-reference">Delete</a>
+                                    </div>
+                                {% endif %}
+                            {% endif_can_change collection %}
 
-			</div> <!-- /col-md-12-->
-		</div> <!-- /row -->
+                        </div> <!-- /col-md-12-->
+                    </div> <!-- /row -->
 
 
-<!-- Search results -->
-{% for result in results %}
-		<div class="row row-search-result references">
-			{% if_can_change collection %}
-				{% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
-					<div class="col-xs-1 search-result-col-icon">
-						<input type="checkbox" name="reference" id="check_reference" value="{{ result.expression }}">
-					</div>
-				{% endif %}
-			{% endif_can_change collection %}
-			<div class="col-xs-11 search-result-col-content">
-				<div class="small text-muted" style="padding-top:12px;">
-					<span class="glyphicon {% if result.reference_type == 'concepts' %}glyphicon-tag{% else %}glyphicon-link{% endif %}"></span>
-					<a href="{{ result.expression }}" title="Collection Reference">{{ result.expression}}</a>
-				</div>
-			</div>
-			{# </input> #}
-		</div>
-{% empty %}
-		<h3><small>{% trans 'No references found' %}</small></h3>
-{% endfor %}
+                    <!-- Search results -->
+                    {% for result in results %}
+                        <div class="row row-search-result references">
+                            {% if_can_change collection %}
+                                {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
+                                    <div class="col-xs-1 search-result-col-icon">
+                                        <input type="checkbox" name="reference" id="check_reference" value="{{ result.expression }}">
+                                    </div>
+                                {% endif %}
+                            {% endif_can_change collection %}
+                            <div class="col-xs-11 search-result-col-content">
+                                <div class="small text-muted" style="padding-top:12px;">
+                                    <span class="glyphicon {% if result.reference_type == 'concepts' %}glyphicon-tag{% else %}glyphicon-link{% endif %}"></span>
+                                    <a href="{{ result.expression }}" title="Collection Reference">{{ result.expression }}</a>
+                                </div>
+                            </div>
+                            {# </input> #}
+                        </div>
+                        {% empty %}
+                        <h3>
+                            <small>{% trans 'No references found' %}</small>
+                        </h3>
+                    {% endfor %}
 
-		<div id="contact" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Delete1</h4>
-					</div>
-					<div class="modal-body">
-						<form method="POST" action="/">
-						<input type="hidden" name="form-type" value="contact-form" />
-{#                      <!--- Here --- >#}
-						<input type="submit" value="Send" class="btn btn-success" />
-						</form>
-					</div>
-					<div class="modal-footer">
-					   <!-- The Line was here -->
-						<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
+                    <div id="contact" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Delete1</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="/">
+                                        <input type="hidden" name="form-type" value="contact-form"/>
+                                        {#                      <!--- Here --- >#}
+                                        <input type="submit" value="Send" class="btn btn-success"/>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <!-- The Line was here -->
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-<!-- Pagination -->
+                    <!-- Pagination -->
 
-		{% if collections %}
-		<div class="row" style="text-align:center;">
-			{% bootstrap_pagination collection_page url=collection_pagination_url %}
-		</div>
-		{% endif %}
+                    {% if collections %}
+                        <div class="row" style="text-align:center;">
+                            {% bootstrap_pagination collection_page url=collection_pagination_url %}
+                        </div>
+                    {% endif %}
 
-<!-- End right column -->
+                    <!-- End right column -->
 
-	</div> {# col-md-9 #}
+                </div>
+                {# col-md-9 #}
 
-</form>
-</div> {# row #}
-</div> {# container #}
+            </form>
+        </div>
+        {# row #}
+    </div> {# container #}
 
 {% endblock tab-content %}
 
 
 {% block resource-debug %}
-<h4>URL kwargs</h4><pre>{{ kwargs|pprint }}</pre>
-<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
-<h4>Collection</h4><pre>{{ collection|pprint }}</pre>
-<h4>Collection Collections</h4><pre>{{ collection_collections|pprint }}</pre>
+    <h4>URL kwargs</h4>
+    <pre>{{ kwargs|pprint }}</pre>
+    <h4>URL Parameters</h4>
+    <pre>{{ url_params|pprint }}</pre>
+    <h4>Collection</h4>
+    <pre>{{ collection|pprint }}</pre>
+    <h4>Collection Collections</h4>
+    <pre>{{ collection_collections|pprint }}</pre>
 {% endblock resource-debug %}
