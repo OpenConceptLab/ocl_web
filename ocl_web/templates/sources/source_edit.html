@@ -52,6 +52,54 @@
 			</form>
 		</div>
 	</div> {# end row #}
+    {% if failed_concept_validations %}
+        <div class="modal fade " id="failed-validations">
+            <div class="modal-dialog expanded" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Following resources failed validation against OpenMRS</h4>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <th>
+                                    <tr>
+                                        <td>#</td>
+                                        <td>Concept</td>
+                                        <td>Validation Error</td>
+                                    </tr>
+                                </th>
+                            </thead>
+                            <tbody>
+                                {% for error in failed_concept_validations %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><a href="{{ error.url }}">{{ error.mnemonic }}</a></td>
+                                        <td>
+                                            <ul>
+                                                {% for field, messages in error.errors.items %}
+                                                    <li><strong>{{ field }}:</strong> {{ messages.0 }}</li>
+                                                {% endfor %}
+                                            </ul>
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Close" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $('#failed-validations').modal('show');
+        </script>
+    {% endif %}
+
 
 </div> {# end container #}
 
