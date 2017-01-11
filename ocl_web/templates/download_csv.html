@@ -25,6 +25,17 @@
 		</ul>
 	</div>
 	{% endif %}
+{% elif type == 'repository_search' %}
+	{% if request.user.is_authenticated and results %}
+	{# download-origin value is left intentionally blank which causes JS to infer resource type from the html page #}
+	<input id='download-origin' type="hidden" value>
+	<div class="hidden-xs btn-group pull-right" style="margin-right:4px;">
+		<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-download-alt"></span> <span class="caret"></span></button>
+		<ul class="dropdown-menu" role="menu">
+			<li><a class="download-csv"><span class="glyphicon glyphicon-file"></span> Formatted CSV</a></li>
+		</ul>
+	</div>
+	{% endif %}
 {% else %}
 	{% if request.user.is_authenticated and results %}
 		<input type="hidden" value="{{ type }}">

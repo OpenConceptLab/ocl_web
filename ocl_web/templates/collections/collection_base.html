@@ -77,7 +77,7 @@
 	{% url 'collection-versions' user=collection.owner collection=collection.id as collection_versions_url %}
 	{% url 'collection-about' user=collection.owner collection=collection.id as collection_about_url %}
 {% endif %}
-<div class="container">
+<div class="container-fluid">
     <ul class="nav nav-tabs">
     	{% if collection.collection_type != 'External' %}
 	        <li role="presentation" {% if selected_tab == "Concepts" %}class="active"{% endif %}><a href="{{ collection_concepts_url }}">Concepts</a></li>

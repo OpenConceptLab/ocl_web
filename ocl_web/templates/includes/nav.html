@@ -22,7 +22,7 @@
           <input name="q" id="global_search" type="text" class="form-control" placeholder="Search OCL" value="{{ search_query }}" />
           <span class="input-group-btn" style="width:30px;"><button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button></span>
         </div><!-- /.form-group -->
-        <div class="checkbox navbar-btn"><label for="exact_match_global_search" class="navbar-link" style="font-weight:300;"><input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search" />&nbsp;<span class="small">{% trans "Exact match" %}</span></label></div>
+        <div class="checkbox navbar-btn"><label for="exact_match_global_search" class="navbar-link" style="font-weight:300;"><input name="exact_match" type="checkbox" tooltip="Exact match" {% if request.GET.exact_match %}checked="checked"{% endif %} id="exact_match_global_search" style="cursor:pointer;" />&nbsp;<span class="small">{% trans "Exact match" %}</span></label></div>
         {% if request.GET.type %}<input type="hidden" name="type" value="{{ request.GET.type }}" />{% endif %}
         {% if request.GET.debug %}<input type="hidden" name="debug" value="{{ request.GET.debug }}" />{% endif %}
       </form><!-- /.navbar-form -->
@@ -31,7 +31,7 @@
       <ul class="nav navbar-nav navbar-right ocl-nav-menu">
         <li><a href="{% url 'features' %}"><span class="hidden-sm hidden-md hidden-lg"><span class="glyphicon glyphicon-grain"></span>&nbsp;&nbsp;</span>{% trans "Features" %}</a></li>
         {% if not hide_nav_search %}<li class="hidden-sm hidden-md hidden-lg"><a href="{% url 'search' %}"><span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;{% trans "Search" %}</a></li>{% endif %}
-        <li><a href="https://github.com/OpenConceptLab/ocl_web/wiki" target="_new"><span class="hidden-sm hidden-md hidden-lg"><span class="glyphicon glyphicon-question-sign"></span>&nbsp;&nbsp;</span>{% trans "Help" %}</a></li>
+        <li><a href="https://github.com/OpenConceptLab/ocl_web/wiki" target="_blank"><span class="hidden-sm hidden-md hidden-lg"><span class="glyphicon glyphicon-question-sign"></span>&nbsp;&nbsp;</span>{% trans "Help" %}</a></li>
         {% if request.user.is_authenticated %}
         <li><a href="{% url 'users:detail' request.user.username %}" title="User Profile: {{ user.email }}"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ user.username }}</a></li>
         <li class="dropdown">

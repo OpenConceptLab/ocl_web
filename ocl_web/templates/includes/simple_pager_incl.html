@@ -1,10 +1,10 @@
 {% load humanize %}
 {% with p_url=url|default:"?" %}
-<div class="hidden-xs btn-group pull-right">
+<div class="{% if hide_xs %}hidden-xs{% endif %} btn-group pull-right">
   	<a href="{{ p_url }}{% if page.has_previous %}page={{ page.previous_page_number }}{% else %}#{% endif %}" class="btn btn-default {% if pager_size == "small" %}btn-sm{% elif pager_size == "large" %}btn-lg{% endif %} {% if not page.has_previous %}disabled{% endif %}" title="Previous Page"><strong>&lt;</strong></a>
   	<a href="{{ p_url }}{% if page.has_next %}page={{ page.next_page_number }}{% else %}#{% endif %}" class="btn btn-default {% if pager_size == "small" %}btn-sm{% elif pager_size == "large" %}btn-lg{% endif %} {% if not page.has_next %}disabled{% endif %}" title="Next Page"><strong>&gt;</strong></a>
 </div>
-<div class="hidden-xs pull-right {% if pager_size == "small" %}small{% endif %}" style="margin-right:4px;padding-top:9px;font-weight:300;letter-spacing:-0.1pt;">
+<div class="{% if hide_xs %}hidden-xs{% endif %} pull-right {% if pager_size == "small" %}small{% endif %}" style="margin-right:4px;padding-top:9px;font-weight:300;letter-spacing:-0.1pt;">
   	<strong>{{ page.start_index|intcomma }}&ndash;{{ page.end_index|intcomma }}</strong> of <strong>{{ page.paginator.count|intcomma }}</strong> {{ name }}{{ page.paginator.count|pluralize }}
 </div>
 {% endwith %}

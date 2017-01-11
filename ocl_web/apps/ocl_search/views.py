@@ -1,8 +1,8 @@
 """Views for OCL Global search
 
 Examples:
-https://github.com/search?q=malaria&ref=cmdform
-https://github.com/search?q=malaria&ref=cmdform&type=Concept
+https://openconceptlab.org/search?q=malaria
+https://openconceptlab.org/search?q=oncology&type=sources
 """
 import logging
 
@@ -28,7 +28,6 @@ class GlobalSearchView(TemplateView):
         context = super(GlobalSearchView, self).get_context_data(*args, **kwargs)
 
         # Perform the primary search via the API
-
         original_search_string = self.request.GET.get('q', '')
         SearchStringFormatter.add_wildcard(self.request)
 
@@ -76,8 +75,8 @@ class GlobalSearchView(TemplateView):
                 else:
                     other_resource_search_params[param] = self.request.GET.get(param)
 
-        # This code encodes the search parameters into a single URL-encoded string
-        #    so that it can easily be appended onto URL links on the search page
+        # Encode the search parameters into a single URL-encoded string so that it can
+        #   easily be appended onto URL links on the search page
         context['other_resource_search_params'] = ''
         if other_resource_search_params:
             context['other_resource_search_params'] = (
