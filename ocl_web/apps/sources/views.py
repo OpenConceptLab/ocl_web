@@ -15,6 +15,8 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from braces.views import LoginRequiredMixin
 from libs.ocl import OclApi, OclSearch, OclConstants
+from simplejson import JSONDecodeError
+
 from .forms import (
     SourceNewForm, SourceEditForm,
     SourceVersionsNewForm, SourceVersionsEditForm, SourceVersionsRetireForm, SourceDeleteForm)
@@ -791,6 +793,7 @@ class SourceNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 class SourceEditView(UserOrOrgMixin, FormView):
     """ Edit source, either for an org or a user. """
     template_name = "sources/source_edit.html"
+    failed_concept_validations = []
 
     def get_form_class(self):
         """ Trick to load initial data """
@@ -837,6 +840,7 @@ class SourceEditView(UserOrOrgMixin, FormView):
         context['from_user'] = self.from_user
         context['from_org'] = self.from_org
         context['source'] = self.source
+        context['failed_concept_validations'] = self.failed_concept_validations
 
         return context
 
@@ -849,18 +853,29 @@ class SourceEditView(UserOrOrgMixin, FormView):
         api = OclApi(self.request, debug=True)
         result = api.update_source(self.owner_type, self.owner_id, self.source_id, data)
         print result
+
         if len(result.text) > 0:
             print result.json()
 
-        messages.add_message(self.request, messages.INFO, _('Source updated'))
-        if self.from_org:
-            return HttpResponseRedirect(reverse('source-details',
-                                                kwargs={'org': self.org_id,
-                                                        'source': self.source_id}))
+        if result.status_code <= 201:
+            messages.add_message(self.request, messages.INFO, _('Source updated'))
+            if self.from_org:
+                return HttpResponseRedirect(reverse('source-details',
+                                                    kwargs={'org': self.org_id,
+                                                            'source': self.source_id}))
+            else:
+                return HttpResponseRedirect(reverse('source-details',
+                                                    kwargs={'user': self.user_id,
+                                                            'source': self.source_id}))
         else:
-            return HttpResponseRedirect(reverse('source-details',
-                                                kwargs={'user': self.user_id,
-                                                        'source': self.source_id}))
+            try:
+                self.failed_concept_validations = result.json().get('failed_concept_validations', None)
+                messages.add_message(self.request, messages.ERROR, _('Some concepts failed validation'))
+
+            except JSONDecodeError as error:
+                messages.add_message(self.request, messages.ERROR, _(error))
+
+            return super(SourceEditView, self).form_invalid(form)
 
 
 

@@ -9,6 +9,7 @@ echo "Removing selenium before update"
 rm -rf ./node_modules/protractor/node_modules/webdriver-manager/selenium
 
 echo "Updating web driver manager"
+nohup ./node_modules/protractor/bin/webdriver-manager clean
 nohup ./node_modules/protractor/bin/webdriver-manager update
 
 echo "Starting server"

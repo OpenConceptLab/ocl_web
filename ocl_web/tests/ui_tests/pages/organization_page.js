@@ -25,7 +25,7 @@ var OrganizationPage = function() {
 
     // create reference locators
     this.references = element(by.linkText('References'));
-    this.addNewReferenceLink = element(by.linkText(' Reference'));
+    this.addNewReferenceLink = element(by.id('add-reference'));
     this.expression = $('#expression');
     this.addReferenceButton = element(by.id('add-single-reference'));
     this.countOfReferences = element.all(by.css('a[title="Collection Reference"]'));

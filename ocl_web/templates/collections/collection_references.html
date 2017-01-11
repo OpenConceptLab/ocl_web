@@ -78,7 +78,7 @@
 					{% if not kwargs or not "collection_version" in kwargs or kwargs.collection_version == 'HEAD' %}
 						<!-- New reference button -->
 						<div class="pull-left">
-							<a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" title="Add New Reference to Collection" style="font-weight:300;letter-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span><span class="hidden-xs">&nbsp;{% trans 'New Reference' %}</span></a>
+							<a href="{{ collection_addreference_url }}" class="btn btn-link btn-sm" id="add-reference" title="Add New Reference to Collection" style="font-weight:300;letter-spacing:-0.1pt;"><span class="glyphicon glyphicon-plus"></span><span class="hidden-xs">&nbsp;{% trans 'New Reference' %}</span></a>
 						</div>
 					{% endif %}
 				{% endif_can_change collection %}
