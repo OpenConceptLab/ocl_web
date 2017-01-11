@@ -80,7 +80,9 @@
                                        class="form-control"
                                        id="expression"
                                        ng-model="singleReference"
-                                       placeholder="e.g. /orgs/WHO/sources/ICD-10/concepts/A15.0/">
+                                       placeholder="e.g. /orgs/WHO/sources/ICD-10/concepts/A15.0/"
+                                       pattern="\/(orgs|users)\/[a-zA-Z0-9-]+\/sources\/[a-zA-Z0-9-]+\/(concepts|mappings)\/[a-zA-Z0-9-\.]+\/([a-zA-Z0-9-\.]+\/){0,1}"
+                                       required>
                                 <span class="help-block">Any URL which is valid in OCL</span> <br/>
                                 <button id="add-single-reference" type="submit"
                                         class="btn btn-primary">{% trans "Add" %}</button>
