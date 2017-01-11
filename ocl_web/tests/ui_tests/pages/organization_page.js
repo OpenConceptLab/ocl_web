@@ -27,7 +27,6 @@ var OrganizationPage = function () {
     this.references = element(by.linkText('References'));
     this.addNewReferenceLink = element(by.id('add-reference'));
     this.singleReferences = element(by.linkText('Add Single Reference'));
-    this.addNewReferenceLink = element(by.linkText(' Reference'));
     this.expression = $('#expression');
     this.addReferenceButton = element(by.id('add-single-reference'));
     this.countOfReferences = element.all(by.css('a[title="Collection Reference"]'));
@@ -116,7 +115,7 @@ var OrganizationPage = function () {
         this.singleReferences.click();
         browser.sleep(500);
         this.expression.sendKeys(expression);
-        this.addReferenceButton.click();
+        return this.addReferenceButton.click();
     };
 
     this.createNewMultipleReference = function (expression) {
