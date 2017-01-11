@@ -29,4 +29,5 @@ var BasePage = function() {
         return chance.word({length: 5});
     };
 };
+
 module.exports = new BasePage();
