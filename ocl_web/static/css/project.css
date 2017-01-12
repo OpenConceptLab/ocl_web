@@ -437,3 +437,7 @@ a.resource-label:hover {
 .navbar-toggle .icon-bar {
   background-color: #777;
 }
+
+.modal-dialog.expanded {
+  width: 95%;
+}
