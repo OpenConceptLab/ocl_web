@@ -9,14 +9,6 @@ var configuration = require('../utilities/configuration.js');
 var EC = require('protractor').ExpectedConditions;
 var timeout = 5000;
 
-var fs = require('fs');
-
-function writeScreenShot(data, filename) {
-    var stream = fs.createWriteStream(filename);
-    stream.write(new Buffer(data, 'base64'));
-    stream.end();
-}
-
 describe('OCL Org Page', function () {
     const baseUrl = configuration.get('baseUrl');
     var mappingVersion = 1;
@@ -229,11 +221,7 @@ describe('OCL Org Page', function () {
     it('add concept single reference without version number', function () {
         var expectedMessage = 'Does not support adding the HEAD version of concepts to the collection. Added the latest version instead: C1.1.1.2- version';
         var conceptExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
-        orgPage.createNewSingleReference(conceptExpression).then(function () {
-            browser.takeScreenshot().then(function (data) {
-                writeScreenShot(data, 'single-reference.png')
-            })
-        });
+        orgPage.createNewSingleReference(conceptExpression);
         browser.wait(EC.presenceOf(orgPage.warningModal), timeout);
         expect(orgPage.countOfReferences.count()).toEqual(1);
         expect(orgPage.warningModal.getText()).toContain(expectedMessage);
