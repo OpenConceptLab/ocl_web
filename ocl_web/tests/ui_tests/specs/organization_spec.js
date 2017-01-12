@@ -9,10 +9,24 @@ var configuration = require('../utilities/configuration.js');
 var EC = require('protractor').ExpectedConditions;
 var timeout = 5000;
 
+var fs = require('fs');
+
+function writeScreenShot(data, filename) {
+    var stream = fs.createWriteStream(filename);
+    stream.write(new Buffer(data, 'base64'));
+    stream.end();
+}
+
 describe('OCL Org Page', function () {
+    const baseUrl = configuration.get('baseUrl');
+    var mappingVersion = 1;
     var loginPage;
     var logoutPage;
     var id = '';
+    var conceptVersionUrl;
+    var conceptVersionNumber;
+    var mappingId;
+
 
     beforeEach(function () {
         loginPage = new LoginPage();
@@ -40,7 +54,7 @@ describe('OCL Org Page', function () {
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key1, data.locale1);
+        orgPage.createNewConcept(data.concept_id + id, data.concept_name, data.concept_desc, data.key1, data.locale1);
 
         browser.wait(EC.presenceOf(orgPage.status), timeout);
         expect(orgPage.getStatus()).toEqual('Concept created.');
@@ -109,8 +123,11 @@ describe('OCL Org Page', function () {
 
     it('should create concept', function () {
 
-        orgPage.createNewConcept(data.concept_id + id,
-            data.concept_name, data.concept_desc, data.key1, data.locale2);
+        orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key1, data.locale2);
+        orgPage.conceptVersionUrl.getText().then(function (versionUrl) {
+            conceptVersionUrl = versionUrl;
+            conceptVersionNumber = versionUrl.toString().split('/')[7];
+        });
 
         browser.wait(EC.presenceOf(orgPage.status), timeout);
         expect(orgPage.getStatus()).toEqual('Concept created.');
@@ -130,24 +147,28 @@ describe('OCL Org Page', function () {
 
         expect(orgPage.getStatus()).toEqual('Mapping created.');
 
-        // mapping_id = element(by.css('#mapping_id .row .field-label-value')).getText();
-        // console.log(mapping_id);
+
+        element(by.css('#mapping_id .row .field-label-value')).getText().then(function (value) {
+            mappingId = value;
+        });
+
         element(by.linkText('  ' + data.org_short_code + id)).click();
     });
 
     it('should create collection under org', function () {
+        // REMOVE THIS LINE BELOW WHEN YOU UNCOMMENT
+        element(by.linkText('  ' + data.org_short_code + id)).click();
         orgPage.createNewOrgCollection(data.short_code + id,
             data.col_name,
             data.full_name,
             data.supported_locale
         );
+
         expect(orgPage.getStatus()).toEqual('Collection created');
     });
 
     it('should create collection version', function () {
-
         collectionPage.createNewCollectionVersion('V1', 'version 1');
-
         expect(orgPage.getStatus()).toEqual('Collection version created!');
     });
 
@@ -205,61 +226,82 @@ describe('OCL Org Page', function () {
         orgPage.notification.click();
     });
 
+    it('add concept single reference without version number', function () {
+        var expectedMessage = 'Does not support adding the HEAD version of concepts to the collection. Added the latest version instead: C1.1.1.2- version';
+        var conceptExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
+        orgPage.createNewSingleReference(conceptExpression).then(function () {
+            browser.takeScreenshot().then(function (data) {
+                writeScreenShot(data, 'single-reference.png')
+            })
+        });
+        browser.wait(EC.presenceOf(orgPage.warningModal), timeout);
+        expect(orgPage.countOfReferences.count()).toEqual(1);
+        expect(orgPage.warningModal.getText()).toContain(expectedMessage);
+    });
 
-    it('should add a reference of concept to a collection', function () {
-        var concept_expression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
-        orgPage.createNewReference(concept_expression);
+    it('add concept single reference with version number', function () {
+        orgPage.deleteReference();
+        var expectedMessage = 'Added concept: C1.1.1.2- version ' + conceptVersionNumber;
+        orgPage.createNewSingleReference(conceptVersionUrl);
+        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
 
-        var newlyAddedReference = element(by.css('a[title="Collection Reference"]'));
-        browser.wait(EC.presenceOf(newlyAddedReference), timeout);
+        expect(orgPage.countOfReferences.count()).toEqual(1);
+        expect(orgPage.successModal.getText()).toEqual(expectedMessage);
+    });
 
+    it('add mapping single reference without version number', function () {
+        orgPage.deleteReference();
+        var expectedMessage = 'Does not support adding the HEAD version of mapping to the collection. Added the latest version instead: ' + mappingId + ' version 1';
+        var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/';
+        orgPage.createNewSingleReference(mappingExpression);
+        browser.wait(EC.presenceOf(orgPage.warningModal), timeout);
+        expect(orgPage.warningModal.getText()).toContain(expectedMessage);
         expect(orgPage.countOfReferences.count()).toEqual(1);
     });
 
-    // it('should add multiple reference', function () {
-    //     element(by.linkText('References')).click();
-    //     element(by.linkText('Add Multiple References')).click();
-    //     element(by.cssContainingText('option', 'EthiopiaMoH-test-MlcaE')).click();
-    //     element(by.cssContainingText('option', 'S1')).click();
-    //     element(by.cssContainingText('option', 'S1-V2')).click();
-    // });
+    it('add mapping single reference with version number', function () {
+        orgPage.deleteReference();
+        var expectedMessage = 'Added mapping: ' + mappingId + ' version ' + mappingVersion;
+        var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/' + mappingVersion + '/';
+        orgPage.createNewSingleReference(mappingExpression);
+        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
+        expect(orgPage.countOfReferences.count()).toEqual(1);
+        expect(orgPage.successModal.getText()).toEqual(expectedMessage)
+    });
 
-    // it('should delete without selecting reference', function () {
-    //     console.log(browser.getCurrentUrl());
-    //     browser.pause();
-    //     orgPage.deleteLink.click();
-    //     browser.sleep('200');
-    //
-    //     expect(orgPage.warning.getText()).toEqual('Please select references!');
-    //
-    //     // browser.sleep('500');
-    //     orgPage.warning.click();
-    //     browser.sleep('500');
-    // });
 
-    // it('should delete a reference of concept from org collection', function () {
-    //     orgPage.deleteReference();
-    //
-    //     expect(orgPage.notification.getText()).toEqual('Successfully removed.');
-    //
-    //     browser.sleep('500');
-    //     orgPage.notification.click();
-    //     browser.sleep('500');
-    // });
+    it('add duplicate concept expression should fail', function () {
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
+        orgPage.deleteReference();
+        var expectedMessage = conceptVersionUrl + ': ' + 'Concept or Mapping reference name must be unique in a collection.';
 
-    // it('should add a reference of mapping to a collection', function () {
-    //     var mapping_expression = '/orgs/'+data.org_short_code+id+'/sources/HSTP-Indicators/mappings/'+mapping_id+'/';
-    //     orgPage.createNewReference(mapping_expression);
-    //     console.log(mapping_expression);
-    //
-    //     expect(orgPage.getStatus()).toEqual('Expression added.');
-    //     // expect(element(by.linkText(' '+expression)).isPresent()).toBe(true);
-    // });
+        orgPage.createNewSingleReference(conceptVersionUrl);
+        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
+
+        orgPage.createNewSingleReference(conceptVersionUrl);
+        browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
+
+        expect(orgPage.duplicateErrorModal.getText()).toEqual(expectedMessage);
+        expect(orgPage.countOfReferences.count()).toEqual(0);
+    });
+
+    it('add duplicate mapping expression should fail', function () {
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
+        orgPage.deleteReference();
+        var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/' + mappingVersion + '/';
+        var expectedMessage = mappingExpression + ': ' + 'Concept or Mapping reference name must be unique in a collection.';
+
+        orgPage.createNewSingleReference(mappingExpression);
+        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
+        orgPage.createNewSingleReference(mappingExpression);
+        browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
+        expect(orgPage.duplicateErrorModal.getText()).toEqual(expectedMessage);
+        expect(orgPage.countOfReferences.count()).toEqual(0);
+    });
 
     it('should logout', function () {
         logoutPage.logout();
 
         expect((loginPage.loginStatus).getText()).toEqual('You have signed out.');
     });
-
 });

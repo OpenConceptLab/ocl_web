@@ -6,6 +6,10 @@ import re
 
 import requests
 import simplejson as json
+
+from apps.collections.validation_messages import POSTED_HEAD_VERSION_OF_SOURCE, POSTED_NON_HEAD_VERSION_OF_SOURCE, \
+    ENTERED_WITH_VERSION_NUMBER_FOR_CONCEPT, ENTERED_WITH_VERSION_NUMBER_FOR_MAPPING, \
+    ENTERED_WITHOUT_VERSION_NUMBER_FOR_CONCEPT, ENTERED_WITHOUT_VERSION_NUMBER_FOR_MAPPING
 from apps.core.utils import SearchStringFormatter
 from apps.core.views import UserOrOrgMixin
 from braces.views import LoginRequiredMixin
@@ -18,7 +22,6 @@ from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, View
 from django.views.generic.edit import FormView
 from libs.ocl import OclApi, OclSearch, OclConstants
-from django.utils.http import urlencode
 
 from .forms import (CollectionCreateForm, CollectionEditForm,
                     CollectionDeleteForm, CollectionVersionAddForm, CollectionVersionsEditForm)
@@ -27,8 +30,6 @@ logger = logging.getLogger('oclweb')
 
 
 class CollectionsBaseView(UserOrOrgMixin):
-    """ Base class for Collection views. """
-
     def get_args(self):
         super(CollectionsBaseView, self).get_args()
         self.collection_id = self.kwargs.get('collection')
@@ -36,9 +37,6 @@ class CollectionsBaseView(UserOrOrgMixin):
 
     def get_collection_data(self, owner_type, owner_id, collection_id, field_name,
                             collection_version_id=None, search_params=None):
-        """
-        Load collection resources from the API and return OclSearch instance with results.
-        """
 
         searcher = OclSearch(search_type=field_name,
                              search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
@@ -52,8 +50,7 @@ class CollectionsBaseView(UserOrOrgMixin):
                 params=searcher.search_params)
         else:
             search_response = api.get(
-                owner_type, owner_id, 'collections', collection_id,
-                field_name,
+                owner_type, owner_id, 'collections', collection_id, field_name,
                 params=searcher.search_params)
         if search_response.status_code == 404:
             raise Http404
@@ -68,10 +65,6 @@ class CollectionsBaseView(UserOrOrgMixin):
         return searcher
 
     def get_collection_versions(self, owner_type, owner_id, collection_id, search_params=None):
-        """
-        Load collection versions from the API and return OclSearch instance with results.
-        """
-
         # Perform the search
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_COLLECTION_VERSIONS,
                              search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
@@ -94,24 +87,22 @@ class CollectionsBaseView(UserOrOrgMixin):
         return searcher
 
 
-
 class CollectionReferencesView(CollectionsBaseView, TemplateView):
     """ collection concept view. """
     template_name = "collections/collection_references.html"
 
     def get_context_data(self, *args, **kwargs):
-        """ Loads the references that are in the collection. """
-
-        # Setup the context and args
         context = super(CollectionReferencesView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
-        # Load the collection details
         api = OclApi(self.request, debug=True)
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
 
-        # Load collection versions (to fetch all, set limit to 0)
+        params = self.request.GET.copy()
+        params['verbose'] = 'true'
+        params['limit'] = '10'
+
         versions = self.get_collection_versions(
             self.owner_type, self.owner_id, self.collection_id,
             search_params={'limit': '0'})
@@ -129,6 +120,11 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
+        add_reference_warning = self.request.session.get('add_reference_warning', None)
+        add_reference_success = self.request.session.get('add_reference_success', None)
+        self.request.session['add_reference_warning'] = None
+        self.request.session['add_reference_success'] = None
+
         # Build URL params
         transferrable_search_params = {}
         for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
@@ -146,6 +142,8 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
 
         # Set the context
         context['kwargs'] = self.kwargs
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'References'
         context['collection'] = collection
         context['collection_version'] = self.collection_version_id
         context['collection_versions'] = versions.search_results
@@ -163,28 +161,31 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
         context['search_params'] = searcher.search_params
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
+        context['collection_versions'] = versions.search_results
+
+        context['warning'] = add_reference_warning
+        context['success'] = add_reference_success
 
         return context
 
 
-
 class CollectionMappingsView(CollectionsBaseView, TemplateView):
-    """ collection mappings view. """
+    """ collection concept view. """
     template_name = "collections/collection_mappings.html"
-
     def get_context_data(self, *args, **kwargs):
         """ Loads the mappings that are in the collection. """
 
         # Setup the context and args
         context = super(CollectionMappingsView, self).get_context_data(*args, **kwargs)
         self.get_args()
-
-        # Load the collection details
         api = OclApi(self.request, debug=True)
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
+        # to fetch all , set limit to 0
+        params = self.request.GET.copy()
+        params['verbose'] = 'true'
+        params['limit'] = '10'
 
-        # Load collection versions (to fetch all, set limit to 0)
         versions = self.get_collection_versions(
             self.owner_type, self.owner_id, self.collection_id,
             search_params={'limit': '0'})
@@ -200,6 +201,7 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
             OclConstants.RESOURCE_NAME_MAPPINGS,
             collection_version_id=self.collection_version_id,
             search_params=params)
+
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
@@ -220,6 +222,8 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
 
         # Set the context
         context['kwargs'] = self.kwargs
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'Mappings'
         context['collection'] = collection
         context['collection_version'] = self.collection_version_id
         context['collection_versions'] = versions.search_results
@@ -237,6 +241,7 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
         context['search_params'] = searcher.search_params
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
+        context['collection_versions'] = versions.search_results
 
         return context
 
@@ -264,7 +269,6 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
         return super(CollectionMappingsView, self).get(self, *args, **kwargs)
 
 
-
 class CollectionConceptsView(CollectionsBaseView, TemplateView):
     """ collection concept view. """
     template_name = "collections/collection_concepts.html"
@@ -275,13 +279,14 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         # Setup the context and args
         context = super(CollectionConceptsView, self).get_context_data(*args, **kwargs)
         self.get_args()
-
-        # Load the source details
         api = OclApi(self.request, debug=True)
         results = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id)
         collection = results.json()
+        params = self.request.GET.copy()
+        params['verbose'] = 'true'
+        params['limit'] = '10'
 
-        # Load collection versions (to fetch all, set limit to 0)
+        # to fetch all , set limit to 0
         versions = self.get_collection_versions(
             self.owner_type, self.owner_id, self.collection_id,
             search_params={'limit': '0'})
@@ -293,10 +298,10 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         params['verbose'] = 'true'
         params['limit'] = '10'
         searcher = self.get_collection_data(
-            self.owner_type, self.owner_id, self.collection_id,
-            OclConstants.RESOURCE_NAME_CONCEPTS,
+            self.owner_type, self.owner_id, self.collection_id, OclConstants.RESOURCE_NAME_CONCEPTS,
             collection_version_id=self.collection_version_id,
             search_params=params)
+
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
@@ -329,12 +334,11 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         context['search_sort'] = searcher.get_sort()
         context['search_query'] = self.search_string if hasattr(self, 'search_string') else ''
         context['search_filters'] = searcher.search_filter_list
-
-        # Set debug variables
-        context['url_params'] = self.request.GET
-        context['search_params'] = searcher.search_params
+        context['search_sort_options'] = searcher.get_sort_options()
+        context['search_sort'] = searcher.get_sort()
         context['search_facets_json'] = searcher.search_facets
         context['search_filters_debug'] = str(searcher.search_filter_list)
+        context['collection_versions'] = versions.search_results
 
         return context
 
@@ -582,15 +586,77 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
             'references',
             data=data
         )
-        errors = result.json() if result.status_code == requests.codes.bad else []
+
+        results = result.json()
+        errors = results if result.status_code == requests.codes.bad else None
+
+        if len(filter(lambda result: result['added'], results)) > 0:
+            self.add_version_warning_to_session(data, request, results)
+
         return HttpResponse(
             json.dumps({
+                'update_results': results,
                 'success_url': self.get_success_url(),
-                'errors': errors
+                'errors': errors,
             }),
             content_type="application/json"
         )
 
+    def add_version_warning_to_session(self, data, request, results):
+        if self.adding_single_reference(data):
+            # Version Information is getting from api but it isn't getting from form
+            expression_from_form = data['expressions'][0]
+            expression_from_api = results[0]['expression']
+            self.send_message_by_version_information_for_single_reference(request, expression_from_form,
+                                                                          expression_from_api)
+        else:
+            self.send_message_by_source_version_information_for_multiple_reference(request, data)
+
+    def adding_head_version(self, data):
+        return data['uri'].split('/')[5] == 'HEAD'
+
+    def adding_single_reference(self, data):
+        return data.has_key('expressions')
+
+    def version_specified(self, expression):
+        return len(expression.split('/')) == 9
+
+    def get_reference_type_in_expression(self, expression):
+        return expression.split('/')[5]
+
+    def get_mnemonic_in_expression(self, expression):
+        return expression.split('/')[6]
+
+    def get_version_information_in_expression(self, expression):
+        return expression.split('/')[7]
+
+    def added_without_version_information_warning_message_by_reference_type(self, reference_type, mnemonic, version_number):
+        if reference_type == 'concepts':
+            return ENTERED_WITHOUT_VERSION_NUMBER_FOR_CONCEPT.format(mnemonic, version_number)
+        else:
+            return ENTERED_WITHOUT_VERSION_NUMBER_FOR_MAPPING.format(mnemonic, version_number)
+
+    def added_with_version_information_success_message_by_reference_type(self, reference_type, mnemonic, version_number):
+        if reference_type == 'concepts':
+            return ENTERED_WITH_VERSION_NUMBER_FOR_CONCEPT.format(mnemonic, version_number)
+        else:
+            return ENTERED_WITH_VERSION_NUMBER_FOR_MAPPING.format(mnemonic, version_number)
+
+    def send_message_by_version_information_for_single_reference(self, request, expression_from_form, expression_from_api):
+        reference_type = self.get_reference_type_in_expression(expression_from_api)
+        mnemonic = self.get_mnemonic_in_expression(expression_from_api)
+        version_number = self.get_version_information_in_expression(expression_from_api)
+
+        if self.version_specified(expression_from_form):
+            request.session['add_reference_success'] = self.added_with_version_information_success_message_by_reference_type(reference_type, mnemonic, version_number)
+        else:
+            request.session['add_reference_warning'] = self.added_without_version_information_warning_message_by_reference_type(reference_type, mnemonic, version_number)
+
+    def send_message_by_source_version_information_for_multiple_reference(self, request, data):
+        if self.adding_head_version(data):
+            request.session['add_reference_warning'] = POSTED_HEAD_VERSION_OF_SOURCE
+        else:
+            request.session['add_reference_success'] = POSTED_NON_HEAD_VERSION_OF_SOURCE
 
 
 class CollectionReferencesDeleteView(CollectionsBaseView, TemplateView):

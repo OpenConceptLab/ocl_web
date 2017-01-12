@@ -8,7 +8,6 @@ var UserSourcePage = require('../pages/user_source_page');
 var conceptPage = require('../pages/concept_page');
 var configuration = require('../utilities/configuration.js');
 
-
 const ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT = 'A concept must have at least one fully specified name';
 const PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE = 'Concept preferred name must be unique for same source and locale';
 const FULLY_SPECIFIED_NAME_UNIQUE_PER_SOURCE_LOCALE = 'Concept fully specified name must be unique for same source and locale';
@@ -19,16 +18,6 @@ const NON_SHORT_NAMES_MUST_BE_UNIQUE = 'All names except short names must be uni
 
 function addNameDetailsToWarning(warning, name, locale, preferred) {
     return warning + ': ' + name + ' (locale: ' + locale + ', preferred: ' + (preferred ? 'yes' : 'no') + ')';
-}
-
-// at the top of the test spec:
-var fs = require('fs');
-
-// abstract writing screen shot to a file
-function writeScreenShot(data, filename) {
-    var stream = fs.createWriteStream(filename);
-    stream.write(new Buffer(data, 'base64'));
-    stream.end();
 }
 
 describe('Concept', function () {
@@ -434,14 +423,11 @@ describe('Concept', function () {
                 expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
             });
 
-
-
             it('deleting description field should not get error #341', function () {
                 conceptPage.createConceptFullySpecifiedRandomly();
                 conceptPage.prepareToEditConcept();
                 conceptPage.deleteDescriptionArea();
                 conceptPage.updateConcept();
-
                 expect(conceptPage.getStatus()).toEqual('Concept updated');
             });
 
