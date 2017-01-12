@@ -249,25 +249,25 @@ describe('OCL Org Page', function () {
         expect(orgPage.successModal.getText()).toEqual(expectedMessage);
     });
 
-    // it('add mapping single reference without version number', function () {
-    //     orgPage.deleteReference();
-    //     var expectedMessage = 'Does not support adding the HEAD version of mapping to the collection. Added the latest version instead: ' + mappingId + ' version 1';
-    //     var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/';
-    //     orgPage.createNewSingleReference(mappingExpression);
-    //     browser.wait(EC.presenceOf(orgPage.warningModal), timeout);
-    //     expect(orgPage.warningModal.getText()).toContain(expectedMessage);
-    //     expect(orgPage.countOfReferences.count()).toEqual(1);
-    // });
+    it('add mapping single reference without version number', function () {
+        orgPage.deleteReference();
+        var expectedMessage = 'Does not support adding the HEAD version of mapping to the collection. Added the latest version instead: ' + mappingId + ' version 1';
+        var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/';
+        orgPage.createNewSingleReference(mappingExpression);
+        browser.wait(EC.presenceOf(orgPage.warningModal), timeout);
+        expect(orgPage.warningModal.getText()).toContain(expectedMessage);
+        expect(orgPage.countOfReferences.count()).toEqual(1);
+    });
 
-    // it('add mapping single reference with version number', function () {
-    //     orgPage.deleteReference();
-    //     var expectedMessage = 'Added mapping: ' + mappingId + ' version ' + mappingVersion;
-    //     var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/' + mappingVersion + '/';
-    //     orgPage.createNewSingleReference(mappingExpression);
-    //     browser.wait(EC.presenceOf(orgPage.successModal), timeout);
-    //     expect(orgPage.countOfReferences.count()).toEqual(1);
-    //     expect(orgPage.successModal.getText()).toEqual(expectedMessage)
-    // });
+    it('add mapping single reference with version number', function () {
+        orgPage.deleteReference();
+        var expectedMessage = 'Added mapping: ' + mappingId + ' version ' + mappingVersion;
+        var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/' + mappingVersion + '/';
+        orgPage.createNewSingleReference(mappingExpression);
+        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
+        expect(orgPage.countOfReferences.count()).toEqual(1);
+        expect(orgPage.successModal.getText()).toEqual(expectedMessage)
+    });
 
 
     it('add duplicate concept expression should fail', function () {
