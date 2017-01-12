@@ -84,7 +84,7 @@ var OrganizationPage = function () {
     this.newMappingLink = element(by.linkText('Mappings'));
     this.createMapping = element(by.linkText(' New Mapping'));
     this.fromConcept = $('#id_from_concept_url');
-    this.mapType = $('#id_map_type');
+    this.mapType = $('#map_type');
     this.toConcept = $('#id_internal_to_concept_url');
     this.createMappingButton = element(by.buttonText('Create Mapping'));
 

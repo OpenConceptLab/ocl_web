@@ -135,24 +135,25 @@ describe('OCL Org Page', function () {
         element(by.linkText('  ' + data.src_code)).click();
     });
 
-    // it('should create a mapping', function () {
-    //     var fromConceptURL = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
-    //     var toConceptURL = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + id + '/';
-    //
-    //     orgPage.createNewMapping(
-    //         fromConceptURL,
-    //         'SAME-AS',
-    //         toConceptURL
-    //     );
-    //
-    //     expect(orgPage.getStatus()).toEqual('Mapping created.');
-    //
-    //     element(by.css('#mapping_id .row .field-label-value')).getText().then(function (value) {
-    //         mappingId = value;
-    //     });
-    //
-    //     element(by.linkText('  ' + data.org_short_code + id)).click();
-    // });
+    it('should create a mapping', function () {
+        var fromConceptURL = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
+        var toConceptURL = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + id + '/';
+
+        orgPage.createNewMapping(
+            fromConceptURL,
+            'SAME-AS',
+            toConceptURL
+        );
+
+        expect(orgPage.getStatus()).toEqual('Mapping created.');
+
+
+        element(by.css('#mapping_id .row .field-label-value')).getText().then(function (value) {
+            mappingId = value;
+        });
+
+        element(by.linkText('  ' + data.org_short_code + id)).click();
+    });
 
     it('should create collection under org', function () {
         // REMOVE THIS LINE BELOW WHEN YOU UNCOMMENT
@@ -228,8 +229,8 @@ describe('OCL Org Page', function () {
     it('add concept single reference without version number', function () {
         var expectedMessage = 'Does not support adding the HEAD version of concepts to the collection. Added the latest version instead: C1.1.1.2- version';
         var conceptExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
-        orgPage.createNewSingleReference(conceptExpression).then(function(){
-            browser.takeScreenshot().then(function(data){
+        orgPage.createNewSingleReference(conceptExpression).then(function () {
+            browser.takeScreenshot().then(function (data) {
                 writeScreenShot(data, 'single-reference.png')
             })
         });
@@ -284,38 +285,19 @@ describe('OCL Org Page', function () {
         expect(orgPage.countOfReferences.count()).toEqual(0);
     });
 
-    // it('add duplicate mapping expression should fail', function () {
-    //     browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
-    //     orgPage.deleteReference();
-    //     var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/' + mappingVersion + '/';
-    //     var expectedMessage = mappingExpression + ': ' + 'Concept or Mapping reference name must be unique in a collection.';
-    //
-    //     orgPage.createNewSingleReference(mappingExpression);
-    //     browser.wait(EC.presenceOf(orgPage.successModal), timeout);
-    //     orgPage.createNewSingleReference(mappingExpression);
-    //     browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
-    //     expect(orgPage.duplicateErrorModal.getText()).toEqual(expectedMessage);
-    //     expect(orgPage.countOfReferences.count()).toEqual(0);
-    // });
+    it('add duplicate mapping expression should fail', function () {
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
+        orgPage.deleteReference();
+        var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/' + mappingVersion + '/';
+        var expectedMessage = mappingExpression + ': ' + 'Concept or Mapping reference name must be unique in a collection.';
 
-    // it('fully specified name within collection should be unique', function () {
-    //     browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
-    //     orgPage.deleteReference();
-    //
-    //     orgPage.createNewSingleReference(conceptVersionUrl);
-    //     browser.wait(EC.presenceOf(orgPage.successModal), timeout);
-    //
-    //     browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/');
-    //     orgPage.createNewConcept(data.concept_id + id, data.concept_name, data.concept_desc, data.key1, data.locale1);
-    //
-    //     var nonUniqueFullySpecifiedNameUrl = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + id + '/';
-    //     browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
-    //     orgPage.createNewSingleReference(nonUniqueFullySpecifiedNameUrl);
-    //     browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
-    //
-    //     expect(orgPage.duplicateErrorModal.getText()).toContain('Concept fully specified name must be unique for same collection and locale.');
-    //     expect(orgPage.countOfReferences.count()).toEqual(0);
-    // });
+        orgPage.createNewSingleReference(mappingExpression);
+        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
+        orgPage.createNewSingleReference(mappingExpression);
+        browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
+        expect(orgPage.duplicateErrorModal.getText()).toEqual(expectedMessage);
+        expect(orgPage.countOfReferences.count()).toEqual(0);
+    });
 
     it('should logout', function () {
         logoutPage.logout();
