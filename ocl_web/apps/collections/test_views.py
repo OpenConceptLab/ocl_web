@@ -9,19 +9,21 @@ from mock import Mock, patch, MagicMock
 from django.contrib import messages
 from apps.collections.forms import CollectionCreateForm, CollectionEditForm, CollectionDeleteForm, \
     CollectionVersionAddForm, CollectionVersionsEditForm
+from apps.collections.validation_messages import EXPRESSIONS_SHOULD_EXIST
 from libs.ocl import OclApi, OclSearch, OclConstants
 from libs.ocl.search import SearchFilterList
 import views
 from unittest import skip
 
+
 class MyDict(dict):
-    def __init__(self,name):
+    def __init__(self, name):
         self.username = name
 
 
 class FakeRequest(object):
-
     """ FakeRequest class """
+
     def __init__(self):
         self.session = {}
         self.GET = {}
@@ -30,30 +32,33 @@ class FakeRequest(object):
         self.path = '.'
 
     def get_full_path(self):
-
         return '/foobar'
+
 
 class FakeResponse(object):
     """ FakeRequest class """
-    def __init__(self,data=None):
+
+    def __init__(self, data=None):
         self.session = {}
         self.GET = {}
         self.detail = data
         self.status_code = 200
+
     def json(self):
         return {'detail': self.detail}
+
     def raise_for_status(self):
         raise HTTPError('error', response=self)
 
-class CollectionDetailViewTest(TestCase):
 
+class CollectionDetailViewTest(TestCase):
     def setUp(self):
         self.get_response = FakeResponse()
 
     @mock.patch.object(OclApi, 'get')
     def test_getCollectionContext_404ErrorReceived_raised404Exception(self, mock_get):
         coll_id = "my_coll_id"
-        kwargs = {'collection_id':coll_id,'org':None}
+        kwargs = {'collection_id': coll_id, 'org': None}
 
         self.get_response.status_code = 404
         mock_get.return_value = self.get_response
@@ -88,7 +93,6 @@ class CollectionDetailViewTest(TestCase):
             self.assertTrue(mock_get.called)
             pass
 
-
     @patch('libs.ocl.OclApi.get')
     def test_getContextData_contextDataReceivedWithCollectionDetail(self, mock_get):
 
@@ -98,7 +102,7 @@ class CollectionDetailViewTest(TestCase):
 
         collectionDetailView = views.CollectionDetailView()
         collectionDetailView.request = FakeRequest()
-        collectionDetailView.kwargs = {'extra':'extra'}
+        collectionDetailView.kwargs = {'extra': 'extra'}
 
         kwargs = {'object': MyDict('Jon')}
         context = collectionDetailView.get_context_data(**kwargs)
@@ -106,14 +110,12 @@ class CollectionDetailViewTest(TestCase):
         self.assertEquals(context['selected_tab'], 'Details')
 
 
-
 class CollectionCreateViewTest(TestCase):
-
     def test_getInitialViewOfOrgCol_initialViewWithDataSet(self):
         collectionCreateView = views.CollectionCreateView()
         collectionCreateView.request = FakeRequest()
         collectionCreateView.kwargs = {
-            'org':'testOrgId',
+            'org': 'testOrgId',
         }
         data = collectionCreateView.get_initial();
         self.assertIsNone(data['user_id'], "for org col , user should be none")
@@ -126,10 +128,10 @@ class CollectionCreateViewTest(TestCase):
         collectionCreateView = views.CollectionCreateView()
         collectionCreateView.request = FakeRequest()
         collectionCreateView.kwargs = {
-            'user':'testUserId',
+            'user': 'testUserId',
         }
         data = collectionCreateView.get_initial();
-        self.assertIsNone(data['org_id'],"for user col , org should be none")
+        self.assertIsNone(data['org_id'], "for user col , org should be none")
         self.assertEquals(data['user_id'], 'testUserId')
         self.assertFalse(data['from_org'])
         self.assertTrue(data['from_user'])
@@ -137,13 +139,13 @@ class CollectionCreateViewTest(TestCase):
 
     @patch('libs.ocl.OclApi.get')
     def test_getContextForOrgCol_contextForOrgReceived(self, mock_get):
-        colResponse = MagicMock(spec = Response)
+        colResponse = MagicMock(spec=Response)
         colResponse.json.return_value = "testOrg"
         mock_get.return_value = colResponse
         collectionCreateView = views.CollectionCreateView()
         collectionCreateView.request = FakeRequest()
         collectionCreateView.kwargs = {
-            'org':'testOrgId',
+            'org': 'testOrgId',
         }
         context = collectionCreateView.get_context_data();
         self.assertEquals(context['org'], "testOrg")
@@ -183,7 +185,7 @@ class CollectionCreateViewTest(TestCase):
         form = CollectionCreateForm(data=form_data)
         form.full_clean()
         colResponse = FakeResponse()
-        colResponse.status_code=201
+        colResponse.status_code = 201
         mock_post.return_value = colResponse
         collectionCreateView = views.CollectionCreateView()
         collectionCreateView.request = FakeRequest()
@@ -193,10 +195,11 @@ class CollectionCreateViewTest(TestCase):
         abc = collectionCreateView.form_valid(form)
         mock_add_message.assert_called_once_with(collectionCreateView.request, messages.INFO, ('Collection created'))
 
+
 class CollectionEditViewTest(TestCase):
     @patch('libs.ocl.OclApi.get')
     def test_getFromClass_getData(self, mock_get):
-        collectionEditView=views.CollectionEditView()
+        collectionEditView = views.CollectionEditView()
         collectionEditView.request = FakeRequest()
         collectionEditView.kwargs = {
             'org': 'testOrgId',
@@ -212,7 +215,7 @@ class CollectionEditViewTest(TestCase):
         mock_get.return_value = colResponse
         collectionEditView = views.CollectionEditView()
         collectionEditView.request = FakeRequest()
-        collectionEditView.collection = {'id':'mycolid'}
+        collectionEditView.collection = {'id': 'mycolid'}
         collectionEditView.kwargs = {
             'user': 'testUserId',
         }
@@ -239,6 +242,7 @@ class CollectionEditViewTest(TestCase):
         self.assertFalse(context['from_user'])
         self.assertTrue(context['from_org'])
 
+
 class CollectionDeleteViewTest(TestCase):
     @patch('libs.ocl.OclApi.get')
     def test_getContextForCol_contextForCollectionReceived(self, mock_get):
@@ -252,26 +256,25 @@ class CollectionDeleteViewTest(TestCase):
             'collection_id': 'testColId',
         }
         context = collectionDeleteView.get_context_data();
-        self.assertEquals(context['collection'],'testCollection')
+        self.assertEquals(context['collection'], 'testCollection')
 
     @patch('django.contrib.messages.add_message')
     @patch('libs.ocl.OclApi.delete')
     def test_whenDeleteSuccessfull_thenReturnCollectionDeletedMessage(self, mock_delete, mock_message):
         colResponse = MagicMock(spec=Response, status_code=204)
-        mock_delete.return_value=colResponse
+        mock_delete.return_value = colResponse
         form = CollectionDeleteForm()
-        collectionDeleteView= views.CollectionDeleteView()
+        collectionDeleteView = views.CollectionDeleteView()
         collectionDeleteView.request = FakeRequest()
         collectionDeleteView.kwargs = {
             'org': 'testOrgId',
         }
 
-        result=collectionDeleteView.form_valid(form)
-        mock_message.add_message.asser_called_with("error","Error")
+        result = collectionDeleteView.form_valid(form)
+        mock_message.add_message.asser_called_with("error", "Error")
 
 
 class CollectionAddReferenceViewTest(TestCase):
-
     @patch('libs.ocl.OclApi.get')
     def test_getContextForColReference_contextForCollectionReferenceReceived(self, mock_get):
         colResponse = MagicMock(spec=Response)
@@ -287,16 +290,16 @@ class CollectionAddReferenceViewTest(TestCase):
         self.assertEquals(context['collection'], 'testCollection')
 
     @patch('libs.ocl.OclApi.put')
-    @skip('')
-    def test_add_references__positive(self, mock_put):
+    def test_add_references__bad_request(self, mock_put):
         colResponse = MagicMock(spec=Response)
         mock_put.return_value = colResponse
-        colResponse.status_code = 200
+        colResponse.status_code = 400
 
         collectionAddReferenceView = views.CollectionAddReferenceView()
         collectionAddReferenceView.kwargs = {
             'collection': '1',
         }
+
         request = FakeRequest()
         request.body = json.dumps({
             'expressions': []
@@ -305,34 +308,7 @@ class CollectionAddReferenceViewTest(TestCase):
         response = json.loads(
             collectionAddReferenceView.post(request).content
         )
-        self.assertEquals(response['errors'], [])
-        self.assertEquals(
-            response['success_url'],
-            '/users/tempuser/collections/1/references/'
-        )
-
-    @patch('libs.ocl.OclApi.put')
-    @skip('')
-    def test_add_references__negative(self, mock_put):
-        colResponse = MagicMock(spec=Response)
-        mock_put.return_value = colResponse
-        colResponse.json.return_value = {
-            '/foobar/': ['Reference not valid']
-        }
-        colResponse.status_code = 400
-
-        collectionAddReferenceView = views.CollectionAddReferenceView()
-        collectionAddReferenceView.kwargs = {}
-        request = FakeRequest()
-        request.body = json.dumps({
-            'expressions': []
-        })
-        collectionAddReferenceView.request = request
-        response = json.loads(
-            collectionAddReferenceView.post(request).content
-        )
-        self.assertEquals(response['errors'], colResponse.json.return_value)
-
+        self.assertEquals(response['errors'], EXPRESSIONS_SHOULD_EXIST)
 
 class CollectionReferencesDeleteViewTest(TestCase):
     @patch('libs.ocl.OclApi.delete')
@@ -352,11 +328,8 @@ class CollectionReferencesDeleteViewTest(TestCase):
         self.assertTrue(mock_delete.called)
 
 
-
 class CollectionConceptViewTest(TestCase):
-
     @patch('libs.ocl.OclApi.get')
-    @skip('')
     def test_getContextForCollectionConcepts_contextRecieved(self, mock_get):
         conceptResponse = MagicMock(spec=Response)
         collection = ["Some Results"]
@@ -372,20 +345,19 @@ class CollectionConceptViewTest(TestCase):
         collectionConceptsView.kwargs = hash
         context = collectionConceptsView.get_context_data()
 
-        self.assertEquals(context['url_params'], {})
         self.assertEquals(context['kwargs'], hash)
         self.assertEquals(context['selected_tab'], 'Concepts')
         self.assertEquals(context['results'], collection)
         self.assertEquals(context['pagination_url'], '/foobar')
         self.assertEquals(context['search_query'], '')
         self.assertIsInstance(context['search_filters'], SearchFilterList)
-        #TODO: Revise sort assertion to work with new sort option definitions
-        #self.assertEquals(context['search_sort_options'], ['Best Match', 'Last Update (Desc)', 'Last Update (Asc)', 'Name (Asc)', 'Name (Desc)'])
+        # TODO: Revise sort assertion to work with new sort option definitions
+        # self.assertEquals(context['search_sort_options'], ['Best Match', 'Last Update (Desc)', 'Last Update (Asc)', 'Name (Asc)', 'Name (Desc)'])
         self.assertEquals(context['search_sort'], '')
         self.assertEquals(context['search_facets_json'], None)
 
-class CollectionMappingsViewTest(TestCase):
 
+class CollectionMappingsViewTest(TestCase):
     @patch('libs.ocl.OclApi.get')
     def test_getContextForCollectionMappings_contextRecieved(self, mock_get):
         mappingResponse = MagicMock(spec=Response)
@@ -409,10 +381,11 @@ class CollectionMappingsViewTest(TestCase):
         self.assertEquals(context['pagination_url'], '/foobar')
         self.assertEquals(context['search_query'], '')
         self.assertIsInstance(context['search_filters'], SearchFilterList)
-        #TODO: Revise sort assertion to work with new sort option definitions
-        #self.assertEquals(context['search_sort_options'], ['Best Match', 'Last Update (Desc)', 'Last Update (Asc)', 'Name (Asc)', 'Name (Desc)'])
+        # TODO: Revise sort assertion to work with new sort option definitions
+        # self.assertEquals(context['search_sort_options'], ['Best Match', 'Last Update (Desc)', 'Last Update (Asc)', 'Name (Asc)', 'Name (Desc)'])
         self.assertEquals(context['search_sort'], '')
         self.assertEquals(context['search_facets_json'], None)
+
 
 class CollectionReferencesViewTest(TestCase):
     # todo improve below test case by testing vesrions too
@@ -439,7 +412,6 @@ class CollectionReferencesViewTest(TestCase):
 
 
 class CollectionVersionsNewViewTest(TestCase):
-
     @patch('libs.ocl.OclApi.get')
     def test_getContextForColVersion_contextForCollectionVersionReceived(self, mock_get):
         colResponse = MagicMock(spec=Response)
@@ -474,6 +446,7 @@ class CollectionVersionsNewViewTest(TestCase):
         result = collectionNewVserionView.form_valid(form)
         mock_message.add_message.asser_called_with("error", "Error")
 
+
 class CollectionVersionEditViewTest(TestCase):
     @patch('libs.ocl.OclApi.get')
     def test_getFromClass_getVersionData(self, mock_get):
@@ -496,7 +469,7 @@ class CollectionVersionEditViewTest(TestCase):
         collectionVersionEditView.collection = {'id': 'mycolid'}
         collectionVersionEditView.kwargs = {
             'user': 'testUserId',
-            'id':'v1'
+            'id': 'v1'
         }
         collectionVersionEditView.get_form_class()
         context = collectionVersionEditView.get_context_data()
@@ -515,7 +488,7 @@ class CollectionVersionEditViewTest(TestCase):
         collectionVersionEditView.collection = {'id': 'mycolid'}
         collectionVersionEditView.kwargs = {
             'org': 'testOrgId',
-            'id':'v1'
+            'id': 'v1'
         }
         collectionVersionEditView.get_form_class()
         context = collectionVersionEditView.get_context_data();
@@ -553,7 +526,7 @@ class CollectionVersionEditJsonViewTest(TestCase):
         mock_update_resource_version.return_value = colResponse
         collectionVersionEditView = views.CollectionVersionEditJsonView()
         fake_request = FakeRequest()
-        fake_request.body = json.dumps({'released':True})
+        fake_request.body = json.dumps({'released': True})
         collectionVersionEditView.request = fake_request
         collectionVersionEditView.collection = {'id': 'mycolid'}
         collectionVersionEditView.kwargs = {
@@ -561,4 +534,3 @@ class CollectionVersionEditJsonViewTest(TestCase):
         }
         collectionVersionEditView.put(fake_request)
         self.assertTrue(mock_update_resource_version.called)
-

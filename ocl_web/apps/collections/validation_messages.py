@@ -4,3 +4,4 @@ ENTERED_WITHOUT_VERSION_NUMBER_FOR_CONCEPT = 'Does not support adding the HEAD v
 ENTERED_WITHOUT_VERSION_NUMBER_FOR_MAPPING = 'Does not support adding the HEAD version of mapping to the collection. Added the latest version instead: {} version {}'
 ENTERED_WITH_VERSION_NUMBER_FOR_CONCEPT = 'Added concept: {} version {}'
 ENTERED_WITH_VERSION_NUMBER_FOR_MAPPING = 'Added mapping: {} version {}'
+EXPRESSIONS_SHOULD_EXIST = 'Expressions cannot be empty.'

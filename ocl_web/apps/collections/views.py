@@ -6,10 +6,11 @@ import re
 
 import requests
 import simplejson as json
+from django.http import HttpResponseBadRequest
 
 from apps.collections.validation_messages import POSTED_HEAD_VERSION_OF_SOURCE, POSTED_NON_HEAD_VERSION_OF_SOURCE, \
     ENTERED_WITH_VERSION_NUMBER_FOR_CONCEPT, ENTERED_WITH_VERSION_NUMBER_FOR_MAPPING, \
-    ENTERED_WITHOUT_VERSION_NUMBER_FOR_CONCEPT, ENTERED_WITHOUT_VERSION_NUMBER_FOR_MAPPING
+    ENTERED_WITHOUT_VERSION_NUMBER_FOR_CONCEPT, ENTERED_WITHOUT_VERSION_NUMBER_FOR_MAPPING, EXPRESSIONS_SHOULD_EXIST
 from apps.core.utils import SearchStringFormatter
 from apps.core.views import UserOrOrgMixin
 from braces.views import LoginRequiredMixin
@@ -25,6 +26,7 @@ from libs.ocl import OclApi, OclSearch, OclConstants
 
 from .forms import (CollectionCreateForm, CollectionEditForm,
                     CollectionDeleteForm, CollectionVersionAddForm, CollectionVersionsEditForm)
+
 
 logger = logging.getLogger('oclweb')
 
@@ -577,6 +579,12 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
         self.get_args()
         data = json.loads(request.body)
         api = OclApi(self.request, debug=True)
+
+        if not data['expressions']:
+            return HttpResponseBadRequest(json.dumps({
+                'errors': ('%s' % EXPRESSIONS_SHOULD_EXIST)
+            }))
+
 
         result = api.put(
             self.owner_type,
