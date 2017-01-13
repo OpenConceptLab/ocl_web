@@ -1070,6 +1070,7 @@ app.directive('conceptNameSynonym', function () {
             };
 
             $scope.addName = function () {
+                $scope.names = $scope.names || [];
                 $scope.names.push({
                     'name': '',
                     'locale': $scope.defaultLocale,
