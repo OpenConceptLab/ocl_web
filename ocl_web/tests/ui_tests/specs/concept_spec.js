@@ -9,6 +9,7 @@ var conceptPage = require('../pages/concept_page');
 var configuration = require('../utilities/configuration.js');
 
 const ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT = 'A concept must have at least one fully specified name';
+const CONCEPT_MUST_HAVE_AT_LEAST_ONE_NAME = 'A concept must have at least one name';
 const PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE = 'Concept preferred name must be unique for same source and locale';
 const FULLY_SPECIFIED_NAME_UNIQUE_PER_SOURCE_LOCALE = 'Concept fully specified name must be unique for same source and locale';
 const SHORT_NAME_CANNOT_BE_PREFERRED = 'A short name cannot be marked as locale preferred';
@@ -420,7 +421,7 @@ describe('Concept', function () {
 
                 conceptPage.updateConcept();
 
-                expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
+                expect(conceptPage.getError()).toEqual(CONCEPT_MUST_HAVE_AT_LEAST_ONE_NAME);
             });
 
             it('deleting description field should not get error #341', function () {
