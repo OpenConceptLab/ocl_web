@@ -27,7 +27,6 @@ from libs.ocl import OclApi, OclSearch, OclConstants
 from .forms import (CollectionCreateForm, CollectionEditForm,
                     CollectionDeleteForm, CollectionVersionAddForm, CollectionVersionsEditForm)
 
-
 logger = logging.getLogger('oclweb')
 
 
@@ -174,6 +173,7 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
 class CollectionMappingsView(CollectionsBaseView, TemplateView):
     """ collection concept view. """
     template_name = "collections/collection_mappings.html"
+
     def get_context_data(self, *args, **kwargs):
         """ Loads the mappings that are in the collection. """
 
@@ -374,6 +374,7 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
 class CollectionVersionsView(CollectionsBaseView, TemplateView):
     """ collection About view. """
     template_name = "collections/collection_versions.html"
+
     def get_context_data(self, *args, **kwargs):
         context = super(CollectionVersionsView, self).get_context_data(*args, **kwargs)
 
@@ -420,6 +421,7 @@ class CollectionVersionsView(CollectionsBaseView, TemplateView):
 class CollectionAboutView(CollectionsBaseView, TemplateView):
     """ Collection About view. """
     template_name = "collections/collection_about.html"
+
     def get_context_data(self, *args, **kwargs):
         context = super(CollectionAboutView, self).get_context_data(*args, **kwargs)
 
@@ -429,7 +431,7 @@ class CollectionAboutView(CollectionsBaseView, TemplateView):
         collection = results.json()
         about = None
         if ('extras' in collection and isinstance(collection['extras'], dict) and
-                'about' in collection['extras']):
+                    'about' in collection['extras']):
             about = collection['extras'].get('about')
 
         # Set the context
@@ -440,6 +442,7 @@ class CollectionAboutView(CollectionsBaseView, TemplateView):
         context['about'] = about
 
         return context
+
 
 class CollectionDetailView(CollectionsBaseView, TemplateView):
     """ Collection detail views """
@@ -465,7 +468,6 @@ class CollectionDetailView(CollectionsBaseView, TemplateView):
         context['collection'] = collection
         context['selected_tab'] = 'Details'
         return context
-
 
 
 class CollectionCreateView(CollectionsBaseView, FormView):
@@ -545,7 +547,6 @@ class CollectionCreateView(CollectionsBaseView, FormView):
             return HttpResponseRedirect(self.request.path)
 
 
-
 class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
     template_name = "collections/collection_add_reference.html"
 
@@ -563,28 +564,26 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
 
         return context
 
-
     def get_success_url(self):
         """ Return URL for redirecting browser """
         if self.from_org:
             return reverse('collection-references',
-                           kwargs={'org': self.org_id, 'collection':self.collection_id})
+                           kwargs={'org': self.org_id, 'collection': self.collection_id})
 
         else:
             return reverse(
                 'collection-references',
-                kwargs={"user": self.request.user.username, 'collection':self.collection_id})
+                kwargs={"user": self.request.user.username, 'collection': self.collection_id})
 
     def post(self, request, *args, **kwargs):
         self.get_args()
         data = json.loads(request.body)
         api = OclApi(self.request, debug=True)
 
-        if not data['expressions']:
+        if self.adding_single_reference(data) and not data['expressions']:
             return HttpResponseBadRequest(json.dumps({
                 'errors': ('%s' % EXPRESSIONS_SHOULD_EXIST)
             }))
-
 
         result = api.put(
             self.owner_type,
@@ -678,7 +677,6 @@ class CollectionReferencesDeleteView(CollectionsBaseView, TemplateView):
         return HttpResponse(res.content, status=200)
 
 
-
 class CollectionDeleteView(CollectionsBaseView, FormView):
     """
     View for deleting Collection.
@@ -742,7 +740,6 @@ class CollectionDeleteView(CollectionsBaseView, FormView):
             messages.add_message(self.request, messages.INFO, _('Collection Deleted'))
 
             return HttpResponseRedirect(self.get_success_url())
-
 
 
 class CollectionEditView(CollectionsBaseView, FormView):
@@ -818,9 +815,7 @@ class CollectionEditView(CollectionsBaseView, FormView):
                                                         'collection': self.collection_id}))
 
 
-
 class CollectionVersionsNewView(CollectionsBaseView, UserOrOrgMixin, FormView):
-
     form_class = CollectionVersionAddForm
     template_name = "collections/collection_versions_new.html"
 
@@ -893,7 +888,6 @@ class CollectionVersionsNewView(CollectionsBaseView, UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.request.path)
 
 
-
 class CollectionVersionEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     """ View to edit collection version """
     form_class = CollectionVersionsEditForm
@@ -904,7 +898,7 @@ class CollectionVersionEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         self.get_args()
         api = OclApi(self.request, debug=True)
         self.collection_version = api.get(self.owner_type, self.owner_id, 'collections', self.collection_id,
-                                      self.collection_version_id).json()
+                                          self.collection_version_id).json()
         return CollectionVersionsEditForm
 
     def get_initial(self):
@@ -934,7 +928,7 @@ class CollectionVersionEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
         # Submit updated collection version description to the API
         data = {
-            'description':form.cleaned_data.get('description')
+            'description': form.cleaned_data.get('description')
         }
         api = OclApi(self.request, debug=True)
         result = api.update_resource_version(self.owner_type, self.owner_id, self.collection_id,
@@ -956,6 +950,7 @@ class CollectionVersionEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             messages.add_message(self.request, messages.ERROR, emsg)
             return HttpResponseRedirect(self.request.path)
 
+
 class CollectionVersionEditJsonView(CollectionsBaseView, TemplateView):
     def put(self, request, *args, **kwargs):
         self.get_args()
@@ -968,7 +963,6 @@ class CollectionVersionEditJsonView(CollectionsBaseView, TemplateView):
                                           'collections',
                                           data)
         return HttpResponse(res.content, status=200)
-
 
 
 class CollectionVersionDeleteView(CollectionsBaseView, View):
