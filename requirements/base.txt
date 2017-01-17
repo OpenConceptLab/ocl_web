@@ -23,9 +23,6 @@ Pillow==2.3.0
 # Well-built with regular release cycles!
 django-allauth==0.15.0
 
-# For the persistance stores
-# psycopg2==2.5.2
-
 # Unicode slugification
 unicode-slugify==0.1.1
 django-autoslug==1.7.2
