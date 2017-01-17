@@ -162,7 +162,7 @@ describe('Concept', function () {
 
                 conceptPage.createConcept();
 
-                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(NO_MORE_THAN_ONE_PREFERRED_NAME_PER_LOCALE, randomName, 'ab', true));
+                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(NO_MORE_THAN_ONE_PREFERRED_NAME_PER_LOCALE, randomName, 'he', true));
             });
 
             it('with short preferred name should get an error (#241)', function () {
