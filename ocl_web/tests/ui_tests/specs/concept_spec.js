@@ -155,12 +155,12 @@ describe('Concept', function () {
                 conceptPage.setName(names.first(), conceptPage.getRandomName(), "Fully Specified", true, "French [fr]");
 
                 const randomName = conceptPage.getRandomName();
-                conceptPage.setName(names.last(), randomName, "Fully Specified", true, "French [fr]");
+                conceptPage.setName(names.last(), randomName, "Fully Specified", true, "French [fr]"); 
 
                 conceptPage.fillDescriptionField();
 
                 conceptPage.createConcept();
-
+                
                 expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(NO_MORE_THAN_ONE_PREFERRED_NAME_PER_LOCALE, randomName, 'fr', true));
             });
 
