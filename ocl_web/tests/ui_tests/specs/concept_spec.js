@@ -155,7 +155,7 @@ describe('Concept', function () {
                 conceptPage.setName(names.first(), conceptPage.getRandomName(), "Fully Specified", true, "French [fr]");
 
                 const randomName = conceptPage.getRandomName();
-                conceptPage.setName(names.last(), randomName, "Fully Specified", true, "French [fr]");
+                conceptPage.setName(names.last(), randomName, "Fully Specified", true, "French [fr]"); 
 
                 conceptPage.fillDescriptionField();
 
