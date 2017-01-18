@@ -9,6 +9,14 @@ var configuration = require('../utilities/configuration.js');
 var EC = require('protractor').ExpectedConditions;
 var timeout = 5000;
 
+var fs = require('fs');
+
+function writeScreenShot(data, filename) {
+    var stream = fs.createWriteStream(filename);
+    stream.write(new Buffer(data, 'base64'));
+    stream.end();
+}
+
 describe('OCL Org Page', function () {
     const baseUrl = configuration.get('baseUrl');
     var mappingVersion = 1;
@@ -46,7 +54,7 @@ describe('OCL Org Page', function () {
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept(data.concept_id + id, data.concept_name, data.concept_desc, data.key1, data.locale1);
+        orgPage.createNewConcept(data.concept_id + id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
 
         browser.wait(EC.presenceOf(orgPage.status), timeout);
         expect(orgPage.getStatus()).toEqual('Concept created.');
@@ -115,7 +123,7 @@ describe('OCL Org Page', function () {
 
     it('should create concept', function () {
 
-        orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key1, data.locale2);
+        orgPage.createNewConcept(data.concept_id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
         orgPage.conceptVersionUrl.getText().then(function (versionUrl) {
             conceptVersionUrl = versionUrl;
             conceptVersionNumber = versionUrl.toString().split('/')[7];
@@ -153,7 +161,8 @@ describe('OCL Org Page', function () {
         orgPage.createNewOrgCollection(data.short_code + id,
             data.col_name,
             data.full_name,
-            data.supported_locale
+            data.supported_locale,
+            data.custom_validation_schema
         );
 
         expect(orgPage.getStatus()).toEqual('Collection created');
@@ -281,11 +290,49 @@ describe('OCL Org Page', function () {
 
         orgPage.createNewSingleReference(mappingExpression);
         browser.wait(EC.presenceOf(orgPage.successModal), timeout);
+
         orgPage.createNewSingleReference(mappingExpression);
         browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
+
         expect(orgPage.duplicateErrorModal.getText()).toEqual(expectedMessage);
         expect(orgPage.countOfReferences.count()).toEqual(0);
     });
+
+    it('fully specified name within collection should be unique', function () {
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
+        orgPage.deleteReference();
+
+        orgPage.createNewSingleReference(conceptVersionUrl);
+        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/');
+        orgPage.createNewConcept(data.concept_id + id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
+
+        var nonUniqueFullySpecifiedNameUrl = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + id + '/';
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
+        orgPage.createNewSingleReference(nonUniqueFullySpecifiedNameUrl);
+        browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
+        expect(orgPage.duplicateErrorModal.getText()).toContain('Concept fully specified name must be unique for same collection and locale.');
+        expect(orgPage.countOfReferences.count()).toEqual(0);
+    });
+
+    it('test preferred name within collection should be unique', function () {
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
+        orgPage.deleteReference();
+
+        orgPage.createNewSingleReference(conceptVersionUrl);
+        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/');
+
+        orgPage.createNewConcept(data.concept_id + 'test', data.concept_name, 'None', data.concept_desc, data.key1, data.locale2);
+        var nonUniqueFullySpecifiedNameUrl = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + 'test' + '/';
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
+        orgPage.createNewSingleReference(nonUniqueFullySpecifiedNameUrl);
+        browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
+
+        expect(orgPage.duplicateErrorModal.getText()).toContain('Concept preferred name must be unique for same collection and locale.');
+        expect(orgPage.countOfReferences.count()).toEqual(0);
+    });
+
 
     it('should logout', function () {
         logoutPage.logout();

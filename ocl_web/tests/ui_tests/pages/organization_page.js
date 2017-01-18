@@ -37,7 +37,6 @@ var OrganizationPage = function () {
     this.conceptVersionUrl = element(by.css('.concept-version-url .field-label-value'));
 
 
-
     // create source under org locators
     this.newOrgSourceLink = element(by.linkText('Sources'));
     this.createNewOrgSource = element(by.linkText(' New Source'));
@@ -76,6 +75,8 @@ var OrganizationPage = function () {
     this.createConceptButton = element(by.buttonText('Create Concept'));
     this.select_name_locale = element(by.model('name.locale'));
     this.select_desc_locale = element(by.model('description.locale'));
+    this.localePreferred = element(by.css('.name-locale-preferred'));
+    this.nameType = element(by.css('.name-type'));
     this.conceptDesc = element(by.model('description.description'));
     this.key = element(by.model('extra.key'));
     this.addNameSynonymLink = $('#add-name-synonym');
@@ -99,12 +100,13 @@ var OrganizationPage = function () {
         this.createOrgButton.click();
     };
 
-    this.createNewOrgCollection = function (short_code, coll_name, full_name, locale) {
+    this.createNewOrgCollection = function (short_code, coll_name, full_name, locale, customValidationSchema) {
         this.newOrgCollectionLink.click();
         this.createNewCollection.click();
         this.collShortCode.sendKeys(short_code);
         this.name.sendKeys(coll_name);
         this.fullName.sendKeys(full_name);
+        this.customValidationSchema.sendKeys(customValidationSchema);
         this.supportedLocale.sendKeys(locale);
         this.addOrgCollectionButton.click();
     };
@@ -158,7 +160,7 @@ var OrganizationPage = function () {
         this.retireButton.click();
     };
 
-    this.createNewConcept = function (id, name, desc, key, locale) {
+    this.createNewConcept = function (id, name, nameType, desc, key, locale, localePreferred) {
         this.conceptsLink.click();
         this.newConceptLink.click();
         this.conceptId.sendKeys(id);
@@ -166,6 +168,8 @@ var OrganizationPage = function () {
         this.conceptName.sendKeys(name);
         this.select_desc_locale.$('[label="' + locale + '"]').click();
         this.conceptDesc.sendKeys(desc);
+        this.nameType.sendKeys(nameType);
+        this.localePreferred.sendKeys(localePreferred);
         this.key.sendKeys(key);
         this.createConceptButton.click();
     };
