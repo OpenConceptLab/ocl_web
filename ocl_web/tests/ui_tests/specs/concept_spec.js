@@ -151,18 +151,17 @@ describe('Concept', function () {
 
                 var names = conceptPage.getNamesAndSynonyms();
 
-                conceptPage.setNameText(names.first(), conceptPage.getRandomName());
-                conceptPage.setLocalePreferred(names.first(), true);
+
+                conceptPage.setName(names.first(), conceptPage.getRandomName(), "Fully Specified", true, "French [fr]");
 
                 const randomName = conceptPage.getRandomName();
-                conceptPage.setNameText(names.last(), randomName);
-                conceptPage.setLocalePreferred(names.last(), true);
+                conceptPage.setName(names.last(), randomName, "Fully Specified", true, "French [fr]");
 
                 conceptPage.fillDescriptionField();
 
                 conceptPage.createConcept();
-
-                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(NO_MORE_THAN_ONE_PREFERRED_NAME_PER_LOCALE, randomName, 'he', true));
+                
+                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(NO_MORE_THAN_ONE_PREFERRED_NAME_PER_LOCALE, randomName, 'fr', true));
             });
 
             it('with short preferred name should get an error (#241)', function () {
@@ -185,7 +184,7 @@ describe('Concept', function () {
                 var expectedName = 'sameName';
                 conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), expectedName);
                 conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), expectedName);
-                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(FULLY_SPECIFIED_NAME_UNIQUE_PER_SOURCE_LOCALE,expectedName,'en',true));
+                expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(FULLY_SPECIFIED_NAME_UNIQUE_PER_SOURCE_LOCALE, expectedName, 'en', true));
 
             });
 
