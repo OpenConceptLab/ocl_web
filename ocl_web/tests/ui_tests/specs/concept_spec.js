@@ -160,7 +160,7 @@ describe('Concept', function () {
                 conceptPage.fillDescriptionField();
 
                 conceptPage.createConcept();
-
+                
                 expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(NO_MORE_THAN_ONE_PREFERRED_NAME_PER_LOCALE, randomName, 'fr', true));
             });
 
