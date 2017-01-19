@@ -19,6 +19,7 @@ var OrganizationPage = function () {
     this.source = element(by.id('source'));
     this.sourceVersion = element(by.id('sourceVersion'));
     this.messageBox = element(by.className('ajs-message ajs-warning ajs-visible'));
+    this.conceptToSelect = element(by.css('#concepts > li:nth-child(1) > label > input'));
 
     // create collection under org locators
     this.newOrgCollectionLink = element(by.linkText('Collections'));
@@ -33,7 +34,8 @@ var OrganizationPage = function () {
     this.addNewReferenceLink = element(by.id('add-reference'));
     this.singleReferences = element(by.linkText('Add Single Reference'));
     this.expression = $('#expression');
-    this.addReferenceButton = element(by.id('add-single-reference'));
+    this.addSingleReferenceButton = element(by.id('add-single-reference'));
+    this.addMultipleReferenceButton = element(by.css('#collection_add_reference_form > div > button'));
     this.countOfReferences = element.all(by.css('a[title="Collection Reference"]'));
 
     this.successModal = element(by.css('.alert.alert-success'));
@@ -122,7 +124,7 @@ var OrganizationPage = function () {
         this.singleReferences.click();
         browser.sleep(500);
         this.expression.sendKeys(expression);
-        return this.addReferenceButton.click();
+        return this.addSingleReferenceButton.click();
     };
 
     this.setCreateNewMultipleReferencesValues = function (organization, source, sourceVersion) {
@@ -136,10 +138,13 @@ var OrganizationPage = function () {
         browser.sleep(100);
     };
 
-    this.createNewMultipleReference = function (organization, source, sourceVersion) {
+    this.createNewMultipleReferences = function (organization, source, sourceVersion) {
         this.setCreateNewMultipleReferencesValues(organization, source, sourceVersion);
-        this.addReferenceButton.click();
+        browser.sleep(500);
+        this.conceptToSelect.click();
+        this.addMultipleReferenceButton.click();
     };
+
 
     this.deleteReference = function () {
         this.checkReference.click();

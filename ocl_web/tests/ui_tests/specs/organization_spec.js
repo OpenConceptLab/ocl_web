@@ -342,6 +342,24 @@ describe('OCL Org Page', function () {
         expect(orgPage.messageBox.getText()).toEqual('When HEAD version selected, the latest version of concepts and mappings are listed');
     });
 
+    it('test when user adds HEAD version of source in multiple references then inform the user', function () {
+        const organization = data.org_short_code + id;
+        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
+        orgPage.createNewMultipleReferences(organization, 'HSTP-Indicators', 'HEAD');
+        browser.wait(EC.presenceOf(orgPage.warningModal), timeout);
+        expect(orgPage.warningModal.getText()).toEqual('The latest versions of concepts/mappings are added to collection, and they will not be affected from future updates.');
+    });
+
+    it('then when user adds non-HEAD version of source in multiple references then inform for success', function () {
+        const organization = data.org_short_code + id;
+        browser.get(baseUrl + 'orgs/' + organization + '/sources/HSTP-Indicators/versions/');
+        orgPage.createNewSourceVersion('nonHead', 'for testing');
+        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
+        orgPage.deleteReference();
+        orgPage.createNewMultipleReferences(organization, 'HSTP-Indicators', 'nonHead');
+        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
+        expect(orgPage.successModal.getText()).toEqual('The concepts/mappings are added to collection.');
+    });
 
     it('should logout', function () {
         logoutPage.logout();

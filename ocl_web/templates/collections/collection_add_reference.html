@@ -225,7 +225,7 @@
                                 </label>
                             </h4>
                             <div ng-if="!pageObj.selectAllConcepts">
-                                <ul class="list-group">
+                                <ul id="concepts" class="list-group">
                                     <li class="list-group-item checkbox" ng-repeat="concept in concepts.items">
                                         <label class="overflow-hidden">
                                             <input type="checkbox"
@@ -281,7 +281,7 @@
                                 </label>
                             </h4>
                             <div ng-if="!pageObj.selectAllMappings">
-                                <ul class="list-group">
+                                <ul id="mappings" class="list-group">
                                     <li class="list-group-item checkbox" ng-repeat="mapping in mappings.items">
                                         <label>
                                             <input type="checkbox"
