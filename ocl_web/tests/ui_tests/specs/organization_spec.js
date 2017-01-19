@@ -333,6 +333,15 @@ describe('OCL Org Page', function () {
         expect(orgPage.countOfReferences.count()).toEqual(0);
     });
 
+    it('test when user selects HEAD version of source from dropdown in multiple references', function () {
+        const organization = data.org_short_code + id;
+        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
+        orgPage.deleteReference();
+        orgPage.setCreateNewMultipleReferencesValues(organization, 'HSTP-Indicators', 'HEAD');
+        browser.wait(EC.presenceOf(orgPage.messageBox), timeout);
+        expect(orgPage.messageBox.getText()).toEqual('When HEAD version selected, the latest version of concepts and mappings are listed');
+    });
+
 
     it('should logout', function () {
         logoutPage.logout();

@@ -15,6 +15,11 @@ var OrganizationPage = function () {
     this.createOrgButton = element(by.buttonText('Create Organization'));
     this.customValidationSchema = $('#id_custom_validation_schema');
 
+    this.organization = element(by.id('organization'));
+    this.source = element(by.id('source'));
+    this.sourceVersion = element(by.id('sourceVersion'));
+    this.messageBox = element(by.className('ajs-message ajs-warning ajs-visible'));
+
     // create collection under org locators
     this.newOrgCollectionLink = element(by.linkText('Collections'));
     this.createNewCollection = element(by.linkText(' New Collection'));
@@ -120,11 +125,19 @@ var OrganizationPage = function () {
         return this.addReferenceButton.click();
     };
 
-    this.createNewMultipleReference = function (expression) {
+    this.setCreateNewMultipleReferencesValues = function (organization, source, sourceVersion) {
         this.references.click();
         this.addNewReferenceLink.click();
-        browser.sleep(500);
-        this.expression.sendKeys(expression);
+        this.organization.sendKeys(organization);
+        browser.sleep(100);
+        this.source.sendKeys(source);
+        browser.sleep(100);
+        this.sourceVersion.sendKeys(sourceVersion);
+        browser.sleep(100);
+    };
+
+    this.createNewMultipleReference = function (organization, source, sourceVersion) {
+        this.setCreateNewMultipleReferencesValues(organization, source, sourceVersion);
         this.addReferenceButton.click();
     };
 

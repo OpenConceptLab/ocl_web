@@ -116,7 +116,7 @@
                                            value="users">
                                     User
                                 </label>
-                                <select class="form-control"
+                                <select id="organization" class="form-control"
                                         ng-options="owner as (ownerType === 'orgs' ? owner.id : owner.username) for owner in owners"
                                         ng-change="getResourceContainers()"
                                         ng-model="owner"></select>
@@ -147,7 +147,7 @@
                                            value="collections">
                                     Collection
                                 </label>
-                                <select class="form-control"
+                                <select id="source" class="form-control"
                                         ng-options="rc as rc.name for rc in resourceContainers"
                                         ng-change="getResourceContainerVersions()"
                                         ng-disabled="!owner"
