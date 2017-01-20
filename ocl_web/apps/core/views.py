@@ -272,7 +272,6 @@ def _get_collection_type_list():
 
 locale_list = []
 
-
 def _get_locale_list():
     """Return a list of locales only for those having 2-letter codes
     """
@@ -280,7 +279,6 @@ def _get_locale_list():
     locale_list_in_cache = local_cache.get('locale')
 
     if locale_list_in_cache:
-        logger.warning('cache')
         return locale_list_in_cache
 
     response = api.get('orgs', 'OCL', 'sources', 'Locales', 'concepts', params={'limit': 0})
@@ -301,7 +299,6 @@ def _get_locale_list():
     day_time_as_minutes = 24 * 60 * 60
     
     local_cache.set('locale', locale_list, day_time_as_minutes)
-    logger.warning('Non cache')
     return locale_list
 
 

@@ -29,7 +29,7 @@
 						{% if kwargs and "concept_version" in kwargs %}<span class="small" title="Concept Version ID">[ {{ kwargs.concept_version }} ]</span>{% endif %}
                         {% if kwargs.concept_version == None %}
                             {% if_can_change concept %}
-                                <a id="edit-concept" href="{{ concept_edit_url }}" class="text-muted small" title="Edit Concept"><span class="glyphicon glyphicon-cog"></span></a>
+                                <a id="edit-concept" href="{{ concept_edit_url }}" class="text-muted small" title="Edit Concept"><span class="glyphicon glyphicon-pencil"></span></a>
                             {% endif_can_change concept %}
                         {% endif %}
 					</div>

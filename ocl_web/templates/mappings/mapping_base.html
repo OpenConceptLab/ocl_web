@@ -44,13 +44,13 @@
                             {% resource_owner_label mapping label_size='large' %} / {% generic_resource_label resource_type='source' resource_id=mapping.source resource_url=source_url label_size='large' %} /
                             {% generic_resource_label resource_type='mapping' resource_id=mapping.versioned_object_id resource_name=mapping.map_type resource_url=mapping_home_url label_size='large' resource_retired=mapping.retired %}/ [ {{ kwargs.mapping_version }} ]
 {#                            {% if_can_change mapping %}#}
-{#                                &nbsp;<a href="{{ mapping_edit_url }}" class="text-muted small" title="Edit Mapping"><span class="glyphicon glyphicon-cog"></span></a>#}
+{#                                &nbsp;<a href="{{ mapping_edit_url }}" class="text-muted small" title="Edit Mapping"><span class="glyphicon glyphicon-pencil"></span></a>#}
 {#                            {% endif_can_change mapping %}#}
                         {% else %}
                             {% resource_owner_label mapping label_size='large' %} / {% generic_resource_label resource_type='source' resource_id=mapping.source resource_url=source_url label_size='large' %} /
                             {% generic_resource_label resource_type='mapping' resource_id=mapping.id resource_name=mapping.map_type resource_url=mapping_home_url label_size='large' resource_retired=mapping.retired %}
                             {% if_can_change mapping %}
-                                &nbsp;<a href="{{ mapping_edit_url }}" class="text-muted small" title="Edit Mapping"><span class="glyphicon glyphicon-cog"></span></a>
+                                &nbsp;<a href="{{ mapping_edit_url }}" class="text-muted small" title="Edit Mapping"><span class="glyphicon glyphicon-pencil"></span></a>
                             {% endif_can_change mapping %}
                         {% endif %}
 					</div>
