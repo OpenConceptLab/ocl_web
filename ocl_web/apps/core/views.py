@@ -4,6 +4,7 @@ OCL Web Core Functionality
 # import requests
 import logging
 
+from django.core import cache
 from django.http import HttpResponse
 from django.views.generic.edit import View
 from django.utils.translation import ugettext as _
@@ -271,15 +272,17 @@ def _get_collection_type_list():
 
 locale_list = []
 
-
 def _get_locale_list():
     """Return a list of locales only for those having 2-letter codes
     """
-    global locale_list
-    if len(locale_list) > 0:
-        return locale_list
+    local_cache = cache.get_cache('default')
+    locale_list_in_cache = local_cache.get('locale')
+
+    if locale_list_in_cache:
+        return locale_list_in_cache
 
     response = api.get('orgs', 'OCL', 'sources', 'Locales', 'concepts', params={'limit': 0})
+
     if response.status_code == 404:
         locale_list = [{'code': 'en', 'name': 'en - English'}]
         return locale_list
@@ -291,9 +294,11 @@ def _get_locale_list():
         }
         for locale in response.json() if locale['locale']
         ]
+    locale_list.sort()
 
-    list.sort(locale_list)
-
+    day_time_as_minutes = 24 * 60 * 60
+    
+    local_cache.set('locale', locale_list, day_time_as_minutes)
     return locale_list
 
 
