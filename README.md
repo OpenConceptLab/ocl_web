@@ -1,4 +1,4 @@
-# ocl_web
+# ocl_web [![Build Status](https://app.snap-ci.com/OpenConceptLab/ocl_web/branch/master/build_image)](https://app.snap-ci.com/OpenConceptLab/ocl_web/branch/master)
 
 Client interface for Open Concept Lab terminology services API.
 
