@@ -1,7 +1,7 @@
 """
 OCL Web Core Functionality
 """
-#import requests
+# import requests
 import logging
 
 from django.http import HttpResponse
@@ -248,6 +248,7 @@ def _get_source_type_list():
         'External'
     ]
 
+
 def _get_custom_validation_schema_list():
     return [
         'None',
@@ -267,7 +268,10 @@ def _get_collection_type_list():
         'Indicator Registry'
     ]
 
+
 locale_list = []
+
+
 def _get_locale_list():
     """Return a list of locales only for those having 2-letter codes
     """
@@ -280,7 +284,7 @@ def _get_locale_list():
         locale_list = [{'code': 'en', 'name': 'en - English'}]
         return locale_list
 
-    locale_list =  [
+    locale_list = [
         {
             'code': locale['locale'],
             'name': locale['display_name'] + ' [' + locale['locale'] + ']'
@@ -288,7 +292,10 @@ def _get_locale_list():
         for locale in response.json() if locale['locale']
         ]
 
+    list.sort(locale_list)
+
     return locale_list
+
 
 def _get_name_type_list():
     response = api.get('orgs', 'OCL', 'sources', 'NameTypes', 'concepts', params={'limit': 0})
@@ -304,6 +311,7 @@ def _get_description_type_list():
 def _get_map_type_list():
     response = api.get('orgs', 'OCL', 'sources', 'MapTypes', 'concepts', params={'limit': 0})
     return [] if response.status_code == 404 else [description_type['display_name'] for description_type in response.json()]
+
 
 # TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
 class GetOptionListView(JsonRequestResponseMixin, View):

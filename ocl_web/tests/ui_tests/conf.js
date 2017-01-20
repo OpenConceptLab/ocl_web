@@ -33,7 +33,8 @@ exports.config = {
     jasmineNodeOpts: {
         defaultTimeoutInterval: 100000,
         silent: true,
-        print: function() {}
+        print: function () {
+        }
     },
 
     'onPrepare': function () {

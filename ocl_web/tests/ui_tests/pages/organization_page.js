@@ -1,6 +1,13 @@
 var BasePage = require('./base_page.js');
 var EC = require('protractor').ExpectedConditions;
 
+var fs = require('fs');
+
+function writeScreenShot(data, filename) {
+    var stream = fs.createWriteStream(filename);
+    stream.write(new Buffer(data, 'base64'));
+    stream.end();
+}
 var OrganizationPage = function () {
 
     // create org locators
@@ -15,6 +22,13 @@ var OrganizationPage = function () {
     this.createOrgButton = element(by.buttonText('Create Organization'));
     this.customValidationSchema = $('#id_custom_validation_schema');
 
+    this.organization = element(by.id('organization'));
+    this.source = element(by.id('source'));
+    this.sourceVersion = element(by.id('sourceVersion'));
+    this.messageBox = element(by.className('ajs-message ajs-warning ajs-visible'));
+    this.conceptToSelect = element(by.css('#concepts > li:nth-child(1) > label > input'));
+    this.multipleReferencesTab = element(by.css('#addmultiplereftab > div:nth-child(2)'));
+
     // create collection under org locators
     this.newOrgCollectionLink = element(by.linkText('Collections'));
     this.createNewCollection = element(by.linkText(' New Collection'));
@@ -27,15 +41,15 @@ var OrganizationPage = function () {
     this.references = element(by.linkText('References'));
     this.addNewReferenceLink = element(by.id('add-reference'));
     this.singleReferences = element(by.linkText('Add Single Reference'));
-    this.expression = $('#expression');
-    this.addReferenceButton = element(by.id('add-single-reference'));
+    this.expression = element(by.id('expression'));
+    this.addSingleReferenceButton = element(by.id('add-single-reference'));
+    this.addMultipleReferenceButton = element(by.css('#collection_add_reference_form > div > button'));
     this.countOfReferences = element.all(by.css('a[title="Collection Reference"]'));
 
     this.successModal = element(by.css('.alert.alert-success'));
     this.warningModal = element(by.css('.alert.alert-warning'));
     this.duplicateErrorModal = element(by.css('.list-group-item.ng-binding.ng-scope'));
     this.conceptVersionUrl = element(by.css('.concept-version-url .field-label-value'));
-
 
 
     // create source under org locators
@@ -76,6 +90,8 @@ var OrganizationPage = function () {
     this.createConceptButton = element(by.buttonText('Create Concept'));
     this.select_name_locale = element(by.model('name.locale'));
     this.select_desc_locale = element(by.model('description.locale'));
+    this.localePreferred = element(by.css('.name-locale-preferred'));
+    this.nameType = element(by.css('.name-type'));
     this.conceptDesc = element(by.model('description.description'));
     this.key = element(by.model('extra.key'));
     this.addNameSynonymLink = $('#add-name-synonym');
@@ -99,12 +115,13 @@ var OrganizationPage = function () {
         this.createOrgButton.click();
     };
 
-    this.createNewOrgCollection = function (short_code, coll_name, full_name, locale) {
+    this.createNewOrgCollection = function (short_code, coll_name, full_name, locale, customValidationSchema) {
         this.newOrgCollectionLink.click();
         this.createNewCollection.click();
         this.collShortCode.sendKeys(short_code);
         this.name.sendKeys(coll_name);
         this.fullName.sendKeys(full_name);
+        this.customValidationSchema.sendKeys(customValidationSchema);
         this.supportedLocale.sendKeys(locale);
         this.addOrgCollectionButton.click();
     };
@@ -113,17 +130,27 @@ var OrganizationPage = function () {
         this.references.click();
         this.addNewReferenceLink.click();
         this.singleReferences.click();
-        browser.sleep(500);
+        browser.wait(EC.visibilityOf(this.expression), 2000);
         this.expression.sendKeys(expression);
-        return this.addReferenceButton.click();
+        return this.addSingleReferenceButton.click();
     };
 
-    this.createNewMultipleReference = function (expression) {
+    this.setCreateNewMultipleReferencesValues = function (organization, source, sourceVersion) {
         this.references.click();
         this.addNewReferenceLink.click();
-        browser.sleep(500);
-        this.expression.sendKeys(expression);
-        this.addReferenceButton.click();
+        this.organization.sendKeys(organization);
+        browser.sleep(100);
+        this.source.sendKeys(source);
+        browser.sleep(100);
+        this.sourceVersion.sendKeys(sourceVersion);
+        browser.sleep(100);
+    };
+
+    this.createNewMultipleReferences = function (organization, source, sourceVersion) {
+        this.setCreateNewMultipleReferencesValues(organization, source, sourceVersion);
+        browser.wait(EC.visibilityOf(this.multipleReferencesTab), 500);
+        this.conceptToSelect.click();
+        this.addMultipleReferenceButton.click();
     };
 
     this.deleteReference = function () {
@@ -158,7 +185,7 @@ var OrganizationPage = function () {
         this.retireButton.click();
     };
 
-    this.createNewConcept = function (id, name, desc, key, locale) {
+    this.createNewConcept = function (id, name, nameType, desc, key, locale, localePreferred) {
         this.conceptsLink.click();
         this.newConceptLink.click();
         this.conceptId.sendKeys(id);
@@ -166,6 +193,8 @@ var OrganizationPage = function () {
         this.conceptName.sendKeys(name);
         this.select_desc_locale.$('[label="' + locale + '"]').click();
         this.conceptDesc.sendKeys(desc);
+        this.nameType.sendKeys(nameType);
+        this.localePreferred.sendKeys(localePreferred);
         this.key.sendKeys(key);
         this.createConceptButton.click();
     };
@@ -182,7 +211,6 @@ var OrganizationPage = function () {
     this.deleteSrcVersion = function () {
         var clickDelete = function () {
             this.deleteSrcVersionIcon.click();
-
             browser.wait(EC.visibilityOf(this.okButton, 1500));
             this.okButton.click();
         }.bind(this);

@@ -116,7 +116,7 @@
                                            value="users">
                                     User
                                 </label>
-                                <select class="form-control"
+                                <select id="organization" class="form-control"
                                         ng-options="owner as (ownerType === 'orgs' ? owner.id : owner.username) for owner in owners"
                                         ng-change="getResourceContainers()"
                                         ng-model="owner"></select>
@@ -147,7 +147,7 @@
                                            value="collections">
                                     Collection
                                 </label>
-                                <select class="form-control"
+                                <select id="source" class="form-control"
                                         ng-options="rc as rc.name for rc in resourceContainers"
                                         ng-change="getResourceContainerVersions()"
                                         ng-disabled="!owner"
@@ -225,7 +225,7 @@
                                 </label>
                             </h4>
                             <div ng-if="!pageObj.selectAllConcepts">
-                                <ul class="list-group">
+                                <ul id="concepts" class="list-group">
                                     <li class="list-group-item checkbox" ng-repeat="concept in concepts.items">
                                         <label class="overflow-hidden">
                                             <input type="checkbox"
@@ -281,7 +281,7 @@
                                 </label>
                             </h4>
                             <div ng-if="!pageObj.selectAllMappings">
-                                <ul class="list-group">
+                                <ul id="mappings" class="list-group">
                                     <li class="list-group-item checkbox" ng-repeat="mapping in mappings.items">
                                         <label>
                                             <input type="checkbox"

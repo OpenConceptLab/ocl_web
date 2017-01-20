@@ -46,7 +46,7 @@ describe('OCL Org Page', function () {
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept(data.concept_id + id, data.concept_name, data.concept_desc, data.key1, data.locale1);
+        orgPage.createNewConcept(data.concept_id + id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
 
         browser.wait(EC.presenceOf(orgPage.status), timeout);
         expect(orgPage.getStatus()).toEqual('Concept created.');
@@ -115,7 +115,7 @@ describe('OCL Org Page', function () {
 
     it('should create concept', function () {
 
-        orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key1, data.locale2);
+        orgPage.createNewConcept(data.concept_id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
         orgPage.conceptVersionUrl.getText().then(function (versionUrl) {
             conceptVersionUrl = versionUrl;
             conceptVersionNumber = versionUrl.toString().split('/')[7];
@@ -153,7 +153,8 @@ describe('OCL Org Page', function () {
         orgPage.createNewOrgCollection(data.short_code + id,
             data.col_name,
             data.full_name,
-            data.supported_locale
+            data.supported_locale,
+            data.custom_validation_schema
         );
 
         expect(orgPage.getStatus()).toEqual('Collection created');
@@ -281,10 +282,75 @@ describe('OCL Org Page', function () {
 
         orgPage.createNewSingleReference(mappingExpression);
         browser.wait(EC.presenceOf(orgPage.successModal), timeout);
+
         orgPage.createNewSingleReference(mappingExpression);
         browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
+
         expect(orgPage.duplicateErrorModal.getText()).toEqual(expectedMessage);
         expect(orgPage.countOfReferences.count()).toEqual(0);
+    });
+
+    it('fully specified name within collection should be unique', function () {
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
+        orgPage.deleteReference();
+
+        orgPage.createNewSingleReference(conceptVersionUrl);
+        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/');
+        orgPage.createNewConcept(data.concept_id + id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
+
+        var nonUniqueFullySpecifiedNameUrl = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + id + '/';
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
+        orgPage.createNewSingleReference(nonUniqueFullySpecifiedNameUrl);
+        browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
+        expect(orgPage.duplicateErrorModal.getText()).toContain('Concept fully specified name must be unique for same collection and locale.');
+        expect(orgPage.countOfReferences.count()).toEqual(0);
+    });
+
+    it('test preferred name within collection should be unique', function () {
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
+        orgPage.deleteReference();
+
+        orgPage.createNewSingleReference(conceptVersionUrl);
+        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/');
+
+        orgPage.createNewConcept(data.concept_id + 'test', data.concept_name, 'None', data.concept_desc, data.key1, data.locale2);
+        var nonUniqueFullySpecifiedNameUrl = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + 'test' + '/';
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
+        orgPage.createNewSingleReference(nonUniqueFullySpecifiedNameUrl);
+        browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
+
+        expect(orgPage.duplicateErrorModal.getText()).toContain('Concept preferred name must be unique for same collection and locale.');
+        expect(orgPage.countOfReferences.count()).toEqual(0);
+    });
+
+    it('test when user selects HEAD version of source from dropdown in multiple references', function () {
+        const organization = data.org_short_code + id;
+        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
+        orgPage.deleteReference();
+        orgPage.setCreateNewMultipleReferencesValues(organization, 'HSTP-Indicators', 'HEAD');
+        browser.wait(EC.presenceOf(orgPage.messageBox), timeout);
+        expect(orgPage.messageBox.getText()).toEqual('When HEAD version selected, the latest version of concepts and mappings are listed');
+    });
+
+    it('test when user adds HEAD version of source in multiple references then inform the user', function () {
+        const organization = data.org_short_code + id;
+        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
+        orgPage.createNewMultipleReferences(organization, 'HSTP-Indicators', 'HEAD');
+        browser.wait(EC.presenceOf(orgPage.warningModal), timeout);
+        expect(orgPage.warningModal.getText()).toEqual('The latest versions of concepts/mappings are added to collection, and they will not be affected from future updates.');
+    });
+
+    it('then when user adds non-HEAD version of source in multiple references then inform for success', function () {
+        const organization = data.org_short_code + id;
+        browser.get(baseUrl + 'orgs/' + organization + '/sources/HSTP-Indicators/versions/');
+        orgPage.createNewSourceVersion('nonHead', 'for testing');
+        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
+        orgPage.deleteReference();
+        orgPage.createNewMultipleReferences(organization, 'HSTP-Indicators', 'nonHead');
+        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
+        expect(orgPage.successModal.getText()).toEqual('The concepts/mappings are added to collection.');
     });
 
     it('should logout', function () {
