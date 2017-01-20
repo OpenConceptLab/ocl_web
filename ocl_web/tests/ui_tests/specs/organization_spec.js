@@ -9,14 +9,6 @@ var configuration = require('../utilities/configuration.js');
 var EC = require('protractor').ExpectedConditions;
 var timeout = 5000;
 
-var fs = require('fs');
-
-function writeScreenShot(data, filename) {
-    var stream = fs.createWriteStream(filename);
-    stream.write(new Buffer(data, 'base64'));
-    stream.end();
-}
-
 describe('OCL Org Page', function () {
     const baseUrl = configuration.get('baseUrl');
     var mappingVersion = 1;

@@ -292,7 +292,9 @@ def _get_locale_list():
         for locale in response.json() if locale['locale']
         ]
 
-    return list.sort(locale_list)
+    list.sort(locale_list)
+
+    return locale_list
 
 
 def _get_name_type_list():
