@@ -297,7 +297,7 @@ def _get_locale_list():
     locale_list.sort()
 
     day_time_as_minutes = 24 * 60 * 60
-    
+
     local_cache.set('locale', locale_list, day_time_as_minutes)
     return locale_list
 
