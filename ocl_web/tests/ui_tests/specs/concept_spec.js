@@ -67,7 +67,7 @@ describe('Concept', function () {
                 conceptPage.createConceptFullySpecifiedRandomly();
                 conceptPage.clickMappings();
                 var firstMapType = conceptPage.mapTypes.first();
-                expect(firstMapType.getText()).toBe('SAME-AS');
+                expect(firstMapType.getText()).not.toBeUndefined();
             });
 
             it('deleting description field should not get error #341', function () {
