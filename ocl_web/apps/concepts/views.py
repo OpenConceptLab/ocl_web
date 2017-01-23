@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.template.response import TemplateResponse
-from apps.core.views import _get_locale_list, _get_name_type_list, _get_description_type_list
+from apps.core.views import _get_locale_list, _get_name_type_list, _get_description_type_list, _get_map_type_list
 import json
 # from django.core.paginator import Paginator
 
@@ -290,6 +290,7 @@ class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
         context['concept'] = concept
         context['mappings'] = mappings
         context['form'] = ConceptNewMappingForm()
+        context['map_types'] = _get_map_type_list()
 
         return context
 

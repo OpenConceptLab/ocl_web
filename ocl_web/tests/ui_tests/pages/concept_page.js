@@ -18,6 +18,9 @@ var ConceptPage = function() {
     this.conceptId = $('#id_concept_id');
     this.addNameSynonymLink = $('#add-name-synonym');
 
+    this.mapTypes = element.all(by.css('#map_type option'));
+    this.mappingsButton = element(by.id('mappings_link'));
+
     this.fillInUpdateText = function(updateMsg){
         this.updateCommentTextArea.clear().sendKeys(updateMsg);
     };
@@ -28,6 +31,10 @@ var ConceptPage = function() {
 
     this.clickEditConcept = function () {
         this.editLink.click();
+    };
+
+    this.clickMappings = function () {
+        this.mappingsButton.click();
     };
 
     this.fillDescriptionField = function () {

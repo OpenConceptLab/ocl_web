@@ -21,6 +21,14 @@ function addNameDetailsToWarning(warning, name, locale, preferred) {
     return warning + ': ' + name + ' (locale: ' + locale + ', preferred: ' + (preferred ? 'yes' : 'no') + ')';
 }
 
+var fs = require('fs');
+
+function writeScreenShot(data, filename) {
+    var stream = fs.createWriteStream(filename);
+    stream.write(new Buffer(data, 'base64'));
+    stream.end();
+}
+
 describe('Concept', function () {
     var loginPage = new LoginPage();
     var logoutPage = new LogoutPage();
@@ -61,6 +69,13 @@ describe('Concept', function () {
 
                 conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "en_fr_name")
                 expect(conceptPage.getStatus()).toEqual('Concept created.');
+            });
+
+            it('should have combobox with values in concept mapping creation form', function () {
+                conceptPage.createConceptFullySpecifiedRandomly();
+                conceptPage.clickMappings();
+                var firstMapType = conceptPage.mapTypes.first();
+                expect(firstMapType.getText()).toBe('SAME-AS');
             });
 
             it('deleting description field should not get error #341', function () {
@@ -155,12 +170,12 @@ describe('Concept', function () {
                 conceptPage.setName(names.first(), conceptPage.getRandomName(), "Fully Specified", true, "French [fr]");
 
                 const randomName = conceptPage.getRandomName();
-                conceptPage.setName(names.last(), randomName, "Fully Specified", true, "French [fr]"); 
+                conceptPage.setName(names.last(), randomName, "Fully Specified", true, "French [fr]");
 
                 conceptPage.fillDescriptionField();
 
                 conceptPage.createConcept();
-                
+
                 expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(NO_MORE_THAN_ONE_PREFERRED_NAME_PER_LOCALE, randomName, 'fr', true));
             });
 
