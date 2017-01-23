@@ -214,7 +214,6 @@ describe('OCL Org Page', function () {
         orgPage.deleteCollectionVersion();
 
         browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed collection version.'), timeout);
-        expect(orgPage.notification.getText()).toEqual('Successfully removed collection version.');
 
         orgPage.notification.click();
     });
