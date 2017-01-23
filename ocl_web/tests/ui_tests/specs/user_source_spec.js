@@ -40,11 +40,11 @@ describe('OCL User Source Page', function () {
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key1, data.locale2);
+        orgPage.createNewConcept(data.concept_id, data.concept_name, data.concept_desc, data.key1, data.locale2, true);
 
         expect(orgPage.getStatus()).toEqual('Concept created.');
 
-        element(by.linkText('  '+data.src_code+srcShortCode)).click();
+        element(by.linkText('  ' + data.src_code + srcShortCode)).click();
     });
 
     it('should create source version', function () {

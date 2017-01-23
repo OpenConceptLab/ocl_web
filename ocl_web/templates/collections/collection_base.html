@@ -27,7 +27,7 @@
 						{% if kwargs and "collection_version" in kwargs %}<span class="small" title="collection Version ID">[ {{ kwargs.collection_version }} ]</span>{% endif %}
 						{% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
                             {% if_can_change collection %}
-                                <a href="{{ collection_edit_url }}" class="small text-muted" title="Edit collection"><span class="glyphicon glyphicon-cog"></span></a>
+                                <a href="{{ collection_edit_url }}" class="small text-muted" title="Edit collection"><span class="glyphicon glyphicon-pencil"></span></a>
                             {% endif_can_change collection %}
                         {% else %}
                         {% endif %}

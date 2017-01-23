@@ -19,7 +19,7 @@ var CollectionsPage = function() {
     this.createColVersionButton = element(by.buttonText('Create Collection Version'));
 
     // edit collection locators
-    this.editIcon = element(by.css('span.glyphicon-cog'));
+    this.editIcon = element(by.css('span.glyphicon-pencil'));
     this.description = $('#id_description');
     this.externalId = $('#id_external_id');
     this.updateCollectionButton = element(by.buttonText('Update'));

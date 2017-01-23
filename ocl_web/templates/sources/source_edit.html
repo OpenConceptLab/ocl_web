@@ -58,31 +58,34 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Following resources failed validation against OpenMRS</h4>
+                        <h4 class="modal-title">{{ failed_concept_validations | length }} concepts failed validation against OpenMRS</h4>
                     </div>
                     <div class="modal-body">
-                        <table class="table table-striped">
+                        <table id="failed-validations-table" class="table table-striped" cellspacing="0" width="100%">
                             <thead>
-                                <th>
-                                    <tr>
-                                        <td>#</td>
-                                        <td>Concept</td>
-                                        <td>Validation Error</td>
-                                    </tr>
-                                </th>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Concept</th>
+                                    <th>Validation Error</th>
+                                </tr>
                             </thead>
                             <tbody>
-                                {% for error in failed_concept_validations %}
+                                {% for concept_validation in failed_concept_validations %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><a href="{{ error.url }}">{{ error.mnemonic }}</a></td>
+                                        <td><a href="{{ concept_validation.url }}">{{ concept_validation.mnemonic }}</a></td>
                                         <td>
-                                            <ul>
-                                                {% for field, messages in error.errors.items %}
-                                                    <li><strong>{{ field }}:</strong> {{ messages.0 }}</li>
+                                            {% ifequal concept_validation.errors.items|length  1  %}
+                                                {% for field, messages in concept_validation.errors.items %}
+                                                    <strong>{{ field }}:</strong> {{ messages.0 }}
                                                 {% endfor %}
-                                            </ul>
-
+                                            {% else %}
+                                                <ul>
+                                                    {% for field, messages in concept_validation.errors.items %}
+                                                        <li><strong>{{ field }}:</strong> {{ messages.0 }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endifequal %}
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -96,7 +99,27 @@
             </div>
         </div>
         <script type="text/javascript">
+            $(document).ready(function() {
+                $("#failed-validations-table").DataTable({
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bInfo": false,
+                    "scrollY": 400,
+                    "ordering": false,
+                    "dom": "Bfrtip",
+                    buttons: [
+                        {
+                            extend: 'csvHtml5',
+                            title: "Failed-Validations",
+                            text: "Download as CSV",
+                            className: "pull-right"
+                        }
+                    ]
+                });
+            } );
+
             $('#failed-validations').modal('show');
+
         </script>
     {% endif %}
 
