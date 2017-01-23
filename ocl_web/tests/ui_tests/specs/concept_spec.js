@@ -63,6 +63,13 @@ describe('Concept', function () {
                 expect(conceptPage.getStatus()).toEqual('Concept created.');
             });
 
+            it('should have combobox with values in concept mapping creation form', function () {
+                conceptPage.createConceptFullySpecifiedRandomly();
+                conceptPage.clickMappings();
+                var firstMapType = conceptPage.mapTypes.first();
+                expect(firstMapType.getText()).not.toBeUndefined();
+            });
+
             it('deleting description field should not get error #341', function () {
                 conceptPage.prepareToCreateConcept();
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Fully Specified", true, "English [en]");
@@ -155,12 +162,12 @@ describe('Concept', function () {
                 conceptPage.setName(names.first(), conceptPage.getRandomName(), "Fully Specified", true, "French [fr]");
 
                 const randomName = conceptPage.getRandomName();
-                conceptPage.setName(names.last(), randomName, "Fully Specified", true, "French [fr]"); 
+                conceptPage.setName(names.last(), randomName, "Fully Specified", true, "French [fr]");
 
                 conceptPage.fillDescriptionField();
 
                 conceptPage.createConcept();
-                
+
                 expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(NO_MORE_THAN_ONE_PREFERRED_NAME_PER_LOCALE, randomName, 'fr', true));
             });
 
