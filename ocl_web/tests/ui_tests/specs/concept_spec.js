@@ -21,14 +21,6 @@ function addNameDetailsToWarning(warning, name, locale, preferred) {
     return warning + ': ' + name + ' (locale: ' + locale + ', preferred: ' + (preferred ? 'yes' : 'no') + ')';
 }
 
-var fs = require('fs');
-
-function writeScreenShot(data, filename) {
-    var stream = fs.createWriteStream(filename);
-    stream.write(new Buffer(data, 'base64'));
-    stream.end();
-}
-
 describe('Concept', function () {
     var loginPage = new LoginPage();
     var logoutPage = new LogoutPage();
