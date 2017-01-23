@@ -25,7 +25,7 @@ var OrganizationPage = function () {
     this.organization = element(by.id('organization'));
     this.source = element(by.id('source'));
     this.sourceVersion = element(by.id('sourceVersion'));
-    this.messageBox = element(by.className('ajs-message ajs-warning ajs-visible'));
+    this.messageBox = element.all(by.className('ajs-message ajs-warning ajs-visible')).first();
     this.conceptToSelect = element(by.css('#concepts > li:nth-child(1) > label > input'));
     this.multipleReferencesTab = element(by.css('#addmultiplereftab > div:nth-child(2)'));
 

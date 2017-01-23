@@ -25,7 +25,7 @@
 						{% if kwargs and "source_version" in kwargs %}<span class="small" title="Source Version ID">[ {{ kwargs.source_version }} ]</span>{% endif %}
 						{% if  not kwargs or not "source_version" in kwargs  or kwargs.source_version == 'HEAD' %}
 						{% if_can_change source %}
-							<a href="{{ source_edit_url }}" class="small text-muted" title="Edit Source"><span class="glyphicon glyphicon-cog"></span></a>
+							<a href="{{ source_edit_url }}" class="small text-muted" id="edit-source" title="Edit Source"><span class="glyphicon glyphicon-cog"></span></a>
 						{% endif_can_change source %}
             {% endif %}
 					</div>
