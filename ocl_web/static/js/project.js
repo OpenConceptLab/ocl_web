@@ -758,6 +758,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
         if (!$scope.owner || !$scope.resourceContainer) {
             return;
         }
+
         $scope.loading = true;
 
         var params = {
@@ -780,7 +781,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
 
     $scope.formatResourceContainerVersion = function (resourceContainerVersion) {
         return resourceContainerVersion.id + (resourceContainerVersion.retired ? ' (Retired)' : (resourceContainerVersion.released ? ' (Released)' : ''));
-    }
+    };
 
 
     $scope.getResourceContainerMappings = function (page) {
@@ -813,7 +814,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
         }).map(function (resource) {
             return resource.url;
         });
-    }
+    };
 
     var _getUri = function () {
         var ownerIdentifier = $scope.ownerType === 'orgs' ? $scope.owner.id : $scope.owner.username;
@@ -826,8 +827,8 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
             uri: _getUri(),
             search_term: '*' + ($scope.pageObj.search || '') + '*',
             concepts: $scope.pageObj.selectAllConcepts ? '*' : _getResourceExpressions($scope.concepts),
-            mappings: $scope.pageObj.selectAllMappings ? '*' : _getResourceExpressions($scope.mappings),
-        }
+            mappings: $scope.pageObj.selectAllMappings ? '*' : _getResourceExpressions($scope.mappings)
+        };
         $scope.addReferences(payload, false);
     };
 
@@ -836,7 +837,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
             expressions: [$scope.singleReference]
         };
         $scope.addReferences(payload, true);
-    }
+    };
 
     $scope.openErrorModal = function () {
         $scope.errorModal = $uibModal.open({
@@ -864,18 +865,18 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
                     return;
                 }
 
-                $scope.added = result.update_results.filter(function(result) {
+                $scope.added = result.update_results.filter(function (result) {
                     return result.added;
                 });
 
-                $scope.errors = result.errors || result.update_results.filter(function(result) {
+                $scope.errors = result.errors || result.update_results.filter(function (result) {
                         return !result.added;
-                    }).reduce(function(hash, curr){
+                    }).reduce(function (hash, curr) {
                         hash[curr.expression] = curr.message[0];
                         return hash
                     }, {});
 
-                if(_.size($scope.errors))
+                if (_.size($scope.errors))
                     $scope.openErrorModal();
 
                 if (!_.size($scope.errors))
@@ -891,7 +892,8 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
             });
     };
 
-});
+})
+;
 
 app.factory('Reference', function ($http) {
     var Reference = this;
@@ -1432,7 +1434,8 @@ if ($('.download-csv').length > 0) {
 
         fireDownload(getURL());
     });
-};
+}
+;
 
 $('form#source_create_form .delete-source').on('click', function (ev) {
     var button = $(ev.toElement);
@@ -1464,6 +1467,12 @@ $('#sourceVersion').change(function () {
     if (versionInformation === 'HEAD') {
         const IF_SELECTED_HEAD_VERSION_OF_SOURCE = 'When HEAD version selected, the latest version of concepts and mappings are listed';
         alertify.warning(IF_SELECTED_HEAD_VERSION_OF_SOURCE, 200)
+    }
+});
+
+$('#collection_add_reference_form > div > input').keypress(function (e) {
+    if (e.which == 13) {
+        e.preventDefault();
     }
 });
 
