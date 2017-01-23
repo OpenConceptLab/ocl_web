@@ -21,7 +21,7 @@
   {% resource_owner_label source %} / {% source_label source %} / {% trans "Edit Source" %}
   {# TODO: Only show if admin or owner #}
     {% if_can_change source %}
-        <a href="{{ source_delete_url }}" class="small text-muted">
+        <a href="{{ source_delete_url }}" class="small text-muted" id="delete-source">
             <span class="glyphicon glyphicon-trash"></span>
         </a>
     {% endif_can_change source %}
@@ -46,7 +46,7 @@
 				{% csrf_token %}
 				{% bootstrap_form form %}
 				{% buttons %}
-					<button type="submit" class="btn btn-primary">{% trans "Update" %}</button>
+					<button type="submit" class="btn btn-primary" id="update-source">{% trans "Update" %}</button>
 				    <a href="{{ source_home_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
 				{% endbuttons %}
 			</form>
@@ -93,7 +93,7 @@
                         </table>
                     </div>
                     <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Close" />
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Close" id="close-modal"/>
                     </div>
                 </div>
             </div>
