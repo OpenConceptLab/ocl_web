@@ -142,15 +142,15 @@
 		<div class="row row-search-result">
 			{% if source.owner_type == 'Organization' %}
 				{% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
-					{% url 'mapping-home' org=result.owner source=result.source mapping=result.id as result_url %}
+					{% url 'mapping-home' org=result.owner source=result.source mapping=result.versioned_object_id as result_url %}
 				{% else %}
-					{% url 'mapping-home-versioned' org=result.owner source=result.source mapping=result.id mapping_version=result.version as result_url %}
+					{% url 'mapping-home-versioned' org=result.owner source=result.source mapping=result.versioned_object_id mapping_version=result.version as result_url %}
 				{% endif %}
 			{% else %}
 				{% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
-					{% url 'mapping-home' user=result.owner source=result.source mapping=result.id as result_url %}
+					{% url 'mapping-home' user=result.owner source=result.source mapping=result.versioned_object_id as result_url %}
 				{% else %}
-					{% url 'mapping-home-versioned' user=result.owner source=result.source mapping=result.id mapping_version=result.version as result_url %}
+					{% url 'mapping-home-versioned' user=result.owner source=result.source mapping=result.versioned_object_id mapping_version=result.version as result_url %}
 				{% endif %}
 			{% endif %}
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
