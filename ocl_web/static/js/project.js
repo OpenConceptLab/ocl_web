@@ -1390,7 +1390,7 @@ $.urlParam = function (name) {
 
 var httpURL = function (url) {
     if (_.includes(window.location.protocol, 'https:'))
-        url = '//api.' + window.location.hostname;
+        url = '//api.' + window.location.hostname.replace('www.', '');
     return url;
 }
 
@@ -1480,7 +1480,7 @@ var triggerDownload = function (el) {
     var $el = $(el),
         user = $("meta[name='user']").attr('content');
     if (_.includes(window.location.protocol, 'https:'))
-        url = '//api.' + window.location.hostname + $el.data('uri') + '&user=' + user;
+        url = '//api.' + window.location.hostname.replace('www.','') + $el.data('uri') + '&user=' + user;
     else
         url = '//' + window.location.hostname + ':8000' + $el.data('uri') + '&user=' + user;
     fireDownload(url);
