@@ -39,8 +39,8 @@
 				</div>
 
 				{% bootstrap_field form.from_concept_url %}
-				{% bootstrap_field form.map_type %}
-                <select class="form-control" id="id_map_type" name="map_type">
+				{% bootstrap_label "Map Type" label_for="map_type" %}
+                <select class="form-control" id="map_type" name="map_type">
                     {% for map_type in map_types %}
                         <option{% if map_type ==  form.map_type %} selected="selected" {% endif %}>{{ map_type }}</option>
                     {% endfor %}
