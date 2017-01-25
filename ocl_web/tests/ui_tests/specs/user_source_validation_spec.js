@@ -22,7 +22,6 @@ describe('OCL User Source Page', function () {
         usrSrcPage = new UserSourcePage();
         conceptPage = ConceptPage;
         loginPage.login();
-
         return browser.ignoreSynchronization = true;
     });
 
