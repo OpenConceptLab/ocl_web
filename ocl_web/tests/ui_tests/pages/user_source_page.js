@@ -7,6 +7,13 @@ var UserSourcePage = function() {
     this.supportedLocale = $('#id_supported_locales');
     this.customValidationSchema = $('#id_custom_validation_schema');
     this.createUsrSourceButton = element(by.buttonText('Create Source'));
+    this.editUserSourceButton = element(by.id('edit-source'));
+    this.updateUserSourceButton = element(by.id('update-source'));
+    this.deleteSourceButton = element(by.id('delete-source'));
+    this.confirmDeleteSourceButton = element(by.id('confirm-delete-source'));
+
+    this.failedValidationsPopup = element(by.id('failed-validations'));
+    this.successMessage = element(by.css('.alert.alert-info'));
 
     this.clickNewUsrSrcLink = function () {
         this.newUserSrclink.click();

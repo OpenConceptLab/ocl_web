@@ -14,9 +14,14 @@ var ConceptPage = function() {
     this.deleteNameAreaButton = element(by.id("id-delete-name"));
 
     this.conceptsLink = element(by.linkText('Concepts'));
-    this.newConceptLink = element(by.linkText(' New Concept'));
+    this.newConceptLink = element(by.id('id-new-concept'));
     this.conceptId = $('#id_concept_id');
     this.addNameSynonymLink = $('#add-name-synonym');
+
+    this.parentSourceLink = element(by.css(".resource-label.source"));
+
+    this.mapTypes = element.all(by.css('#map_type option'));
+    this.mappingsButton = element(by.id('mappings_link'));
 
     this.fillInUpdateText = function(updateMsg){
         this.updateCommentTextArea.clear().sendKeys(updateMsg);
@@ -28,6 +33,10 @@ var ConceptPage = function() {
 
     this.clickEditConcept = function () {
         this.editLink.click();
+    };
+
+    this.clickMappings = function () {
+        this.mappingsButton.click();
     };
 
     this.fillDescriptionField = function () {
@@ -52,7 +61,7 @@ var ConceptPage = function() {
     };
 
     this.prepareToCreateConcept = function () {
-        element(by.css(".resource-label.source")).click();
+        this.parentSourceLink.click();
         this.conceptsLink.click();
         this.newConceptLink.click();
         this.setConceptId(this.getRandomId());
