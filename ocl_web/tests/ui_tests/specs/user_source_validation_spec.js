@@ -7,9 +7,8 @@ var orgPage = require('../pages/organization_page');
 var UserSourcePage = require('../pages/user_source_page');
 var ConceptPage = require('../pages/concept_page');
 var configuration = require('../utilities/configuration.js');
-var EC = require('protractor').ExpectedConditions;
 
-describe('OCL User Source Page', function () {
+describe('OCL User Source Validation Page', function () {
     var loginPage;
     var logoutPage;
     var usrSrcPage;

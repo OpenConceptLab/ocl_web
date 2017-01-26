@@ -5,9 +5,7 @@ var ConceptPage = function() {
     this.createButton = element(by.css('.btn.btn-primary'));
 
     this.updateCommentTextArea = element(by.id("id_update_comment"));
-    this.namesDiv= element(by.id("names-and-synonyms"));
     this.updateButton = element(by.id("update-concept"));
-    this.cancelUpdateButton = element(by.id('cancel-update'));
     this.editLink = element(by.id("edit-concept"));
     this.descriptionField = element(by.model('description.description'));
     this.deleteDescriptionAreaButton = element(by.id("id-delete-description"));

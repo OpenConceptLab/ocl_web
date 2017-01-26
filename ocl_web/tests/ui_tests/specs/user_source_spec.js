@@ -14,7 +14,7 @@ describe('OCL User Source Page', function () {
     var usrSrcPage;
     var srcShortCode = '';
 
-    beforeEach(function () {
+    beforeAll(function () {
         loginPage = new LoginPage();
         logoutPage = new LogoutPage();
         usrSrcPage = new UserSourcePage();
@@ -40,7 +40,7 @@ describe('OCL User Source Page', function () {
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept(data.concept_id + orgPage.id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
+        orgPage.createNewConcept(data.concept_id + orgPage.getRandomId(), data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
 
         expect(orgPage.getStatus()).toEqual('Concept created.');
 
