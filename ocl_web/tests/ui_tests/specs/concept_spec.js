@@ -10,7 +10,6 @@ var configuration = require('../utilities/configuration.js');
 
 const ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT = 'A concept must have at least one fully specified name';
 const CONCEPT_MUST_HAVE_AT_LEAST_ONE_NAME = 'A concept must have at least one name';
-const PREFERRED_NAME_UNIQUE_PER_SOURCE_LOCALE = 'Concept preferred name must be unique for same source and locale';
 const FULLY_SPECIFIED_NAME_UNIQUE_PER_SOURCE_LOCALE = 'Concept fully specified name must be unique for same source and locale';
 const SHORT_NAME_CANNOT_BE_PREFERRED = 'A short name cannot be marked as locale preferred';
 const NO_MORE_THAN_ONE_FULLY_SPECIFIED_PER_LOCALE = 'A concept may not have more than one fully specified name in any locale';
@@ -27,10 +26,9 @@ describe('Concept', function () {
     var usrSrcPage = new UserSourcePage();
     var srcShortCode = '';
 
-    browser.ignoreSynchronization = true;
-
     beforeAll(function () {
         loginPage.login();
+        browser.ignoreSynchronization = true;
     });
 
     describe('Basic validation', function () {
@@ -56,7 +54,6 @@ describe('Concept', function () {
                 conceptPage.setName(names.first(), "en_fr_name", "Short", false, "French [fr]");
                 conceptPage.setName(names.last(), "name2", "Fully Specified", false, "English [en]");
 
-                conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
                 conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "en_fr_name")
@@ -91,7 +88,6 @@ describe('Concept', function () {
                 conceptPage.addNamesAndSynonyms(1);
                 conceptPage.setConceptId(expectedName);
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), expectedName, "Short", true, "English [en]");
-                conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
                 expect(conceptPage.getNameText(conceptPage.getNamesAndSynonyms().first())).toEqual(expectedName);
@@ -158,13 +154,10 @@ describe('Concept', function () {
 
                 var names = conceptPage.getNamesAndSynonyms();
 
-
                 conceptPage.setName(names.first(), conceptPage.getRandomName(), "Fully Specified", true, "French [fr]");
 
                 const randomName = conceptPage.getRandomName();
                 conceptPage.setName(names.last(), randomName, "Fully Specified", true, "French [fr]");
-
-                conceptPage.fillDescriptionField();
 
                 conceptPage.createConcept();
 
@@ -180,8 +173,6 @@ describe('Concept', function () {
                 conceptPage.setName(names.first(), conceptPage.getRandomName(), "Fully Specified", false);
                 const randomName = conceptPage.getRandomName();
                 conceptPage.setName(names.last(), randomName, "Short", true);
-
-                conceptPage.fillDescriptionField();
 
                 conceptPage.createConcept();
                 expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(SHORT_NAME_CANNOT_BE_PREFERRED, randomName, 'en', true));
@@ -208,8 +199,6 @@ describe('Concept', function () {
                 conceptPage.setName(names.first(), "requiredFullySpecified", "Fully Specified", true);
                 conceptPage.setName(names.last(), "sameFullySpecified", "Fully Specified", false);
 
-                conceptPage.fillDescriptionField();
-
                 conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(NO_MORE_THAN_ONE_FULLY_SPECIFIED_PER_LOCALE, 'sameFullySpecified', 'en', false));
@@ -232,7 +221,6 @@ describe('Concept', function () {
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Fully Specified", true, "English [en]");
                 const randomName = conceptPage.getRandomName();
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().last(), randomName, "Fully Specified", false, "English [en]");
-                conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(NO_MORE_THAN_ONE_FULLY_SPECIFIED_PER_LOCALE, randomName, 'en', false));
@@ -242,7 +230,6 @@ describe('Concept', function () {
 
                 conceptPage.prepareToCreateConcept();
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Short", false, "English [en]");
-                conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
@@ -255,7 +242,6 @@ describe('Concept', function () {
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Fully Specified", true, "English [en]");
                 const randomName = conceptPage.getRandomName();
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().last(), randomName, "Short", true, "English [en]");
-                conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(NO_MORE_THAN_ONE_PREFERRED_NAME_PER_LOCALE, randomName, 'en', true));
@@ -268,7 +254,6 @@ describe('Concept', function () {
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Fully Specified", false, "English [en]");
                 const randomName = conceptPage.getRandomName();
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().last(), randomName, "Short", true, "English [en]");
-                conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual(addNameDetailsToWarning(SHORT_NAME_CANNOT_BE_PREFERRED, randomName, 'en', true));
@@ -280,7 +265,6 @@ describe('Concept', function () {
                 conceptPage.addNamesAndSynonyms(1);
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), "sameText", "Fully Specified", true, "English [en]");
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().last(), "sameText", "Fully Specified", false, "English [en]");
-                conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual(NON_SHORT_NAMES_MUST_BE_UNIQUE);
@@ -292,7 +276,6 @@ describe('Concept', function () {
                 conceptPage.addNamesAndSynonyms(1);
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), "sameText", "Fully Specified", true, "English [en]");
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().last(), "sameText", "Short", false, "English [en]");
-                conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
                 expect(conceptPage.getStatus()).toEqual('Concept created.');
@@ -310,7 +293,6 @@ describe('Concept', function () {
                 conceptPage.addNamesAndSynonyms(1);
                 conceptPage.setConceptId(expectedName);
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), expectedName, "Short", true, "English [en]");
-                conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
                 expect(conceptPage.getNameText(conceptPage.getNamesAndSynonyms().first())).toEqual(expectedName);
@@ -320,7 +302,6 @@ describe('Concept', function () {
             it('order at least one fully specified name #342', function () {
                 conceptPage.prepareToCreateConcept();
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), conceptPage.getRandomName(), "Short", false, "English [en]");
-                conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
                 expect(conceptPage.getError()).toEqual(ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT);
@@ -339,9 +320,7 @@ describe('Concept', function () {
             it('with more then one preferred and fully specified name should get an error #278', function () {
 
                 conceptPage.createConceptWithFullySpecifiedName(conceptPage.getRandomId(), "name1");
-
                 conceptPage.createConceptFullySpecifiedRandomly();
-
                 conceptPage.prepareToEditConcept();
 
                 var names = conceptPage.getNamesAndSynonyms();
@@ -461,7 +440,6 @@ describe('Concept', function () {
                 conceptPage.addNamesAndSynonyms(1);
                 conceptPage.setConceptId(expectedName);
                 conceptPage.setName(conceptPage.getNamesAndSynonyms().first(), expectedName, "Short", true, "English [en]");
-                conceptPage.fillDescriptionField();
                 conceptPage.createConcept();
 
                 expect(conceptPage.getNameText(conceptPage.getNamesAndSynonyms().first())).toEqual(expectedName);

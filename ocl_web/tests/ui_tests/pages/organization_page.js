@@ -1,13 +1,6 @@
 var BasePage = require('./base_page.js');
 var EC = require('protractor').ExpectedConditions;
 
-var fs = require('fs');
-
-function writeScreenShot(data, filename) {
-    var stream = fs.createWriteStream(filename);
-    stream.write(new Buffer(data, 'base64'));
-    stream.end();
-}
 var OrganizationPage = function () {
 
     // create org locators
@@ -22,7 +15,6 @@ var OrganizationPage = function () {
     this.createOrgButton = element(by.buttonText('Create Organization'));
     this.customValidationSchema = $('#id_custom_validation_schema');
 
-    this.organization = element(by.id('organization'));
     this.source = element(by.id('source'));
     this.sourceVersion = element(by.id('sourceVersion'));
     this.messageBox = element.all(by.className('ajs-message ajs-warning ajs-visible')).first();
@@ -36,20 +28,6 @@ var OrganizationPage = function () {
     this.fullName = $('#id_full_name');
     this.supportedLocale = $('#id_supported_locales');
     this.addOrgCollectionButton = element(by.buttonText('Add'));
-
-    // create reference locators
-    this.references = element(by.linkText('References'));
-    this.addNewReferenceLink = element(by.id('add-reference'));
-    this.singleReferences = element(by.linkText('Add Single Reference'));
-    this.expression = element(by.id('expression'));
-    this.addSingleReferenceButton = element(by.id('add-single-reference'));
-    this.addMultipleReferenceButton = element(by.css('#collection_add_reference_form > div > button'));
-    this.countOfReferences = element.all(by.css('a[title="Collection Reference"]'));
-
-    this.successModal = element(by.css('.alert.alert-success'));
-    this.warningModal = element(by.css('.alert.alert-warning'));
-    this.duplicateErrorModal = element(by.css('.list-group-item.ng-binding.ng-scope'));
-    this.conceptVersionUrl = element(by.css('.concept-version-url .field-label-value'));
 
 
     // create source under org locators
@@ -73,15 +51,14 @@ var OrganizationPage = function () {
     this.retireButton = $('.resource_retire');
     this.retireLabel = $$('.retire-label');
 
+    this.checkReference = $('#check_reference');
+    this.deleteLink = $('.delete-reference');
+    this.warning = $('.ajs-warning');
+    this.okButton = element(by.buttonText('OK'));
+
     // Delete version locators
     this.deleteSrcVersionIcon = element(by.css('.source_version_delete'));
     this.deleteColVersionIcon = element(by.css('.collection_version_delete'));
-
-    // Delete reference locators
-    this.deleteLink = $('.delete-reference');
-    this.warning = $('.ajs-warning');
-    this.checkReference = $('#check_reference');
-    this.okButton = element(by.buttonText('OK'));
 
     // create concept locators
     this.conceptsLink = element(by.linkText('Concepts'));
@@ -95,6 +72,8 @@ var OrganizationPage = function () {
     this.conceptDesc = element(by.model('description.description'));
     this.key = element(by.model('extra.key'));
     this.addNameSynonymLink = $('#add-name-synonym');
+
+    this.okButton = element(by.buttonText('OK'));
 
     //create mapping locators
     this.newMappingLink = element(by.linkText('Mappings'));
@@ -124,40 +103,6 @@ var OrganizationPage = function () {
         this.customValidationSchema.sendKeys(customValidationSchema);
         this.supportedLocale.sendKeys(locale);
         this.addOrgCollectionButton.click();
-    };
-
-    this.createNewSingleReference = function (expression) {
-        this.references.click();
-        this.addNewReferenceLink.click();
-        this.singleReferences.click();
-        browser.wait(EC.visibilityOf(this.expression), 2000);
-        this.expression.sendKeys(expression);
-        return this.addSingleReferenceButton.click();
-    };
-
-    this.setCreateNewMultipleReferencesValues = function (organization, source, sourceVersion) {
-        this.references.click();
-        this.addNewReferenceLink.click();
-        this.organization.sendKeys(organization);
-        browser.sleep(100);
-        this.source.sendKeys(source);
-        browser.sleep(100);
-        this.sourceVersion.sendKeys(sourceVersion);
-        browser.sleep(100);
-    };
-
-    this.createNewMultipleReferences = function (organization, source, sourceVersion) {
-        this.setCreateNewMultipleReferencesValues(organization, source, sourceVersion);
-        browser.wait(EC.visibilityOf(this.multipleReferencesTab), 500);
-        this.conceptToSelect.click();
-        this.addMultipleReferenceButton.click();
-    };
-
-    this.deleteReference = function () {
-        this.checkReference.click();
-        this.deleteLink.click();
-        browser.wait(EC.visibilityOf(this.okButton), 500);
-        this.okButton.click();
     };
 
     this.createNewSource = function (src_shortCode, full_name, locale) {

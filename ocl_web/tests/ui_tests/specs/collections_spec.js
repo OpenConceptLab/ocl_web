@@ -19,6 +19,10 @@ describe('OCL Collections Page', function () {
         loginPage.login();
     });
 
+    afterAll(function () {
+        logoutPage.logout();
+    });
+
     it('should create collection', function () {
         id = orgPage.getRandomId();
         collectionPage.createNewUserCollection(data.short_code + id,
@@ -62,7 +66,6 @@ describe('OCL Collections Page', function () {
         collectionPage.createNewCollectionVersion('V1', 'Version 1');
 
         expect((orgPage.getStatus())).toEqual('Collection version created!');
-        browser.refresh();
     });
 
     it('should release a user collection version', function () {
@@ -126,12 +129,6 @@ describe('OCL Collections Page', function () {
         collectionPage.deleteCollection();
 
         expect(collectionPage.getStatus()).toEqual('Collection Deleted');
-    });
-
-    it('should logout', function () {
-        logoutPage.logout();
-
-        expect((loginPage.loginStatus).getText()).toEqual('You have signed out.');
     });
 });
 

@@ -2,7 +2,6 @@ var LogoutPage = function() {
 
     this.logoutButton = element(by.css('a[title="Sign Out"]'));
     this.signoutButton = element(by.buttonText('Sign Out'));
-    //this.logoutStatus = element(by.className('alert-success')).getText();
 
     this.clickLogout = function () {
         this.logoutButton.click();

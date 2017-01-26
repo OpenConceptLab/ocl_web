@@ -2,27 +2,22 @@
 
 var LoginPage = require('../pages/login_page.js');
 var LogoutPage = require('../pages/logout_page.js');
-var orgPage = require('../pages/organization_page');
-var collectionPage = require('../pages/collections_page.js');
 var data = require('../fixtures/test_data.json');
+var orgPage = require('../pages/organization_page');
+var UserSourcePage = require('../pages/user_source_page');
 var configuration = require('../utilities/configuration.js');
 var EC = require('protractor').ExpectedConditions;
-var timeout = 5000;
 
-describe('OCL Org Page', function () {
-    const baseUrl = configuration.get('baseUrl');
-    var mappingVersion = 1;
+describe('OCL User Source Page', function () {
     var loginPage;
     var logoutPage;
-    var id = '';
-    var conceptVersionUrl;
-    var conceptVersionNumber;
-    var mappingId;
+    var usrSrcPage;
+    var srcShortCode = '';
 
-
-    beforeEach(function () {
+    beforeAll(function () {
         loginPage = new LoginPage();
         logoutPage = new LogoutPage();
+        usrSrcPage = new UserSourcePage();
         return browser.ignoreSynchronization = true;
     });
 
@@ -32,325 +27,89 @@ describe('OCL Org Page', function () {
         expect((loginPage.loginStatus).getText()).toEqual('Successfully signed in as ' + configuration.get("username") + '.');
     });
 
-    it('should create organization', function () {
-        id = orgPage.getRandomId();
-        orgPage.createNewOrg(data.org_short_code + id, data.org_name, data.website, data.company, data.org_location);
-
-        expect(orgPage.getStatus()).toEqual('Organization Added');
-    });
-
     it('should create source', function () {
-        orgPage.createNewSource(data.src_code, data.src_full_name, data.supported_locale);
+        srcShortCode = orgPage.getRandomShortCode();
+        usrSrcPage.createNewUsrSource(
+            data.src_code + srcShortCode,
+            data.src_full_name,
+            data.supported_locale
+        );
 
         expect(orgPage.getStatus()).toEqual('Source created');
+        expect((orgPage.customValidationSchema).getText()).toEqual('None')
     });
 
     it('should create concept', function () {
-        orgPage.createNewConcept(data.concept_id + id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
+        orgPage.createNewConcept(data.concept_id + orgPage.getRandomId(), data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
 
-        browser.wait(EC.presenceOf(orgPage.status), timeout);
         expect(orgPage.getStatus()).toEqual('Concept created.');
 
-        element(by.linkText('  ' + data.src_code)).click();
+        element(by.linkText('  ' + data.src_code + srcShortCode)).click();
     });
 
     it('should create source version', function () {
         orgPage.createNewSourceVersion(data.id, data.description);
 
-        browser.wait(EC.presenceOf(orgPage.status), timeout);
-
+        browser.wait(EC.presenceOf(orgPage.status), 500);
         expect(orgPage.getStatus()).toEqual('Source version created!');
-        browser.refresh();
 
+        browser.refresh()
     });
 
-    it('should release a org source version', function () {
+    it('should release a user source version', function () {
         orgPage.releaseVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), timeout);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), 500);
         expect(orgPage.notification.getText()).toEqual('Successfully Released.');
 
-        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), timeout);
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 500);
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
 
-        orgPage.notification.click();
+        orgPage.notification.click()
     });
 
-    it('should retire org source version', function () {
+    it('should retire a user source version', function () {
         orgPage.retireVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired.'), timeout);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired'), 500);
         expect(orgPage.notification.getText()).toEqual('Successfully Retired.');
 
-        browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), timeout);
+        browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), 500);
         expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
 
-        orgPage.notification.click();
+        orgPage.notification.click()
     });
 
-    it('should un-retire org source version', function () {
+    it('should un-retire a user source version', function () {
         orgPage.retireVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), timeout);
-        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), timeout);
-
-        orgPage.notification.click();
-    });
-
-    it('should un-release a source version', function () {
-        orgPage.releaseVersion();
-
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), timeout);
-
-        orgPage.notification.click();
-    });
-
-    it('should delete a source version', function () {
-        orgPage.deleteSrcVersion();
-
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed source version.'), timeout);
-
-        orgPage.notification.click();
-    });
-
-    it('should create concept', function () {
-
-        orgPage.createNewConcept(data.concept_id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
-        orgPage.conceptVersionUrl.getText().then(function (versionUrl) {
-            conceptVersionUrl = versionUrl;
-            conceptVersionNumber = versionUrl.toString().split('/')[7];
-        });
-
-        browser.wait(EC.presenceOf(orgPage.status), timeout);
-        expect(orgPage.getStatus()).toEqual('Concept created.');
-
-        element(by.linkText('  ' + data.src_code)).click();
-    });
-
-    it('should create a mapping', function () {
-        var fromConceptURL = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
-        var toConceptURL = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + id + '/';
-
-        orgPage.createNewMapping(
-            fromConceptURL,
-            'SAME-AS',
-            toConceptURL
-        );
-
-        expect(orgPage.getStatus()).toEqual('Mapping created.');
-
-
-        element(by.css('#mapping_id .row .field-label-value')).getText().then(function (value) {
-            mappingId = value;
-        });
-
-        element(by.linkText('  ' + data.org_short_code + id)).click();
-    });
-
-    it('should create collection under org', function () {
-        // REMOVE THIS LINE BELOW WHEN YOU UNCOMMENT
-        element(by.linkText('  ' + data.org_short_code + id)).click();
-        orgPage.createNewOrgCollection(data.short_code + id,
-            data.col_name,
-            data.full_name,
-            data.supported_locale,
-            data.custom_validation_schema
-        );
-
-        expect(orgPage.getStatus()).toEqual('Collection created');
-    });
-
-    it('should create collection version', function () {
-        collectionPage.createNewCollectionVersion('V1', 'version 1');
-        expect(orgPage.getStatus()).toEqual('Collection version created!');
-    });
-
-    it('should release a collection version', function () {
-        orgPage.releaseVersion();
-
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), timeout);
-        expect(orgPage.notification.getText()).toEqual('Successfully Released.');
-
-        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), timeout);
-        expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
-
-        orgPage.notification.click();
-    });
-
-    it('should retire org collection version', function () {
-        orgPage.retireVersion();
-
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired.'), timeout);
-        expect(orgPage.notification.getText()).toEqual('Successfully Retired.');
-
-        browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), timeout);
-        expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
-
-        orgPage.notification.click();
-    });
-
-    it('should un-retire org collection version', function () {
-        orgPage.retireVersion();
-
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), timeout);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), 500);
         expect(orgPage.notification.getText()).toEqual('Successfully Un-Retired.');
 
-        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), timeout);
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 500);
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
 
-        orgPage.notification.click();
+        orgPage.notification.click()
     });
 
-    it('should un-release a collection version', function () {
+    it('should un-release a user source version', function () {
         orgPage.releaseVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), timeout);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), 500);
         expect(orgPage.notification.getText()).toEqual('Successfully Un-Released.');
 
+        orgPage.notification.click()
+    });
+
+    it('should delete a user source version', function () {
+        orgPage.deleteSrcVersion();
+
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed source version.'), 1500);
+        expect(orgPage.notification.getText()).toEqual('Successfully removed source version.');
+
         orgPage.notification.click();
     });
 
-    it('should delete org colection version', function () {
-        orgPage.deleteCollectionVersion();
-
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed collection version.'), timeout);
-
-        orgPage.notification.click();
-    });
-
-    it('add concept single reference without version number', function () {
-        var expectedMessage = 'Does not support adding the HEAD version of concepts to the collection. Added the latest version instead: C1.1.1.2- version';
-        var conceptExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
-        orgPage.createNewSingleReference(conceptExpression);
-        browser.wait(EC.presenceOf(orgPage.warningModal), timeout);
-        expect(orgPage.countOfReferences.count()).toEqual(1);
-        expect(orgPage.warningModal.getText()).toContain(expectedMessage);
-    });
-
-    it('add concept single reference with version number', function () {
-        orgPage.deleteReference();
-        var expectedMessage = 'Added concept: C1.1.1.2- version ' + conceptVersionNumber;
-        orgPage.createNewSingleReference(conceptVersionUrl);
-        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
-
-        expect(orgPage.countOfReferences.count()).toEqual(1);
-        expect(orgPage.successModal.getText()).toEqual(expectedMessage);
-    });
-
-    it('add mapping single reference without version number', function () {
-        orgPage.deleteReference();
-        var expectedMessage = 'Does not support adding the HEAD version of mapping to the collection. Added the latest version instead: ' + mappingId + ' version 1';
-        var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/';
-        orgPage.createNewSingleReference(mappingExpression);
-        browser.wait(EC.presenceOf(orgPage.warningModal), timeout);
-        expect(orgPage.warningModal.getText()).toContain(expectedMessage);
-        expect(orgPage.countOfReferences.count()).toEqual(1);
-    });
-
-    it('add mapping single reference with version number', function () {
-        orgPage.deleteReference();
-        var expectedMessage = 'Added mapping: ' + mappingId + ' version ' + mappingVersion;
-        var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/' + mappingVersion + '/';
-        orgPage.createNewSingleReference(mappingExpression);
-        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
-        expect(orgPage.countOfReferences.count()).toEqual(1);
-        expect(orgPage.successModal.getText()).toEqual(expectedMessage)
-    });
-
-
-    it('add duplicate concept expression should fail', function () {
-        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
-        orgPage.deleteReference();
-        var expectedMessage = conceptVersionUrl + ': ' + 'Concept or Mapping reference name must be unique in a collection.';
-
-        orgPage.createNewSingleReference(conceptVersionUrl);
-        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
-
-        orgPage.createNewSingleReference(conceptVersionUrl);
-        browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
-
-        expect(orgPage.duplicateErrorModal.getText()).toEqual(expectedMessage);
-        expect(orgPage.countOfReferences.count()).toEqual(0);
-    });
-
-    it('add duplicate mapping expression should fail', function () {
-        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
-        orgPage.deleteReference();
-        var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/' + mappingVersion + '/';
-        var expectedMessage = mappingExpression + ': ' + 'Concept or Mapping reference name must be unique in a collection.';
-
-        orgPage.createNewSingleReference(mappingExpression);
-        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
-
-        orgPage.createNewSingleReference(mappingExpression);
-        browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
-
-        expect(orgPage.duplicateErrorModal.getText()).toEqual(expectedMessage);
-        expect(orgPage.countOfReferences.count()).toEqual(0);
-    });
-
-    it('fully specified name within collection should be unique', function () {
-        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
-        orgPage.deleteReference();
-
-        orgPage.createNewSingleReference(conceptVersionUrl);
-        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
-        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/');
-        orgPage.createNewConcept(data.concept_id + id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
-
-        var nonUniqueFullySpecifiedNameUrl = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + id + '/';
-        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
-        orgPage.createNewSingleReference(nonUniqueFullySpecifiedNameUrl);
-        browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
-        expect(orgPage.duplicateErrorModal.getText()).toContain('Concept fully specified name must be unique for same collection and locale.');
-        expect(orgPage.countOfReferences.count()).toEqual(0);
-    });
-
-    it('test preferred name within collection should be unique', function () {
-        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
-        orgPage.deleteReference();
-
-        orgPage.createNewSingleReference(conceptVersionUrl);
-        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
-        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/');
-
-        orgPage.createNewConcept(data.concept_id + 'test', data.concept_name, 'None', data.concept_desc, data.key1, data.locale2);
-        var nonUniqueFullySpecifiedNameUrl = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + 'test' + '/';
-        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
-        orgPage.createNewSingleReference(nonUniqueFullySpecifiedNameUrl);
-        browser.wait(EC.presenceOf(orgPage.duplicateErrorModal), timeout);
-
-        expect(orgPage.duplicateErrorModal.getText()).toContain('Concept preferred name must be unique for same collection and locale.');
-        expect(orgPage.countOfReferences.count()).toEqual(0);
-    });
-
-    it('test when user selects HEAD version of source from dropdown in multiple references', function () {
-        const organization = data.org_short_code + id;
-        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
-        orgPage.deleteReference();
-        orgPage.setCreateNewMultipleReferencesValues(organization, 'HSTP-Indicators', 'HEAD');
-        browser.wait(EC.presenceOf(orgPage.messageBox), timeout);
-        expect(orgPage.messageBox.getText()).toEqual('When HEAD version selected, the latest version of concepts and mappings are listed');
-    });
-
-    it('test when user adds HEAD version of source in multiple references then inform the user', function () {
-        const organization = data.org_short_code + id;
-        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
-        orgPage.createNewMultipleReferences(organization, 'HSTP-Indicators', 'HEAD');
-        browser.wait(EC.presenceOf(orgPage.warningModal), timeout);
-        expect(orgPage.warningModal.getText()).toEqual('The latest versions of concepts/mappings are added to collection, and they will not be affected from future updates.');
-    });
-
-    it('then when user adds non-HEAD version of source in multiple references then inform for success', function () {
-        const organization = data.org_short_code + id;
-        browser.get(baseUrl + 'orgs/' + organization + '/sources/HSTP-Indicators/versions/');
-        orgPage.createNewSourceVersion('nonHead', 'for testing');
-        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
-        orgPage.deleteReference();
-        orgPage.createNewMultipleReferences(organization, 'HSTP-Indicators', 'nonHead');
-        browser.wait(EC.presenceOf(orgPage.successModal), timeout);
-        expect(orgPage.successModal.getText()).toEqual('The concepts/mappings are added to collection.');
-    });
 
     it('should logout', function () {
         logoutPage.logout();
