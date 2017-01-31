@@ -1,7 +1,7 @@
 var BasePage = require('./base_page.js');
 var chance = require('chance').Chance();
 
-var ConceptPage = function() {
+var ConceptPage = function () {
     this.createButton = element(by.css('.btn.btn-primary'));
 
     this.updateCommentTextArea = element(by.id("id_update_comment"));
@@ -21,11 +21,11 @@ var ConceptPage = function() {
     this.mapTypes = element.all(by.css('#map_type option'));
     this.mappingsButton = element(by.id('mappings_link'));
 
-    this.fillInUpdateText = function(updateMsg){
+    this.fillInUpdateText = function (updateMsg) {
         this.updateCommentTextArea.clear().sendKeys(updateMsg);
     };
 
-    this.fillInUpdateTextRandomly = function(){
+    this.fillInUpdateTextRandomly = function () {
         this.fillInUpdateText("Update Concept " + chance.word({length: 4}));
     };
 
@@ -114,7 +114,7 @@ var ConceptPage = function() {
         this.setNameText(item, nameText);
         this.setNameType(item, nameType);
         this.setLocalePreferred(item, localePreferred);
-        this.setNameLocale(item, nameLocale)
+        this.setNameLocale(item, nameLocale);
     };
 
     this.createConcept = function () {
@@ -123,10 +123,6 @@ var ConceptPage = function() {
 
     this.updateConcept = function () {
         this.updateButton.click();
-    };
-
-    this.createConceptFullySpecifiedRandomly = function () {
-        this.createConceptWithFullySpecifiedName(this.getRandomId(), this.getRandomName());
     };
 
     this.createConceptWithFullySpecifiedName = function (id, name) {
