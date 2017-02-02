@@ -27,7 +27,7 @@ describe('Collection Reference Page', function () {
         conceptVersionNumber = collectionReferencePage.conceptVersionNumber;
         mappingId = collectionReferencePage.mappindId;
         mappingVersion = 1;
-        sourceId = 'HSTP-Indicators';
+        sourceId = data.src_code;
         loginPage = new LoginPage();
         logoutPage = new LogoutPage();
         loginPage.login();
