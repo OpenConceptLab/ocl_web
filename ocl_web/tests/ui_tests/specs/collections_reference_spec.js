@@ -12,13 +12,14 @@ const baseUrl = configuration.get('baseUrl');
 
 describe('Collection Reference Page', function () {
 
-    var loginPage;
-    var logoutPage;
-    var mappingId;
-    var conceptVersionUrl;
-    var conceptVersionNumber;
-    var id;
-    var mappingVersion;
+    var loginPage,
+        logoutPage,
+        mappingId,
+        conceptVersionUrl,
+        conceptVersionNumber,
+        id,
+        mappingVersion,
+        sourceId;
 
     beforeAll(function () {
         id = collectionReferencePage.id;
@@ -26,6 +27,7 @@ describe('Collection Reference Page', function () {
         conceptVersionNumber = collectionReferencePage.conceptVersionNumber;
         mappingId = collectionReferencePage.mappindId;
         mappingVersion = 1;
+        sourceId = 'HSTP-Indicators';
         loginPage = new LoginPage();
         logoutPage = new LogoutPage();
         loginPage.login();
@@ -38,7 +40,7 @@ describe('Collection Reference Page', function () {
 
     it('add concept single reference without version number', function () {
         browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id);
-        var expectedMessage = 'Does not support adding the HEAD version of concepts to the collection. Added the latest version instead: C1.1.1.2- version';
+        var expectedMessage = 'OCL does not support adding the HEAD version of concepts to the collection. Added the latest version instead: ' + sourceId + '-C1.1.1.2- version';
         var conceptExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
         collectionReferencePage.createNewSingleReference(conceptExpression);
         browser.wait(EC.presenceOf(collectionReferencePage.warningModal), timeout);
@@ -48,7 +50,7 @@ describe('Collection Reference Page', function () {
 
     it('add concept single reference with version number', function () {
         collectionReferencePage.deleteReference();
-        var expectedMessage = 'Added concept: C1.1.1.2- version ' + conceptVersionNumber;
+        var expectedMessage = 'Added concept: '+ sourceId +'-C1.1.1.2- version ' + conceptVersionNumber;
         collectionReferencePage.createNewSingleReference(conceptVersionUrl);
         browser.wait(EC.presenceOf(collectionReferencePage.successModal), timeout);
 
@@ -58,7 +60,7 @@ describe('Collection Reference Page', function () {
 
     it('add mapping single reference without version number', function () {
         collectionReferencePage.deleteReference();
-        var expectedMessage = 'Does not support adding the HEAD version of mapping to the collection. Added the latest version instead: ' + mappingId + ' version 1';
+        var expectedMessage = 'OCL does not support adding the HEAD version of mapping to the collection. Added the latest version instead: ' + sourceId + '-' + mappingId + ' version 1';
         var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/';
         collectionReferencePage.createNewSingleReference(mappingExpression);
         browser.wait(EC.presenceOf(collectionReferencePage.warningModal), timeout);
@@ -68,7 +70,7 @@ describe('Collection Reference Page', function () {
 
     it('add mapping single reference with version number', function () {
         collectionReferencePage.deleteReference();
-        var expectedMessage = 'Added mapping: ' + mappingId + ' version ' + mappingVersion;
+        var expectedMessage = 'Added mapping: ' + sourceId + '-' + mappingId + ' version ' + mappingVersion;
         var mappingExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/mappings/' + mappingId + '/' + mappingVersion + '/';
         collectionReferencePage.createNewSingleReference(mappingExpression);
         browser.wait(EC.presenceOf(collectionReferencePage.successModal), timeout);
@@ -157,7 +159,7 @@ describe('Collection Reference Page', function () {
         browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
         collectionReferencePage.createNewMultipleReferences(organization, 'HSTP-Indicators', 'HEAD');
         browser.wait(EC.presenceOf(collectionReferencePage.warningModal), timeout);
-        expect(collectionReferencePage.warningModal.getText()).toEqual('The latest versions of concepts/mappings are added to collection, and they will not be affected from future updates.');
+        expect(collectionReferencePage.warningModal.getText()).toEqual('Added the latest versions of concepts/mappings to the collection. Future updates will not be added automatically.');
     });
 
     it('then when user adds non-HEAD version of source in multiple references then inform for success', function () {
@@ -168,6 +170,6 @@ describe('Collection Reference Page', function () {
         collectionReferencePage.deleteReference();
         collectionReferencePage.createNewMultipleReferences(organization, 'HSTP-Indicators', 'nonHead');
         browser.wait(EC.presenceOf(collectionReferencePage.successModal), timeout);
-        expect(collectionReferencePage.successModal.getText()).toEqual('The concepts/mappings are added to collection.');
+        expect(collectionReferencePage.successModal.getText()).toEqual('Concepts/mappings are added to collection.');
     });
 });

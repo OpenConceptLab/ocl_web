@@ -720,7 +720,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
                 $scope.owners = result;
             })
             .error(function (error) {
-                window.alert(error);
+                console.log(error);
             })
     };
 
@@ -737,7 +737,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
                 $scope.resourceContainers = result;
             })
             .error(function (error) {
-                window.alert(error);
+                console.log(error);
             });
     };
 
@@ -750,7 +750,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
                 $scope.resourceContainerVersions = result;
             })
             .error(function (error) {
-                window.alert(error);
+                console.log(error);
             });
     };
 
@@ -772,7 +772,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
                 $scope.concepts = result;
             })
             .error(function (error) {
-                window.alert(error);
+                console.log(error);
             })
             .finally(function () {
                 $scope.loading = false;
@@ -801,7 +801,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
                 $scope.mappings = result;
             })
             .error(function (error) {
-                window.alert(error);
+                console.log(error);
             })
             .finally(function () {
                 $scope.loading = false;
