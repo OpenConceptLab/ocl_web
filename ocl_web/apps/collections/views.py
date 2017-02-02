@@ -631,33 +631,37 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
     def get_reference_type_in_expression(self, expression):
         return expression.split('/')[5]
 
+    def get_source_in_expression(self, expression):
+        return expression.split('/')[4]
+
     def get_mnemonic_in_expression(self, expression):
         return expression.split('/')[6]
 
     def get_version_information_in_expression(self, expression):
         return expression.split('/')[7]
 
-    def added_without_version_information_warning_message_by_reference_type(self, reference_type, mnemonic, version_number):
+    def added_without_version_information_warning_message_by_reference_type(self, reference_type, source, mnemonic, version_number):
         if reference_type == 'concepts':
-            return ENTERED_WITHOUT_VERSION_NUMBER_FOR_CONCEPT.format(mnemonic, version_number)
+            return ENTERED_WITHOUT_VERSION_NUMBER_FOR_CONCEPT.format(source, mnemonic, version_number)
         else:
-            return ENTERED_WITHOUT_VERSION_NUMBER_FOR_MAPPING.format(mnemonic, version_number)
+            return ENTERED_WITHOUT_VERSION_NUMBER_FOR_MAPPING.format(source, mnemonic, version_number)
 
-    def added_with_version_information_success_message_by_reference_type(self, reference_type, mnemonic, version_number):
+    def added_with_version_information_success_message_by_reference_type(self, reference_type, source, mnemonic, version_number):
         if reference_type == 'concepts':
-            return ENTERED_WITH_VERSION_NUMBER_FOR_CONCEPT.format(mnemonic, version_number)
+            return ENTERED_WITH_VERSION_NUMBER_FOR_CONCEPT.format(source, mnemonic, version_number)
         else:
-            return ENTERED_WITH_VERSION_NUMBER_FOR_MAPPING.format(mnemonic, version_number)
+            return ENTERED_WITH_VERSION_NUMBER_FOR_MAPPING.format(source, mnemonic, version_number)
 
     def send_message_by_version_information_for_single_reference(self, request, expression_from_form, expression_from_api):
         reference_type = self.get_reference_type_in_expression(expression_from_api)
         mnemonic = self.get_mnemonic_in_expression(expression_from_api)
+        source = self.get_source_in_expression(expression_from_api)
         version_number = self.get_version_information_in_expression(expression_from_api)
 
         if self.version_specified(expression_from_form):
-            request.session['add_reference_success'] = self.added_with_version_information_success_message_by_reference_type(reference_type, mnemonic, version_number)
+            request.session['add_reference_success'] = self.added_with_version_information_success_message_by_reference_type(reference_type, source, mnemonic, version_number)
         else:
-            request.session['add_reference_warning'] = self.added_without_version_information_warning_message_by_reference_type(reference_type, mnemonic, version_number)
+            request.session['add_reference_warning'] = self.added_without_version_information_warning_message_by_reference_type(reference_type, source, mnemonic, version_number)
 
     def send_message_by_source_version_information_for_multiple_reference(self, request, data):
         if self.adding_head_version(data):
