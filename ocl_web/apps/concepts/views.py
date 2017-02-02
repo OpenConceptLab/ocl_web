@@ -133,7 +133,7 @@ class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
         return context
 
 
-class ConceptMappingsView(FormView, LoginRequiredMixin, UserOrOrgMixin,
+class ConceptMappingsView(FormView, UserOrOrgMixin,
                           ConceptReadBaseView):
     """
     View for seeing all mappings for the current concept,
