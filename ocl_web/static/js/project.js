@@ -812,7 +812,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
         return resources.items.filter(function (resource) {
             return resource.isSelected;
         }).map(function (resource) {
-            return resource.url;
+            return resource.version_url;
         });
     };
 
@@ -829,6 +829,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
             concepts: $scope.pageObj.selectAllConcepts ? '*' : _getResourceExpressions($scope.concepts),
             mappings: $scope.pageObj.selectAllMappings ? '*' : _getResourceExpressions($scope.mappings)
         };
+
         $scope.addReferences(payload, false);
     };
 

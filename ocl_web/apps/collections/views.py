@@ -3,6 +3,7 @@ OCL Collection views
 """
 import logging
 import re
+from urllib import urlencode
 
 import requests
 import simplejson as json
