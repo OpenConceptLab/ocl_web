@@ -1454,7 +1454,7 @@ $('form#collection_delete_form .delete-collection').on('click', function (ev) {
     var button = $(ev.toElement);
     alertify.confirm(
         'Delete Collection',
-        'Are you sure you want to permanently delete this collection? This action cannot be undone! This will delete the entire collection and all of its associated versions and references.' +
+        'Are you sure you want to permanently delete this collection? This action cannot be undone! This will delete the entire collection and all of its associated versions and references. ' +
         'Concepts and mappings that are referenced in this collection will not be affected.',
         function () {
             $('form#collection_delete_form').submit();
