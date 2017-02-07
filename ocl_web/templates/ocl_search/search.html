@@ -114,6 +114,7 @@
 		<div class="row row-search-result">
 
 	{% if search_type == 'concepts' %}
+
 			{% if result.owner_type == 'Organization' %}
 				{% url 'concept-home' org=result.owner source=result.source concept=result.id as result_url %}
 			{% else %}
