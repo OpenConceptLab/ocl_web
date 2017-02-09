@@ -173,7 +173,7 @@
                                            ng-model="pageObj.search"
                                            ng-model-options="{debounce: 300}"
                                            ng-change="getResourceContainerConcepts(); getResourceContainerMappings()"
-                                           placeholder="search"/>
+                                           placeholder="Search"/>
                                     <i class="glyphicon glyphicon-search form-control-feedback"></i>
                                 </div>
                             </div>
@@ -181,7 +181,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Action</label>
                                     <br/>
-                                    <button type="button" class="btn btn-primary" ng-click="addMultipleReferences()">Add
+                                    <button id="add-multiple-references-button" type="button" class="btn btn-primary" ng-click="addMultipleReferences()">Add
                                     </button>
                                     <a href="{{ collection_references_url }}"
                                        class="btn btn-default">{% trans "Cancel" %}</a>

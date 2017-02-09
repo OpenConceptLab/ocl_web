@@ -175,7 +175,7 @@
                             {% if_can_change collection %}
                                 {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
                                     <div class="col-xs-1 search-result-col-checkbox">
-                                        <input class="ref-check" type="checkbox" name="reference" id="check_reference"
+                                        <input class="ref-check" type="checkbox" name="reference" id="check-reference-{{ forloop.counter }}"
                                                value="{{ result.expression }}">
                                     </div>
                                 {% endif %}
