@@ -53,18 +53,19 @@
         <!-- /Error modal-->
 
         <div class="row">
-            <div class="form-group">
+            <div>
                 {% field_label 'Short Code' collection.short_code %}
                 {% field_label 'Created By' collection.created_by %}
                 {% field_label 'Created On' collection.created_on|smart_date %}
                 {% field_label 'Owner' collection.owner %}
             </div>
         </div>
+        <br>
         <div class="row">
-            <div class="col-lg-12">
+            <div>
                 <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#addmultiplereftab">Add by Organisation or User</a></li>
-                    <li><a data-toggle="tab" href="#addsinglereftab">Add by URL</a></li>
+                    <li class="active"><a id="add-multiple-tab" data-toggle="tab" href="#addmultiplereftab">Add by Organisation or User</a></li>
+                    <li><a id="add-single-tab" data-toggle="tab" href="#addsinglereftab">Add by URL</a></li>
                 </ul>
             </div>
         </div>
@@ -95,118 +96,100 @@
                 {# row #}
             </div>
             <div id="addmultiplereftab" class="tab-pane fade in active">
-
                 <div class="row">
-                    <div class="col-lg-2" ng-init="getOwners()">
+                    <div ng-init="getOwners()">
                         <br/>
-                        <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
+                        <div class="row" id="collection_add_reference_form">
                             {% csrf_token %}
-                            <div class="form-group">
-                                <label class="radio-inline">
-                                    <input type="radio"
-                                           ng-change="getOwners()"
-                                           ng-model="ownerType"
-                                           value="orgs">
-                                    Organization
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio"
-                                           ng-change="getOwners()"
-                                           ng-model="ownerType"
-                                           value="users">
-                                    User
-                                </label>
-                                <select id="organization" class="form-control"
-                                        ng-options="owner as (ownerType === 'orgs' ? owner.id : owner.username) for owner in owners"
-                                        ng-change="getResourceContainers()"
-                                        ng-model="owner"></select>
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <div style="margin-bottom: 4px">
+                                    <label class="radio-inline">
+                                        <input type="radio"
+                                               ng-change="getOwners()"
+                                               ng-model="ownerType"
+                                               value="orgs">
+                                        Organization
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio"
+                                               ng-change="getOwners()"
+                                               ng-model="ownerType"
+                                               value="users">
+                                        User
+                                    </label>
+                                </div>
 
+                                <div class="form-group">
+                                    <select id="organization" class="form-control"
+                                            ng-options="owner as (ownerType === 'orgs' ? owner.id : owner.username) for owner in owners"
+                                            ng-change="getResourceContainers()"
+                                            ng-model="owner"></select>
+                                </div>
                             </div>
-                        </form>
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <div style="margin-bottom: 4px">
+                                    <label class="radio-inline">
+                                        <input type="radio"
+                                               ng-disabled="!owner"
+                                               ng-change="getResourceContainers()"
+                                               ng-model="resourceContainerType"
+                                               value="sources">
+                                        Source
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio"
+                                               ng-disabled="!owner"
+                                               ng-change="getResourceContainers()"
+                                               ng-model="resourceContainerType"
+                                               value="collections">
+                                        Collection
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <select id="source" class="form-control"
+                                            ng-options="rc as rc.name for rc in resourceContainers"
+                                            ng-change="getResourceContainerVersions()"
+                                            ng-disabled="!owner"
+                                            ng-model="resourceContainer"></select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label for="sourceVersion">
+                                        Version
+                                    </label>
+                                    <select name="sourceVersion" id='sourceVersion' class="form-control"
+                                            ng-options="rcv as formatResourceContainerVersion(rcv) for rcv in resourceContainerVersions"
+                                            ng-disabled="!owner || !resourceContainer"
+                                            ng-change="getResourceContainerConcepts(); getResourceContainerMappings()"
+                                            ng-model="resourceContainerVersion"></select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                <div class="form-group has-feedback">
+                                    <label class="control-label" for="search">Search</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           ng-model="pageObj.search"
+                                           ng-model-options="{debounce: 300}"
+                                           ng-change="getResourceContainerConcepts(); getResourceContainerMappings()"
+                                           placeholder="search"/>
+                                    <i class="glyphicon glyphicon-search form-control-feedback"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Action</label>
+                                    <br/>
+                                    <button type="button" class="btn btn-primary" ng-click="addMultipleReferences()">Add
+                                    </button>
+                                    <a href="{{ collection_references_url }}"
+                                       class="btn btn-default">{% trans "Cancel" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    </div>
-                    {# col-lg-2 #}
-                    <div class="col-lg-2">
-                        <br/>
-                        <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label class="radio-inline">
-                                    <input type="radio"
-                                           ng-disabled="!owner"
-                                           ng-change="getResourceContainers()"
-                                           ng-model="resourceContainerType"
-                                           value="sources">
-                                    Source
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio"
-                                           ng-disabled="!owner"
-                                           ng-change="getResourceContainers()"
-                                           ng-model="resourceContainerType"
-                                           value="collections">
-                                    Collection
-                                </label>
-                                <select id="source" class="form-control"
-                                        ng-options="rc as rc.name for rc in resourceContainers"
-                                        ng-change="getResourceContainerVersions()"
-                                        ng-disabled="!owner"
-                                        ng-model="resourceContainer"></select>
-                            </div>
-                        </form>
-                    </div>
-                    {# col-lg-12 #}
-                    <div class="col-lg-2">
-                        <br/>
-                        <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label>
-                                    Version
-                                </label>
-                                <select name="sourceVersion" id='sourceVersion' class="form-control"
-                                        ng-options="rcv as formatResourceContainerVersion(rcv) for rcv in resourceContainerVersions"
-                                        ng-disabled="!owner || !resourceContainer"
-                                        ng-change="getResourceContainerConcepts(); getResourceContainerMappings()"
-                                        ng-model="resourceContainerVersion"></select>
-                            </div>
-                        </form>
-                    </div>
-                    {# col-lg-12 #}
-                    <div class="col-lg-2">
-                        <br/>
-                        <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
-                            {% csrf_token %}
-
-                            <div class="form-group has-feedback">
-                                <label class="control-label">Search</label>
-                                <input type="text"
-                                       class="form-control"
-                                       ng-model="pageObj.search"
-                                       ng-model-options="{debounce: 300}"
-                                       ng-change="getResourceContainerConcepts(); getResourceContainerMappings()"
-                                       placeholder="search"/>
-                                <i class="glyphicon glyphicon-search form-control-feedback"></i>
-                            </div>
-                        </form>
-                    </div>
-                    {# col-lg-12 #}
-                    <div class="col-lg-2">
-                        <br/>
-                        <form class="form-horizontal" id="collection_add_reference_form" method="post" action=".">
-                            {% csrf_token %}
-
-                            <div class="form-group">
-                                <label class="control-label">Action</label>
-                                <br/>
-                                <button type="button" class="btn btn-primary" ng-click="addMultipleReferences()">Add
-                                </button>
-                                <a href="{{ collection_references_url }}"
-                                   class="btn btn-default">{% trans "Cancel" %}</a>
-                            </div>
-                        </form>
-                    </div>
-                    {# col-lg-12 #}
                 </div>
                 {# row #}
 

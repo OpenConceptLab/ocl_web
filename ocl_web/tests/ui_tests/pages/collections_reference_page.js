@@ -10,7 +10,7 @@ var CollectionsReferencePage = function () {
 
     this.references = element(by.linkText('References'));
     this.addNewReferenceLink = element(by.id('add-reference'));
-    this.singleReferences = element(by.linkText('Add Single Reference'));
+    this.singleReferences = element(by.id('add-single-tab'));
     this.expression = element(by.id('expression'));
     this.addSingleReferenceButton = element(by.id('add-single-reference'));
     this.addMultipleReferenceButton = element(by.css('#collection_add_reference_form > div > button'));

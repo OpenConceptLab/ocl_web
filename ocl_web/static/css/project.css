@@ -122,8 +122,11 @@ form div.input-group {
   padding-top:3px;
 }
 .row-search-result .search-result-col-checkbox {
-  text-align:right;
   padding-top:14px;
+}
+.clear-horizontal-margins {
+  margin-right: 0;
+  margin-left: 0;
 }
 .row-search-result .search-result-col-icon {
   text-align:right;

@@ -1,18 +1,62 @@
-{% load staticfiles i18n %}
-
-<footer>
-    <div class="site-footer">
-        <ul class="site-footer-links pull-right">
-            <!--li><a href="{% url 'plans' %}">Plans</a></li-->
-            <li><a href="http://github.com/OpenConceptLab/oclapi/wiki" target="_blank">API</a></li>
-            <li><a href="{% url 'about' %}">About</a></li>
-            <!--li><a href="{% url 'contact' %}">Contact</a></li-->
-        </ul>
-        <ul class="site-footer-links pull-left" style="padding-left:0;">
-            <li>&copy; 2016 Open Concept Lab</li>
-            <li><a href="{% url 'license' %}">License</a></li>
-            <!--li><a href="{% url 'terms' %}">Terms</a></li-->
-            <!--li><a href="{% url 'privacy' %}">Privacy</a></li-->
-        </ul>
+<div class="btn-group">
+    <div class="btn btn-sm btn-default">
+        <input type="checkbox" id="toggle-select-references" style="margin-top:0" ng-checked="checkboxCount">
     </div>
-</footer>
+    <button type="button" class="btn btn-sm btn-default dropdown-toggle"
+            data-toggle="dropdown">
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+        <li>
+            <a id="select-all-references" class="btn">
+                <div class="text-left">All</div>
+            </a>
+        </li>
+        <li>
+            <a id="unselect-all-references" class="btn">
+                <div class="text-left">None</div>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<script>
+    $(window).on("load", function () {
+        var checkboxClassSelector = '{{ checkbox_css_selector }}';
+        var toggleId = 'toggle-select-references';
+        var toggleIdSelector = '#' + toggleId;
+        var dataTableId = '{{ data_table_rows_id }}';
+
+        function initMutationObserver() {
+            var target = document.getElementById(dataTableId);
+            var observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    if (mutation.removedNodes.length != 0) {
+                        document.getElementById(toggleId).checked = false;
+                    }
+                });
+            });
+            var config = {attributes: true, childList: true, characterData: true, subtree: true};
+
+            observer.observe(target, config);
+        }
+
+        function setCheckboxes(checked) {
+            return function () {
+                $(toggleIdSelector).prop('checked', checked);
+                $(checkboxClassSelector).prop('checked', checked)
+            }
+        }
+
+        function registerEventHandlers() {
+            $(toggleIdSelector).on('click', function () {
+                setCheckboxes($(this).prop('checked'))()
+            });
+            $('#select-all-references').on("click", setCheckboxes(true));
+            $('#unselect-all-references').on("click", setCheckboxes(false));
+        }
+
+        initMutationObserver();
+        registerEventHandlers();
+    });
+</script>
