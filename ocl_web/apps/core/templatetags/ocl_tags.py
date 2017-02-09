@@ -474,3 +474,10 @@ def do_if_can_change(parser, token):
         nodelist_false = NodeList()
 
     return IfCanChangeNode(nodelist_true, nodelist_false, obj_var)
+
+@register.inclusion_tag('includes/select_all_toggle_incl.html')
+def select_all_toggle(checkbox_css_selector, data_table_rows_id):
+    return {
+        'checkbox_css_selector': checkbox_css_selector,
+        'data_table_rows_id': data_table_rows_id
+    }
