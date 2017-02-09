@@ -13,7 +13,7 @@ var CollectionsReferencePage = function () {
     this.singleReferences = element(by.id('add-single-tab'));
     this.expression = element(by.id('expression'));
     this.addSingleReferenceButton = element(by.id('add-single-reference'));
-    this.addMultipleReferenceButton = element(by.css('#collection_add_reference_form > div > button'));
+    this.addMultipleReferenceButton = element(by.id('add-multiple-references-button'));
     this.countOfReferences = element.all(by.css('a[title="Collection Reference"]'));
 
     this.successModal = element(by.css('.alert.alert-success'));
@@ -21,7 +21,7 @@ var CollectionsReferencePage = function () {
     this.duplicateErrorModal = element(by.css('.list-group-item.ng-binding.ng-scope'));
     this.conceptVersionUrl = element(by.css('.concept-version-url .field-label-value'));
 
-    this.checkReference = $('#check_reference');
+    this.checkReference = $('#check-reference-1');
     this.deleteLink = $('.delete-reference');
     this.warning = $('.ajs-warning');
     this.okButton = element(by.buttonText('OK'));
