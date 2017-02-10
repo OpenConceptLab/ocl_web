@@ -120,7 +120,11 @@ describe('OCL Org Page', function () {
 
         element(by.linkText('  ' + data.src_code)).click();
 
-        var fromConceptURL = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
+        orgPage.createNewConcept(data.concept_id + id + id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
+
+        element(by.linkText('  ' + data.src_code)).click();
+
+        var fromConceptURL = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + id + id + '/';
         var toConceptURL = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + id + '/';
 
         orgPage.createNewMapping(
