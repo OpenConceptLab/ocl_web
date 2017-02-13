@@ -169,7 +169,7 @@ describe('Collection Reference Page', function () {
         browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
         collectionReferencePage.deleteReference();
         collectionReferencePage.createNewMultipleReferences(organization, 'HSTP-Indicators', 'nonHead');
-        browser.wait(EC.presenceOf(collectionReferencePage.successModal), timeout);
+        browser.wait(EC.presenceOf(collectionReferencePage.successModal), timeout + 1000);
         expect(collectionReferencePage.successModal.getText()).toEqual('Concepts/mappings are added to collection.');
     });
 });
