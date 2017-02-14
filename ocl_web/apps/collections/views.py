@@ -124,8 +124,10 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
 
         add_reference_warning = self.request.session.get('add_reference_warning', None)
         add_reference_success = self.request.session.get('add_reference_success', None)
-        self.request.session['add_reference_warning'] = None
+        added_mappings = self.request.session.get('added_mappings', None)
         self.request.session['add_reference_success'] = None
+        self.request.session['add_reference_warning'] = None
+        self.request.session['added_mappings'] = None
 
         # Build URL params
         transferrable_search_params = {}
@@ -167,6 +169,7 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
 
         context['warning'] = add_reference_warning
         context['success'] = add_reference_success
+        context['mappings'] = added_mappings
 
         return context
 
@@ -600,6 +603,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
 
         if len(filter(lambda result: result['added'], results)) > 0:
             self.add_version_warning_to_session(data, request, results)
+            self.add_mappings_to_session(request, results)
 
         return HttpResponse(
             json.dumps({
@@ -609,6 +613,13 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
             }),
             content_type="application/json"
         )
+
+    def add_mappings_to_session(self, request, results):
+        mappings = []
+        for result in results:
+            if 'mappings' in result['expression']:
+                mappings.append(result['expression'])
+        request.session['added_mappings'] = mappings
 
     def add_version_warning_to_session(self, data, request, results):
         if self.adding_single_reference(data):
