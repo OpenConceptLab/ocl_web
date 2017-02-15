@@ -172,4 +172,25 @@ describe('Collection Reference Page', function () {
         browser.wait(EC.presenceOf(collectionReferencePage.successModal), timeout + 1000);
         expect(collectionReferencePage.successModal.getText()).toEqual('Concepts/mappings are added to collection.');
     });
+
+    it('add concept single reference with related mappings', function () {
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/');
+        var collectionShortCode = data.short_code + id + id;
+        orgPage.createNewOrgCollection(
+            collectionShortCode,
+            data.col_name + id,
+            data.full_name + id,
+            data.supported_locale,
+            data.custom_validation_schema
+        );
+
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + collectionShortCode);
+        var expectedMessage = 'Related mappings listed below are also added to your collection.';
+        var conceptExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + id + id + '/';
+        collectionReferencePage.createNewSingleReference(conceptExpression);
+        browser.wait(EC.presenceOf(collectionReferencePage.mappingModalMessage), timeout);
+        expect(collectionReferencePage.countOfReferences.count()).toEqual(2);
+        expect(collectionReferencePage.mappingModalMessage.getText()).toContain(expectedMessage);
+        expect(collectionReferencePage.mappingModalList.count()).toEqual(1);
+    });
 });
