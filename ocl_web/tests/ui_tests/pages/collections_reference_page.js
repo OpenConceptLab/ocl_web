@@ -31,6 +31,8 @@ var CollectionsReferencePage = function () {
     this.messageBox = element.all(by.className('ajs-message ajs-warning ajs-visible')).first();
     this.multipleReferencesTab = element(by.css('#addmultiplereftab > div:nth-child(2)'));
     this.conceptToSelect = element(by.css('#concepts > li:nth-child(1) > label > input'));
+    this.mappingModalMessage = element(by.css('#mappingModal > div > div > div.modal-body > div'));
+    this.mappingModalList = element.all(by.css('#mappingModal > div > div > div.modal-body > ul > li'));
 
     this.createNewSingleReference = function (expression) {
         this.references.click();
