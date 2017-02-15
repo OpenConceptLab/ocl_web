@@ -87,6 +87,11 @@
 {% block extrajavascript %}
 {% endblock %}
 <script type="text/javascript">
+    $(document).ready(function () {
+       if(window.location.pathname != '/search/') {
+           localStorage.removeItem('showCheckboxes');
+       }
+    });
     $.getScript('https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js')
     alertify.defaults = {
     // dialogs defaults

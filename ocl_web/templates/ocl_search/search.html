@@ -14,20 +14,39 @@
             {% if request.GET.debug %}    <input type="hidden" name="debug" value="{{ request.GET.debug }}"/>{% endif %}
             <script>
                 $(document).ready(function () {
-                    $('.search-result-col-checkbox').hide();
-                    $('#add-to-collection-cancel').hide();
+                    if(window.localStorage.getItem('showCheckboxes')) {
+                        showCheckboxes()
+                    } else {
+                        hideCheckboxes()
+                    }
+
+                    function showCheckboxes(){
+                        $('#add-to-collection').hide();
+                        $('#add-to-collection-cancel').show();
+                        $('.search-result-col-checkbox').show();
+
+                        window.localStorage.setItem('showCheckboxes', true);
+                    }
+
+                    function hideCheckboxes(){
+                        $('#add-to-collection').show();
+                        $('.search-result-col-checkbox').hide();
+                        $('#add-to-collection-cancel').hide();
+                        $('.search-result-col-checkbox input[type="checkbox"]').prop('checked', false);
+
+                        window.localStorage.removeItem('showCheckboxes')
+                    }
 
                     $('.add-to-collection-toggle').click(function () {
-                        $('#add-to-collection').toggle();
-                        $('#add-to-collection-cancel').toggle();
-                        $('.search-result-col-checkbox').toggle();
-
                         if($('.search-result-col-checkbox').is(':hidden')){
-                            $('.search-result-col-checkbox input[type="checkbox"]').prop('checked', false);
+                            showCheckboxes()
+                        } else {
+                            hideCheckboxes();
                         }
+                    });
 
-
-
+                    $('.global-resource-selector a:not(.active)').click(function () {
+                        window.localStorage.removeItem('showCheckboxes');
                     });
                 });
             </script>
@@ -93,7 +112,7 @@
                 <div class="col-sm-9" id="search-results-container">
                     <!-- Search Bar, Actions, Sorting and Paging -->
                     <div class="row" style="margin-bottom:10px;">
-                        <div class="col-xs-12" style="padding-left:0px">
+                        <div class="col-xs-12" style="padding-left:0">
                             {% if results %}
                                 <div class="pull-right padding-left-8">
                                     <!-- Simple Pager, hidden on xs display -->
@@ -126,9 +145,9 @@
                             {% endif %}
                             {% if results %}
                                 <!-- Add to collection button -->
-                                <div class="pull-right col-sm-2 text-center" style="padding-top:6px; border: 1px solid #eee; margin-left:5px; margin-right:5px">
+                                <div class="pull-right col-sm-2 text-center" style="padding-top:6px; margin-left:5px; margin-right:5px">
                                     {% if search_type == 'concepts' %}
-                                        <a href="#" class="add-to-collection-toggle" title="Add to Collection">
+                                        <a href="" class="add-to-collection-toggle" title="Add to Collection">
                                             <span id="add-to-collection">
                                                 <span class="glyphicon glyphicon-plus"></span>
                                                 <span class="hidden-sm">Add to Collection</span>
@@ -152,9 +171,12 @@
                             </div>
 
                             <div>
-                                <div class="pull-left search-result-col-checkbox">
-                                    {% select_all_toggle checkbox_css_selector=".search-result-checkbox" data_table_rows_id='search-results-container' %}
-                                </div>
+                                {% if search_type == 'concepts' or search_type == 'mappings' %}
+                                    <div class="pull-left search-result-col-checkbox">
+                                        {% select_all_toggle checkbox_css_selector=".search-result-checkbox" data_table_rows_id='search-results-container' %}
+                                    </div>
+                                {% endif %}
+
                                 <!-- Search bar (always show) -->
                                 <div class="input-group input-group-sm padding-left-8" style="width:auto">
                                     <!-- Reproduce resource selector for small displays, hidden on larger displays -->
