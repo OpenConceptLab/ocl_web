@@ -12,44 +12,6 @@
         <form method="get" action="{% url 'search' %}" role="search">
             {% if request.GET.type %}    <input type="hidden" name="type" value="{{ request.GET.type }}"/>{% endif %}
             {% if request.GET.debug %}    <input type="hidden" name="debug" value="{{ request.GET.debug }}"/>{% endif %}
-            <script>
-                $(document).ready(function () {
-                    if(window.localStorage.getItem('showCheckboxes')) {
-                        showCheckboxes()
-                    } else {
-                        hideCheckboxes()
-                    }
-
-                    function showCheckboxes(){
-                        $('#add-to-collection').hide();
-                        $('#add-to-collection-cancel').show();
-                        $('.search-result-col-checkbox').show();
-
-                        window.localStorage.setItem('showCheckboxes', true);
-                    }
-
-                    function hideCheckboxes(){
-                        $('#add-to-collection').show();
-                        $('.search-result-col-checkbox').hide();
-                        $('#add-to-collection-cancel').hide();
-                        $('.search-result-col-checkbox input[type="checkbox"]').prop('checked', false);
-
-                        window.localStorage.removeItem('showCheckboxes')
-                    }
-
-                    $('.add-to-collection-toggle').click(function () {
-                        if($('.search-result-col-checkbox').is(':hidden')){
-                            showCheckboxes()
-                        } else {
-                            hideCheckboxes();
-                        }
-                    });
-
-                    $('.global-resource-selector a:not(.active)').click(function () {
-                        window.localStorage.removeItem('showCheckboxes');
-                    });
-                });
-            </script>
             <!-- Start content row -->
             <div class="row">
 
@@ -145,8 +107,8 @@
                             {% endif %}
                             {% if results %}
                                 <!-- Add to collection button -->
-                                <div class="pull-right col-sm-2 text-center" style="padding-top:6px; margin-left:5px; margin-right:5px">
-                                    {% if search_type == 'concepts' %}
+                                {% if search_type == 'concepts' %}
+                                    <div class="pull-right col-sm-2 col-xs-1 text-center" style="padding-top:6px;margin-left:5px; margin-right:5px">
                                         <a href="" class="add-to-collection-toggle" title="Add to Collection">
                                             <span id="add-to-collection">
                                                 <span class="glyphicon glyphicon-plus"></span>
@@ -154,8 +116,21 @@
                                             </span>
                                             <span id="add-to-collection-cancel">Cancel</span>
                                         </a>
-                                    {% endif %}
-                                </div>
+                                        <div class="btn-group" id="add-to-collection-dropdown" style="margin-top:-6px; margin-left:5px; margin-right:5px">
+                                            <button type="button" class="btn btn-block btn-sm btn-default dropdown-toggle"
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Add to Collection <span class="caret"></span>
+                                            </button>
+                                            <div class="dropdown-menu" style="padding: 10px;">
+                                                <span>You unfortunately do not have any existing collection.</span>
+                                                <span class="text-primary">Please first create a collection in your profile.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                {% else %}
+                                    <div class="pull-right col-sm-2 col-xs-1"></div>
+                                {% endif %}
                             {% endif %}
 
                             <!-- Exact match checkbox (always render, hidden on xs display) -->
@@ -505,4 +480,88 @@
         {% endif %}
 
     </div> <!-- /container-fluid -->
+    <script>
+        $(document).ready(function () {
+            // Events
+
+            var itemSelectionEvents = {
+                readyToSelectItems: 'readyToSelectItems',
+                someItemsSelected: 'someItemsSelected',
+                itemSelectionDisabled: 'itemSelectionDisabled',
+                leavingPage: 'leavingPage'
+            };
+
+            // Handling events
+            var addToCollectionToggle = $('.add-to-collection-toggle');
+            var addToCollectionText = $('#add-to-collection');
+            var cancelText = $('#add-to-collection-cancel');
+            var addToCollectionDropdown = $('#add-to-collection-dropdown');
+            var allCheckBoxes = $('.search-result-col-checkbox');
+
+            $(document).on(itemSelectionEvents.readyToSelectItems, function(){
+
+                addToCollectionToggle.show();
+                addToCollectionText.hide();
+                cancelText.show();
+                addToCollectionDropdown.hide();
+                allCheckBoxes.show();
+
+                window.localStorage.setItem('showCheckboxes', true);
+
+            }).on(itemSelectionEvents.itemSelectionDisabled, function(){
+
+                addToCollectionDropdown.hide();
+                addToCollectionToggle.show();
+                addToCollectionText.show();
+                cancelText.hide();
+
+                allCheckBoxes.hide();
+                allCheckBoxes.find('input[type="checkbox"]').prop('checked', false);
+
+                window.localStorage.removeItem('showCheckboxes')
+
+            }).on(itemSelectionEvents.someItemsSelected, function(){
+
+                addToCollectionToggle.hide();
+                addToCollectionDropdown.show();
+
+            }).on(itemSelectionEvents.leavingPage, function(){
+                window.localStorage.removeItem('showCheckboxes');
+            });
+
+
+            // Event triggers
+
+            if(window.localStorage.getItem('showCheckboxes')) {
+                trigger(itemSelectionEvents.readyToSelectItems)
+            } else {
+                trigger(itemSelectionEvents.itemSelectionDisabled);
+            }
+
+            addToCollectionToggle.click(function () {
+                if(allCheckBoxes.is(':hidden')){
+                    trigger(itemSelectionEvents.readyToSelectItems)
+                } else {
+                    trigger(itemSelectionEvents.itemSelectionDisabled);
+                }
+            });
+
+            $('.global-resource-selector a:not(.active)').click(function () {
+                trigger(itemSelectionEvents.leavingPage)
+            });
+
+            allCheckBoxes.click(function(){
+                var checkedBoxes = allCheckBoxes.find('input[type="checkbox"]:checked');
+                if(checkedBoxes.length < 1) {
+                    trigger(itemSelectionEvents.readyToSelectItems);
+                } else {
+                   trigger(itemSelectionEvents.someItemsSelected)
+                }
+            });
+
+            function trigger(event){
+                $(document).trigger(event)
+            }
+        });
+    </script>
 {% endblock content-no-container %}
