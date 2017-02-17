@@ -601,9 +601,15 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
         results = result.json()
         errors = results if result.status_code == requests.codes.bad else None
 
-        if len(filter(lambda result: result['added'], results)) > 0:
+        added_result_count = len(filter(lambda result: result['added'], results))
+
+        if added_result_count > 0:
             self.add_version_warning_to_session(data, request, results)
-            self.add_mappings_to_session(request, results)
+            if self.adding_single_reference(data):
+                self.add_mappings_to_session(request, results, lambda res: 'mappings' in res['expression'])
+
+        if len(results) == added_result_count and not self.adding_single_reference(data):
+            self.add_mappings_to_session(request, results, lambda res: 'mappings' in res['expression'] and res['expression'] not in data['mappings'])
 
         return HttpResponse(
             json.dumps({
@@ -614,10 +620,10 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
             content_type="application/json"
         )
 
-    def add_mappings_to_session(self, request, results):
+    def add_mappings_to_session(self, request, results, condition):
         mappings = []
         for result in results:
-            if 'mappings' in result['expression']:
+            if condition(result):
                 mappings.append(result['expression'])
         request.session['added_mappings'] = mappings
 
