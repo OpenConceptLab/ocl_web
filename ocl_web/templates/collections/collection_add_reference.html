@@ -26,7 +26,7 @@
                 <div class="alert alert-warning" ng-if="errors">
                     References listed below could not be added.
                 </div>
-                <ul class="list-group" ng-if="errors">
+                <ul id="addReferenceModalErrorList" class="list-group" ng-if="errors">
                     <li class="list-group-item" ng-repeat="(key, error) in errors">
                         <strong>[[ key ]]:</strong> [[ error ]]
                     </li>
@@ -35,7 +35,7 @@
                 <div class="alert alert-success" ng-if="!addingSingle && added && added.length > 0">
                     Following references were added to the collection:
                 </div>
-                <ul class="list-group" ng-if="added && added.length > 0">
+                <ul id="addReferenceModalSuccessList" class="list-group" ng-if="added && added.length > 0">
                     <li class="list-group-item" ng-repeat="addedReference in added">
                         <strong>[[ addedReference.expression ]]</strong>
                     </li>
@@ -45,6 +45,7 @@
                 <button class="btn" type="button" ng-click="closeErrorModal()">Close</button>
                 <a href="{{ collection_references_url }}"
                    ng-if="!addingSingle"
+                   id="closeErrorModalButton"
                    class="btn btn-primary"
                    type="button"
                    ng-click="closeErrorModal()">View all references</a>
@@ -212,7 +213,7 @@
                                     <li class="list-group-item checkbox" ng-repeat="concept in concepts.items">
                                         <label class="overflow-hidden">
                                             <input type="checkbox"
-                                                   ng-model="concept.isSelected">
+                                                   ng-model="concept.isSelected" id="[[ concept.id ]]">
                                         </label>
                                         <a class="resource-label concept small" href="[[ concept.url ]]"
                                            target="_blank">
