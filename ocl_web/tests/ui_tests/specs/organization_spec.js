@@ -120,7 +120,7 @@ describe('OCL Org Page', function () {
 
         element(by.linkText('  ' + data.src_code)).click();
 
-        orgPage.createNewConcept(data.concept_id + id + id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
+        orgPage.createNewConcept(data.concept_id + id + id, data.concept_name + ' second', 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
 
         element(by.linkText('  ' + data.src_code)).click();
 
