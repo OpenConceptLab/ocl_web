@@ -85,12 +85,14 @@ For getting this running on your local machine:
 
 1. ``` cd ocl_web ```
 2. ``` virtualenv env -- Creates a virtual env (env is the name of virtualenv, can give any) ```
+3. ``` touch <OCL_WEB_ROOT>/ocl.db ```
 3. ``` vi ./env/bin/activate -- and add below entries (as export/environment variable) ```.
    OclAPI must be already setup for this, you can see the token at http://0.0.0.0:8000/admin/authtoken/token/ (8000 is the port where oclapi server is running)
    ```sh
    export OCL_API_HOST='<your_api_server_ip>'
    export OCL_API_TOKEN='<root_token_from_api>'
    export OCL_ANON_API_TOKEN='<root_token_from_api>'
+   export DATABASE_URL=sqlite:////<OCL_WEB_ROOR>/ocl_web/src/ocl.db
    
    ```
 4. Activate virtual env: ``` source env/bin/activate```
