@@ -45,6 +45,11 @@
             return function () {
                 $(toggleIdSelector).prop('checked', checked);
                 $(checkboxClassSelector).prop('checked', checked)
+                if (!checked) {
+                    emit('allUnchecked');
+                } else {
+                    emit('someChecked');
+                }
             }
         }
 
@@ -54,6 +59,24 @@
             });
             $('#select-all-references').on("click", setCheckboxes(true));
             $('#unselect-all-references').on("click", setCheckboxes(false));
+            var checkBoxes = $(checkboxClassSelector);
+            checkBoxes.on("click", function () {
+                var isAllUnchecked = true;
+                checkBoxes.each(function () {
+                    if (this.checked) {
+                        isAllUnchecked = false;
+                    }
+                });
+                if (isAllUnchecked) {
+                    emit('allUnchecked');
+                } else {
+                    emit('someChecked');
+                }
+            });
+        }
+
+        function emit(event) {
+            $(document).trigger(event);
         }
 
         initMutationObserver();
