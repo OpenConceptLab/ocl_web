@@ -41,7 +41,7 @@
         <div class="pull-left" style="margin-left:-15px;">
             {% select_all_toggle checkbox_css_selector='.ref-check' data_table_rows_id='data-table-rows' %}
             <div class="btn-group" id="add-to-collection-dropdown" style="margin-left:5px; margin-right:5px">
-                <button type="button" id="add-to-collection-dropdown-button" class="btn btn-block btn-sm btn-default dropdown-toggle disabled"
+                <button type="button" id="add-to-collection-dropdown-button" class="btn btn-block btn-sm btn-default dropdown-toggle transparent disabled"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Add to Collection <span class="caret"></span>
                 </button>
@@ -186,11 +186,11 @@
         $(document).ready(function () {
             var dropdown = $('#add-to-collection-dropdown-button');
             $(document).on('allUnchecked', function () {
-                dropdown.addClass('disabled');
+                dropdown.addClass('transparent disabled');
             });
 
             $(document).on('someChecked', function () {
-                dropdown.removeClass('disabled');
+                dropdown.removeClass('transparent disabled');
             });
         });
     </script>

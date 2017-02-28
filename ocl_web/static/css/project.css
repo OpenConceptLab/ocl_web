@@ -401,7 +401,9 @@ a.resource-label:hover {
   font-size:16pt;
 }
 
-
+.transparent {
+  opacity: 0.2;
+}
 
 /* OTHER */
 
