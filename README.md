@@ -118,5 +118,5 @@ For getting this running on your local machine:
 Copyright (C) 2016 Open Concept Lab. Use of this software is subject
 to the terms of the Mozille Public License v2.0. Open Concept Lab is
 also distributed under the terms the Healthcare Disclaimer
-described at http://www.openconceptlab.com/license/.
+described at http://www.openconceptlab.org/license/.
 ---------------------------------------------------------------------
