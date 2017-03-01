@@ -186,7 +186,7 @@ describe('Collection Reference Page', function () {
         );
 
         browser.get(baseUrl + 'orgs/' + organization + '/collections/' + collectionShortCode);
-        var expectedMessage = 'Related mappings listed below are also added to your collection.';
+        var expectedMessage = 'Related mappings stored in the same source are also added to collection.';
         var conceptExpression = '/orgs/' + organization + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + id + id + '/';
         collectionReferencePage.createNewSingleReference(conceptExpression);
         browser.wait(EC.presenceOf(collectionReferencePage.mappingModalMessage), timeout);
@@ -204,7 +204,7 @@ describe('Collection Reference Page', function () {
         collectionReferencePage.deleteAllReferences();
 
         browser.get(baseUrl + 'orgs/' + organization + '/collections/' + collectionShortCode);
-        const expectedMessage = 'Related mappings listed below are also added to your collection.';
+        const expectedMessage = 'Related mappings stored in the same source are also added to collection.';
         collectionReferencePage.createNewMultipleReferencesWithConcepts(organization, sourceId, 'HEAD', [conceptId]);
 
         browser.wait(EC.presenceOf(collectionReferencePage.mappingModalMessage), timeout);
@@ -222,7 +222,7 @@ describe('Collection Reference Page', function () {
         collectionReferencePage.deleteAllReferences();
 
         browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + collectionShortCode);
-        const expectedMessage = 'Related mappings listed below are also added to your collection.';
+        const expectedMessage = 'Related mappings stored in the same source are also added to collection.';
         collectionReferencePage.createNewMultipleReferencesWithConceptAndMapping(organization, sourceId, 'HEAD', conceptId);
 
         browser.wait(EC.presenceOf(collectionReferencePage.checkReference), timeout);
