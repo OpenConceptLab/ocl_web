@@ -66,6 +66,9 @@ class GlobalSearchView(TemplateView):
         context['search_query'] = original_search_string
         context['hide_nav_search'] = True
 
+        context['user_collections'] = self.get_user_collections(api, self.request.user.username)
+        context['org_collections'] = self.get_user_collections_from_organizations(api, self.request.user.username)
+
         # Build URL params for navigating to other resources
         other_resource_search_params = {}
         for param in OclSearch.TRANSFERRABLE_SEARCH_PARAMS:
@@ -105,3 +108,20 @@ class GlobalSearchView(TemplateView):
         context['search_filters_debug'] = str(searcher.search_filter_list)
 
         return context
+
+    def get_user_collections(self, api_client, username):
+        user_collection_search_results = \
+            api_client.get('users', username, 'collections', params={'limit': 0}).json()['results']
+
+        # this is because it is tricky to conditionally render things based on list size in the template
+        return user_collection_search_results if len(user_collection_search_results) > 0 else None
+
+    def get_user_collections_from_organizations(self, api_client, username):
+        user_orgs = api_client.get('users', username, 'orgs', params={'limit': 0}).json()
+        all_org_collections = []
+
+        for org in user_orgs:
+            org_collections = api_client.get('orgs', org['id'], 'collections', params={'limit': 0}).json()['results']
+            all_org_collections += org_collections
+
+        return all_org_collections if len(all_org_collections) > 0 else None
