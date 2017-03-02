@@ -478,10 +478,7 @@ a.resource-label:hover {
 }
 
 .collection-radio {
-  padding-top:10px;
-  padding-bottom:10px;
-  padding-right: 10px;
-  padding-left: 10px;
+  padding: 10px;
   margin-bottom: 0;
 }
 
@@ -490,7 +487,7 @@ a.resource-label:hover {
   height:45px
 }
 
-.add-to-collection-save.disabled {
+.add-to-collection-save.disabled, .add-to-collection-save.disabled:hover {
   background-color: #bbb;
   border-color: #bbb;
 }

@@ -107,7 +107,8 @@
                             {% endif %}
                             {% if results %}
                                 <!-- Add to collection button -->
-                                {% if search_type == 'concepts' %}
+                                {% if request.user.is_authenticated and search_type == 'concepts' %}
+
                                     <div class="pull-right col-sm-2 col-xs-1 text-center" style="padding-top:6px;margin-left:5px; margin-right:5px">
                                         <a href="" class="add-to-collection-toggle" title="Add to Collection">
                                             <span id="add-to-collection">
