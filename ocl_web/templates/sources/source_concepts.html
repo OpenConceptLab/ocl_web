@@ -37,7 +37,17 @@
 
 		<!-- Search Bar, Actions, Sorting and Paging -->
 		<div class="row" style="margin-bottom:10px;margin-top:10px;">
-			<div class="col-xs-12">
+			<div class="col-md-12">
+				<div class="pull-left" style="margin-left:-15px;">
+					{% select_all_toggle checkbox_css_selector='.ref-check' data_table_rows_id='data-table-rows' %}
+					<div class="btn-group" id="add-to-collection-dropdown" style="margin-left:5px; margin-right:5px">
+						<button type="button" id="add-to-collection-dropdown-button" class="btn btn-block btn-sm btn-default dropdown-toggle transparent disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to Collection <span class="caret"></span></button>
+						<div class="dropdown-menu" style="padding: 10px;">
+							<span>You unfortunately do not have any existing collection.</span>
+							<span class="text-primary">Please first create a collection in your profile.</span>
+						</div>
+					</div>
+				</div>
 
 				{% if results %}
 				<!-- Simple Pager -->
@@ -70,8 +80,8 @@
 				{% endif %}
 
 				{% if results %}
-				<!-- Search results download -->
-				{% include "download_csv.html" with type='repository_search' %}
+					<!-- Search results download -->
+					{% include "download_csv.html" with type='repository_search' %}
 				{% endif %}
 
 				<!-- Exact match checkbox (always render, but hide on xs display) -->
@@ -136,6 +146,7 @@
 
 
 <!-- Search results -->
+		<div id="data-table-rows">
 {% for result in results %}
 		<div class="row row-search-result">
 			{% if source.owner_type == 'Organization' %}
@@ -151,9 +162,16 @@
 					{% url 'concept-home-versioned' user=result.owner source=result.source concept=result.id concept_version=result.version as result_url %}
 				{% endif %}
 			{% endif %}
+
+			<div class="pull-left search-result-col-checkbox" style="padding-left:10px">
+				<span>
+					<input class="ref-check" type="checkbox" name="reference" id="select-concept-{{ forloop.counter }}" />
+				</span>
+			</div>
+
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-tag search-result-icon"></span></div>
-			<div class="col-xs-12 col-sm-11 search-result-col-content">
+			<div class="col-xs-11 col-sm-10 search-result-col-content">
 				<div class="label-container">
 					{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
 				</div>
@@ -166,6 +184,7 @@
 {% empty %}
 		<h3><small>{% trans 'No concepts found' %}</small></h3>
 {% endfor %}
+		</div>
 
 		<!-- Pagination -->
 		{% if results %}
@@ -180,6 +199,17 @@
 </form>
 </div>
 </div>
+	<script>
+        $(document).ready(function () {
+            var dropdown = $('#add-to-collection-dropdown-button');
+            $(document).on('allUnchecked', function () {
+                dropdown.addClass('transparent disabled');
+            });
+            $(document).on('someChecked', function () {
+                dropdown.removeClass('transparent disabled');
+            });
+        });
+    </script>
 {% endblock tab-content %}
 
 
