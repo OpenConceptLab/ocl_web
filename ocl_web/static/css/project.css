@@ -450,3 +450,47 @@ a.resource-label:hover {
 .padding-left-8 {
   padding-left: 8px;
 }
+
+/* ADD RESOURCES TO COLLECTION */
+
+.add-to-collection-dropdown-button {
+  margin-top:-6px;
+  margin-left:5px;
+  margin-right:5px
+}
+
+.collection-list-dropdown {
+  padding:0;
+  width:270px
+}
+
+.no-collections-info-box {
+  padding:10px;
+}
+
+.collection-list-container {
+  max-height:500px;
+  overflow-y:scroll;
+}
+
+.org-collection-radio.collection-radio {
+  background-color: #eee;
+}
+
+.collection-radio {
+  padding-top:10px;
+  padding-bottom:10px;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-bottom: 0;
+}
+
+.add-to-collection-save {
+  border-radius:0;
+  height:45px
+}
+
+.add-to-collection-save.disabled {
+  background-color: #bbb;
+  border-color: #bbb;
+}
