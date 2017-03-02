@@ -174,14 +174,14 @@
                         <div class="clear-horizontal-margins row row-search-result references">
                             {% if_can_change collection %}
                                 {% if  not kwargs or not "collection_version" in kwargs  or kwargs.collection_version == 'HEAD' %}
-                                    <div class="col-xs-1 search-result-col-checkbox">
+                                    <div style="padding: 7px 11px;" class="pull-left search-result-col-checkbox">
                                         <input class="ref-check" type="checkbox" name="reference" id="check-reference-{{ forloop.counter }}"
                                                value="{{ result.expression }}">
                                     </div>
                                 {% endif %}
                             {% endif_can_change collection %}
-                            <div class="col-xs-11 search-result-col-content">
-                                <div class="small text-muted" style="padding-top:12px;">
+                            <div style="padding: 11px 45px;" class="pull-left col-xs-11 col-sm-10 search-result-col-content">
+                                <div class="small text-muted">
                                     <span class="glyphicon {% if result.reference_type == 'concepts' %}glyphicon-tag{% else %}glyphicon-link{% endif %}"></span>
                                     <a href="{{ result.expression }}"
                                        title="Collection Reference">{{ result.expression }}</a>
