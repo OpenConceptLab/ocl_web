@@ -73,7 +73,7 @@ For getting this running on your local machine:
    * ``` git clone git@github.com:OpenConceptLab/ocl_web.git ```
 2. python
 3. npm
-4. Postgres 9.5
+4. Postgres 9.5 (not actually required as a developer if you use sqlite instead)
   * OSX ``` pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start ```
   * Ubuntu ``` service start postgresql ```
 5. pip
