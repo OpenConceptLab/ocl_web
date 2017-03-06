@@ -443,7 +443,7 @@ a.resource-label:hover {
   background-color: #777;
 }
 
-.modal-dialog.expanded {
+#failed-validations .modal-dialog.expanded {
   width: 95%;
 }
 
@@ -484,10 +484,13 @@ a.resource-label:hover {
 
 .add-to-collection-save {
   border-radius:0;
-  height:45px
+  height:45px;
+  background-image: none;
+  border: none;
+
 }
 
-.add-to-collection-save.disabled, .add-to-collection-save.disabled:hover {
+.add-to-collection-save:disabled, .add-to-collection-save:disabled:hover {
   background-color: #bbb;
   border-color: #bbb;
 }

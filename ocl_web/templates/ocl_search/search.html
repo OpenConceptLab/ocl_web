@@ -153,7 +153,7 @@
                                                         {% endif %}
 
                                                     </div>
-                                                    <button type="button" class="add-to-collection-save btn btn-primary btn-block disabled">Save</button>
+                                                    <button type="button" class="add-to-collection-save btn btn-primary btn-block" disabled="disabled">Save</button>
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -511,6 +511,37 @@
         {% endif %}
 
     </div> <!-- /container-fluid -->
+    <div class="modal fade" id="add-to-collection-confirm" role="dialog" tabindex="-1">
+        <div class="modal-dialog expanded" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add to Collection</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h4><strong id="number-of-selected-resources">-</strong> selected <span id="references-label">references</span> will be added to collection <strong id="collection-name">-</strong></h4>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="checkbox">
+                        <label for="cascade-mappings">
+                            <input type="checkbox" id="cascade-mappings" checked="checked">
+                            Related mappings stored in the same source will be added to your collection
+                        </label>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Close" id="close-modal"/>
+                    <input type="button" class="btn btn-primary" data-dismiss="modal" value="Confirm" id="close-modal"/>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         $(document).ready(function () {
             // Events
@@ -594,9 +625,25 @@
                 $(document).trigger(event)
             }
 
-            $('.collection-list-dropdown').click(function(e){
+            $('.collection-list-dropdown div.radio, .collection-list-dropdown input').click(function(e){
                 e.stopPropagation();
-            })
+
+                if($('input[name="collections"]:checked').val()){
+                    $('.add-to-collection-save').attr('disabled', false);
+                }
+            });
+
+            $('.add-to-collection-save').click(function(){
+                var selectedResources = $('input.search-result-checkbox:checked').length;
+                if(selectedResources < 1) return;
+
+                var selectedCollectionName = $('input[name="collections"]:checked').val();
+
+                $('#add-to-collection-confirm').modal('show');
+                $('#number-of-selected-resources').text(selectedResources);
+                $('#references-label').text(selectedResources == 1 ? 'reference': 'references');
+                $('#collection-name').text(selectedCollectionName);
+            });
         });
     </script>
 {% endblock content-no-container %}
