@@ -66,7 +66,7 @@ class GlobalSearchView(TemplateView):
         context['search_query'] = original_search_string
         context['hide_nav_search'] = True
 
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated() and searcher.search_type == 'concepts':
             context['user_collections'] = self.get_user_collections(api, self.request.user.username)
             context['org_collections'] = self.get_user_collections_from_organizations(api, self.request.user.username)
 
