@@ -79,16 +79,13 @@
                             <!-- Add to collection button -->
                                 {% if request.user.is_authenticated and search_type == 'concepts' %}
                                     <div class="pull-left">
-                                        {% if search_type == 'concepts' or search_type == 'mappings' %}
-                                            {% select_all_toggle checkbox_css_selector='.ref-check' data_table_rows_id='data-table-rows' %}
-                                        {% endif %}
+                                        {% select_all_toggle checkbox_css_selector='.ref-check' data_table_rows_id='data-table-rows' %}
                                         <div class="btn-group" id="add-to-collection-dropdown" style="margin-left:5px; margin-right:5px">
                                             <button type="button" id="add-to-collection-dropdown-button" class="btn btn-block btn-sm btn-default dropdown-toggle transparent disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to Collection <span class="caret"></span></button>
                                             <div class="collection-list-dropdown dropdown-menu">
                                                 {% if not user_collections and not org_collections %}
                                                     <div class="no-collections-info-box">
-                                                        <span>You unfortunately do not have any existing collection.</span>
-                                                        <span class="text-primary">Please first create a collection in your profile.</span>
+                                                        <span>You do not have any existing collections. Create a collection in your profile.</span>
                                                     </div>
                                                 {% else %}
                                                 <div class="collection-list-container">
