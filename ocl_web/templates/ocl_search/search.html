@@ -76,6 +76,54 @@
                     <div class="row" style="margin-bottom:10px;">
                         <div class="col-xs-12" style="padding-left:0">
                             {% if results %}
+                            <!-- Add to collection button -->
+                                {% if request.user.is_authenticated and search_type == 'concepts' %}
+                                    <div class="pull-left">
+                                        {% if search_type == 'concepts' or search_type == 'mappings' %}
+                                            {% select_all_toggle checkbox_css_selector='.ref-check' data_table_rows_id='data-table-rows' %}
+                                        {% endif %}
+                                        <div class="btn-group" id="add-to-collection-dropdown" style="margin-left:5px; margin-right:5px">
+                                            <button type="button" id="add-to-collection-dropdown-button" class="btn btn-block btn-sm btn-default dropdown-toggle transparent disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to Collection <span class="caret"></span></button>
+                                            <div class="collection-list-dropdown dropdown-menu">
+                                                {% if not user_collections and not org_collections %}
+                                                    <div class="no-collections-info-box">
+                                                        <span>You unfortunately do not have any existing collection.</span>
+                                                        <span class="text-primary">Please first create a collection in your profile.</span>
+                                                    </div>
+                                                {% else %}
+                                                <div class="collection-list-container">
+                                                    {% if user_collections %}
+                                                        {% for collection in user_collections %}
+                                                        <div class="collection-radio radio">
+                                                            <label>
+                                                                <input type="radio" name="collections" id="user-collection-{{ forloop.counter }}" value="{{ collection.id }}" >
+                                                                {{ collection.owner }} / <strong>{{ collection.id }}</strong>
+                                                            </label>
+                                                        </div>
+                                                        {% endfor %}
+                                                    {% endif %}
+
+                                                    {% if org_collections %}
+                                                        {% for collection in org_collections %}
+                                                        <div class="org-collection-radio collection-radio radio">
+                                                            <label>
+                                                                <input type="radio" name="collections" id="user-collection-{{ forloop.counter }}" value="{{ collection.id }}" >
+                                                                {{ collection.owner }} / <strong>{{ collection.id }}</strong>
+                                                            </label>
+                                                        </div>
+                                                        {% endfor %}
+                                                    {% endif %}
+
+                                                </div>
+                                                <button type="button" class="add-to-collection-save btn btn-primary btn-block" disabled="disabled">Save</button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if results %}
                                 <div class="pull-right padding-left-8">
                                     <!-- Simple Pager, hidden on xs display -->
                                     {% simple_pager page search_type_name url=pagination_url pager_size="small" hide_xs=1 %}
@@ -105,64 +153,6 @@
                                     {% include 'download_csv.html' with type='global_search' %}
                                 </div>
                             {% endif %}
-                            {% if results %}
-                                <!-- Add to collection button -->
-                                {% if request.user.is_authenticated and search_type == 'concepts' %}
-
-                                    <div class="pull-right col-sm-2 col-xs-1 text-center" style="padding-top:6px;margin-left:5px; margin-right:5px">
-                                        <a href="" class="add-to-collection-toggle" title="Add to Collection">
-                                            <span id="add-to-collection">
-                                                <span class="glyphicon glyphicon-plus"></span>
-                                                <span class="hidden-sm">Add to Collection</span>
-                                            </span>
-                                            <span id="add-to-collection-cancel">Cancel</span>
-                                        </a>
-                                        <div class="btn-group add-to-collection-dropdown-button" id="add-to-collection-dropdown">
-                                            <button type="button" class="btn btn-block btn-sm btn-default dropdown-toggle"
-                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Add to Collection <span class="caret"></span>
-                                            </button>
-                                            <div class="collection-list-dropdown dropdown-menu">
-                                                {% if not user_collections and not org_collections %}
-                                                    <div class="no-collections-info-box">
-                                                        <span>You unfortunately do not have any existing collection.</span>
-                                                        <span class="text-primary">Please first create a collection in your profile.</span>
-                                                    </div>
-                                                {% else %}
-                                                    <div class="collection-list-container">
-                                                        {% if user_collections %}
-                                                            {% for collection in user_collections %}
-                                                                <div class="collection-radio radio">
-                                                                  <label>
-                                                                     <input type="radio" name="collections" id="user-collection-{{ forloop.counter }}" value="{{ collection.id }}" >
-                                                                     {{ collection.owner }} / <strong>{{ collection.id }}</strong>
-                                                                  </label>
-                                                                </div>
-                                                            {% endfor %}
-                                                        {% endif %}
-
-                                                        {% if org_collections %}
-                                                            {% for collection in org_collections %}
-                                                                <div class="org-collection-radio collection-radio radio">
-                                                                  <label>
-                                                                     <input type="radio" name="collections" id="user-collection-{{ forloop.counter }}" value="{{ collection.id }}" >
-                                                                     {{ collection.owner }} / <strong>{{ collection.id }}</strong>
-                                                                  </label>
-                                                                </div>
-                                                            {% endfor %}
-                                                        {% endif %}
-
-                                                    </div>
-                                                    <button type="button" class="add-to-collection-save btn btn-primary btn-block" disabled="disabled">Save</button>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                {% else %}
-                                    <div class="pull-right col-sm-2 col-xs-1"></div>
-                                {% endif %}
-                            {% endif %}
 
                             <!-- Exact match checkbox (always render, hidden on xs display) -->
                             <div class="hidden-xs padding-left-8 pull-right">
@@ -177,12 +167,6 @@
                             </div>
 
                             <div>
-                                {% if search_type == 'concepts' or search_type == 'mappings' %}
-                                    <div class="pull-left search-result-col-checkbox">
-                                        {% select_all_toggle checkbox_css_selector=".search-result-checkbox" data_table_rows_id='search-results-container' %}
-                                    </div>
-                                {% endif %}
-
                                 <!-- Search bar (always show) -->
                                 <div class="input-group input-group-sm padding-left-8" style="width:auto">
                                     <!-- Reproduce resource selector for small displays, hidden on larger displays -->
@@ -233,6 +217,7 @@
 
 
                     <!-- Search Results -->
+                    <div id="data-table-rows">
                     {% for result in results %}
                         <div class="row row-search-result">
 
@@ -246,7 +231,7 @@
 
                                 <div class="pull-left search-result-col-checkbox" style="padding-left:10px">
                                     <span>
-                                        <input type="checkbox" class="search-result-checkbox"
+                                        <input class="ref-check" type="checkbox" name="reference"
                                                id="select-concept-{{ forloop.counter }}"
                                                title="Select search result"/>
                                     </span>
@@ -478,6 +463,7 @@
                         </div>
 
                     {% endfor %}
+                    </div>
 
                     <!-- Pagination -->
                     {% if results %}
@@ -544,86 +530,13 @@
     </div>
     <script>
         $(document).ready(function () {
-            // Events
-
-            var itemSelectionEvents = {
-                readyToSelectItems: 'readyToSelectItems',
-                someItemsSelected: 'someItemsSelected',
-                itemSelectionDisabled: 'itemSelectionDisabled',
-                leavingPage: 'leavingPage'
-            };
-
-            // Handling events
-            var addToCollectionToggle = $('.add-to-collection-toggle');
-            var addToCollectionText = $('#add-to-collection');
-            var cancelText = $('#add-to-collection-cancel');
-            var addToCollectionDropdown = $('#add-to-collection-dropdown');
-            var allCheckBoxes = $('.search-result-col-checkbox');
-
-            $(document).on(itemSelectionEvents.readyToSelectItems, function(){
-
-                addToCollectionToggle.show();
-                addToCollectionText.hide();
-                cancelText.show();
-                addToCollectionDropdown.hide();
-                allCheckBoxes.show();
-
-                window.localStorage.setItem('showCheckboxes', true);
-
-            }).on(itemSelectionEvents.itemSelectionDisabled, function(){
-
-                addToCollectionDropdown.hide();
-                addToCollectionToggle.show();
-                addToCollectionText.show();
-                cancelText.hide();
-
-                allCheckBoxes.hide();
-                allCheckBoxes.find('input[type="checkbox"]').prop('checked', false);
-
-                window.localStorage.removeItem('showCheckboxes')
-
-            }).on(itemSelectionEvents.someItemsSelected, function(){
-
-                addToCollectionToggle.hide();
-                addToCollectionDropdown.show();
-
-            }).on(itemSelectionEvents.leavingPage, function(){
-                window.localStorage.removeItem('showCheckboxes');
+            var dropdown = $('#add-to-collection-dropdown-button');
+            $(document).on('allUnchecked', function () {
+                dropdown.addClass('transparent disabled');
             });
-
-
-            // Event triggers
-
-            if(window.localStorage.getItem('showCheckboxes')) {
-                trigger(itemSelectionEvents.readyToSelectItems)
-            } else {
-                trigger(itemSelectionEvents.itemSelectionDisabled);
-            }
-
-            addToCollectionToggle.click(function () {
-                if(allCheckBoxes.is(':hidden')){
-                    trigger(itemSelectionEvents.readyToSelectItems)
-                } else {
-                    trigger(itemSelectionEvents.itemSelectionDisabled);
-                }
+            $(document).on('someChecked', function () {
+                dropdown.removeClass('transparent disabled');
             });
-
-            $('.global-resource-selector a:not(.active)').click(function () {
-                trigger(itemSelectionEvents.leavingPage)
-            });
-
-            allCheckBoxes.click(function(){
-                var checkedBoxes = allCheckBoxes.find('input[type="checkbox"]:checked');
-                if(checkedBoxes.length < 1) {
-                    trigger(itemSelectionEvents.readyToSelectItems);
-                } else {
-                   trigger(itemSelectionEvents.someItemsSelected)
-                }
-            });
-
-            function trigger(event){
-                $(document).trigger(event)
-            }
 
             $('.collection-list-dropdown div.radio, .collection-list-dropdown input').click(function(e){
                 e.stopPropagation();
