@@ -79,7 +79,7 @@
                             <!-- Add to collection button -->
                                 {% if request.user.is_authenticated and search_type == 'concepts' %}
                                     <div class="pull-left">
-                                        {% select_all_toggle checkbox_css_selector='.ref-check' data_table_rows_id='data-table-rows' %}
+                                        {% select_all_toggle checkbox_css_selector='.search-result-checkbox' data_table_rows_id='data-table-rows' %}
                                         <div class="btn-group" id="add-to-collection-dropdown" style="margin-left:5px; margin-right:5px">
                                             <button type="button" id="add-to-collection-dropdown-button" class="btn btn-block btn-sm btn-default dropdown-toggle transparent disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to Collection <span class="caret"></span></button>
                                             <div class="collection-list-dropdown dropdown-menu">
@@ -93,7 +93,7 @@
                                                         {% for collection in user_collections %}
                                                         <div class="collection-radio radio">
                                                             <label>
-                                                                <input type="radio" name="collections" id="user-collection-{{ forloop.counter }}" value="{{ collection.id }}" >
+                                                                <input type="radio" name="collections" id="user-collection-{{ forloop.counter }}" value="{{ collection.owner }} / {{ collection.id }}" >
                                                                 {{ collection.owner }} / <strong>{{ collection.id }}</strong>
                                                             </label>
                                                         </div>
@@ -104,7 +104,7 @@
                                                         {% for collection in org_collections %}
                                                         <div class="org-collection-radio collection-radio radio">
                                                             <label>
-                                                                <input type="radio" name="collections" id="user-collection-{{ forloop.counter }}" value="{{ collection.id }}" >
+                                                                <input type="radio" name="collections" id="user-collection-{{ forloop.counter }}" value="{{ collection.owner }} / {{ collection.id }}" >
                                                                 {{ collection.owner }} / <strong>{{ collection.id }}</strong>
                                                             </label>
                                                         </div>
@@ -228,7 +228,7 @@
 
                                 <div class="pull-left search-result-col-checkbox" style="padding-left:10px">
                                     <span>
-                                        <input class="ref-check" type="checkbox" name="reference"
+                                        <input class="search-result-checkbox" type="checkbox" name="reference"
                                                id="select-concept-{{ forloop.counter }}"
                                                title="Select search result"/>
                                     </span>
@@ -504,17 +504,18 @@
                 <div class="modal-body">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <h4><strong id="number-of-selected-resources">-</strong> selected <span id="references-label">references</span> will be added to collection <strong id="collection-name">-</strong></h4>
+                            <h5><strong id="number-of-selected-resources">-</strong> selected <span id="references-label">references</span> will be added to collection <strong id="collection-name">-</strong></h5>
                         </div>
                     </div>
 
                     <hr>
 
-                    <div class="checkbox">
-                        <label for="cascade-mappings">
+                    <div class="information-tooltip" style="margin: 10px 0;">
+                        <label class="checkbox-inline" for="cascade-mappings">
                             <input type="checkbox" id="cascade-mappings" checked="checked">
-                            Related mappings stored in the same source will be added to your collection
+                            Automatically add associated mappings
                         </label>
+                        <button type="button" class="btn btn-question btn-circle" data-toggle="tooltip" data-placement="right" title="A concept's associated mappings are mappings that originate from the specified concept (the 'from concept') and that are stored in the same source"><strong>?</strong></button>
                     </div>
 
                 </div>
@@ -527,6 +528,8 @@
     </div>
     <script>
         $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+
             var dropdown = $('#add-to-collection-dropdown-button');
             $(document).on('allUnchecked', function () {
                 dropdown.addClass('transparent disabled');

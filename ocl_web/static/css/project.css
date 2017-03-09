@@ -494,3 +494,71 @@ a.resource-label:hover {
   background-color: #bbb;
   border-color: #bbb;
 }
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 15px;
+}
+
+.btn-circle.btn-lg {
+  width: 50px;
+  height: 50px;
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.33;
+  border-radius: 25px;
+}
+
+.btn-circle.btn-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 16px;
+  font-size: 24px;
+  line-height: 1.33;
+  border-radius: 35px;
+}
+
+.btn-question {
+  color: #000;
+  background-color: #F8F0BF;
+  border-color: #F8F0BF;
+}
+.btn-question:focus,
+.btn-question.focus {
+  color: #000;
+  background-color: #F8F0BF;
+  border-color: #F8F0BF;
+}
+.btn-question:hover {
+  color: #000;
+  background-color: #F8F0BF;
+  border-color: #F8F0BF;
+}
+
+.btn-question.btn-circle {
+  width: 20px;
+  height: 20px;
+  padding: 0px;
+}
+
+.information-tooltip > .tooltip > .tooltip-inner {
+  background-color: #F8F0BF;
+  color: #000;
+  min-width: 250px;
+  text-align: left;
+}
+
+.information-tooltip > .tooltip.right > .tooltip-arrow {
+  border-right: 5px solid #F8F0BF;
+}
+
+@media (max-width: 425px) {
+  .information-tooltip > .checkbox-inline {
+    width: 100%;
+  }
+}
