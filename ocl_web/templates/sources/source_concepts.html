@@ -38,6 +38,8 @@
 		<!-- Search Bar, Actions, Sorting and Paging -->
 		<div class="row" style="margin-bottom:10px;margin-top:10px;">
 			<div class="col-md-12">
+				{% if request.user.is_authenticated %}
+				<!-- Add to collection button -->
 				<div class="pull-left" style="margin-left:-15px;">
 					{% select_all_toggle checkbox_css_selector='.ref-check' data_table_rows_id='data-table-rows' %}
 					<div class="btn-group" id="add-to-collection-dropdown" style="margin-left:5px; margin-right:5px">
@@ -47,6 +49,7 @@
 						</div>
 					</div>
 				</div>
+				{% endif %}
 
 				{% if results %}
 				<!-- Simple Pager -->
