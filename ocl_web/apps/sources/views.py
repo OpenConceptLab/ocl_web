@@ -71,7 +71,7 @@ class SourceReadBaseView(TemplateView):
 
         return searcher
 
-    def get_source_concepts(self, owner_type, owner_id, source_id,
+    def get_source_concepts(self, api_client, owner_type, owner_id, source_id,
                             source_version_id=None, search_params=None):
         """
         Load source concepts from the API and return OclSearch instance with results.
@@ -81,13 +81,13 @@ class SourceReadBaseView(TemplateView):
         searcher = OclSearch(search_type=OclConstants.RESOURCE_NAME_CONCEPTS,
                              search_scope=OclConstants.SEARCH_SCOPE_RESTRICTED,
                              params=search_params)
-        api = OclApi(self.request, debug=True, facets=True)
+
         if source_version_id:
-            search_response = api.get(
+            search_response = api_client.get(
                 owner_type, owner_id, 'sources', source_id, source_version_id, 'concepts',
                 params=searcher.search_params)
         else:
-            search_response = api.get(
+            search_response = api_client.get(
                 owner_type, owner_id, 'sources', source_id, 'concepts',
                 params=searcher.search_params)
         if search_response.status_code == 404:
@@ -249,6 +249,7 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         # Setup the context and args
         context = super(SourceConceptsView, self).get_context_data(*args, **kwargs)
         self.get_args()
+        api = OclApi(self.request, debug=True, facets=True)
 
         # Load the source details
         source = self.get_source_details(
@@ -259,7 +260,7 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         original_search_string = self.request.GET.get('q', '')
         # TODO: SearchStringFormatter.add_wildcard(self.request)
         searcher = self.get_source_concepts(
-            self.owner_type, self.owner_id, self.source_id,
+            api, self.owner_type, self.owner_id, self.source_id,
             source_version_id=self.source_version_id,
             search_params=self.request.GET)
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
@@ -299,6 +300,10 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         context['search_query'] = original_search_string
         context['search_filters'] = searcher.search_filter_list
 
+        if self.request.user.is_authenticated():
+            context['user_collections'] = self.get_user_collections(api, self.request.user.username)
+            context['org_collections'] = self.get_user_collections_from_organizations(api, self.request.user.username)
+
         # Set debug variables
         context['url_params'] = self.request.GET
         context['search_params'] = searcher.search_params
@@ -313,9 +318,10 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
 
         if request.is_ajax():
             self.get_args()
+            api = OclApi(self.request, debug=True, facets=True)
             # Load the concepts in this source, applying search parameters
             searcher = self.get_source_concepts(
-                self.owner_type, self.owner_id, self.source_id,
+                api, self.owner_type, self.owner_id, self.source_id,
                 source_version_id=self.source_version_id,
                 search_params=self.request.GET
             )
@@ -331,6 +337,23 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
                 content_type="application/json"
             )
         return super(SourceConceptsView, self).get(self, *args, **kwargs)
+
+    def get_user_collections(self, api_client, username):
+        user_collection_search_results = \
+            api_client.get('users', username, 'collections', params={'limit': 0}).json()['results']
+
+        # this is because it is tricky to conditionally render things based on list size in the template
+        return user_collection_search_results if len(user_collection_search_results) > 0 else None
+
+    def get_user_collections_from_organizations(self, api_client, username):
+        user_orgs = api_client.get('users', username, 'orgs', params={'limit': 0}).json()
+        all_org_collections = []
+
+        for org in user_orgs:
+            org_collections = api_client.get('orgs', org['id'], 'collections', params={'limit': 0}).json()['results']
+            all_org_collections += org_collections
+
+        return all_org_collections if len(all_org_collections) > 0 else None
 
 
 
