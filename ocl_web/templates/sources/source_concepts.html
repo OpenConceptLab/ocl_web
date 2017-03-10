@@ -45,34 +45,23 @@
 					<div class="btn-group" id="add-to-collection-dropdown" style="margin-left:5px; margin-right:5px">
 						<button type="button" id="add-to-collection-dropdown-button" class="btn btn-block btn-sm btn-default dropdown-toggle transparent disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to Collection <span class="caret"></span></button>
 						<div class="collection-list-dropdown dropdown-menu" style="padding: 10px;">
-							{% if not user_collections and not org_collections %}
+							{% if not all_collections %}
 							<div class="no-collections-info-box">
 								<span>You do not have any existing collections. Create a collection in your profile.</span>
 							</div>
 							{% else %}
 							<div class="collection-list-container">
-								{% if user_collections %}
-								{% for collection in user_collections %}
-								<div class="collection-radio radio">
+								{% for collection in all_collections %}
+								<div class="{% if collection.owner_type == 'Organization' %}org-collection-radio {% endif %}collection-radio radio">
 									<label>
-										<input type="radio" name="collections" id="user-collection-{{ forloop.counter }}" value="{{ collection.owner }} / {{ collection.id }}" >
+										<input type="radio" name="collections" id="user-collection-{{ forloop.counter }}" value="{{ forloop.counter }}" >
+										<input type="hidden" name="collection-owner" id="collection-owner-{{ forloop.counter }}" value="{{ collection.owner }}">
+										<input type="hidden" name="collection-name" id="collection-name-{{ forloop.counter }}" value="{{ collection.id }}">
+										<input type="hidden" name="collection-url" id="collection-url-{{ forloop.counter }}" value="{{ collection.url }}">
 										{{ collection.owner }} / <strong>{{ collection.id }}</strong>
 									</label>
 								</div>
 								{% endfor %}
-								{% endif %}
-
-								{% if org_collections %}
-								{% for collection in org_collections %}
-								<div class="org-collection-radio collection-radio radio">
-									<label>
-										<input type="radio" name="collections" id="user-collection-{{ forloop.counter }}" value="{{ collection.owner }} / {{ collection.id }}" >
-										{{ collection.owner }} / <strong>{{ collection.id }}</strong>
-									</label>
-								</div>
-								{% endfor %}
-								{% endif %}
-
 							</div>
 							<button type="button" class="add-to-collection-save btn btn-primary btn-block" disabled="disabled">Save</button>
 							{% endif %}
@@ -204,7 +193,7 @@
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-tag search-result-icon"></span></div>
 			<div class="col-xs-11 col-sm-10 search-result-col-content">
-				<div class="label-container">
+				<div class="label-container" id="label-container-{{ forloop.counter }}">
 					{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
 				</div>
 				<div class="resource-attributes"><span class="resource-attr"><label>Class:</label> {{ result.concept_class }}</span>, <span class="resource-attr"><label>Datatype:</label> {{ result.datatype }}</span></div>
@@ -259,7 +248,7 @@
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Close" id="close-modal"/>
-                    <input type="button" class="btn btn-primary" data-dismiss="modal" value="Confirm" id="close-modal"/>
+                    <input type="button" class="btn btn-primary" data-dismiss="modal" value="Confirm" id="confirm-modal"/>
                 </div>
             </div>
         </div>
@@ -284,16 +273,49 @@
                 }
             });
 
-            $('.add-to-collection-save').click(function(){
+            $('.add-to-collection-save').click(function() {
                 var selectedResources = $('input.search-result-checkbox:checked').length;
                 if(selectedResources < 1) return;
 
-                var selectedCollectionName = $('input[name="collections"]:checked').val();
+                var selectedCollectionId = $('input[name="collections"]:checked').val();
+                var selectedCollectionName = $('#collection-owner-' + selectedCollectionId).val() + ' / ' + $('#collection-name-' + selectedCollectionId).val();
 
                 $('#add-to-collection-confirm').modal('show');
                 $('#number-of-selected-resources').text(selectedResources);
                 $('#references-label').text(selectedResources == 1 ? 'reference': 'references');
                 $('#collection-name').text(selectedCollectionName);
+            });
+
+            $('#confirm-modal').click(function() {
+                var selectedCollectionId = $('input[name="collections"]:checked').val();
+                var selectedCollectionURI = $('#collection-url-' + selectedCollectionId).val();
+                var postURL = selectedCollectionURI + 'references/new/?cascade=' + ($('#cascade-mappings:checkbox:checked').length > 0 ? 'sourcemappings' : 'none');
+
+                var selectedResources = [];
+                $('input.search-result-checkbox:checked').each(function () {
+                    var checkboxId = $(this).attr('id').replace("select-concept-", "");
+                    var selectedResource = $('#label-container-' + checkboxId + ' > a').attr('href');
+                    selectedResources.push(selectedResource);
+                });
+
+                $.ajax({
+                    url:postURL,
+                    type:"POST",
+                    headers: {
+                        'X-CSRFToken': $.cookie('csrftoken'),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    data: JSON.stringify({
+                        expressions: selectedResources
+                    }),
+                    contentType:"application/json; charset=utf-8",
+                    dataType:"json"
+                }).done(function (data) {
+                    alert("Done");
+                }).fail(function () {
+                    alert("Fail");
+                });
+
             });
         });
     </script>
