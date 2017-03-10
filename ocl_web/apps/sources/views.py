@@ -301,10 +301,10 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         context['search_filters'] = searcher.search_filter_list
 
         if self.request.user.is_authenticated():
-            user_collections = self.get_user_collections(api, self.request.user.username)
-            org_collections = self.get_user_collections_from_organizations(api, self.request.user.username)
-            user_collections.extend(org_collections)
-            context['all_collections'] = user_collections
+            all_collections = []
+            all_collections.extend(self.get_user_collections(api, self.request.user.username))
+            all_collections.extend(self.get_user_collections_from_organizations(api, self.request.user.username))
+            context['all_collections'] = all_collections
 
         # Set debug variables
         context['url_params'] = self.request.GET
