@@ -37,20 +37,21 @@
 
 		<!-- Search Bar, Actions, Sorting and Paging -->
 		<div class="row" style="margin-bottom:10px;margin-top:10px;">
-        <div class="col-md-12">
-        <div class="pull-left" style="margin-left:-15px;">
-            {% select_all_toggle checkbox_css_selector='.ref-check' data_table_rows_id='data-table-rows' %}
-            <div class="btn-group" id="add-to-collection-dropdown" style="margin-left:5px; margin-right:5px">
-                <button type="button" id="add-to-collection-dropdown-button" class="btn btn-block btn-sm btn-default dropdown-toggle transparent disabled"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Add to Collection <span class="caret"></span>
-                </button>
-                <div class="dropdown-menu" style="padding: 10px;">
-                    <span>You unfortunately do not have any existing collection.</span>
-                    <span class="text-primary">Please first create a collection in your profile.</span>
-                </div>
-            </div>
-        </div>
+			<div class="col-md-12">
+				{% if request.user.is_authenticated %}
+				<!-- Add to collection button -->
+				<div class="pull-left" style="margin-left:-15px;">
+					{% select_all_toggle checkbox_css_selector='.search-result-checkbox' data_table_rows_id='data-table-rows' %}
+					<div class="btn-group" id="add-to-collection-dropdown" style="margin-left:5px; margin-right:5px">
+						<button type="button" id="add-to-collection-dropdown-button" class="btn btn-block btn-sm btn-default dropdown-toggle transparent disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to Collection <span class="caret"></span></button>
+						<div class="collection-list-dropdown dropdown-menu">
+							<div class="no-collections-info-box">
+								<span>You do not have any existing collections. Create a collection in your profile.</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endif %}
 
 				{% if results %}
 				<!-- Simple Pager -->
@@ -135,40 +136,41 @@
 			</div><!-- /.col-sm-12 -->
 		</div><!-- /.row -->
 
-
-<!-- Search results -->
-    <div id="data-table-rows">
-{% for result in results %}
-        <div class="row row-search-result">
-        <div class="pull-left search-result-col-checkbox" style="padding-left:10px">
-            <span>
-                <input class="ref-check" type="checkbox" name="reference">
-            </span>
-        </div>
-			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
-			<div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-tag search-result-icon"></span></div>
-			<div class="col-xs-11 col-sm-10 search-result-col-content">
-				<div class="label-container">
-					{% if kwargs.collection_version == 'HEAD' or kwargs.collection_version == None %}
-						{% if result.is_latest_version %}
-							{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
-						{% else %}
-							{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.version_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
-						{% endif %}
-					{% else %}
-						{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.version_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
-					{% endif %}
+		<!-- Search results -->
+		<div id="data-table-rows">
+			{% for result in results %}
+			<div class="row row-search-result">
+				<div class="pull-left search-result-col-checkbox" style="padding-left:10px">
+            	<span>
+                	<input class="search-result-checkbox" type="checkbox" name="reference" id="select-concept-{{ forloop.counter }}" />
+            	</span>
 				</div>
-				<div class="resource-attributes"><span class="resource-attr"><label>Class:</label> {{ result.concept_class }}</span>, <span class="resource-attr"><label>Datatype:</label> {{ result.datatype }}</span></div>
-				{% if result.description %}<div class="resource-description">{{ result.description }}</div>{% endif %}
-				<div class="resource-metadata"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</div>
-				{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+
+				<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
+				<div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-tag search-result-icon"></span></div>
+				<div class="col-xs-11 col-sm-10 search-result-col-content">
+					<div class="label-container">
+						{% if kwargs.collection_version == 'HEAD' or kwargs.collection_version == None %}
+						{% if result.is_latest_version %}
+						{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+						{% else %}
+						{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.version_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+						{% endif %}
+						{% else %}
+						{% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result.version_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+						{% endif %}
+					</div>
+					<div class="resource-attributes"><span class="resource-attr"><label>Class:</label> {{ result.concept_class }}</span>, <span class="resource-attr"><label>Datatype:</label> {{ result.datatype }}</span></div>
+					{% if result.description %}<div class="resource-description">{{ result.description }}</div>{% endif %}
+					<div class="resource-metadata"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated on {{ result.updated_on|smart_date }}</div>
+					{% if request.GET.debug %}<pre>{{ result|pprint }}</pre>{% endif %}
+				</div>
 			</div>
+			{% empty %}
+			<h3><small>{% trans 'No concepts found' %}</small></h3>
+			{% endfor %}
 		</div>
-{% empty %}
-		<h3><small>{% trans 'No concepts found' %}</small></h3>
-{% endfor %}
-    </div>
+
 		<!-- Pagination -->
 		{% if results %}
 		<div class="row" style="text-align:center;">
