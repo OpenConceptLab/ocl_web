@@ -345,7 +345,7 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
             api_client.get('users', username, 'collections', params={'limit': 0}).json()['results']
 
         # this is because it is tricky to conditionally render things based on list size in the template
-        return user_collection_search_results if len(user_collection_search_results) > 0 else None
+        return user_collection_search_results if len(user_collection_search_results) > 0 else []
 
     def get_user_collections_from_organizations(self, api_client, username):
         user_orgs = api_client.get('users', username, 'orgs', params={'limit': 0}).json()
@@ -355,7 +355,7 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
             org_collections = api_client.get('orgs', org['id'], 'collections', params={'limit': 0}).json()['results']
             all_org_collections += org_collections
 
-        return all_org_collections if len(all_org_collections) > 0 else None
+        return all_org_collections if len(all_org_collections) > 0 else []
 
 
 
