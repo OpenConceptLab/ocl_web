@@ -146,8 +146,10 @@ class OclApi(object):
             self.logger.debug('PUT %s %s %s' % (url, json.dumps(kwargs),
                                                 self.headers))
 
+        params = kwargs.get('params')
+
         results = requests.put(url, data=json.dumps(kwargs),
-                               headers=self.headers)
+                               headers=self.headers, params=params)
         self.status_code = results.status_code
         if self.debug:
             self.debug_result(results)

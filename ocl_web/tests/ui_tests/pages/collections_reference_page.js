@@ -52,12 +52,14 @@ var CollectionsReferencePage = function () {
     this.setCreateNewMultipleReferencesValues = function (organization, source, sourceVersion) {
         this.references.click();
         this.addNewReferenceLink.click();
-        this.organization.sendKeys(organization);
         browser.wait(EC.elementToBeClickable(this.organization), 1000);
+        this.organization.sendKeys(organization);
+
+        browser.wait(EC.presenceOf(this.source.element(by.css('option[label="' + source + '"]'))), 2000);
         this.source.sendKeys(source);
-        browser.wait(EC.elementToBeClickable(this.source), 1000);
+
+        browser.wait(EC.elementToBeClickable(this.sourceVersion.element((by.css('option[label="HEAD"]')))), 2000);
         this.sourceVersion.sendKeys(sourceVersion);
-        browser.wait(EC.elementToBeClickable(this.sourceVersion), 1000);
     };
 
     this.createNewMultipleReferences = function (organization, source, sourceVersion) {
