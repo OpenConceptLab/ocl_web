@@ -55,10 +55,10 @@ var CollectionsReferencePage = function () {
         browser.wait(EC.elementToBeClickable(this.organization), 1000);
         this.organization.sendKeys(organization);
 
-        browser.wait(EC.presenceOf(this.source.element(by.css('option[label="' + source + '"]'))), 2000);
+        browser.wait(EC.presenceOf(this.source.$('option[label="' + source + '"]')), 2000);
         this.source.sendKeys(source);
 
-        browser.wait(EC.elementToBeClickable(this.sourceVersion.element((by.css('option[label="HEAD"]')))), 2000);
+        browser.wait(EC.elementToBeClickable(this.sourceVersion.$('option[label="HEAD"]')), 2000);
         this.sourceVersion.sendKeys(sourceVersion);
     };
 

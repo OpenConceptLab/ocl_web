@@ -25,37 +25,37 @@ describe('Search Page', function () {
         logoutPage.logout();
     });
 
-    it('should show least one concept', function () {
+    it('should show at least one concept', function () {
         browser.get(baseUrl + 'search/?type=concepts&q=');
 
         expect(searchPage.searchResults.count()).toBeGreaterThan(0);
     });
 
-    it('should show least one mapping', function () {
+    it('should show at least one mapping', function () {
         browser.get(baseUrl + 'search/?type=mappings&q=');
 
         expect(searchPage.searchResults.count()).toBeGreaterThan(0);
     });
 
-    it('should show least one source', function () {
+    it('should show at least one source', function () {
         browser.get(baseUrl + 'search/?type=sources&q=');
 
         expect(searchPage.searchResults.count()).toBeGreaterThan(0);
     });
 
-    it('should show least one collection', function () {
+    it('should show at least one collection', function () {
         browser.get(baseUrl + 'search/?type=collections&q=');
 
         expect(searchPage.searchResults.count()).toBeGreaterThan(0);
     });
 
-    it('should show least one org', function () {
+    it('should show at least one org', function () {
         browser.get(baseUrl + 'search/?type=orgs&q=');
 
         expect(searchPage.searchResults.count()).toBeGreaterThan(0);
     });
 
-    it('should show least one user', function () {
+    it('should show at least one user', function () {
         browser.get(baseUrl + 'search/?type=users&q=');
 
         expect(searchPage.searchResults.count()).toBeGreaterThan(0);
