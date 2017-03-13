@@ -595,7 +595,8 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
             'collections',
             self.collection_id,
             'references',
-            data=data
+            data=data,
+            params = {'cascade': request.GET.get('cascade', 'sourcemappings')}
         )
 
         results = result.json()
