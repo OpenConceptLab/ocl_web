@@ -336,20 +336,20 @@
 
                 function clearSelection() {
                     $('#unselect-all-references')[0].click();
-				}
+                }
 
                 function resetModal() {
                     $('#closeErrorModalButton').hide();
                     $('#addToCollectionModalSuccessList > ul').html("");
-					$('#addToCollectionModalSuccessList').hide();
-					$('#addToCollectionModalErrorList > ul').html("");
-				}
+                    $('#addToCollectionModalSuccessList').hide();
+                    $('#addToCollectionModalErrorList > ul').html("");
+                }
 
-				function listSuccessfulAdditions(added) {
+                function listSuccessfulAdditions(added) {
                     if (added.length < 1) {
-						$('#add-to-collection-result-information').hide();
-						return;
-					}
+                        $('#add-to-collection-result-information').hide();
+                        return;
+                    }
 
                     $('#closeErrorModalButton').show();
                     $('#closeErrorModalButton').attr("href", selectedCollectionURI + "references/");
@@ -359,7 +359,7 @@
                     added.forEach(function (addedReference) {
                         $('#addToCollectionModalSuccessList > ul').append("<li class='list-group-item'><strong>" + addedReference.expression + "</strong></li>");
                     });
-				}
+                }
 
                 $.ajax({
                     url:postURL,
@@ -380,8 +380,8 @@
                     resetModal();
 
                     var errors = result.errors || result.update_results.filter(function (result) {
-                    	return !result.added;
-                    });
+                            return !result.added;
+                        });
 
                     if (errors.length < 1) return;
                     $('#add-to-collection-error').modal('show');
