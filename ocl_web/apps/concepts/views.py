@@ -119,10 +119,18 @@ class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
         context = super(ConceptDetailsView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
+        api = OclApi(self.request, debug=True, facets=True)
+
         # Load the concept details
         concept = self.get_concept_details(
             self.owner_type, self.owner_id, self.source_id, self.concept_id,
             source_version_id=self.source_version_id, concept_version_id=self.concept_version_id)
+
+        if self.request.user.is_authenticated():
+            all_collections = []
+            all_collections.extend(self.get_user_collections(api, self.request.user.username))
+            all_collections.extend(self.get_user_collections_from_organizations(api, self.request.user.username))
+            context['all_collections'] = all_collections
 
         # Set the context
         context['kwargs'] = self.kwargs
@@ -131,6 +139,23 @@ class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
         context['concept'] = concept
 
         return context
+
+    def get_user_collections(self, api_client, username):
+        user_collection_search_results = \
+            api_client.get('users', username, 'collections', params={'limit': 0}).json()['results']
+
+        # this is because it is tricky to conditionally render things based on list size in the template
+        return user_collection_search_results if len(user_collection_search_results) > 0 else []
+
+    def get_user_collections_from_organizations(self, api_client, username):
+        user_orgs = api_client.get('users', username, 'orgs', params={'limit': 0}).json()
+        all_org_collections = []
+
+        for org in user_orgs:
+            org_collections = api_client.get('orgs', org['id'], 'collections', params={'limit': 0}).json()['results']
+            all_org_collections += org_collections
+
+        return all_org_collections if len(all_org_collections) > 0 else []
 
 
 class ConceptMappingsView(FormView, UserOrOrgMixin,
