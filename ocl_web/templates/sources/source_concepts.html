@@ -380,8 +380,8 @@
                     resetModal();
 
                     var errors = result.errors || result.update_results.filter(function (result) {
-                            return !result.added;
-                        });
+                        return !result.added;
+                    });
 
                     if (errors.length < 1) return;
                     $('#add-to-collection-error').modal('show');
