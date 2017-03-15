@@ -291,7 +291,7 @@
 
 	<script>
         $(document).ready(function () {
-            $('[data-toggle="tooltip"]').tooltip()
+            $('[data-toggle="tooltip"]').tooltip();
 
             var dropdown = $('#add-to-collection-dropdown-button');
             $(document).on('allUnchecked', function () {
@@ -334,6 +334,33 @@
                     selectedResources.push(selectedResource);
                 });
 
+                function clearSelection() {
+                    $('#unselect-all-references')[0].click();
+				}
+
+                function resetModal() {
+                    $('#closeErrorModalButton').hide();
+                    $('#addToCollectionModalSuccessList > ul').html("");
+					$('#addToCollectionModalSuccessList').hide();
+					$('#addToCollectionModalErrorList > ul').html("");
+				}
+
+				function listSuccessfulAdditions(added) {
+                    if (added.length < 1) {
+						$('#add-to-collection-result-information').hide();
+						return;
+					}
+
+                    $('#closeErrorModalButton').show();
+                    $('#closeErrorModalButton').attr("href", selectedCollectionURI + "references/");
+
+                    $('#addToCollectionModalSuccessList').show();
+
+                    added.forEach(function (addedReference) {
+                        $('#addToCollectionModalSuccessList > ul').append("<li class='list-group-item'><strong>" + addedReference.expression + "</strong></li>");
+                    });
+				}
+
                 $.ajax({
                     url:postURL,
                     type:"POST",
@@ -348,47 +375,26 @@
                     dataType:"json"
                 }).done(function (result) {
                     $('#add-to-collection-result-information').show();
-                    $('#unselect-all-references')[0].click();
+
+                    clearSelection();
+                    resetModal();
+
+                    var errors = result.errors || result.update_results.filter(function (result) {
+                    	return !result.added;
+                    });
+
+                    if (errors.length < 1) return;
+                    $('#add-to-collection-error').modal('show');
+
+                    errors.forEach(function (error) {
+                        $('#addToCollectionModalErrorList > ul').append("<li class='list-group-item'><strong>" + error.expression + ":</strong> " + error.message[0] + "</li>");
+                    });
 
                     var added = result.update_results.filter(function (result) {
                         return result.added;
                     });
+                    listSuccessfulAdditions(added);
 
-                    var errors = result.errors || result.update_results.filter(function (result) {
-                            return !result.added;
-                        }).reduce(function (hash, curr) {
-                            hash[curr.expression] = curr.message[0];
-                            return hash
-                        }, {});
-
-                    if (Object.keys(errors).length > 0) {
-                        $('#add-to-collection-error').modal('show');
-                        $('#addToCollectionModalErrorList > ul').html("");
-                        for (var key in errors) {
-                            if (errors.hasOwnProperty(key)) {
-                                $('#addToCollectionModalErrorList > ul').append("<li class='list-group-item'><strong>" + key + ":</strong> " + errors[key] + "</li>");
-                            }
-                        }
-
-                        if (added.length > 0) {
-                            $('#closeErrorModalButton').show();
-                            $('#closeErrorModalButton').attr("href", selectedCollectionURI + "references/");
-                            $('#addToCollectionModalSuccessList').show();
-                            $('#addToCollectionModalSuccessList > ul').html("");
-                            added.forEach(function (addedReference) {
-                                $('#addToCollectionModalSuccessList > ul').append("<li class='list-group-item'><strong>" + addedReference.expression + "</strong></li>");
-                            });
-                        } else {
-                            $('#closeErrorModalButton').hide();
-                            $('#addToCollectionModalSuccessList').hide();
-                            $('#add-to-collection-result-information').hide();
-                        }
-                    };
-                    result.update_results.forEach(function(element) {
-                        if (!element.added) {
-                            console.log(element.message[0]);
-                        };
-                    });
                 }).fail(function (jqXHR, textStatus) {
                     $('#add-to-collection-result-information').hide();
                 });
