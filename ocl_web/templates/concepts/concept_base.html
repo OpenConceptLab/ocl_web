@@ -4,114 +4,257 @@
 {% load ocl_tags %}
 
 
-{% block title %}{{ concept.owner }} / {{ concept.source }} / {{ concept.id }}{% if kwargs and "concept_version" in kwargs %} [ {{ kwargs.concept_version }} ]{% endif %} - Open Concept Lab{% endblock title %}
+{% block title %}{{ concept.owner }} / {{ concept.source }} /
+    {{ concept.id }}{% if kwargs and "concept_version" in kwargs %} [ {{ kwargs.concept_version }} ]{% endif %} - Open
+    Concept Lab{% endblock title %}
 
 
 {% block content-no-container %}
 
-{% block resource-header %}
-{% if concept.owner_type == 'Organization' %}
-	{% url 'concept-edit' org=concept.owner source=concept.source concept=concept.id as concept_edit_url %}
-	{% url 'source-home' org=concept.owner source=concept.source as source_url %}
-{% else %}
-	{% url 'concept-edit' user=concept.owner source=concept.source concept=concept.id as concept_edit_url %}
-	{% url 'source-home' user=concept.owner source=concept.source as source_url %}
-{% endif %}
+    {% block resource-header %}
+        {% if concept.owner_type == 'Organization' %}
+            {% url 'concept-edit' org=concept.owner source=concept.source concept=concept.id as concept_edit_url %}
+            {% url 'source-home' org=concept.owner source=concept.source as source_url %}
+        {% else %}
+            {% url 'concept-edit' user=concept.owner source=concept.source concept=concept.id as concept_edit_url %}
+            {% url 'source-home' user=concept.owner source=concept.source as source_url %}
+        {% endif %}
 
-<header class="resource-header resource-header-concept">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12">
-				{% if request.user.is_authenticated %}
-				<!-- Add to collection button -->
-				<div class="pull-right">
-					<div class="btn-group" id="add-to-collection-dropdown" style="margin:20px 5px 0px 5px;">
-						<button type="button" id="add-to-collection-dropdown-button" class="btn btn-block btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to Collection <span class="caret"></span></button>
-						<div class="collection-list-dropdown dropdown-menu dropdown-menu-right" style="padding: 10px;">
-							<span>You do not have any existing collections. Create a collection in your profile.</span>
-						</div>
-					</div>
-				</div>
-				{% endif %}
-
-				<div class="resource-header-icon hidden-xs"><span class="glyphicon glyphicon-tag"></span></div>
-				<div class="resource-header-label">
-					<div class="label-container">
-						{% resource_owner_label concept label_size='large' %} / {% generic_resource_label resource_type='source' resource_id=concept.source resource_url=source_url label_size='large' %} / {% concept_label concept label_size='large' %}
-						{% if kwargs and "concept_version" in kwargs %}<span class="small" title="Concept Version ID">[ {{ kwargs.concept_version }} ]</span>{% endif %}
-                        {% if kwargs.concept_version == None %}
-                            {% if_can_change concept %}
-                                <a id="edit-concept" href="{{ concept_edit_url }}" class="text-muted small" title="Edit Concept"><span class="glyphicon glyphicon-pencil"></span></a>
-                            {% endif_can_change concept %}
+        <header class="resource-header resource-header-concept">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        {% if request.user.is_authenticated %}
+                            <!-- Add to collection button -->
+                            <div class="pull-right">
+                                <div class="btn-group" id="add-to-collection-dropdown" style="margin:20px 5px 0px 5px;">
+                                    <button type="button" id="add-to-collection-dropdown-button"
+                                            class="btn btn-block btn-sm btn-default dropdown-toggle"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to
+                                        Collection <span class="caret"></span></button>
+                                    {% if not all_collections %}
+                                        <div class="collection-list-dropdown dropdown-menu dropdown-menu-right"
+                                             style="padding: 10px;">
+                                            <span>You do not have any existing collections. Create a collection in your profile.</span>
+                                        </div>
+                                    {% else %}
+                                        <div class="collection-list-dropdown dropdown-menu dropdown-menu-right">
+                                            {% for collection in all_collections %}
+                                                <div class="{% if collection.owner_type == 'Organization' %}org-collection-radio {% endif %}collection-radio radio">
+                                                    <label>
+                                                        <input type="radio" name="collections"
+                                                               id="user-collection-{{ forloop.counter }}"
+                                                               value="{{ forloop.counter }}">
+                                                        <input type="hidden" name="collection-owner"
+                                                               id="collection-owner-{{ forloop.counter }}"
+                                                               value="{{ collection.owner }}">
+                                                        <input type="hidden" name="collection-name"
+                                                               id="collection-name-{{ forloop.counter }}"
+                                                               value="{{ collection.id }}">
+                                                        <input type="hidden" name="collection-url"
+                                                               id="collection-url-{{ forloop.counter }}"
+                                                               value="{{ collection.url }}">
+                                                        {{ collection.owner }} / <strong>{{ collection.id }}</strong>
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                            <button type="button"
+                                                    class="add-to-collection-save btn btn-primary btn-block"
+                                                    disabled="disabled">Save
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
                         {% endif %}
-					</div>
-					<p>
-						<span {% if concept.retired %}class="retired"{% endif %}>{{ concept.display_name }}</span>
-						{% if concept.display_locale %}&nbsp;&nbsp;<span class="small text-muted"><em>[{{ concept.display_locale }}]</em></span>{% endif %}<br />
-						<em>Class:</em> {{ concept.concept_class }}, <em>Datatype:</em> {{ concept.datatype }}<br />
-						<span class="text-muted small">
+
+                        <div class="resource-header-icon hidden-xs"><span class="glyphicon glyphicon-tag"></span></div>
+                        <div class="resource-header-label">
+                            <div class="label-container">
+                                {% resource_owner_label concept label_size='large' %}
+                                / {% generic_resource_label resource_type='source' resource_id=concept.source resource_url=source_url label_size='large' %}
+                                / {% concept_label concept label_size='large' %}
+                                {% if kwargs and "concept_version" in kwargs %}<span class="small"
+                                                                                     title="Concept Version ID">[ {{ kwargs.concept_version }} ]</span>{% endif %}
+                                {% if kwargs.concept_version == None %}
+                                    {% if_can_change concept %}
+                                        <a id="edit-concept" href="{{ concept_edit_url }}" class="text-muted small"
+                                           title="Edit Concept"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    {% endif_can_change concept %}
+                                {% endif %}
+                            </div>
+                            <p>
+                                <span {% if concept.retired %}class="retired"{% endif %}>{{ concept.display_name }}</span>
+                                {% if concept.display_locale %}&nbsp;&nbsp;
+                                    <span class="small text-muted"><em>[{{ concept.display_locale }}]</em></span>{% endif %}
+                                <br/>
+                                <em>Class:</em> {{ concept.concept_class }},
+                                <em>Datatype:</em> {{ concept.datatype }}<br/>
+                                <span class="text-muted small">
 							<span class="glyphicon glyphicon-calendar"></span> Created on {{ concept.created_on|smart_date }}
 							&nbsp;&nbsp;
-							<span class="glyphicon glyphicon-calendar"></span> Last updated {{ concept.updated_on|smart_date}}
+							<span class="glyphicon glyphicon-calendar"></span> Last updated {{ concept.updated_on|smart_date }}
 						</span>
-					</p>
-				</div> <!-- /resource-header-label -->
-			</div> <!-- /col-md-12 -->
-		</div> <!-- /row -->
-	</div> <!-- /container -->
-</header>
-{% endblock resource-header %}
+                            </p>
+                        </div> <!-- /resource-header-label -->
+                    </div> <!-- /col-md-12 -->
+                </div> <!-- /row -->
+            </div> <!-- /container -->
+        </header>
+        <div class="modal fade" id="add-to-collection-confirm" role="dialog" tabindex="-1">
+            <div class="modal-dialog expanded" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Add to Collection</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <h5><strong id="number-of-selected-resources">-</strong> selected <span
+                                        id="references-label">references</span> will be added to collection <strong
+                                        id="collection-name">-</strong></h5>
+                            </div>
+                        </div>
 
+                        <hr>
 
-{% block resource-tabs %}
-{% if kwargs and "concept_version" in kwargs %}
-	{% if concept.owner_type == 'Organization' %}
-		{% url 'concept-version-details' org=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_details_url %}
-		{% url 'concept-version-mappings' org=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_mappings_url %}
-		{% url 'concept-version-history' org=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_history_url %}
-	{% else %}
-		{% url 'concept-version-details' user=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_details_url %}
-		{% url 'concept-version-mappings' user=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_mappings_url %}
-		{% url 'concept-version-history' user=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_history_url %}
-	{% endif %}
-{% else %}
-	{% if concept.owner_type == 'Organization' %}
-		{% url 'concept-details' org=concept.owner source=concept.source concept=concept.id as concept_details_url %}
-		{% url 'concept-mappings' org=concept.owner source=concept.source concept=concept.id as concept_mappings_url %}
-		{% url 'concept-history' org=concept.owner source=concept.source concept=concept.id as concept_history_url %}
-	{% else %}
-		{% url 'concept-details' user=concept.owner source=concept.source concept=concept.id as concept_details_url %}
-		{% url 'concept-mappings' user=concept.owner source=concept.source concept=concept.id as concept_mappings_url %}
-		{% url 'concept-history' user=concept.owner source=concept.source concept=concept.id as concept_history_url %}
-	{% endif %}
-{% endif %}
+                        <div class="information-tooltip" style="margin: 10px 0;">
+                            <label class="checkbox-inline" for="cascade-mappings">
+                                <input type="checkbox" id="cascade-mappings" checked="checked">
+                                Automatically add associated mappings
+                            </label>
+                            <button type="button" class="btn btn-question btn-circle" data-toggle="tooltip"
+                                    data-placement="right"
+                                    title="A concept's associated mappings are mappings that originate from the specified concept (the 'from concept') and that are stored in the same source">
+                                <strong>?</strong></button>
+                        </div>
 
-<div class="container">
-    <ul class="nav nav-tabs">
-        <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ concept_details_url }}">Details</a></li>
-        <li role="presentation" {% if selected_tab == "Mappings" %}class="active"{% endif %}><a id="mappings_link" href="{{ concept_mappings_url }}">Mappings</a></li>
-        <li role="presentation" {% if selected_tab == "History" %}class="active"{% endif %}><a href="{{ concept_history_url }}">History</a></li>
-    </ul>
-</div>
-{% endblock resource-tabs %}
-
-
-{% block tab-content %}
-{% endblock tab-content %}
-
-
-{% if request.GET.debug %}
-<div class="container" style="margin-top: 30px;">
-    <div class="panel panel-default">
-        <div class="panel-heading"><h4 class="panel-title">Debug</h4></div>
-        <div class="panel-body" style="min-height:140px;">
-        {% block resource-debug %}
-            <h4>Debug Content</h4>
-        {% endblock resource-debug %}
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Close"
+                               id="close-modal"/>
+                        <input type="button" class="btn btn-primary" data-dismiss="modal" value="Confirm"
+                               id="confirm-modal"/>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-{% endif %}
+        <script>
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+
+                $('.collection-list-dropdown div.radio, .collection-list-dropdown input').click(function (e) {
+                    e.stopPropagation();
+
+                    if ($('input[name="collections"]:checked').val()) {
+                        $('.add-to-collection-save').attr('disabled', false);
+                    }
+                });
+
+                $('.add-to-collection-save').click(function () {
+                    var selectedResources = 1;
+
+                    var selectedCollectionId = $('input[name="collections"]:checked').val();
+                    var selectedCollectionName = $('#collection-owner-' + selectedCollectionId).val() + ' / ' + $('#collection-name-' + selectedCollectionId).val();
+
+                    $('#add-to-collection-confirm').modal('show');
+                    $('#number-of-selected-resources').text(selectedResources);
+                    $('#references-label').text(selectedResources == 1 ? 'reference' : 'references');
+                    $('#collection-name').text(selectedCollectionName);
+                });
+
+                $('#confirm-modal').click(function () {
+                    var selectedCollectionId = $('input[name="collections"]:checked').val();
+                    var selectedCollectionURI = $('#collection-url-' + selectedCollectionId).val();
+                    var postURL = selectedCollectionURI + 'references/new/?cascade=' + ($('#cascade-mappings:checkbox:checked').length > 0 ? 'sourcemappings' : 'none');
+
+                    var selectedResources = ['{{ concept.url }}'];
+
+                    $.ajax({
+                        url: postURL,
+                        type: "POST",
+                        headers: {
+                            'X-CSRFToken': $.cookie('csrftoken'),
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        data: JSON.stringify({
+                            expressions: selectedResources
+                        }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json"
+                    }).done(function (data) {
+                        $(this).prop('checked', false);
+                        var result = data.update_results[0];
+                        var warning = $(".alert-warning");
+                        warning.text(result.message);
+                        warning.show();
+                    }).fail(function () {
+                        console.log('Fail');
+                    });
+
+                });
+            });
+        </script>
+    {% endblock resource-header %}
+
+
+    {% block resource-tabs %}
+        {% if kwargs and "concept_version" in kwargs %}
+            {% if concept.owner_type == 'Organization' %}
+                {% url 'concept-version-details' org=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_details_url %}
+                {% url 'concept-version-mappings' org=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_mappings_url %}
+                {% url 'concept-version-history' org=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_history_url %}
+            {% else %}
+                {% url 'concept-version-details' user=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_details_url %}
+                {% url 'concept-version-mappings' user=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_mappings_url %}
+                {% url 'concept-version-history' user=concept.owner source=concept.source concept=concept.id concept_version=kwargs.concept_version as concept_history_url %}
+            {% endif %}
+        {% else %}
+            {% if concept.owner_type == 'Organization' %}
+                {% url 'concept-details' org=concept.owner source=concept.source concept=concept.id as concept_details_url %}
+                {% url 'concept-mappings' org=concept.owner source=concept.source concept=concept.id as concept_mappings_url %}
+                {% url 'concept-history' org=concept.owner source=concept.source concept=concept.id as concept_history_url %}
+            {% else %}
+                {% url 'concept-details' user=concept.owner source=concept.source concept=concept.id as concept_details_url %}
+                {% url 'concept-mappings' user=concept.owner source=concept.source concept=concept.id as concept_mappings_url %}
+                {% url 'concept-history' user=concept.owner source=concept.source concept=concept.id as concept_history_url %}
+            {% endif %}
+        {% endif %}
+
+        <div class="container">
+            <ul class="nav nav-tabs">
+                <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a
+                        href="{{ concept_details_url }}">Details</a></li>
+                <li role="presentation" {% if selected_tab == "Mappings" %}class="active"{% endif %}><a
+                        id="mappings_link" href="{{ concept_mappings_url }}">Mappings</a></li>
+                <li role="presentation" {% if selected_tab == "History" %}class="active"{% endif %}><a
+                        href="{{ concept_history_url }}">History</a></li>
+            </ul>
+            <div style="margin-top:12px;display: none;margin-bottom: 0;" class="alert alert-warning">
+                    Added the latest versions of concepts/mappings to the collection. Future updates will not be added automatically.
+            </div>
+        </div>
+    {% endblock resource-tabs %}
+
+
+    {% block tab-content %}
+    {% endblock tab-content %}
+
+
+    {% if request.GET.debug %}
+        <div class="container" style="margin-top: 30px;">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h4 class="panel-title">Debug</h4></div>
+                <div class="panel-body" style="min-height:140px;">
+                    {% block resource-debug %}
+                        <h4>Debug Content</h4>
+                    {% endblock resource-debug %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
 
 
 {% endblock content-no-container %}
