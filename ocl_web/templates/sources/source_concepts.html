@@ -165,8 +165,9 @@
 			</div><!-- /.col-sm-12 -->
 		</div><!-- /.row -->
 
+		<div id="add-to-collection-result-information" style="margin-top: 12px;display: none;" class="alert alert-warning">Added the latest versions of concepts/mappings to the collections. Future updates will not be added automatically.</div>
 
-<!-- Search results -->
+		<!-- Search results -->
 		<div id="data-table-rows">
 {% for result in results %}
 		<div class="row row-search-result">
@@ -253,6 +254,41 @@
             </div>
         </div>
     </div>
+
+	<div class="modal fade" id="add-to-collection-error" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title">Add Reference</h3>
+				</div>
+				<div class="modal-body">
+					<div id="addToCollectionModalErrorList">
+						<div class="alert alert-warning">
+							References listed below could not be added.
+						</div>
+						<ul class="list-group">
+						</ul>
+					</div>
+
+					<div id="addToCollectionModalSuccessList" style="display: none">
+						<div class="alert alert-success">
+							Following references were added to the collection:
+						</div>
+						<ul class="list-group">
+						</ul>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<a id="closeErrorModalButton"
+					   style="display: none"
+					   class="btn btn-primary"
+					   type="button">View all references</a>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
 	<script>
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip()
@@ -310,10 +346,51 @@
                     }),
                     contentType:"application/json; charset=utf-8",
                     dataType:"json"
-                }).done(function (data) {
-                    alert("Done");
-                }).fail(function () {
-                    alert("Fail");
+                }).done(function (result) {
+                    $('#add-to-collection-result-information').show();
+                    $('#unselect-all-references')[0].click();
+
+                    var added = result.update_results.filter(function (result) {
+                        return result.added;
+                    });
+
+                    var errors = result.errors || result.update_results.filter(function (result) {
+                            return !result.added;
+                        }).reduce(function (hash, curr) {
+                            hash[curr.expression] = curr.message[0];
+                            return hash
+                        }, {});
+
+                    if (Object.keys(errors).length > 0) {
+                        $('#add-to-collection-error').modal('show');
+                        $('#addToCollectionModalErrorList > ul').html("");
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                $('#addToCollectionModalErrorList > ul').append("<li class='list-group-item'><strong>" + key + ":</strong> " + errors[key] + "</li>");
+                            }
+                        }
+
+                        if (added.length > 0) {
+                            $('#closeErrorModalButton').show();
+                            $('#closeErrorModalButton').attr("href", selectedCollectionURI + "references/");
+                            $('#addToCollectionModalSuccessList').show();
+                            $('#addToCollectionModalSuccessList > ul').html("");
+                            added.forEach(function (addedReference) {
+                                $('#addToCollectionModalSuccessList > ul').append("<li class='list-group-item'><strong>" + addedReference.expression + "</strong></li>");
+                            });
+                        } else {
+                            $('#closeErrorModalButton').hide();
+                            $('#addToCollectionModalSuccessList').hide();
+                            $('#add-to-collection-result-information').hide();
+                        }
+                    };
+                    result.update_results.forEach(function(element) {
+                        if (!element.added) {
+                            console.log(element.message[0]);
+                        };
+                    });
+                }).fail(function (jqXHR, textStatus) {
+                    $('#add-to-collection-result-information').hide();
                 });
 
             });
