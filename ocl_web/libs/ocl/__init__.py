@@ -558,9 +558,7 @@ class OclApi(object):
         return self.get_user_collections(username) + self.get_user_org_collections(username)
 
     def get_user_collections(self, username):
-        user_collection_search_results = \
-            self.get('users', username, 'collections', params={'limit': 0}).json()['results']
-
+        return self.get('users', username, 'collections', params={'limit': 0}).json()['results']
 
     def get_user_org_collections(self, username):
         user_orgs = self.get('users', username, 'orgs', params={'limit': 0}).json()
