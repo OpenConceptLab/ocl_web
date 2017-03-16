@@ -5,23 +5,71 @@ Client interface for Open Concept Lab terminology services API.
 
 ## Developer Setup
 
-The OCL web server requires a few environment variables to operate. The easiest
-way to do this during development is to put the `export` calls in your `virtualenv`
-__postactivate__ script, found in the `bin` directory under the specific
-ocl_web virtualenv directory.
+### Prerequisites
 
-```sh
-export OCL_API_HOST='<your_api_server_ip>'
-export OCL_API_TOKEN='<token for accessing API as admin>'
-export OCL_ANON_API_TOKEN='<token for anon access>'
+1. ocl_web  
+   * ``` git clone git@github.com:OpenConceptLab/ocl_web.git ```
+2. python
+3. npm
+4. pip
+5. python virtualenv
+  * ``` pip install virtualenv ```
+6. OCL API must be setup, up and running.
 
-# for deployment
-export OCL_WEB_HOST='<web_host_ip>'
-export FAB_USER='deploy'
-export FAB_PASSWORD=''
+### OCL Web Setup
 
-export DATABASE_URL=sqlite:////$HOME/webapps/ocl_web/src/ocl.db
-```
+1. Change working directory to repository root
+   ```sh
+   cd ocl_web 
+   ```
+2. Create a virtualenv for the project
+   ```sh 
+   virtualenv ocl #Creates a virtual env (ocl is the name of virtualenv, can give any name) 
+   ```
+3. Create the file that will be used as the DB for ocl_web
+   ```sh
+   touch ocl.db 
+   ```
+4. Activate the virtual environment created in step __2__ . For deactivation of virtual env just write 'deactivate'.
+   ```sh
+   source ./ocl/bin/activate
+   ```
+   
+5. Set the environment variables below to let web connect to API and set db location. Note that OclAPI must be already setup for this, you can see the token at http://0.0.0.0:8000/admin/authtoken/token/ (8000 is the port where oclapi server is running)
+   
+   ```sh
+   export OCL_API_HOST='<your_api_server_ip>'
+   export OCL_API_TOKEN='<root_token_from_api>'
+   export OCL_ANON_API_TOKEN='<root_token_from_api>'
+   export DATABASE_URL=sqlite:////<OCL_WEB_ROOT>/ocl.db
+   
+   ```
+   
+6. Install python and node.js dependencies
+   ```sh 
+   pip install -r requirements/local.txt
+   npm install
+   ```
+7. Install grunt cli 
+   ```sh
+   npm install -g grunt-cli
+   ```
+8. Prepare database (create tables for models and apply migrations)
+   ```sh
+   python ocl_web/manage.py syncdb 
+   python ocl_web/manage.py migrate 
+   ```
+9. Create a user. Make sure to get status=201 on the output. Otherwise the user is not created.
+   ```sh
+   python ocl_web/manage.py create_test_user --username <username> --password <password>
+   ```
+10. Serve the application 
+   ```sh 
+   grunt serve 
+   ```
+11. Application should be up at http://localhost:7000 and you should be able to login with the user created in step __9__
+
+
 
 ## Settings
 
@@ -47,76 +95,28 @@ For configuration purposes, the following table maps the cookiecutter-django env
 | DJANGO_SESSION_COOKIE_SECURE          | SESSION_COOKIE_SECURE          | n/a                                            | False                                       |
 * TODO: Add vendor-added settings in another table
 
-## Developer Installation
 
-For getting this running on your local machine:
+### Running Tests
 
-1. Set up a virtualenv.
-2. Install all the supporting libraries into your virtualenv::
-  * ``` pip install -r requirements/local.txt ```
+OCL_WEB has a suite of unit tests written in python (django test) and end-to-end tests written in [protractor](https://github.com/angular/protractor) running either headless (PhantomJS) or Chrome.
 
-3. Install Grunt Dependencies.
-  * ``` npm install ```
-  * ``` npm install -g grunt-cli ```
-
-4. Run development server. (For browser auto-reload, use Livereload_ plugins.)
-  * ``` grunt serve ```
-
-.. _livereload: https://github.com/gruntjs/grunt-contrib-watch#using-live-reload-with-the-browser-extension
-
-
-# Updated ReadMe for dev setup
-
-### Prequisites
-
-1. ocl_web  
-   * ``` git clone git@github.com:OpenConceptLab/ocl_web.git ```
-2. python
-3. npm
-4. Postgres 9.5 (not actually required as a developer if you use sqlite instead)
-  * OSX ``` pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start ```
-  * Ubuntu ``` service start postgresql ```
-5. pip
-6. python virtualenv
-  * ``` pip install virtualenv ```
-7. OCL API must be setup.
-
-### OCL Web Setup
-
-1. ``` cd ocl_web ```
-2. ``` virtualenv env # Creates a virtual env (env is the name of virtualenv, can give any) ```
-3. ``` touch ocl.db ```
-4. ``` vi ./env/bin/activate # and add below entries (as export/environment variable) ```.
-   OclAPI must be already setup for this, you can see the token at http://0.0.0.0:8000/admin/authtoken/token/ (8000 is the port where oclapi server is running)
-   ```sh
-   export OCL_API_HOST='<your_api_server_ip>'
-   export OCL_API_TOKEN='<root_token_from_api>'
-   export OCL_ANON_API_TOKEN='<root_token_from_api>'
-   export DATABASE_URL=sqlite:////<OCL_WEB_ROOT>/ocl.db
-   
-   ```
-5. Activate virtual env: ``` source env/bin/activate```
-  * If you are changing anything inside the activate file as in step 3, you have to deactivate and then reactivate the virtual env.
-  * For deactivation of virtual env just write 'deactivate' and then use 'source env/bin/activate' to activate again.
-6. Install dependencies:
-  * Python: ```pip install -r requirements/local.txt```
-  * Node: ``` npm install ```
-7. Install grunt cli ```npm install -g grunt-cli```
-8. ``` python ocl_web/manage.py syncdb ```
-9. ``` python ocl_web/manage.py migrate ```
-10. Serve the application: ``` grunt serve ```
-
-### Tests
-
-1. Unit Tets: Run ``` python ocl_web/manage.py test ``` inside 
-2. To run E2E tests,
-  * Headless on showcase server: ``` ./ocl_web/run_ui_tests.sh ```
-  * Locally on Chrome: ``` browser=chrome env=local username=<username> password=<pwd> ./node_modules/protractor/bin/protractor ./ocl_web/tests/ui_tests/conf.js ```
+1. Unit Tets
+  ```sh
+  python ocl_web/manage.py test 
+  ``` 
+2. Running E2E tests
+  * Headless on showcase server: 
+  ```sh
+  ./run_ui_tests.sh 
+  ```
+  * Locally on Chrome: 
+  ```sh 
+  OCL_WEB=. browser=chrome env=local username=<username> password=<pwd> ./run_ui_tests.sh
+  ```
 
 
----------------------------------------------------------------------
-Copyright (C) 2016 Open Concept Lab. Use of this software is subject
-to the terms of the Mozille Public License v2.0. Open Concept Lab is
-also distributed under the terms the Healthcare Disclaimer
-described at http://www.openconceptlab.org/license/.
----------------------------------------------------------------------
+
+> Copyright (C) 2016 Open Concept Lab. Use of this software is subject
+> to the terms of the Mozille Public License v2.0. Open Concept Lab is
+> also distributed under the terms the Healthcare Disclaimer
+> described at http://www.openconceptlab.org/license/.
