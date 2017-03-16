@@ -70,6 +70,24 @@ Client interface for Open Concept Lab terminology services API.
 11. Application should be up at http://localhost:7000 and you should be able to login with the user created in step __9__
 
 
+### Running Tests
+
+OCL_WEB has a suite of unit tests written in python (django test) and end-to-end tests written in [protractor](https://github.com/angular/protractor) running either headless (PhantomJS) or Chrome.
+
+1. Unit Tets
+  ```sh
+  python ocl_web/manage.py test 
+  ``` 
+2. Running E2E tests
+  * Headless on showcase server: 
+  ```sh
+  ./run_ui_tests.sh 
+  ```
+  * Locally on Chrome: 
+  ```sh 
+  OCL_WEB=. browser=chrome env=local username=<username> password=<pwd> ./run_ui_tests.sh
+  ```
+
 
 ## Settings
 
@@ -94,26 +112,6 @@ For configuration purposes, the following table maps the cookiecutter-django env
 | DJANGO_SESSION_COOKIE_HTTPONLY        | SESSION_COOKIE_HTTPONLY        | n/a                                            | True                                        |
 | DJANGO_SESSION_COOKIE_SECURE          | SESSION_COOKIE_SECURE          | n/a                                            | False                                       |
 * TODO: Add vendor-added settings in another table
-
-
-### Running Tests
-
-OCL_WEB has a suite of unit tests written in python (django test) and end-to-end tests written in [protractor](https://github.com/angular/protractor) running either headless (PhantomJS) or Chrome.
-
-1. Unit Tets
-  ```sh
-  python ocl_web/manage.py test 
-  ``` 
-2. Running E2E tests
-  * Headless on showcase server: 
-  ```sh
-  ./run_ui_tests.sh 
-  ```
-  * Locally on Chrome: 
-  ```sh 
-  OCL_WEB=. browser=chrome env=local username=<username> password=<pwd> ./run_ui_tests.sh
-  ```
-
 
 
 > Copyright (C) 2016 Open Concept Lab. Use of this software is subject
