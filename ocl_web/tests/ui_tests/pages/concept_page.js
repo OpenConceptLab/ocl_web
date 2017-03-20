@@ -21,12 +21,39 @@ var ConceptPage = function () {
     this.mapTypes = element.all(by.css('#map_type option'));
     this.mappingsButton = element(by.id('mappings_link'));
 
+    this.addToCollectionDropDown = element(by.id('add-to-collection-dropdown-button'));
+    this.firstCollectionToBeAdded = element(by.id('user-collection-1'));
+    this.addToCollectionSaveButton = element(by.css('#add-to-collection-dropdown > div > button'));
+    this.confirmButton = element(by.id('confirm-modal'));
+    this.cascadeCheckbox = element(by.id('cascade-mappings'));
+
+    this.alertBox = element(by.id('concept-alert'));
+
     this.fillInUpdateText = function (updateMsg) {
         this.updateCommentTextArea.clear().sendKeys(updateMsg);
     };
 
     this.fillInUpdateTextRandomly = function () {
         this.fillInUpdateText("Update Concept " + chance.word({length: 4}));
+    };
+
+    this.addConceptToFirstCollection = function () {
+        this.addToCollectionDropDown.click();
+        this.firstCollectionToBeAdded.click();
+        this.addToCollectionSaveButton.click();
+    };
+
+    this.clickConfirmModal = function () {
+        this.confirmButton.click();
+    };
+
+    this.clickCascadeCheckbox = function () {
+        this.cascadeCheckbox.click();
+    };
+
+    this.confirmWithoutCascade = function () {
+        this.clickCascadeCheckbox();
+        this.clickConfirmModal();
     };
 
     this.clickEditConcept = function () {
