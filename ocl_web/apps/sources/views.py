@@ -301,10 +301,7 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         context['search_filters'] = searcher.search_filter_list
 
         if self.request.user.is_authenticated():
-            all_collections = []
-            all_collections.extend(self.get_user_collections(api, self.request.user.username))
-            all_collections.extend(self.get_user_collections_from_organizations(api, self.request.user.username))
-            context['all_collections'] = all_collections
+            context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
 
         # Set debug variables
         context['url_params'] = self.request.GET
@@ -339,23 +336,6 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
                 content_type="application/json"
             )
         return super(SourceConceptsView, self).get(self, *args, **kwargs)
-
-    def get_user_collections(self, api_client, username):
-        user_collection_search_results = \
-            api_client.get('users', username, 'collections', params={'limit': 0}).json()['results']
-
-        # this is because it is tricky to conditionally render things based on list size in the template
-        return user_collection_search_results if len(user_collection_search_results) > 0 else []
-
-    def get_user_collections_from_organizations(self, api_client, username):
-        user_orgs = api_client.get('users', username, 'orgs', params={'limit': 0}).json()
-        all_org_collections = []
-
-        for org in user_orgs:
-            org_collections = api_client.get('orgs', org['id'], 'collections', params={'limit': 0}).json()['results']
-            all_org_collections += org_collections
-
-        return all_org_collections if len(all_org_collections) > 0 else []
 
 
 

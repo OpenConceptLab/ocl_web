@@ -1,0 +1,186 @@
+<div class="modal fade" id="add-to-collection-confirm" role="dialog" tabindex="-1">
+    <div class="modal-dialog expanded" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add to Collection</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h5><strong id="number-of-selected-resources">-</strong> selected <span id="references-label">references</span>
+                            will be added to collection <strong id="collection-name">-</strong></h5>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="information-tooltip" style="margin: 10px 0;">
+                    <label class="checkbox-inline" for="cascade-mappings">
+                        <input type="checkbox" id="cascade-mappings" checked="checked">
+                        Automatically add associated mappings
+                    </label>
+                    <button type="button" class="btn btn-question btn-circle" data-toggle="tooltip"
+                            data-placement="right"
+                            title="A concept's associated mappings are mappings that originate from the specified concept (the 'from concept') and that are stored in the same source">
+                        <strong>?</strong></button>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-default" data-dismiss="modal" value="Close" id="close-modal"/>
+                <input type="button" class="btn btn-primary" data-dismiss="modal" value="Confirm" id="confirm-modal"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="add-to-collection-error" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Reference</h3>
+            </div>
+            <div class="modal-body">
+                <div id="add-to-collection-error-list-container">
+                    <div class="alert alert-warning">
+                        References listed below could not be added.
+                    </div>
+                    <ul id='add-to-collection-error-list' class="list-group">
+                    </ul>
+                </div>
+
+                <div id="add-to-collection-success-list-container" style="display: none">
+                    <div class="alert alert-success">
+                        Following references were added to the collection:
+                    </div>
+                    <ul id="add-to-collection-success-list" class="list-group">
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <a id="close-error-modal"
+                   style="display: none"
+                   class="btn btn-primary"
+                   type="button">View all references</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).on('addToCollectionConfirmationRequired', function (e, numberOfResources, collectionLabel, collectionURI) {
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $('#add-to-collection-confirm').modal('show');
+        $('#number-of-selected-resources').text(numberOfResources);
+        $('#references-label').text(numberOfResources == 1 ? 'reference' : 'references');
+        $('#collection-name').text(collectionLabel);
+
+        $('#close-error-modal').attr("href", collectionURI + "references/");
+    });
+
+
+    $(document).ready(function () {
+
+        $('#confirm-modal').click(function () {
+            $.ajax({
+                url: buildSubmissionURI(),
+                type: "POST",
+                headers: {
+                    'X-CSRFToken': $.cookie('csrftoken'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                data: JSON.stringify({
+                    expressions: getSelectedResources()
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            }).done(function (result) {
+                clearSelection();
+                resetModal();
+
+                var errors = result.errors || result.update_results.filter(function (result) {
+                        return !result.added;
+                    });
+
+                if (errors.length < 1) {
+                    displaySuccessMessage();
+                    return;
+                }
+
+                var added = result.update_results.filter(function (result) {
+                    return result.added;
+                });
+
+                displayResultModal(errors, added);
+
+            }).fail(function (jqXHR, textStatus) {
+                hideSuccessMessage();
+            });
+
+        });
+    });
+
+    function displaySuccessMessage() {
+        $('#add-to-collection-result-information').show();
+    }
+
+    function hideSuccessMessage() {
+        $('#add-to-collection-result-information').hide();
+    }
+
+    function displayResultModal(errors, added) {
+        $('#add-to-collection-error').modal('show');
+
+        errors.forEach(function (error) {
+            $('#add-to-collection-error-list').append("<li class='list-group-item'><strong>" + error.expression + ":</strong> " + error.message[0] + "</li>");
+        });
+
+
+        if (added.length < 1) {
+            hideSuccessMessage();
+            return;
+        }
+
+        $('#close-error-modal').show();
+        $('#add-to-collection-success-list-container').show();
+
+        added.forEach(function (addedReference) {
+            $('#add-to-collection-success-list').append("<li class='list-group-item'><strong>" + addedReference.expression + "</strong></li>");
+        });
+    }
+
+    function buildSubmissionURI() {
+        var selectedCollectionId = $('input[name="collections"]:checked').val();
+        var selectedCollectionURI = $('#collection-url-' + selectedCollectionId).val();
+        var cascadeMappings = $('#cascade-mappings:checkbox:checked').length > 0;
+        return selectedCollectionURI + 'references/new/?cascade=' + ( cascadeMappings ? 'sourcemappings' : 'none');
+    }
+
+    function getSelectedResources() {
+        var selectedResources = [];
+
+        $('input.search-result-checkbox:checked').each(function () {
+            var checkboxId = $(this).attr('id').replace("search-result-", "");
+            var selectedResource = $('#search-result-url-' + checkboxId).val();
+            selectedResources.push(selectedResource);
+        });
+
+        return selectedResources;
+    }
+
+    function clearSelection() {
+        $('#unselect-all-references')[0].click();
+    }
+
+    function resetModal() {
+        $('#close-error-modal').hide();
+        $('#add-to-collection-success-list-container').hide();
+        $('#add-to-collection-success-list').html("");
+    }
+
+</script>

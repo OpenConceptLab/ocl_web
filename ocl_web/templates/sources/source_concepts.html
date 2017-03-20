@@ -42,31 +42,7 @@
 				<!-- Add to collection button -->
 				<div class="pull-left" style="margin-left:-15px;">
 					{% select_all_toggle checkbox_css_selector='.search-result-checkbox' data_table_rows_id='data-table-rows' %}
-					<div class="btn-group" id="add-to-collection-dropdown" style="margin-left:5px; margin-right:5px">
-						<button type="button" id="add-to-collection-dropdown-button" class="btn btn-block btn-sm btn-default dropdown-toggle transparent disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to Collection <span class="caret"></span></button>
-						<div class="collection-list-dropdown dropdown-menu">
-							{% if not all_collections %}
-							<div class="no-collections-info-box">
-								<span>You do not have any existing collections. Create a collection in your profile.</span>
-							</div>
-							{% else %}
-							<div class="collection-list-container">
-								{% for collection in all_collections %}
-								<div class="{% if collection.owner_type == 'Organization' %}org-collection-radio {% endif %}collection-radio radio">
-									<label>
-										<input type="radio" name="collections" id="user-collection-{{ forloop.counter }}" value="{{ forloop.counter }}" >
-										<input type="hidden" name="collection-owner" id="collection-owner-{{ forloop.counter }}" value="{{ collection.owner }}">
-										<input type="hidden" name="collection-name" id="collection-name-{{ forloop.counter }}" value="{{ collection.id }}">
-										<input type="hidden" name="collection-url" id="collection-url-{{ forloop.counter }}" value="{{ collection.url }}">
-										{{ collection.owner }} / <strong>{{ collection.id }}</strong>
-									</label>
-								</div>
-								{% endfor %}
-							</div>
-							<button type="button" class="add-to-collection-save btn btn-primary btn-block" disabled="disabled">Save</button>
-							{% endif %}
-						</div>
-					</div>
+                    {% add_to_collection_dropdown collections=all_collections %}
 				</div>
 				{% endif %}
 
@@ -185,11 +161,7 @@
 				{% endif %}
 			{% endif %}
 
-			<div class="pull-left search-result-col-checkbox" style="padding-left:10px">
-				<span>
-					<input class="search-result-checkbox" type="checkbox" name="reference" id="select-concept-{{ forloop.counter }}" />
-				</span>
-			</div>
+			{% search_result_checkbox index=forloop.counter url=result_url %}
 
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-tag search-result-icon"></span></div>
@@ -221,77 +193,11 @@
 </form>
 </div>
 </div>
-	<!-- /container-fluid -->
-    <div class="modal fade" id="add-to-collection-confirm" role="dialog" tabindex="-1">
-        <div class="modal-dialog expanded" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Add to Collection</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <h5><strong id="number-of-selected-resources">-</strong> selected <span id="references-label">references</span> will be added to collection <strong id="collection-name">-</strong></h5>
-                        </div>
-                    </div>
 
-                    <hr>
-
-                    <div class="information-tooltip" style="margin: 10px 0;">
-                        <label class="checkbox-inline" for="cascade-mappings">
-                            <input type="checkbox" id="cascade-mappings" checked="checked">
-                            Automatically add associated mappings
-                        </label>
-                        <button type="button" class="btn btn-question btn-circle" data-toggle="tooltip" data-placement="right" title="A concept's associated mappings are mappings that originate from the specified concept (the 'from concept') and that are stored in the same source"><strong>?</strong></button>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Close" id="close-modal"/>
-                    <input type="button" class="btn btn-primary" data-dismiss="modal" value="Confirm" id="confirm-modal"/>
-                </div>
-            </div>
-        </div>
-    </div>
-
-	<div class="modal fade" id="add-to-collection-error" tabindex="-1" role="dialog">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h3 class="modal-title">Add Reference</h3>
-				</div>
-				<div class="modal-body">
-					<div id="addToCollectionModalErrorList">
-						<div class="alert alert-warning">
-							References listed below could not be added.
-						</div>
-						<ul class="list-group">
-						</ul>
-					</div>
-
-					<div id="addToCollectionModalSuccessList" style="display: none">
-						<div class="alert alert-success">
-							Following references were added to the collection:
-						</div>
-						<ul class="list-group">
-						</ul>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<a id="closeErrorModalButton"
-					   style="display: none"
-					   class="btn btn-primary"
-					   type="button">View all references</a>
-				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+    {% add_to_collection_confirm_modal %}
 
 	<script>
         $(document).ready(function () {
-            $('[data-toggle="tooltip"]').tooltip();
 
             var dropdown = $('#add-to-collection-dropdown-button');
             $(document).on('allUnchecked', function () {
@@ -299,106 +205,6 @@
             });
             $(document).on('someChecked', function () {
                 dropdown.removeClass('transparent disabled');
-            });
-
-            $('.collection-list-dropdown div.radio, .collection-list-dropdown input').click(function(e){
-                e.stopPropagation();
-
-                if($('input[name="collections"]:checked').val()){
-                    $('.add-to-collection-save').attr('disabled', false);
-                }
-            });
-
-            $('.add-to-collection-save').click(function() {
-                var selectedResources = $('input.search-result-checkbox:checked').length;
-                if(selectedResources < 1) return;
-
-                var selectedCollectionId = $('input[name="collections"]:checked').val();
-                var selectedCollectionName = $('#collection-owner-' + selectedCollectionId).val() + ' / ' + $('#collection-name-' + selectedCollectionId).val();
-
-                $('#add-to-collection-confirm').modal('show');
-                $('#number-of-selected-resources').text(selectedResources);
-                $('#references-label').text(selectedResources == 1 ? 'reference': 'references');
-                $('#collection-name').text(selectedCollectionName);
-            });
-
-            $('#confirm-modal').click(function() {
-                var selectedCollectionId = $('input[name="collections"]:checked').val();
-                var selectedCollectionURI = $('#collection-url-' + selectedCollectionId).val();
-                var postURL = selectedCollectionURI + 'references/new/?cascade=' + ($('#cascade-mappings:checkbox:checked').length > 0 ? 'sourcemappings' : 'none');
-
-                var selectedResources = [];
-                $('input.search-result-checkbox:checked').each(function () {
-                    var checkboxId = $(this).attr('id').replace("select-concept-", "");
-                    var selectedResource = $('#label-container-' + checkboxId + ' > a').attr('href');
-                    selectedResources.push(selectedResource);
-                });
-
-                function clearSelection() {
-                    $('#unselect-all-references')[0].click();
-                }
-
-                function resetModal() {
-                    $('#closeErrorModalButton').hide();
-                    $('#addToCollectionModalSuccessList > ul').html("");
-                    $('#addToCollectionModalSuccessList').hide();
-                    $('#addToCollectionModalErrorList > ul').html("");
-                }
-
-                function listSuccessfulAdditions(added) {
-                    if (added.length < 1) {
-                        $('#add-to-collection-result-information').hide();
-                        return;
-                    }
-
-                    $('#closeErrorModalButton').show();
-                    $('#closeErrorModalButton').attr("href", selectedCollectionURI + "references/");
-
-                    $('#addToCollectionModalSuccessList').show();
-
-                    added.forEach(function (addedReference) {
-                        $('#addToCollectionModalSuccessList > ul').append("<li class='list-group-item'><strong>" + addedReference.expression + "</strong></li>");
-                    });
-                }
-
-                $.ajax({
-                    url:postURL,
-                    type:"POST",
-                    headers: {
-                        'X-CSRFToken': $.cookie('csrftoken'),
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    data: JSON.stringify({
-                        expressions: selectedResources
-                    }),
-                    contentType:"application/json; charset=utf-8",
-                    dataType:"json"
-                }).done(function (result) {
-                    $('#add-to-collection-result-information').show();
-
-                    clearSelection();
-                    resetModal();
-
-                    var errors = result.errors || result.update_results.filter(function (result) {
-                        return !result.added;
-                    });
-
-                    if (errors.length < 1) return;
-                    $('#add-to-collection-error').modal('show');
-
-                    errors.forEach(function (error) {
-                        $('#addToCollectionModalErrorList > ul').append("<li class='list-group-item'><strong>" + error.expression + ":</strong> " + error.message[0] + "</li>");
-                    });
-
-                    var added = result.update_results.filter(function (result) {
-                        return result.added;
-                    });
-                    listSuccessfulAdditions(added);
-
-                }).fail(function (jqXHR, textStatus) {
-                    $('#add-to-collection-result-information').hide();
-                });
-
             });
         });
     </script>

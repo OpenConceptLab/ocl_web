@@ -481,3 +481,20 @@ def select_all_toggle(checkbox_css_selector, data_table_rows_id):
         'checkbox_css_selector': checkbox_css_selector,
         'data_table_rows_id': data_table_rows_id
     }
+
+@register.inclusion_tag('includes/add_to_collection_dropdown.html')
+def add_to_collection_dropdown(collections):
+    return {
+        'collections': collections
+    }
+
+@register.inclusion_tag('includes/add_to_collection_confirm_modal.html')
+def add_to_collection_confirm_modal():
+    return {}
+
+@register.inclusion_tag('includes/search_result_checkbox.html')
+def search_result_checkbox(index, url):
+    return {
+        'index': index,
+        'url': url
+    }
