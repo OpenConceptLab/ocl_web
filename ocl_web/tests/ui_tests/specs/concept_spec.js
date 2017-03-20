@@ -7,7 +7,9 @@ var orgPage = require('../pages/organization_page');
 var UserSourcePage = require('../pages/user_source_page');
 var conceptPage = require('../pages/concept_page');
 var configuration = require('../utilities/configuration.js');
+var EC = require('protractor').ExpectedConditions;
 
+const timeout = 5000;
 const ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT = 'A concept must have at least one fully specified name';
 const CONCEPT_MUST_HAVE_AT_LEAST_ONE_NAME = 'A concept must have at least one name';
 const FULLY_SPECIFIED_NAME_UNIQUE_PER_SOURCE_LOCALE = 'Concept fully specified name must be unique for same source and locale';
@@ -187,6 +189,34 @@ describe('Concept', function () {
 
                 expect(conceptPage.getNameText(conceptPage.getNamesAndSynonyms().first())).toEqual(expectedName);
                 expect(conceptPage.getNameType(conceptPage.getNamesAndSynonyms().first())).toContain('Short');
+            });
+        });
+
+        describe('Concept Page', function () {
+            it('add to collection button should add the concept to collection when user specifies', function () {
+                conceptBuilder
+                    .prepareConceptPage()
+                    .setId(conceptPage.getRandomId())
+                    .setNameAndSynonym(conceptPage.getNamesAndSynonyms().first())
+                    .setNameText(conceptPage.getRandomName())
+                    .setLocalePreferred(true)
+                    .setNameType('Fully Specified')
+                    .setNameLocale('English [en]')
+                    .fillDescriptionField()
+                    .fillToFields()
+                    .build();
+
+                conceptPage.addConceptToFirstCollection();
+
+                browser.wait(EC.visibilityOf(conceptPage.confirmButton), timeout);
+
+                conceptPage.confirmWithoutCascade();
+
+                browser.wait(EC.visibilityOf(conceptPage.alertBox), timeout);
+
+                const alertBoxText = conceptPage.alertBox.getText();
+
+                expect(alertBoxText).toEqual('Added the latest versions of concept to the collection. Future updates will not be added automatically.');
             });
         });
 
