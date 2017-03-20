@@ -44,7 +44,7 @@
         function setCheckboxes(checked) {
             return function () {
                 $(toggleIdSelector).prop('checked', checked);
-                $(checkboxClassSelector).prop('checked', checked)
+                $(checkboxClassSelector).prop('checked', checked);
                 if (!checked) {
                     emit('allUnchecked');
                 } else {
