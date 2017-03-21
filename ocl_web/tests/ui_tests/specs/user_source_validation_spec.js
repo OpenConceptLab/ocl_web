@@ -9,6 +9,7 @@ var ConceptPage = require('../pages/concept_page');
 var configuration = require('../utilities/configuration.js');
 const baseUrl = configuration.get('baseUrl');
 const username = configuration.get('username');
+const timeout = configuration.get('timeout');
 
 describe('OCL User Source Validation Page', function () {
     var loginPage;
@@ -42,8 +43,6 @@ describe('OCL User Source Validation Page', function () {
         expect(orgPage.getStatus()).toEqual('Source created');
         expect((orgPage.customValidationSchema).getText()).toEqual('OpenMRS')
     });
-
-
 
     describe('when changing schema from None to OpenMRS', function(){
         var concept1Id = 'Concept1';

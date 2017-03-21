@@ -1,7 +1,6 @@
 'use strict';
 
 var EC = require('protractor').ExpectedConditions;
-const timeout = 5000;
 
 var UserSourcePage = function() {
 
@@ -66,10 +65,6 @@ var UserSourcePage = function() {
         this.addToCollectionDropdownButton.click();
         this.userCollection1.click();
         this.addToCollectionSaveButton.click();
-    };
-
-    this.addToCollectionDropdownCollectionName = function () {
-        return element(by.id('collection-owner-1')).getText() + ' / ' + element(by.id('collection-name-1')).getText();
     };
 };
 module.exports = UserSourcePage;

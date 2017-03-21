@@ -6,7 +6,7 @@ var data = require('../fixtures/test_data.json');
 var configuration = require('../utilities/configuration.js');
 var searchPage = require('../pages/search_page.js');
 var EC = require('protractor').ExpectedConditions;
-const timeout = 5000;
+const timeout = configuration.get('timeout');
 const baseUrl = configuration.get('baseUrl');
 
 describe('Search Page', function () {

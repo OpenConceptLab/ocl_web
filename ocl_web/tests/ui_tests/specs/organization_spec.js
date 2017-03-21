@@ -8,7 +8,7 @@ var collectionReferencePage = require('../pages/collections_reference_page.js');
 var data = require('../fixtures/test_data.json');
 var configuration = require('../utilities/configuration.js');
 var EC = require('protractor').ExpectedConditions;
-var timeout = 5000;
+const timeout = configuration.get('timeout');
 
 describe('OCL Org Page', function () {
     const baseUrl = configuration.get('baseUrl');

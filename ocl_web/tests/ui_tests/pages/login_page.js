@@ -1,4 +1,5 @@
 var configuration = require('../utilities/configuration.js');
+
 var LoginPage = function() {
 
   this.username = $('#id_login');

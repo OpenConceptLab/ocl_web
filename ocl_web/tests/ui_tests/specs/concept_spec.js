@@ -9,7 +9,7 @@ var conceptPage = require('../pages/concept_page');
 var configuration = require('../utilities/configuration.js');
 var EC = require('protractor').ExpectedConditions;
 
-const timeout = 5000;
+const timeout = configuration.get('timeout');
 const ONE_FULLY_SPECIFIED_NAME_PER_CONCEPT = 'A concept must have at least one fully specified name';
 const CONCEPT_MUST_HAVE_AT_LEAST_ONE_NAME = 'A concept must have at least one name';
 const FULLY_SPECIFIED_NAME_UNIQUE_PER_SOURCE_LOCALE = 'Concept fully specified name must be unique for same source and locale';

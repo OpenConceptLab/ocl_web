@@ -7,6 +7,7 @@ var orgPage = require('../pages/organization_page');
 var data = require('../fixtures/test_data.json');
 var configuration = require('../utilities/configuration.js');
 var EC = require('protractor').ExpectedConditions;
+const timeout = configuration.get('timeout');
 
 describe('OCL Collections Page', function () {
 
@@ -71,10 +72,10 @@ describe('OCL Collections Page', function () {
     it('should release a user collection version', function () {
         orgPage.releaseVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), 500);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Released'), timeout);
         expect(orgPage.notification.getText()).toEqual('Successfully Released.');
 
-        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 500);
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), timeout);
         expect(orgPage.releaseLabel.get(1).getText()).toEqual('Released');
 
         orgPage.notification.click();
@@ -83,10 +84,10 @@ describe('OCL Collections Page', function () {
     it('should retire user collection version', function () {
         orgPage.retireVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired.'), 500);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Retired.'), timeout);
         expect(orgPage.notification.getText()).toEqual('Successfully Retired.');
 
-        browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), 500);
+        browser.wait(EC.textToBePresentInElement(orgPage.retireLabel.get(1), 'Retired'), timeout);
         expect(orgPage.retireLabel.get(1).getText()).toEqual('Retired');
 
         orgPage.notification.click();
@@ -95,8 +96,8 @@ describe('OCL Collections Page', function () {
     it('should un-retire user collection version', function () {
         orgPage.retireVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), 1000);
-        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Retired.'), timeout);
+        browser.wait(EC.textToBePresentInElement(orgPage.releaseLabel.get(1), 'Released'), timeout);
 
         orgPage.notification.click();
     });
@@ -104,7 +105,7 @@ describe('OCL Collections Page', function () {
     it('should un-release a user collection version', function () {
         orgPage.releaseVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), 500);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully Un-Released.'), timeout);
 
         orgPage.notification.click();
     });
@@ -112,7 +113,7 @@ describe('OCL Collections Page', function () {
     it('should delete a user collection version', function () {
         orgPage.deleteCollectionVersion();
 
-        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed collection version.'), 1000);
+        browser.wait(EC.textToBePresentInElement(orgPage.notification, 'Successfully removed collection version.'), timeout);
 
         orgPage.notification.click();
     });
