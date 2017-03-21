@@ -7,6 +7,8 @@ var orgPage = require('../pages/organization_page');
 var UserSourcePage = require('../pages/user_source_page');
 var ConceptPage = require('../pages/concept_page');
 var configuration = require('../utilities/configuration.js');
+const baseUrl = configuration.get('baseUrl');
+const username = configuration.get('username');
 
 describe('OCL User Source Validation Page', function () {
     var loginPage;
@@ -50,7 +52,7 @@ describe('OCL User Source Validation Page', function () {
         var basicValidationSourceId = data.src_code + srcShortCode + orgPage.getRandomShortCode();
 
         beforeAll(function(){
-            var userNewSourcePath = configuration.get('baseUrl') + 'users/' + configuration.get('username');
+            var userNewSourcePath = baseUrl + 'users/' + username;
             browser.get(userNewSourcePath);
 
             // create a basic validation source
@@ -68,7 +70,7 @@ describe('OCL User Source Validation Page', function () {
         });
 
         afterAll(function(){
-            var basicSourceEditURL = configuration.get('baseURL') + 'users/' + configuration.get('username') + '/sources/' + basicValidationSourceId + '/edit/'
+            var basicSourceEditURL = baseUrl + 'users/' + username + '/sources/' + basicValidationSourceId + '/edit/';
             browser.get(basicSourceEditURL);
             usrSrcPage.deleteSourceButton.click();
             usrSrcPage.confirmDeleteSourceButton.click();
@@ -109,9 +111,7 @@ describe('OCL User Source Validation Page', function () {
         });
 
         it('should succeed when an invalid concept is fixed', function(){
-            var concept1EditUrl = configuration.get('baseUrl') + 'users/' +
-                configuration.get('username') + '/sources/' +
-                basicValidationSourceId + '/concepts/' + concept1Id + '/edit/';
+            var concept1EditUrl = baseUrl + 'users/' + username + '/sources/' + basicValidationSourceId + '/concepts/' + concept1Id + '/edit/';
 
             browser.get(concept1EditUrl);
 

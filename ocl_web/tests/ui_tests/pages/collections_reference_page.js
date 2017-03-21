@@ -58,13 +58,13 @@ var CollectionsReferencePage = function () {
         browser.wait(EC.presenceOf(this.source.$('option[label="' + source + '"]')), 2000);
         this.source.sendKeys(source);
 
-        browser.wait(EC.elementToBeClickable(this.sourceVersion.$('option[label="HEAD"]')), 2000);
+        browser.wait(EC.elementToBeClickable(this.sourceVersion.$('option[label="HEAD"]')), 7000);
         this.sourceVersion.sendKeys(sourceVersion);
     };
 
     this.createNewMultipleReferences = function (organization, source, sourceVersion) {
         this.setCreateNewMultipleReferencesValues(organization, source, sourceVersion);
-        browser.wait(EC.visibilityOf(this.multipleReferencesTab), 1000);
+        browser.wait(EC.visibilityOf(this.multipleReferencesTab), 4000);
         this.conceptToSelect.click();
         this.addMultipleReferenceButton.click();
     };
