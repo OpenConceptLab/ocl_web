@@ -120,8 +120,8 @@ describe('OCL User Source Page', function () {
         browser.wait(EC.elementToBeClickable(usrSrcPage.confirmButton), timeout);
         usrSrcPage.confirmButton.click();
 
-        browser.wait(EC.presenceOf(usrSrcPage.addToCollectionResultInformation), timeout);
-        expect(usrSrcPage.addToCollectionResultInformation.isPresent()).toBeTruthy();
+        browser.wait(EC.visibilityOf(usrSrcPage.addToCollectionResultInformation), timeout);
+        expect(usrSrcPage.addToCollectionResultInformation.isDisplayed()).toBeTruthy();
     });
 
     it('should show error modal when add source concepts to collection with error', function () {

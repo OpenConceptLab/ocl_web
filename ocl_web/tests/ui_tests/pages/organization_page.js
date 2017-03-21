@@ -1,5 +1,7 @@
 var BasePage = require('./base_page.js');
 var EC = require('protractor').ExpectedConditions;
+var configuration = require('../utilities/configuration.js');
+const timeout = configuration.get('timeout');
 
 var OrganizationPage = function () {
 
@@ -156,21 +158,21 @@ var OrganizationPage = function () {
     this.deleteSrcVersion = function () {
         var clickDelete = function () {
             this.deleteSrcVersionIcon.click();
-            browser.wait(EC.visibilityOf(this.okButton, 1500));
+            browser.wait(EC.visibilityOf(this.okButton), timeout);
             this.okButton.click();
         }.bind(this);
 
-        browser.wait(EC.visibilityOf(this.deleteSrcVersionIcon), 1500).then(clickDelete, function () {
+        browser.wait(EC.visibilityOf(this.deleteSrcVersionIcon), timeout).then(clickDelete, function () {
             browser.refresh();
             clickDelete();
         });
     };
 
     this.deleteCollectionVersion = function () {
-        browser.wait(EC.visibilityOf(this.deleteColVersionIcon), 1000);
+        browser.wait(EC.visibilityOf(this.deleteColVersionIcon), timeout);
         this.deleteColVersionIcon.click();
 
-        browser.wait(EC.visibilityOf(this.okButton), 1000);
+        browser.wait(EC.visibilityOf(this.okButton), timeout);
         this.okButton.click();
     };
 };
