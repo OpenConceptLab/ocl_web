@@ -7,7 +7,7 @@ var data = require('../fixtures/test_data.json');
 var orgPage = require('../pages/organization_page');
 var configuration = require('../utilities/configuration.js');
 var EC = require('protractor').ExpectedConditions;
-const timeout = 5000;
+const timeout = configuration.get('timeout');
 const baseUrl = configuration.get('baseUrl');
 
 describe('Collection Reference Page', function () {
@@ -150,8 +150,7 @@ describe('Collection Reference Page', function () {
         browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
         collectionReferencePage.deleteReference();
         collectionReferencePage.setCreateNewMultipleReferencesValues(organization, 'HSTP-Indicators', 'HEAD');
-        browser.wait(EC.presenceOf(collectionReferencePage.messageBox), timeout);
-        expect(collectionReferencePage.messageBox.getText()).toEqual('When HEAD version selected, the latest version of concepts and mappings are listed');
+        browser.wait(EC.textToBePresentInElement(collectionReferencePage.messageBox, 'When HEAD version selected, the latest version of concepts and mappings are listed'), timeout);
     });
 
     it('test when user adds HEAD version of source in multiple references then inform the user', function () {

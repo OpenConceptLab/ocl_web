@@ -1,3 +1,7 @@
+'use strict';
+
+var EC = require('protractor').ExpectedConditions;
+
 var UserSourcePage = function() {
 
     // user source locators
@@ -11,6 +15,14 @@ var UserSourcePage = function() {
     this.updateUserSourceButton = element(by.id('update-source'));
     this.deleteSourceButton = element(by.id('delete-source'));
     this.confirmDeleteSourceButton = element(by.id('confirm-delete-source'));
+    this.checkAllReferences = element(by.id('toggle-select-references'));
+    this.addToCollectionDropdownButton = element(by.id('add-to-collection-dropdown-button'));
+    this.userCollection1 = element(by.id('user-collection-1'));
+    this.addToCollectionSaveButton = element(by.css('#add-to-collection-dropdown .add-to-collection-save.btn.btn-primary.btn-block'));
+    this.confirmModalCollectionName = element(by.id('collection-name'));
+    this.confirmButton = element(by.id('confirm-modal'));
+    this.addToCollectionResultInformation = element(by.id('add-to-collection-result-information'));
+    this.addToCollectionErrorModal = element(by.id('add-to-collection-error'));
 
     this.failedValidationsPopup = element(by.id('failed-validations'));
     this.successMessage = element(by.css('.alert.alert-info'));
@@ -46,6 +58,13 @@ var UserSourcePage = function() {
         this.setSupportedLocale(locale);
         this.setCustomValidationSchema(custom_validation_schema);
         this.clickCreateUsrSrcButton();
+    };
+
+    this.addToCollection = function () {
+        this.checkAllReferences.click();
+        this.addToCollectionDropdownButton.click();
+        this.userCollection1.click();
+        this.addToCollectionSaveButton.click();
     };
 };
 module.exports = UserSourcePage;

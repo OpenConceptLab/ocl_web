@@ -4,6 +4,8 @@ var id = '';
 var conceptVersionUrl;
 var conceptVersionNumber;
 var mappingId;
+var configuration = require('../utilities/configuration.js');
+const timeout = configuration.get('timeout');
 
 
 var CollectionsReferencePage = function () {
@@ -44,7 +46,7 @@ var CollectionsReferencePage = function () {
         this.references.click();
         this.addNewReferenceLink.click();
         this.singleReferences.click();
-        browser.wait(EC.visibilityOf(this.expression), 2000);
+        browser.wait(EC.visibilityOf(this.expression), timeout);
         this.expression.sendKeys(expression);
         return this.addSingleReferenceButton.click();
     };
@@ -52,26 +54,26 @@ var CollectionsReferencePage = function () {
     this.setCreateNewMultipleReferencesValues = function (organization, source, sourceVersion) {
         this.references.click();
         this.addNewReferenceLink.click();
-        browser.wait(EC.elementToBeClickable(this.organization), 1000);
+        browser.wait(EC.elementToBeClickable(this.organization), timeout);
         this.organization.sendKeys(organization);
 
-        browser.wait(EC.presenceOf(this.source.$('option[label="' + source + '"]')), 2000);
+        browser.wait(EC.presenceOf(this.source.$('option[label="' + source + '"]')), timeout);
         this.source.sendKeys(source);
 
-        browser.wait(EC.elementToBeClickable(this.sourceVersion.$('option[label="HEAD"]')), 2000);
+        browser.wait(EC.elementToBeClickable(this.sourceVersion.$('option[label="HEAD"]')), timeout + 2000);
         this.sourceVersion.sendKeys(sourceVersion);
     };
 
     this.createNewMultipleReferences = function (organization, source, sourceVersion) {
         this.setCreateNewMultipleReferencesValues(organization, source, sourceVersion);
-        browser.wait(EC.visibilityOf(this.multipleReferencesTab), 1000);
+        browser.wait(EC.visibilityOf(this.multipleReferencesTab), timeout);
         this.conceptToSelect.click();
         this.addMultipleReferenceButton.click();
     };
 
     this.createNewMultipleReferencesWithConcepts = function (organization, source, sourceVersion, conceptIdList) {
         this.setCreateNewMultipleReferencesValues(organization, source, sourceVersion);
-        browser.wait(EC.visibilityOf(this.multipleReferencesTab), 1000);
+        browser.wait(EC.visibilityOf(this.multipleReferencesTab), timeout);
         conceptIdList.forEach(function (conceptId) {
             element(by.css('#' + conceptId)).click();
         });
@@ -80,7 +82,7 @@ var CollectionsReferencePage = function () {
 
     this.createNewMultipleReferencesWithConceptAndMapping = function (organization, source, sourceVersion, conceptId) {
         this.setCreateNewMultipleReferencesValues(organization, source, sourceVersion);
-        browser.wait(EC.visibilityOf(this.multipleReferencesTab), 1000);
+        browser.wait(EC.visibilityOf(this.multipleReferencesTab), timeout);
         element(by.css('#' + conceptId)).click();
         this.mappingToSelect.click();
         this.addMultipleReferenceButton.click();
@@ -89,14 +91,14 @@ var CollectionsReferencePage = function () {
     this.deleteReference = function () {
         this.checkReference.click();
         this.deleteLink.click();
-        browser.wait(EC.visibilityOf(this.okButton), 1000);
+        browser.wait(EC.visibilityOf(this.okButton), timeout);
         this.okButton.click();
     };
 
     this.deleteAllReferences = function () {
         this.checkAllReferences.click();
         this.deleteLink.click();
-        browser.wait(EC.visibilityOf(this.okButton), 2000);
+        browser.wait(EC.visibilityOf(this.okButton), timeout);
         this.okButton.click();
     };
 };
