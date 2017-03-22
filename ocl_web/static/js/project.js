@@ -854,7 +854,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
 
     $scope.addReferences = function (payload, addingSingle) {
         $scope.addingSingle = addingSingle;
-        Reference.addReferences(payload)
+        Reference.addReferences(payload, addingSingle)
             .success(function (result) {
                 if ($scope.pageObj.selectAllConcepts || $scope.pageObj.selectAllMappings) {
                     alertify.success(
@@ -939,8 +939,9 @@ app.factory('Reference', function ($http) {
         return $http.get('/' + ownerType + '/' + ownerIdentifier + '/' + resourceContainerType + '/' + resourceIdentifier + '/' + resourceContainerVersionId + '/mappings/', {params: params});
     };
 
-    Reference.addReferences = function (references) {
-        return $http.post(location.href, references);
+    Reference.addReferences = function (references, addingSingle) {
+        var cascadeParameter = addingSingle ? 'none' : 'sourcemappings';
+        return $http.post(location.href + '?cascade=' + cascadeParameter, references);
     };
 
     return this;
@@ -1481,7 +1482,7 @@ var triggerDownload = function (el) {
     var $el = $(el),
         user = $("meta[name='user']").attr('content');
     if (_.includes(window.location.protocol, 'https:'))
-        url = '//api.' + window.location.hostname.replace('www.','') + $el.data('uri') + '&user=' + user;
+        url = '//api.' + window.location.hostname.replace('www.', '') + $el.data('uri') + '&user=' + user;
     else
         url = '//' + window.location.hostname + ':8000' + $el.data('uri') + '&user=' + user;
     fireDownload(url);
