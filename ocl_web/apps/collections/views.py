@@ -596,7 +596,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
             self.collection_id,
             'references',
             data=data,
-            params = {'cascade': request.GET.get('cascade', 'sourcemappings')}
+            params = {'cascade': 'none' if self.adding_single_reference(data) else request.GET.get('cascade', 'sourcemappings')}
         )
 
         results = result.json()

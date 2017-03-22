@@ -172,28 +172,6 @@ describe('Collection Reference Page', function () {
         expect(collectionReferencePage.successModal.getText()).toEqual('Concepts/mappings are added to collection.');
     });
 
-    it('add concept single reference with related mappings', function () {
-        const organization = data.org_short_code + id;
-        browser.get(baseUrl + 'orgs/' + organization + '/');
-        var collectionShortCode = data.short_code + id + id;
-        orgPage.createNewOrgCollection(
-            collectionShortCode,
-            data.col_name + id,
-            data.full_name + id,
-            data.supported_locale,
-            data.custom_validation_schema
-        );
-
-        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + collectionShortCode);
-        var expectedMessage = 'Related mappings stored in the same source are also added to collection.';
-        var conceptExpression = '/orgs/' + organization + '/sources/HSTP-Indicators/concepts/C1.1.1.2-' + id + id + '/';
-        collectionReferencePage.createNewSingleReference(conceptExpression);
-        browser.wait(EC.presenceOf(collectionReferencePage.mappingModalMessage), timeout);
-        expect(collectionReferencePage.countOfReferences.count()).toEqual(2);
-        expect(collectionReferencePage.mappingModalMessage.getText()).toContain(expectedMessage);
-        expect(collectionReferencePage.mappingModalList.count()).toEqual(1);
-    });
-
     it('add concept multiple reference with related mappings automatically', function () {
         const organization = data.org_short_code + id;
         const collectionShortCode = data.short_code + id + id;
