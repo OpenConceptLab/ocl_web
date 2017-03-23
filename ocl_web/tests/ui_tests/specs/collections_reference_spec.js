@@ -10,6 +10,14 @@ var EC = require('protractor').ExpectedConditions;
 const timeout = configuration.get('timeout');
 const baseUrl = configuration.get('baseUrl');
 
+var fs = require('fs');
+
+function writeScreenShot(data, filename) {
+    var stream = fs.createWriteStream(filename);
+    stream.write(new Buffer(data, 'base64'));
+    stream.end();
+}
+
 describe('Collection Reference Page', function () {
 
     var loginPage,
@@ -172,13 +180,20 @@ describe('Collection Reference Page', function () {
         expect(collectionReferencePage.successModal.getText()).toEqual('Concepts/mappings are added to collection.');
     });
 
+
     it('add concept multiple reference with related mappings automatically', function () {
         const organization = data.org_short_code + id;
         const collectionShortCode = data.short_code + id + id;
         const conceptId = 'C1\\.1\\.1\\.2-' + id + id;
+        browser.get(baseUrl + 'orgs/' + organization + '/');
 
-        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + collectionShortCode + '/references/');
-        collectionReferencePage.deleteAllReferences();
+        orgPage.createNewOrgCollection(
+             collectionShortCode,
+             data.col_name + id,
+             data.full_name + id,
+             data.supported_locale,
+             data.custom_validation_schema
+        );
 
         browser.get(baseUrl + 'orgs/' + organization + '/collections/' + collectionShortCode);
         const expectedMessage = 'Related mappings stored in the same source are also added to collection.';
