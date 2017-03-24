@@ -124,10 +124,8 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
 
         add_reference_warning = self.request.session.get('add_reference_warning', None)
         add_reference_success = self.request.session.get('add_reference_success', None)
-        added_mappings = self.request.session.get('added_mappings', None)
         self.request.session['add_reference_success'] = None
         self.request.session['add_reference_warning'] = None
-        self.request.session['added_mappings'] = None
 
         # Build URL params
         transferrable_search_params = {}
@@ -169,7 +167,6 @@ class CollectionReferencesView(CollectionsBaseView, TemplateView):
 
         context['warning'] = add_reference_warning
         context['success'] = add_reference_success
-        context['mappings'] = added_mappings
 
         return context
 
@@ -603,16 +600,9 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
         errors = results if result.status_code == requests.codes.bad else None
 
         added_result_count = len(filter(lambda result: result['added'], results))
-        mapping_expressions = [res['expression'] for res in results if 'mappings' in res['expression']]
 
         if added_result_count > 0:
             self.add_version_warning_to_session(data, request, results)
-            if self.adding_single_reference(data):
-                request.session['added_mappings'] = mapping_expressions
-
-        if len(results) == added_result_count and not self.adding_single_reference(data):
-            request.session['added_mappings'] = \
-                filter(lambda exp: exp not in data['mappings'], mapping_expressions)
 
         return HttpResponse(
             json.dumps({

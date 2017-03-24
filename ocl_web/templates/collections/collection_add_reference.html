@@ -53,6 +53,38 @@
         </script>
         <!-- /Error modal-->
 
+        <!--Confirm modal-->
+        <script type="text/ng-template" id="confirm-modal.html">
+            <div class="modal-header">
+                <h4 class="modal-title">Add to Collection</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h5><strong id="number-of-selected-resources">[[ pageObj.selectedConceptCount ]]</strong> selected <span id="references-label">references</span> will be added to collection <strong id="collection-name">{{ collection.created_by }} / {{ collection.short_code }}</strong></h5>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="information-tooltip" style="margin: 10px 0;">
+                    <label class="checkbox-inline" for="cascade-mappings">
+                        <input type="checkbox" id="cascade-mappings" ng-model="pageObj.cascadeMappings">
+                        Automatically add associated mappings
+                    </label>
+                    <button type="button" class="btn btn-question btn-circle" tooltip-placement="right"
+                            uib-tooltip="A concept's associated mappings are mappings that originate from the specified concept (the 'from concept') and that are stored in the same source">
+                        <strong>?</strong></button>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-default" value="Close" id="close-modal" ng-click="closeConfirmModal()"/>
+                <input type="button" class="btn btn-primary" value="Confirm" id="confirm-modal" ng-click="confirmConfirmModal()"/>
+            </div>
+        </script>
+        <!-- /Confirm modal-->
+
         <div class="row">
             <div>
                 {% field_label 'Short Code' collection.short_code %}
@@ -182,7 +214,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Action</label>
                                     <br/>
-                                    <button id="add-multiple-references-button" type="button" class="btn btn-primary" ng-click="addMultipleReferences()">Add
+                                    <button id="add-multiple-references-button" type="button" class="btn btn-primary" ng-click="multipleReferencesAddButtonClicked()">{% trans "Add" %}
                                     </button>
                                     <a href="{{ collection_references_url }}"
                                        class="btn btn-default">{% trans "Cancel" %}</a>

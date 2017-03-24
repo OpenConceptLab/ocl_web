@@ -10,13 +10,6 @@ var EC = require('protractor').ExpectedConditions;
 const timeout = configuration.get('timeout');
 const baseUrl = configuration.get('baseUrl');
 
-var fs = require('fs');
-
-function writeScreenShot(data, filename) {
-    var stream = fs.createWriteStream(filename);
-    stream.write(new Buffer(data, 'base64'));
-    stream.end();
-}
 
 describe('Collection Reference Page', function () {
 
@@ -156,7 +149,7 @@ describe('Collection Reference Page', function () {
     it('test when user selects HEAD version of source from dropdown in multiple references', function () {
         const organization = data.org_short_code + id;
         browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
-        collectionReferencePage.deleteReference();
+        collectionReferencePage.deleteAllReferences();
         collectionReferencePage.setCreateNewMultipleReferencesValues(organization, 'HSTP-Indicators', 'HEAD');
         browser.wait(EC.textToBePresentInElement(collectionReferencePage.messageBox, 'When HEAD version selected, the latest version of concepts and mappings are listed'), timeout);
     });
@@ -174,19 +167,18 @@ describe('Collection Reference Page', function () {
         browser.get(baseUrl + 'orgs/' + organization + '/sources/HSTP-Indicators/versions/');
         orgPage.createNewSourceVersion('nonHead', 'for testing');
         browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
-        collectionReferencePage.deleteReference();
+        collectionReferencePage.deleteAllReferences();
         collectionReferencePage.createNewMultipleReferences(organization, 'HSTP-Indicators', 'nonHead');
         browser.wait(EC.presenceOf(collectionReferencePage.successModal), timeout + 4000);
         expect(collectionReferencePage.successModal.getText()).toEqual('Concepts/mappings are added to collection.');
     });
 
-
-    it('add concept multiple reference with related mappings automatically', function () {
+    it('add concept multiple reference with related mappings', function () {
         const organization = data.org_short_code + id;
         const collectionShortCode = data.short_code + id + id;
         const conceptId = 'C1\\.1\\.1\\.2-' + id + id;
-        browser.get(baseUrl + 'orgs/' + organization + '/');
 
+        browser.get(baseUrl + 'orgs/' + organization + '/');
         orgPage.createNewOrgCollection(
              collectionShortCode,
              data.col_name + id,
@@ -195,31 +187,12 @@ describe('Collection Reference Page', function () {
              data.custom_validation_schema
         );
 
-        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + collectionShortCode);
-        const expectedMessage = 'Related mappings stored in the same source are also added to collection.';
-        collectionReferencePage.createNewMultipleReferencesWithConcepts(organization, sourceId, 'HEAD', [conceptId]);
-
-        browser.wait(EC.presenceOf(collectionReferencePage.mappingModalMessage), timeout);
-        expect(collectionReferencePage.countOfReferences.count()).toEqual(2);
-        expect(collectionReferencePage.mappingModalMessage.getText()).toContain(expectedMessage);
-        expect(collectionReferencePage.mappingModalList.count()).toEqual(1);
-    });
-
-    it('add concept multiple reference with related mappings', function () {
-        const organization = data.org_short_code + id;
-        const collectionShortCode = data.short_code + id + id;
-        const conceptId = 'C1\\.1\\.1\\.2-' + id + id;
-
-        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + collectionShortCode + '/references/');
-        collectionReferencePage.deleteAllReferences();
-
         browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + collectionShortCode);
         const expectedMessage = 'Related mappings stored in the same source are also added to collection.';
         collectionReferencePage.createNewMultipleReferencesWithConceptAndMapping(organization, sourceId, 'HEAD', conceptId);
 
         browser.wait(EC.presenceOf(collectionReferencePage.checkReference), timeout);
         expect(collectionReferencePage.countOfReferences.count()).toEqual(2);
-        expect(collectionReferencePage.countOfMappingModal.count()).toEqual(0);
     });
 
     it('add concept multiple reference with related mappings and get error modal', function () {
@@ -244,6 +217,5 @@ describe('Collection Reference Page', function () {
         collectionReferencePage.closeErrorModal.click();
         browser.wait(EC.presenceOf(collectionReferencePage.checkReference), timeout);
         expect(collectionReferencePage.countOfReferences.count()).toEqual(3);
-        expect(collectionReferencePage.countOfMappingModal.count()).toEqual(0);
     });
 });
