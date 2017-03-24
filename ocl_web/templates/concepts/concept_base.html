@@ -168,7 +168,11 @@
                     var selectedCollectionURI = $('#collection-url-' + selectedCollectionId).val();
                     var postURL = selectedCollectionURI + 'references/new/?cascade=' + ($('#cascade-mappings:checkbox:checked').length > 0 ? 'sourcemappings' : 'none');
 
+                    {% if concept.is_latest_version %}
                     var selectedResources = ['{{ concept.url }}'];
+                    {% else %}
+                    var selectedResources = ['{{ concept.version_url }}'];
+                    {% endif %}
 
                     $.ajax({
                         url: postURL,
