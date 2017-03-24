@@ -121,6 +121,11 @@
             });
 
         });
+
+        $('#close-modal').click(function () {
+            clearSelection();
+            clearDropDown();
+        });
     });
 
     function displaySuccessMessage() {
@@ -173,6 +178,12 @@
 
     function clearSelection() {
         $('#unselect-all-references')[0].click();
+    }
+
+    function clearDropDown() {
+        $('input[name="collections"]:checked').each(function () {
+            $(this).prop('checked', false);
+        });
     }
 
     function resetModal() {
