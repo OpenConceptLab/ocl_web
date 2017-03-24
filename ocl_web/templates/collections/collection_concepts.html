@@ -42,14 +42,7 @@
 				<!-- Add to collection button -->
 				<div class="pull-left" style="margin-left:-15px;">
 					{% select_all_toggle checkbox_css_selector='.search-result-checkbox' data_table_rows_id='data-table-rows' %}
-					<div class="btn-group" id="add-to-collection-dropdown" style="margin-left:5px; margin-right:5px">
-						<button type="button" id="add-to-collection-dropdown-button" class="btn btn-block btn-sm btn-default dropdown-toggle transparent disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to Collection <span class="caret"></span></button>
-						<div class="collection-list-dropdown dropdown-menu">
-							<div class="no-collections-info-box">
-								<span>You do not have any existing collections. Create a collection in your profile.</span>
-							</div>
-						</div>
-					</div>
+					{% add_to_collection_dropdown collections=all_collections %}
 				</div>
 				{% endif %}
 
@@ -136,15 +129,29 @@
 			</div><!-- /.col-sm-12 -->
 		</div><!-- /.row -->
 
+		<div id="add-to-collection-result-information" style="margin-top: 12px;display: none;" class="alert alert-warning">Added the latest versions of concepts/mappings to the collections. Future updates will not be added automatically.</div>
+
 		<!-- Search results -->
 		<div id="data-table-rows">
 			{% for result in results %}
 			<div class="row row-search-result">
-				<div class="pull-left search-result-col-checkbox" style="padding-left:10px">
-            	<span>
-                	<input class="search-result-checkbox" type="checkbox" name="reference" id="select-concept-{{ forloop.counter }}" />
-            	</span>
-				</div>
+				{% if source.owner_type == 'Organization' %}
+					{% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
+						{% url 'concept-home' org=result.owner source=result.source concept=result.id as result_url %}
+					{% else %}
+						{% url 'concept-home-versioned' org=result.owner source=result.source concept=result.id concept_version=result.version as result_url %}
+					{% endif %}
+				{% else %}
+					{% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
+						{% url 'concept-home' user=result.owner source=result.source concept=result.id as result_url %}
+					{% else %}
+						{% url 'concept-home-versioned' user=result.owner source=result.source concept=result.id concept_version=result.version as result_url %}
+					{% endif %}
+				{% endif %}
+
+				{% if request.user.is_authenticated %}
+					{% search_result_checkbox index=forloop.counter url=result_url %}
+				{% endif %}
 
 				<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 				<div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-tag search-result-icon"></span></div>
@@ -184,6 +191,9 @@
 </form>
 </div>
 </div>
+
+	{% add_to_collection_confirm_modal %}
+
     <script>
         $(document).ready(function () {
             var dropdown = $('#add-to-collection-dropdown-button');
