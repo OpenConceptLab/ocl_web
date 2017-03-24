@@ -32,38 +32,36 @@
                                             class="btn btn-block btn-sm btn-default dropdown-toggle"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to
                                         Collection <span class="caret"></span></button>
+                                    <div class="collection-list-dropdown dropdown-menu dropdown-menu-right">
                                     {% if not all_collections %}
-                                        <div class="collection-list-dropdown dropdown-menu dropdown-menu-right"
-                                             style="padding: 10px;">
+                                        <div class="no-collections-info-box">
                                             <span>You do not have any existing collections. Create a collection in your profile.</span>
                                         </div>
                                     {% else %}
-                                        <div class="collection-list-dropdown dropdown-menu dropdown-menu-right">
+                                        <div class="collection-list-container">
                                             {% for collection in all_collections %}
-                                                <div class="{% if collection.owner_type == 'Organization' %}org-collection-radio {% endif %}collection-radio radio">
-                                                    <label>
-                                                        <input type="radio" name="collections"
-                                                               id="user-collection-{{ forloop.counter }}"
-                                                               value="{{ forloop.counter }}">
-                                                        <input type="hidden" name="collection-owner"
-                                                               id="collection-owner-{{ forloop.counter }}"
-                                                               value="{{ collection.owner }}">
-                                                        <input type="hidden" name="collection-name"
-                                                               id="collection-name-{{ forloop.counter }}"
-                                                               value="{{ collection.id }}">
-                                                        <input type="hidden" name="collection-url"
-                                                               id="collection-url-{{ forloop.counter }}"
-                                                               value="{{ collection.url }}">
-                                                        {{ collection.owner }} / <strong>{{ collection.id }}</strong>
-                                                    </label>
-                                                </div>
+                                            <div class="{% if collection.owner_type == 'Organization' %}org-collection-radio {% endif %}collection-radio radio">
+                                                <label>
+                                                    <input type="radio" name="collections"
+                                                           id="user-collection-{{ forloop.counter }}"
+                                                           value="{{ forloop.counter }}">
+                                                    <input type="hidden" name="collection-owner"
+                                                           id="collection-owner-{{ forloop.counter }}"
+                                                           value="{{ collection.owner }}">
+                                                    <input type="hidden" name="collection-name"
+                                                           id="collection-name-{{ forloop.counter }}"
+                                                           value="{{ collection.id }}">
+                                                    <input type="hidden" name="collection-url"
+                                                           id="collection-url-{{ forloop.counter }}"
+                                                           value="{{ collection.url }}">
+                                                    {{ collection.owner }} / <strong>{{ collection.id }}</strong>
+                                                </label>
+                                            </div>
                                             {% endfor %}
-                                            <button type="button"
-                                                    class="add-to-collection-save btn btn-primary btn-block"
-                                                    disabled="disabled">Save
-                                            </button>
                                         </div>
+                                        <button type="button" class="add-to-collection-save btn btn-primary btn-block" disabled="disabled">Add</button>
                                     {% endif %}
+                                    </div>
                                 </div>
                             </div>
                         {% endif %}
@@ -133,7 +131,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Close"
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel"
                                id="close-modal"/>
                         <input type="button" class="btn btn-primary" data-dismiss="modal" value="Confirm"
                                id="confirm-modal"/>

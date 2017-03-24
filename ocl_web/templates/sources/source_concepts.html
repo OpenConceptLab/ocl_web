@@ -161,7 +161,9 @@
 				{% endif %}
 			{% endif %}
 
-			{% search_result_checkbox index=forloop.counter url=result_url %}
+			{% if request.user.is_authenticated %}
+				{% search_result_checkbox index=forloop.counter url=result_url %}
+			{% endif %}
 
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-tag search-result-icon"></span></div>

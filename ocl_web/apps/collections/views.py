@@ -343,6 +343,9 @@ class CollectionConceptsView(CollectionsBaseView, TemplateView):
         context['search_filters_debug'] = str(searcher.search_filter_list)
         context['collection_versions'] = versions.search_results
 
+        if self.request.user.is_authenticated():
+            context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
+
         return context
 
     def get(self, request, *args, **kwargs):
