@@ -35,12 +35,10 @@ var CollectionsReferencePage = function () {
     this.multipleReferencesTab = element(by.css('#addmultiplereftab > div:nth-child(2)'));
     this.conceptToSelect = element(by.css('#concepts > li:nth-child(1) > label > input'));
     this.mappingToSelect = element(by.css('#mappings > li:nth-child(1) > label > input'));
-    this.mappingModalMessage = element(by.css('#mappingModal > div > div > div.modal-body > div'));
-    this.mappingModalList = element.all(by.css('#mappingModal > div > div > div.modal-body > ul > li'));
-    this.countOfMappingModal = element.all(by.id('mappingModal'));
     this.addReferenceModalErrorList = element.all(by.css('#addReferenceModalErrorList > li'));
     this.addReferenceModalSuccessList = element.all(by.css('#addReferenceModalSuccessList > li'));
     this.closeErrorModal = element(by.id('closeErrorModalButton'));
+    this.confirmModalButton = element(by.id('confirm-modal'));
 
     this.createNewSingleReference = function (expression) {
         this.references.click();
@@ -69,6 +67,8 @@ var CollectionsReferencePage = function () {
         browser.wait(EC.visibilityOf(this.multipleReferencesTab), timeout);
         this.conceptToSelect.click();
         this.addMultipleReferenceButton.click();
+        browser.wait(EC.visibilityOf(this.confirmModalButton), timeout);
+        this.confirmModalButton.click();
     };
 
     this.createNewMultipleReferencesWithConcepts = function (organization, source, sourceVersion, conceptIdList) {
@@ -78,6 +78,8 @@ var CollectionsReferencePage = function () {
             element(by.css('#' + conceptId)).click();
         });
         this.addMultipleReferenceButton.click();
+        browser.wait(EC.visibilityOf(this.confirmModalButton), timeout);
+        this.confirmModalButton.click();
     };
 
     this.createNewMultipleReferencesWithConceptAndMapping = function (organization, source, sourceVersion, conceptId) {
@@ -86,6 +88,8 @@ var CollectionsReferencePage = function () {
         element(by.css('#' + conceptId)).click();
         this.mappingToSelect.click();
         this.addMultipleReferenceButton.click();
+        browser.wait(EC.visibilityOf(this.confirmModalButton), timeout);
+        this.confirmModalButton.click();
     };
 
     this.deleteReference = function () {

@@ -840,6 +840,33 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
         $scope.addReferences(payload, true);
     };
 
+    $scope.multipleReferencesAddButtonClicked = function () {
+        $scope.pageObj.selectedConceptCount = $scope.pageObj.selectAllConcepts ? $scope.concepts.items.length : _getResourceExpressions($scope.concepts).length;
+        if ($scope.pageObj.selectedConceptCount > 0) {
+            $scope.openConfirmModal();
+        } else {
+           $scope.addMultipleReferences();
+        }
+    };
+
+    $scope.openConfirmModal = function () {
+        $scope.pageObj.cascadeMappings = true;
+        $scope.confirmModal = $uibModal.open({
+            animation: true,
+            templateUrl: 'confirm-modal.html',
+            scope: $scope
+        });
+    };
+
+    $scope.closeConfirmModal = function () {
+        $scope.confirmModal.close();
+    };
+
+    $scope.confirmConfirmModal = function () {
+        $scope.confirmModal.close();
+        $scope.addMultipleReferences();
+    };
+
     $scope.openErrorModal = function () {
         $scope.errorModal = $uibModal.open({
             animation: true,
@@ -854,7 +881,8 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
 
     $scope.addReferences = function (payload, addingSingle) {
         $scope.addingSingle = addingSingle;
-        Reference.addReferences(payload, addingSingle)
+        var cascadeParameter = !addingSingle && $scope.pageObj.cascadeMappings ? 'sourcemappings' : 'none';
+        Reference.addReferences(payload, cascadeParameter)
             .success(function (result) {
                 if ($scope.pageObj.selectAllConcepts || $scope.pageObj.selectAllMappings) {
                     alertify.success(
@@ -939,8 +967,7 @@ app.factory('Reference', function ($http) {
         return $http.get('/' + ownerType + '/' + ownerIdentifier + '/' + resourceContainerType + '/' + resourceIdentifier + '/' + resourceContainerVersionId + '/mappings/', {params: params});
     };
 
-    Reference.addReferences = function (references, addingSingle) {
-        var cascadeParameter = addingSingle ? 'none' : 'sourcemappings';
+    Reference.addReferences = function (references, cascadeParameter) {
         return $http.post(location.href + '?cascade=' + cascadeParameter, references);
     };
 
