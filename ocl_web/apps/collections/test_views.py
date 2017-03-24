@@ -17,8 +17,12 @@ from unittest import skip
 
 
 class MyDict(dict):
-    def __init__(self, name):
+    def __init__(self, name, authenticated=True):
         self.username = name
+        self.authenticated = authenticated
+
+    def is_authenticated(self):
+        return self.authenticated
 
 
 class FakeRequest(object):
@@ -332,7 +336,7 @@ class CollectionConceptViewTest(TestCase):
     @patch('libs.ocl.OclApi.get')
     def test_getContextForCollectionConcepts_contextRecieved(self, mock_get):
         conceptResponse = MagicMock(spec=Response)
-        collection = ["Some Results"]
+        collection = []
         conceptResponse.json.return_value = collection
         conceptResponse.status_code = 200
         conceptResponse.headers = []
