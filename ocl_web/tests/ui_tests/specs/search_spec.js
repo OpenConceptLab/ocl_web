@@ -2,6 +2,7 @@
 
 var LoginPage = require('../pages/login_page.js');
 var LogoutPage = require('../pages/logout_page.js');
+var UserSourcePage = require('../pages/user_source_page.js');
 var data = require('../fixtures/test_data.json');
 var configuration = require('../utilities/configuration.js');
 var searchPage = require('../pages/search_page.js');
@@ -12,11 +13,13 @@ const baseUrl = configuration.get('baseUrl');
 describe('Search Page', function () {
 
     var loginPage,
-        logoutPage;
+        logoutPage,
+        usrSrcPage;
 
     beforeAll(function () {
         loginPage = new LoginPage();
         logoutPage = new LogoutPage();
+        usrSrcPage = new UserSourcePage();
         loginPage.login();
         return browser.ignoreSynchronization = true;
     });
@@ -59,6 +62,28 @@ describe('Search Page', function () {
         browser.get(baseUrl + 'search/?type=users&q=');
 
         expect(searchPage.searchResults.count()).toBeGreaterThan(0);
+    });
+
+    it('should add source concepts to collection', function () {
+        browser.get(baseUrl + 'search/?type=concepts&q=');
+
+        usrSrcPage.addToCollection();
+        browser.wait(EC.elementToBeClickable(usrSrcPage.confirmButton), timeout);
+        usrSrcPage.confirmButton.click();
+
+        browser.wait(EC.visibilityOf(usrSrcPage.addToCollectionResultInformation), timeout);
+        expect(usrSrcPage.addToCollectionResultInformation.isDisplayed()).toBeTruthy();
+    });
+
+    it('should show error modal when add source concepts to collection with error', function () {
+        browser.get(baseUrl + 'search/?type=concepts&q=');
+
+        usrSrcPage.addToCollection();
+        browser.wait(EC.elementToBeClickable(usrSrcPage.confirmButton), timeout);
+        usrSrcPage.confirmButton.click();
+
+        browser.wait(EC.visibilityOf(usrSrcPage.addToCollectionErrorModal), timeout);
+        expect(usrSrcPage.addToCollectionResultInformation.isDisplayed()).toBeFalsy();
     });
 
 });
