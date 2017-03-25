@@ -8,7 +8,16 @@ Client interface for Open Concept Lab terminology services API.
 ### Prerequisites
 
 1. ocl_web  
-   * ``` git clone git@github.com:OpenConceptLab/ocl_web.git ```
+   Fork the repo on github and clone your fork:
+   ```
+   git clone https://github.com/{youruser}/ocl_web.git
+   ```
+   
+   Add a remote repo to upstream in order to be able to fetch updates:
+   ```
+   git remote add upstream https://github.com/OpenConceptLab/ocl_web
+   ```
+   
 2. python
 3. npm
 4. pip
@@ -85,7 +94,7 @@ OCL_WEB has a suite of unit tests written in python (django test) and end-to-end
   ```
   * Locally on Chrome: 
   ```sh 
-  OCL_WEB=. browser=chrome env=local username=<username> password=<pwd> ./run_ui_tests.sh
+  OCL_WEB=. browser=phantomjs env=local username=<username> password=<pwd> ./run_ui_tests.sh
   ```
 
 
