@@ -498,3 +498,7 @@ def search_result_checkbox(index, url):
         'index': index,
         'url': url
     }
+
+@register.inclusion_tag('includes/add_to_collection_result_information.html')
+def add_to_collection_result_information():
+    return {}
