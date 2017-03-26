@@ -99,6 +99,7 @@
                 dataType: "json"
             }).done(function (result) {
                 clearSelection();
+                clearDropDown();
                 resetModal();
 
                 var errors = result.errors || result.update_results.filter(function (result) {
@@ -184,6 +185,7 @@
         $('input[name="collections"]:checked').each(function () {
             $(this).prop('checked', false);
         });
+        $('.add-to-collection-save').attr('disabled', true);
     }
 
     function resetModal() {
