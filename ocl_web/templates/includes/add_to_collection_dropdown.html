@@ -14,11 +14,11 @@
                         <label>
                             <input type="radio" name="collections" id="user-collection-{{ forloop.counter }}"
                                    value="{{ forloop.counter }}">
-                            <input type="hidden" name="collection-owner" id="collection-owner-{{ forloop.counter }}"
+                            <input type="hidden" id="collection-owner-{{ forloop.counter }}"
                                    value="{{ collection.owner }}">
-                            <input type="hidden" name="collection-name" id="collection-name-{{ forloop.counter }}"
+                            <input type="hidden" id="collection-name-{{ forloop.counter }}"
                                    value="{{ collection.id }}">
-                            <input type="hidden" name="collection-url" id="collection-url-{{ forloop.counter }}"
+                            <input type="hidden" id="collection-url-{{ forloop.counter }}"
                                    value="{{ collection.url }}">
                             {{ collection.owner }} / <strong>{{ collection.id }}</strong>
                         </label>
