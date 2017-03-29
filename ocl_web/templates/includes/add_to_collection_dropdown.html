@@ -8,10 +8,13 @@
                 <span>You do not have any existing collections. Create a collection in your profile.</span>
             </div>
         {% else %}
+            <div id="search-box" style="padding: 10px 10px;padding-bottom: 0;">
+                <input id="search-input" type="text" class="form-control" placeholder="Search">
+            </div>
             <div class="collection-list-container">
                 {% for collection in collections %}
                     <div class="{% if collection.owner_type == 'Organization' %}org-collection-radio {% endif %}collection-radio radio">
-                        <label>
+                        <label class="org-label">
                             <input type="radio" name="collections" id="user-collection-{{ forloop.counter }}"
                                    value="{{ forloop.counter }}">
                             <input type="hidden" id="collection-owner-{{ forloop.counter }}"
@@ -32,10 +35,27 @@
 </div>
 
 <script>
+    // Register case insensitive contains
+    $.expr[':'].icontains = $.expr.createPseudo(function(text) {
+        return function(e) {
+            return $(e).text().toUpperCase().indexOf(text.toUpperCase()) >= 0;
+        };
+    });
+
     $(document).ready(function () {
 
         var collectionDropDownItems = $('.collection-list-dropdown div.radio, .collection-list-dropdown input');
         var saveButton = $('.add-to-collection-save');
+        var searchInput = $('#search-input');
+
+        searchInput.keyup(function () {
+            $(".org-label:icontains('" + searchInput.val() + "')").each(function (index) {
+                $(this).parent().show();
+            });
+            $(".org-label:not(:icontains('" + searchInput.val() + "'))").each(function (index) {
+                $(this).parent().hide();
+            });
+        });
 
         collectionDropDownItems.click(function (e) {
             e.stopPropagation();
