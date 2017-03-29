@@ -76,7 +76,7 @@ describe('Search Page', function () {
     });
 
     it('should show error modal when add source concepts to collection with error', function () {
-        browser.get(baseUrl + 'search/?type=mappings&q=');
+        browser.get(baseUrl + 'search/?type=concepts&q=');
 
         usrSrcPage.addToCollection();
         browser.wait(EC.elementToBeClickable(usrSrcPage.confirmButton), timeout);
