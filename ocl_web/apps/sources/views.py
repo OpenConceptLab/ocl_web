@@ -349,6 +349,7 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         # Setup the context and args
         context = super(SourceMappingsView, self).get_context_data(*args, **kwargs)
         self.get_args()
+        api = OclApi(self.request, debug=True, facets=True)
 
         # Load the source details
         source = self.get_source_details(
@@ -399,6 +400,8 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         context['search_query'] = original_search_string
         context['search_filters'] = searcher.search_filter_list
 
+        if self.request.user.is_authenticated():
+            context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
 
         # Set debug variables
         context['url_params'] = self.request.GET

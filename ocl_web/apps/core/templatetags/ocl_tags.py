@@ -489,9 +489,9 @@ def add_to_collection_dropdown(collections):
     }
 
 @register.inclusion_tag('includes/add_to_collection_confirm_modal.html')
-def add_to_collection_confirm_modal(reference_type='concepts'):
+def add_to_collection_confirm_modal(show_cascade_option=False, reference_type=''):
     return {
-        'reference_type': reference_type
+        'show_cascade_option': show_cascade_option or reference_type == 'concepts'
     }
 
 @register.inclusion_tag('includes/search_result_checkbox.html')

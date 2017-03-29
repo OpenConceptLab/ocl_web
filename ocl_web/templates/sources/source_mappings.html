@@ -38,6 +38,13 @@
 		<!-- Search Bar, Actions, Sorting and Paging -->
 		<div class="row" style="margin-bottom:10px;margin-top:10px;">
 			<div class="col-xs-12">
+				{% if request.user.is_authenticated %}
+				<!-- Add to collection button -->
+				<div class="pull-left" style="margin-left:-15px;">
+					{% select_all_toggle checkbox_css_selector='.search-result-checkbox' data_table_rows_id='data-table-rows' %}
+                    {% add_to_collection_dropdown collections=all_collections %}
+				</div>
+				{% endif %}
 
 				{% if results %}
 				<!-- Simple pager -->
@@ -136,9 +143,11 @@
 			</div><!-- /.col-sm-12 -->
 		</div><!-- /.row -->
 
+		{% add_to_collection_result_information %}
 
-<!-- Search results -->
-{% for result in results %}
+		<!-- Search results -->
+		<div id="data-table-rows">
+		{% for result in results %}
 		<div class="row row-search-result">
 			{% if source.owner_type == 'Organization' %}
 				{% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
@@ -153,9 +162,14 @@
 					{% url 'mapping-home-versioned' user=result.owner source=result.source mapping=result.versioned_object_id mapping_version=result.version as result_url %}
 				{% endif %}
 			{% endif %}
+
+			{% if request.user.is_authenticated %}
+				{% search_result_checkbox index=forloop.counter url=result_url %}
+			{% endif %}
+
 			<!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
 			<div class="hidden-xs col-sm-1 search-result-col-icon"><span class="glyphicon glyphicon-link search-result-icon"></span></div>
-			<div class="col-xs-12 col-sm-11 search-result-col-content">
+			<div class="col-xs-12 col-sm-10 search-result-col-content">
 				<div class="label-container">
 					<!-- map_type label -->
 					{% if kwargs.source_version == 'HEAD' or kwargs.source_version == None %}
@@ -182,6 +196,7 @@
 {% empty %}
 		<h3><small>{% trans 'No mappings found' %}</small></h3>
 {% endfor %}
+		</div>
 
 		<!-- Pagination -->
 		{% if results %}
@@ -196,6 +211,21 @@
 </form>
 </div>
 </div>
+
+	{% add_to_collection_confirm_modal show_cascade_option=False %}
+
+	<script>
+        $(document).ready(function () {
+
+            var dropdown = $('#add-to-collection-dropdown-button');
+            $(document).on('allUnchecked', function () {
+                dropdown.addClass('transparent disabled');
+            });
+            $(document).on('someChecked', function () {
+                dropdown.removeClass('transparent disabled');
+            });
+        });
+    </script>
 {% endblock tab-content %}
 
 

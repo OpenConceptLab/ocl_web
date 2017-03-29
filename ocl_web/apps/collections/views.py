@@ -239,6 +239,9 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
         context['search_query'] = searcher.get_query()
         context['search_filters'] = searcher.search_filter_list
 
+        if self.request.user.is_authenticated():
+            context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
+
         # Set debug variables
         context['url_params'] = self.request.GET
         context['search_params'] = searcher.search_params
