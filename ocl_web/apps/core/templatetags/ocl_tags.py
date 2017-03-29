@@ -489,8 +489,10 @@ def add_to_collection_dropdown(collections):
     }
 
 @register.inclusion_tag('includes/add_to_collection_confirm_modal.html')
-def add_to_collection_confirm_modal():
-    return {}
+def add_to_collection_confirm_modal(reference_type=''):
+    return {
+        'reference_type': reference_type
+    }
 
 @register.inclusion_tag('includes/search_result_checkbox.html')
 def search_result_checkbox(index, url):

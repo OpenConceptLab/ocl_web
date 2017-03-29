@@ -75,9 +75,9 @@
                     <!-- Search Bar, Actions, Sorting and Paging -->
                     <div class="row" style="margin-bottom:10px;">
                         <div class="col-xs-12" style="padding-left:0">
-                            {% if results %}
+                            {% if results and  request.user.is_authenticated %}
                             <!-- Add to collection button -->
-                                {% if request.user.is_authenticated and search_type == 'concepts' %}
+                                {% if search_type == 'concepts' or search_type == 'mappings'%}
                                     <div class="pull-left">
                                         {% select_all_toggle checkbox_css_selector='.search-result-checkbox' data_table_rows_id='data-table-rows' %}
                                         {% add_to_collection_dropdown collections=all_collections %}
@@ -221,10 +221,15 @@
                                 {% else %}
                                     {% url 'mapping-home' user=result.owner source=result.source mapping=result.id as mapping_url %}
                                 {% endif %}
+
+                                {% if request.user.is_authenticated %}
+                                    {% search_result_checkbox index=forloop.counter url=result.versioned_object_url %}
+                                {% endif %}
+
                                 <!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
                                 <div class="hidden-xs col-sm-1 search-result-col-icon"><span
                                         class="glyphicon glyphicon-link search-result-icon"></span></div>
-                                <div class="col-xs-12 col-sm-11 search-result-col-content">
+                                <div class="col-xs-12 col-sm-10 search-result-col-content">
                                     <div class="label-container">
                                         <!-- map_type label -->
                                         {% mapping_label result label_size='small' %}
@@ -456,7 +461,7 @@
         {% endif %}
 
     </div> <!-- /container-fluid -->
-    {% add_to_collection_confirm_modal %}
+    {% add_to_collection_confirm_modal reference_type=search_type %}
     <script>
         $(document).ready(function () {
             var dropdown = $('#add-to-collection-dropdown-button');
