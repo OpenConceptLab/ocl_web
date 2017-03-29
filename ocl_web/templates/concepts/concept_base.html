@@ -109,7 +109,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="panel panel-default">
-                            <div class="panel-body">
+                            <div class="panel-body" style="overflow-wrap: break-word;">
                                 <h5><strong id="number-of-selected-resources">-</strong> selected <span
                                         id="references-label">references</span> will be added to collection <strong
                                         id="collection-name">-</strong></h5>
@@ -193,6 +193,7 @@
                         warning.text(result.message);
                         warning.show();
                         clearDropDown();
+                        clearCascadeMappingsCheckbox();
                     }).fail(function () {
                         console.log('Fail');
                     });
@@ -201,6 +202,7 @@
 
                 $('#close-modal').click(function () {
                     clearDropDown();
+                    clearCascadeMappingsCheckbox();
                 });
             });
 
@@ -209,6 +211,10 @@
                     $(this).prop('checked', false);
                 });
                 $('.add-to-collection-save').attr('disabled', true);
+            }
+
+            function clearCascadeMappingsCheckbox() {
+                $('#cascade-mappings').prop('checked', true);
             }
         </script>
     {% endblock resource-header %}
