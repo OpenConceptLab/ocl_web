@@ -47,6 +47,7 @@
         var collectionDropDownItems = $('.collection-list-dropdown div.radio, .collection-list-dropdown input');
         var saveButton = $('.add-to-collection-save');
         var searchInput = $('#search-input');
+        var collectionDropDown = $('#add-to-collection-dropdown');
 
         searchInput.keyup(function () {
             $(".org-label:icontains('" + searchInput.val() + "')").each(function (index) {
@@ -63,6 +64,12 @@
             if ($('input[name="collections"]:checked').val()) {
                 saveButton.attr('disabled', false);
             }
+        });
+
+        collectionDropDown.click(function (e) {
+            setTimeout(function(){
+                searchInput.focus();
+            }, 0);
         });
 
         saveButton.click(function(){
