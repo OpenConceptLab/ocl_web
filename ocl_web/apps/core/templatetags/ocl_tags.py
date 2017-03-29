@@ -489,7 +489,7 @@ def add_to_collection_dropdown(collections):
     }
 
 @register.inclusion_tag('includes/add_to_collection_confirm_modal.html')
-def add_to_collection_confirm_modal(reference_type=''):
+def add_to_collection_confirm_modal(reference_type='concepts'):
     return {
         'reference_type': reference_type
     }
