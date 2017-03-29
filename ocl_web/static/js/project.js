@@ -841,8 +841,10 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
     };
 
     $scope.multipleReferencesAddButtonClicked = function () {
-        $scope.pageObj.selectedConceptCount = $scope.pageObj.selectAllConcepts ? $scope.concepts.items.length : _getResourceExpressions($scope.concepts).length;
-        if ($scope.pageObj.selectedConceptCount > 0) {
+        var selectedConceptCount = $scope.pageObj.selectAllConcepts ? $scope.concepts.items.length : _getResourceExpressions($scope.concepts).length;
+        var selectedMappingCount = $scope.pageObj.selectAllMappings ? $scope.mappings.items.length : _getResourceExpressions($scope.mappings).length;
+        $scope.pageObj.selectedReferenceCount = selectedConceptCount + selectedMappingCount;
+        if (selectedConceptCount > 0) {
             $scope.openConfirmModal();
         } else {
            $scope.addMultipleReferences();

@@ -6,7 +6,7 @@
             </div>
             <div class="modal-body">
                 <div class="panel panel-default">
-                    <div class="panel-body">
+                    <div class="panel-body" style="overflow-wrap: break-word;">
                         <h5><strong id="number-of-selected-resources">-</strong> selected <span id="references-label">references</span>
                             will be added to collection <strong id="collection-name">-</strong></h5>
                     </div>
@@ -45,7 +45,7 @@
                     <div class="alert alert-warning">
                         References listed below could not be added.
                     </div>
-                    <ul id='add-to-collection-error-list' class="list-group">
+                    <ul id='add-to-collection-error-list' class="list-group" style="overflow-wrap: break-word;">
                     </ul>
                 </div>
 
@@ -53,7 +53,7 @@
                     <div class="alert alert-success">
                         Following references were added to the collection:
                     </div>
-                    <ul id="add-to-collection-success-list" class="list-group">
+                    <ul id="add-to-collection-success-list" class="list-group" style="overflow-wrap: break-word;">
                     </ul>
                 </div>
             </div>
@@ -126,6 +126,7 @@
         $('#close-modal').click(function () {
             clearSelection();
             clearDropDown();
+            clearCascadeMappingsCheckbox();
         });
     });
 
@@ -188,11 +189,16 @@
         $('.add-to-collection-save').attr('disabled', true);
     }
 
+    function clearCascadeMappingsCheckbox() {
+        $('#cascade-mappings').prop('checked', true);
+    }
+
     function resetModal() {
         $('#close-error-modal').hide();
         $('#add-to-collection-success-list-container').hide();
         $('#add-to-collection-success-list').html("");
         $('#add-to-collection-error-list').html("");
+        clearCascadeMappingsCheckbox();
     }
 
 </script>

@@ -26,7 +26,7 @@
                 <div class="alert alert-warning" ng-if="errors">
                     References listed below could not be added.
                 </div>
-                <ul id="addReferenceModalErrorList" class="list-group" ng-if="errors">
+                <ul id="addReferenceModalErrorList" class="list-group" style="overflow-wrap: break-word;" ng-if="errors">
                     <li class="list-group-item" ng-repeat="(key, error) in errors">
                         <strong>[[ key ]]:</strong> [[ error ]]
                     </li>
@@ -35,7 +35,7 @@
                 <div class="alert alert-success" ng-if="!addingSingle && added && added.length > 0">
                     Following references were added to the collection:
                 </div>
-                <ul id="addReferenceModalSuccessList" class="list-group" ng-if="added && added.length > 0">
+                <ul id="addReferenceModalSuccessList" class="list-group" style="overflow-wrap: break-word;" ng-if="added && added.length > 0">
                     <li class="list-group-item" ng-repeat="addedReference in added">
                         <strong>[[ addedReference.expression ]]</strong>
                     </li>
@@ -60,8 +60,8 @@
             </div>
             <div class="modal-body">
                 <div class="panel panel-default">
-                    <div class="panel-body">
-                        <h5><strong id="number-of-selected-resources">[[ pageObj.selectedConceptCount ]]</strong> selected <span id="references-label">references</span> will be added to collection <strong id="collection-name">{{ collection.created_by }} / {{ collection.short_code }}</strong></h5>
+                    <div class="panel-body" style="overflow-wrap: break-word;">
+                        <h5><strong id="number-of-selected-resources">[[ pageObj.selectedReferenceCount ]]</strong> selected <span id="references-label">references</span> will be added to collection <strong id="collection-name">{{ collection.created_by }} / {{ collection.short_code }}</strong></h5>
                     </div>
                 </div>
 
