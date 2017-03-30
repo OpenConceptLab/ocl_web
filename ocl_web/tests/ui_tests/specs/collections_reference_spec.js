@@ -7,7 +7,7 @@ var data = require('../fixtures/test_data.json');
 var orgPage = require('../pages/organization_page');
 var configuration = require('../utilities/configuration.js');
 var EC = require('protractor').ExpectedConditions;
-const timeout = 7000;
+const timeout = configuration.get('timeout');
 const baseUrl = configuration.get('baseUrl');
 
 
