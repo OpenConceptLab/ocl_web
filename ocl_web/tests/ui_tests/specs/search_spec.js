@@ -86,18 +86,6 @@ describe('Search Page', function () {
         expect(usrSrcPage.addToCollectionResultInformation.isDisplayed()).toBeFalsy();
     });
 
-
-    it('should add source mappings to collection', function () {
-        browser.get(baseUrl + 'search/?type=mappings&q=');
-
-        usrSrcPage.addToCollection();
-        browser.wait(EC.elementToBeClickable(usrSrcPage.confirmButton), timeout);
-        usrSrcPage.confirmButton.click();
-
-        browser.wait(EC.visibilityOf(usrSrcPage.addToCollectionResultInformation), timeout);
-        expect(usrSrcPage.addToCollectionResultInformation.isDisplayed()).toBeTruthy();
-    });
-
     it('should show error modal when add source mappings to collection with error', function () {
         browser.get(baseUrl + 'search/?type=mappings&q=');
 
