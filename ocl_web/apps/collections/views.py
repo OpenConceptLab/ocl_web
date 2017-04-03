@@ -607,7 +607,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
 
         added_result_count = len(filter(lambda result: result['added'], results))
 
-        if added_result_count > 0 and not request.is_ajax():
+        if added_result_count > 0:
             self.add_version_warning_to_session(data, request, results)
 
         return HttpResponse(
