@@ -1420,9 +1420,9 @@ $.urlParam = function (name) {
 };
 
 var httpURL = function (url) {
-    if (window.location.hostname.indexOf('showcase') > -1)
-        return url;
-    return '//api.' + window.location.hostname.replace('www.', '');
+    if (_.includes(window.location.protocol, 'https:'))
+        url = '//api.' + window.location.hostname.replace('www.', '');
+    return url;
 }
 
 if ($('.download-csv').length > 0) {
@@ -1510,9 +1510,9 @@ $('#collection_add_reference_form > div > input').keypress(function (e) {
 var triggerDownload = function (el) {
     var $el = $(el),
         user = $("meta[name='user']").attr('content');
-    if (window.location.hostname.indexOf('showcase') > -1)
-        url = '//' + window.location.hostname + ':8000' + $el.data('uri') + '&user=' + user;
-    else
+    if (_.includes(window.location.protocol, 'https:'))
         url = '//api.' + window.location.hostname.replace('www.', '') + $el.data('uri') + '&user=' + user;
+    else
+        url = '//' + window.location.hostname + ':8000' + $el.data('uri') + '&user=' + user;
     fireDownload(url);
 };
