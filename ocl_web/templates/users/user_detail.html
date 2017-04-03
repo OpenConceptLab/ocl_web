@@ -69,7 +69,7 @@
 						<div class="list-group-item" style="overflow-x: scroll; white-space: nowrap;">
 							{% for source in sources %}
 								{% url 'source-home' user=source.owner source=source.short_code as user_source_url %}
-								<div class="label-container">
+								<div id="source-{{ forloop.counter }}" class="label-container">
 									{% generic_resource_label resource_type='source' resource_id=source.short_code resource_name=source.name resource_url=user_source_url owner_type='User' owner_id=source.owner label_size='small' display_breadcrumb=True %}
 								</div>
 							{% empty %}
