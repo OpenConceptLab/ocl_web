@@ -709,6 +709,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
     $scope.pageObj = {};
     $scope.ownerType = 'orgs';
     $scope.resourceContainerType = 'sources';
+    $scope.pageObj.cascadeMappings = true;
     $scope.REFERENCE_LIMIT = 10;
 
     $scope.getOwners = function () {
@@ -852,7 +853,6 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
     };
 
     $scope.openConfirmModal = function () {
-        $scope.pageObj.cascadeMappings = true;
         $scope.confirmModal = $uibModal.open({
             animation: true,
             templateUrl: 'confirm-modal.html',
@@ -920,6 +920,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
             })
             .finally(function () {
                 $scope.loading = false;
+                $scope.pageObj.cascadeMappings = true;
             });
     };
 
