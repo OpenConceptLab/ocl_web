@@ -175,6 +175,8 @@ class ConceptMappingsView(FormView, UserOrOrgMixin,
         context = super(ConceptMappingsView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
+        api = OclApi(self.request, debug=True, facets=True)
+
         # Load the concept details
         concept = self.get_concept_details(
             self.owner_type, self.owner_id, self.source_id, self.concept_id,
@@ -288,6 +290,9 @@ class ConceptMappingsView(FormView, UserOrOrgMixin,
                     mapping['mapping_category'] = 'Other'
                     mappings['Other'].append(mapping)
 
+        if self.request.user.is_authenticated():
+            context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
+
         # Set the context
         context['kwargs'] = self.kwargs
         context['url_params'] = self.request.GET
@@ -365,6 +370,8 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
         context = super(ConceptHistoryView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
+        api = OclApi(self.request, debug=True, facets=True)
+
         # Load the concept details
         concept = self.get_concept_details(
             self.owner_type, self.owner_id, self.source_id, self.concept_id,
@@ -375,6 +382,9 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
             self.owner_type, self.owner_id, self.source_id, self.concept_id)
         # search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         # search_results_current_page = search_results_paginator.page(searcher.current_page)
+
+        if self.request.user.is_authenticated():
+            context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
 
         # Set the context
         context['kwargs'] = self.kwargs

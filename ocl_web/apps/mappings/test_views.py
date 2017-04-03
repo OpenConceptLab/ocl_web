@@ -14,8 +14,12 @@ from libs.ocl import OclApi, OclSearch, OclConstants
 import views
 
 class MyDict(dict):
-    def __init__(self,name):
+    def __init__(self, name, authenticated=True):
         self.username = name
+        self.authenticated = authenticated
+
+    def is_authenticated(self):
+        return self.authenticated
 
 
 class FakeRequest(object):
@@ -60,6 +64,7 @@ class MappingVersionsViewTest(TestCase):
         id = 'someID'
         mappingVersionsView.kwargs = {'mapping_id': id}
         mappingVersionsView.request = FakeRequest()
+        mappingVersionsView.request.user = MyDict('tempuser', False)
 
         kwargs={'mapping_id': id}
         context = mappingVersionsView.get_context_data(**kwargs)
