@@ -72,12 +72,17 @@
 </div>
 
 <script>
+    var textOfReference = "";
+    var collectionName = "";
+
     $(document).on('addToCollectionConfirmationRequired', function (e, numberOfResources, collectionLabel, collectionURI) {
         $('[data-toggle="tooltip"]').tooltip();
 
         $('#add-to-collection-confirm').modal('show');
         $('#number-of-selected-resources').text(numberOfResources);
-        $('#references-label').text(numberOfResources == 1 ? 'reference' : 'references');
+        textOfReference = numberOfResources == 1 ? 'reference' : 'references';
+        $('#references-label').text(textOfReference);
+        collectionName = collectionLabel;
         $('#collection-name').text(collectionLabel);
 
         $('#close-error-modal').attr("href", collectionURI + "references/");
@@ -108,7 +113,7 @@
                     });
 
                 if (errors.length < 1) {
-                    displaySuccessMessage();
+                    displaySuccessMessage("Added the " + textOfReference + " to the collection " + collectionName + " successfully.");
                     return;
                 }
 
@@ -131,12 +136,15 @@
         });
     });
 
-    function displaySuccessMessage() {
-        $('#add-to-collection-result-information').show();
+    function displaySuccessMessage(message) {
+        var messageBar = $('#add-to-collection-result-information');
+        messageBar.html(message);
+        messageBar.show();
     }
 
     function hideSuccessMessage() {
-        $('#add-to-collection-result-information').hide();
+        var messageBar = $('#add-to-collection-result-information');
+        messageBar.hide();
     }
 
     function displayResultModal(errors, added) {
