@@ -7,15 +7,6 @@ var mappingPage = require('../pages/mapping_page');
 const timeout = configuration.get('timeout');
 var EC = require('protractor').ExpectedConditions;
 
-var fs = require('fs');
-
-function writeScreenShot(data, filename) {
-    var stream = fs.createWriteStream(filename);
-    stream.write(new Buffer(data, 'base64'));
-    stream.end();
-}
-
-
 describe('Go to the Mapping', function () {
     const baseUrl = configuration.get('baseUrl');
     var loginPage;
