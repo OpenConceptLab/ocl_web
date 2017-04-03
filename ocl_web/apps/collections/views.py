@@ -607,7 +607,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
 
         added_result_count = len(filter(lambda result: result['added'], results))
 
-        if added_result_count > 0:
+        if added_result_count > 0 and self.show_warning(request.GET.get('warning', 'hide')):
             self.add_version_warning_to_session(data, request, results)
 
         return HttpResponse(
@@ -634,6 +634,9 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
 
     def adding_single_reference(self, data):
         return data.has_key('expressions')
+
+    def show_warning(self, flag):
+        return flag == 'show'
 
     def version_specified(self, expression):
         return len(expression.split('/')) == 9

@@ -13,7 +13,7 @@ function Configuration() {
     this.env["env"] = testExecutionEnvironment;
     this.env["username"] = process.env.username ? process.env.username : "test";
     this.env["password"] = process.env.password ? process.env.password : "test123";
-    this.env["timeout"] = process.env.timeout ? process.env.timeout : 10000;
+    this.env["timeout"] = process.env.timeout ? process.env.timeout : 15000;
 }
 
 var Configurations = new Configuration();
