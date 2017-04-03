@@ -1420,9 +1420,9 @@ $.urlParam = function (name) {
 };
 
 var httpURL = function (url) {
-    if (_.includes(window.location.protocol, 'https:'))
-        url = '//api.' + window.location.hostname.replace('www.', '');
-    return url;
+    if (window.location.hostname.indexOf('showcase') > -1)
+        return url;
+    return '//api.' + window.location.hostname.replace('www.', '');
 }
 
 if ($('.download-csv').length > 0) {
