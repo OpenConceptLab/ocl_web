@@ -971,7 +971,7 @@ app.factory('Reference', function ($http) {
     };
 
     Reference.addReferences = function (references, cascadeParameter) {
-        return $http.post(location.href + '?cascade=' + cascadeParameter, references);
+        return $http.post(location.href + '?cascade=' + cascadeParameter + '&warning=show', references);
     };
 
     return this;
