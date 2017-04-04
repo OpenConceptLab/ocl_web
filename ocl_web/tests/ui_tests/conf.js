@@ -27,7 +27,7 @@ function getBrowserCapabilities() {
 exports.config = {
     framework: 'jasmine',
     seleniumAddress: 'http://localhost:4444/wd/hub',
-    specs: ['./specs/organization_spec.js', './specs/collections_reference_spec.js', './specs/user_source_spec.js', './specs/collections_spec.js', './specs/user_source_validation_spec.js', './specs/concept_spec.js', './specs/search_spec.js', './specs/mapping_spec.js'],
+    specs: ['./specs/organization_spec.js', './specs/collections_reference_spec.js', './specs/user_source_spec.js', './specs/collections_spec.js', './specs/user_source_validation_spec.js', './specs/concept_spec.js', './specs/search_spec.js'],
     capabilities: getBrowserCapabilities(),
 
     jasmineNodeOpts: {
