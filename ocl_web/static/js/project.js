@@ -1189,6 +1189,35 @@ app.directive('conceptDescription', function () {
     };
 });
 
+$('div.release_unrelease_section #id_release').on('click', function (el) {
+    var $el = $(el.toElement),
+        version = $el.val(),
+        released = $el.prop('checked'),
+        url = ' /' + window.location.pathname.split('/').slice(1, 5).join('/') + '/' + version + '/json/edit/';
+    $.ajax({
+        type: "PUT",
+        url: url,
+        headers: {
+            'X-CSRFToken': $.cookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        data: JSON.stringify({released: released}),
+        dataType: 'json',
+        contentType: 'application/json'
+    }).done(function (data) {
+        if (released) {
+            $el.parents('li').find('.release-label-container .release-label').removeClass('hide');
+            alertify.success('Successfully Released.', 3);
+        } else {
+            alertify.success('Successfully Un-Released.', 3);
+            $el.parents('li').find('.release-label-container .release-label').addClass('hide');
+        }
+    }).fail(function (err) {
+        alertify.error('Something unexpected happened!', 3);
+        console.log(err)
+    });
+});
+
 $('div.release_unrelease_section .resource_retire').on('click', function (ev) {
     var retireCheckboxElem = $(ev.toElement);
     var releaseCheckboxElem = retireCheckboxElem.siblings('#id_release');
