@@ -14,6 +14,7 @@ var MappingPage = function () {
     this.alertBox = element(by.id('concept-alert'));
 
     this.addMappingToFirstCollection = function () {
+        browser.wait(EC.visibilityOf(this.addToCollectionDropDown), timeout);
         this.addToCollectionDropDown.click();
         this.firstCollection.click();
         this.addToCollectionSaveButton.click();
