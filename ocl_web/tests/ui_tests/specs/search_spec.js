@@ -64,26 +64,4 @@ describe('Search Page', function () {
         expect(searchPage.searchResults.count()).toBeGreaterThan(0);
     });
 
-    it('should add source concepts to collection', function () {
-        browser.get(baseUrl + 'search/?type=concepts&q=');
-
-        usrSrcPage.addToCollection();
-        browser.wait(EC.elementToBeClickable(usrSrcPage.confirmButton), timeout);
-        usrSrcPage.confirmButton.click();
-
-        browser.wait(EC.visibilityOf(usrSrcPage.addToCollectionResultInformation), timeout);
-        expect(usrSrcPage.addToCollectionResultInformation.isDisplayed()).toBeTruthy();
-    });
-
-    it('should show error modal when add source concepts to collection with error', function () {
-        browser.get(baseUrl + 'search/?type=concepts&q=');
-
-        usrSrcPage.addToCollection();
-        browser.wait(EC.elementToBeClickable(usrSrcPage.confirmButton), timeout);
-        usrSrcPage.confirmButton.click();
-
-        browser.wait(EC.visibilityOf(usrSrcPage.addToCollectionErrorModal), timeout);
-        expect(usrSrcPage.addToCollectionResultInformation.isDisplayed()).toBeFalsy();
-    });
-
 });
