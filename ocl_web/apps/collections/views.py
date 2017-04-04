@@ -688,7 +688,7 @@ class CollectionReferencesDeleteView(CollectionsBaseView, TemplateView):
     def delete(self, request, *args, **kwargs):
         self.get_args()
         references = request.GET.get('references').split(',')
-        cascade_mappings_flag = request.GET.get('cascade')
+        cascade_mappings_flag = request.GET.get('cascade', 'sourcemappings')
         api = OclApi(self.request, debug=True)
         data = {'references': references, 'cascade': cascade_mappings_flag}
         res = api.delete(self.owner_type, self.owner_id, 'collections',
