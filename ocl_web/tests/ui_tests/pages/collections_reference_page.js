@@ -7,7 +7,6 @@ var mappingId;
 var configuration = require('../utilities/configuration.js');
 const timeout = configuration.get('timeout');
 
-
 var CollectionsReferencePage = function () {
 
     this.references = element(by.linkText('References'));
@@ -17,6 +16,7 @@ var CollectionsReferencePage = function () {
     this.addSingleReferenceButton = element(by.id('add-single-reference'));
     this.addMultipleReferenceButton = element(by.id('add-multiple-references-button'));
     this.countOfReferences = element.all(by.css('a[title="Collection Reference"]'));
+    this.referenceConfirm = element(by.id('reference-confirm-modal'));
 
     this.successModal = element(by.css('.alert.alert-success'));
     this.warningModal = element(by.css('.alert.alert-warning'));
@@ -95,15 +95,22 @@ var CollectionsReferencePage = function () {
     this.deleteReference = function () {
         this.checkReference.click();
         this.deleteLink.click();
-        browser.wait(EC.visibilityOf(this.okButton), timeout);
-        this.okButton.click();
+        browser.wait(EC.elementToBeClickable(this.referenceConfirm), timeout);
+        this.referenceConfirm.click();
+    };
+
+    this.deleteReferenceBySpecificIndex = function (index) {
+        $('#check-reference-' + index).click();
+        this.deleteLink.click();
+        browser.wait(EC.elementToBeClickable(this.referenceConfirm), timeout);
+        this.referenceConfirm.click();
     };
 
     this.deleteAllReferences = function () {
         this.checkAllReferences.click();
         this.deleteLink.click();
-        browser.wait(EC.visibilityOf(this.okButton), timeout);
-        this.okButton.click();
+        browser.wait(EC.elementToBeClickable(this.referenceConfirm), timeout);
+        this.referenceConfirm.click();
     };
 };
 

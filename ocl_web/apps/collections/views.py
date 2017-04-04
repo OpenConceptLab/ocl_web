@@ -599,7 +599,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
             self.collection_id,
             'references',
             data=data,
-            params = {'cascade': request.GET.get('cascade', 'sourcemappings')}
+            params={'cascade': request.GET.get('cascade', 'sourcemappings')}
         )
 
         results = result.json()
@@ -674,7 +674,8 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
         if self.version_specified(expression_from_form):
             request.session['add_reference_success'] = self.added_with_version_information_success_message_by_reference_type(reference_type, source, mnemonic, version_number)
         else:
-            request.session['add_reference_warning'] = self.added_without_version_information_warning_message_by_reference_type(reference_type, source, mnemonic, version_number)
+            request.session['add_reference_warning'] = self.added_without_version_information_warning_message_by_reference_type(reference_type, source, mnemonic,
+                                                                                                                                version_number)
 
     def send_message_by_source_version_information_for_multiple_reference(self, request, data):
         if self.adding_head_version(data):
@@ -687,8 +688,9 @@ class CollectionReferencesDeleteView(CollectionsBaseView, TemplateView):
     def delete(self, request, *args, **kwargs):
         self.get_args()
         references = request.GET.get('references').split(',')
+        cascade_mappings_flag = request.GET.get('cascade', 'sourcemappings')
         api = OclApi(self.request, debug=True)
-        data = {'references': references}
+        data = {'references': references, 'cascade': cascade_mappings_flag}
         res = api.delete(self.owner_type, self.owner_id, 'collections',
                          self.collection_id, 'references', **data)
         return HttpResponse(res.content, status=200)

@@ -848,7 +848,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
         if (selectedConceptCount > 0) {
             $scope.openConfirmModal();
         } else {
-           $scope.addMultipleReferences();
+            $scope.addMultipleReferences();
         }
     };
 
@@ -1187,74 +1187,6 @@ app.directive('conceptDescription', function () {
             };
         }
     };
-});
-
-
-$('a.delete-reference').on('click', function () {
-    var selectedReferences = $("input[name='reference']:checked"),
-
-        references = _.map(selectedReferences, function (el) {
-            return el.value;
-        }),
-
-        url = ' /' + window.location.pathname.split('/').slice(1, 5).join('/') + '/references/delete/' + '?references=' + references,
-
-        confirmSuccess = function () {
-            $.ajax({
-                type: "DELETE",
-                url: url,
-                headers: {
-                    'X-CSRFToken': $.cookie('csrftoken'),
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                dataType: 'json'
-            }).done(function () {
-                _.each($(".references input[type=checkbox]:checked"), function (el) {
-                    $(el).parent().parent().remove();
-                });
-
-                alertify.success('Successfully removed.', 3);
-                $('.alert.alert-info').parent().remove();
-            }).fail(function (err) {
-                alertify.error('Something unexpected happened!', 3);
-                console.log(err)
-            });
-        };
-    if (_.size(references) > 0) {
-        alertify.confirm('Delete Reference', 'Do you want to remove the selected Reference(s) and associated values from Concepts and Mappings tab?', confirmSuccess, function () {
-        });
-    } else {
-        alertify.warning('Please select references!')
-    }
-});
-
-$('div.release_unrelease_section #id_release').on('click', function (el) {
-    var $el = $(el.toElement),
-        version = $el.val(),
-        released = $el.prop('checked'),
-        url = ' /' + window.location.pathname.split('/').slice(1, 5).join('/') + '/' + version + '/json/edit/';
-    $.ajax({
-        type: "PUT",
-        url: url,
-        headers: {
-            'X-CSRFToken': $.cookie('csrftoken'),
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        data: JSON.stringify({released: released}),
-        dataType: 'json',
-        contentType: 'application/json'
-    }).done(function (data) {
-        if (released) {
-            $el.parents('li').find('.release-label-container .release-label').removeClass('hide');
-            alertify.success('Successfully Released.', 3);
-        } else {
-            alertify.success('Successfully Un-Released.', 3);
-            $el.parents('li').find('.release-label-container .release-label').addClass('hide');
-        }
-    }).fail(function (err) {
-        alertify.error('Something unexpected happened!', 3);
-        console.log(err)
-    });
 });
 
 $('div.release_unrelease_section .resource_retire').on('click', function (ev) {
