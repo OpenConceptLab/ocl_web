@@ -44,7 +44,7 @@ Client interface for Open Concept Lab terminology services API.
    source ./ocl/bin/activate
    ```
    
-5. Set the environment variables below to let web connect to API and set db location. Note that OclAPI must be already setup for this, you can see the token at http://0.0.0.0:8000/admin/authtoken/token/ (8000 is the port where oclapi server is running)
+5. Set the environment variables below to let web connect to API and set db location. Note that OclAPI must be already setup for this, you can see the token at http://0.0.0.0:8000/admin/authtoken/token/ (8000 is the port where oclapi server is running). Note that for a local development environment, OCL_API_HOST will typically be set to `http://localhost:8000`.
    
    ```sh
    export OCL_API_HOST='<your_api_server_ip>'
