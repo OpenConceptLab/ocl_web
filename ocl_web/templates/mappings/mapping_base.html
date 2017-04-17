@@ -35,6 +35,52 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
+                {% if request.user.is_authenticated %}
+                    <!-- Add to collection button -->
+                    <div class="pull-right">
+                        <div class="btn-group" id="add-to-collection-dropdown" style="margin:20px 5px 0px 5px;">
+                            <button type="button" id="add-to-collection-dropdown-button"
+                                    class="btn btn-block btn-sm btn-default dropdown-toggle"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to
+                                Collection <span class="caret"></span></button>
+                            <div class="collection-list-dropdown dropdown-menu dropdown-menu-right">
+                                {% if not all_collections %}
+                                    <div class="no-collections-info-box">
+                                        <span>You do not have any existing collections. Create a collection in your profile.</span>
+                                    </div>
+                                {% else %}
+                                    <div id="search-box" style="padding: 10px 10px;padding-bottom: 0;">
+                                        <input id="search-input" type="text" class="form-control" placeholder="Search">
+                                    </div>
+                                    <div class="collection-list-container">
+                                        {% for collection in all_collections %}
+                                            <div class="{% if collection.owner_type == 'Organization' %}org-collection-radio {% endif %}collection-radio radio">
+                                                <label class="org-label">
+                                                    <input type="radio" name="collections"
+                                                           id="user-collection-{{ forloop.counter }}"
+                                                           value="{{ forloop.counter }}">
+                                                    <input type="hidden" name="collection-owner"
+                                                           id="collection-owner-{{ forloop.counter }}"
+                                                           value="{{ collection.owner }}">
+                                                    <input type="hidden" name="collection-name"
+                                                           id="collection-name-{{ forloop.counter }}"
+                                                           value="{{ collection.id }}">
+                                                    <input type="hidden" name="collection-url"
+                                                           id="collection-url-{{ forloop.counter }}"
+                                                           value="{{ collection.url }}">
+                                                    {{ collection.owner }} / <strong>{{ collection.id }}</strong>
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <button type="button" class="add-to-collection-save btn btn-primary btn-block"
+                                            disabled="disabled">Add
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
 				<div class="resource-header-icon hidden-xs"><span class="glyphicon glyphicon-link"></span></div>
 				<div class="resource-header-label">
 
@@ -79,6 +125,117 @@
 		</div> <!-- /row -->
 	</div> <!-- /container -->
 </header> <!-- /resource-header-mapping -->
+    <div class="modal fade" id="add-to-collection-confirm" role="dialog" tabindex="-1">
+        <div class="modal-dialog expanded" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add to Collection</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-default">
+                        <div class="panel-body" style="overflow-wrap: break-word;">
+                            <h5><strong id="number-of-selected-resources">-</strong> selected <span
+                                    id="references-label">references</span> will be added to collection <strong
+                                    id="collection-name">-</strong></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel"
+                           id="close-modal"/>
+                    <input type="button" class="btn btn-primary" data-dismiss="modal" value="Confirm"
+                           id="confirm-modal"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Register case insensitive contains
+        $.expr[':'].icontains = $.expr.createPseudo(function (text) {
+            return function (e) {
+                return $(e).text().toUpperCase().indexOf(text.toUpperCase()) >= 0;
+            };
+        });
+
+        $(document).ready(function () {
+            var collectionDropDownItems = $('.collection-list-dropdown div.radio, .collection-list-dropdown input');
+            var saveButton = $('.add-to-collection-save');
+            var searchInput = $('#search-input');
+
+            searchInput.keyup(function () {
+                $(".org-label:icontains('" + searchInput.val() + "')").each(function (index) {
+                    $(this).parent().show();
+                });
+                $(".org-label:not(:icontains('" + searchInput.val() + "'))").each(function (index) {
+                    $(this).parent().hide();
+                });
+            });
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            collectionDropDownItems.click(function (e) {
+                e.stopPropagation();
+
+                if ($('input[name="collections"]:checked').val()) {
+                    $('.add-to-collection-save').attr('disabled', false);
+                }
+            });
+
+            saveButton.click(function () {
+                var selectedResources = 1;
+
+                var selectedCollectionId = $('input[name="collections"]:checked').val();
+                var selectedCollectionName = $('#collection-owner-' + selectedCollectionId).val() + ' / ' + $('#collection-name-' + selectedCollectionId).val();
+
+                $('#add-to-collection-confirm').modal('show');
+                $('#number-of-selected-resources').text(selectedResources);
+                $('#references-label').text(selectedResources == 1 ? 'reference' : 'references');
+                $('#collection-name').text(selectedCollectionName);
+            });
+
+            $('#confirm-modal').click(function () {
+                var selectedCollectionId = $('input[name="collections"]:checked').val();
+                var selectedCollectionURI = $('#collection-url-' + selectedCollectionId).val();
+                var postURL = selectedCollectionURI + 'references/new/';
+                var selectedResources = ['{{ mapping.url }}'];
+                $.ajax({
+                    url: postURL,
+                    type: "POST",
+                    headers: {
+                        'X-CSRFToken': $.cookie('csrftoken'),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    data: JSON.stringify({
+                        expressions: selectedResources
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                }).done(function (data) {
+                    $(this).prop('checked', false);
+                    var result = data.update_results[0];
+                    var warning = $(".alert-warning");
+                    warning.text(result.message);
+                    warning.show();
+                    clearDropDown();
+                }).fail(function () {
+                    console.log('Fail');
+                });
+
+            });
+
+            $('#close-modal').click(function () {
+            });
+        });
+
+        function clearDropDown() {
+            $('input[name="collections"]:checked').each(function () {
+                $(this).prop('checked', false);
+            });
+            $('.add-to-collection-save').attr('disabled', true);
+        }
+    </script>
 {% endblock resource-header %}
 {% block resource-tabs %}
     {% if kwargs.mapping_version %}
@@ -111,6 +268,10 @@
                 <li role="presentation" {% if selected_tab == "Details" %}class="active"{% endif %}><a href="{{ mapping_details_url }}">Details</a></li>
                 <li role="presentation" {% if selected_tab == "History" %}class="active"{% endif %}><a href="{{ mapping_history_url }}">History</a></li>
             </ul>
+            <div style="margin-top:12px;display: none;margin-bottom: 0;" id="concept-alert" class="alert alert-warning">
+                Added the latest versions of concepts/mappings to the collection. Future updates will not be added
+                automatically.
+            </div>
         </div>
     {% endif %}
 {% endblock resource-tabs %}

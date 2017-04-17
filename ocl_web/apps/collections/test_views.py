@@ -365,7 +365,7 @@ class CollectionMappingsViewTest(TestCase):
     @patch('libs.ocl.OclApi.get')
     def test_getContextForCollectionMappings_contextRecieved(self, mock_get):
         mappingResponse = MagicMock(spec=Response)
-        collection = ["Some Results"]
+        collection = []
         mappingResponse.json.return_value = collection
         mappingResponse.status_code = 200
         mappingResponse.headers = []

@@ -6,24 +6,27 @@
             </div>
             <div class="modal-body">
                 <div class="panel panel-default">
-                    <div class="panel-body">
+                    <div class="panel-body" style="overflow-wrap: break-word;">
                         <h5><strong id="number-of-selected-resources">-</strong> selected <span id="references-label">references</span>
                             will be added to collection <strong id="collection-name">-</strong></h5>
                     </div>
                 </div>
 
-                <hr>
+                {% if show_cascade_option %}
+                    <hr>
 
-                <div class="information-tooltip" style="margin: 10px 0;">
-                    <label class="checkbox-inline" for="cascade-mappings">
-                        <input type="checkbox" id="cascade-mappings" checked="checked">
-                        Automatically add associated mappings
-                    </label>
-                    <button type="button" class="btn btn-question btn-circle" data-toggle="tooltip"
-                            data-placement="right"
-                            title="A concept's associated mappings are mappings that originate from the specified concept (the 'from concept') and that are stored in the same source">
-                        <strong>?</strong></button>
-                </div>
+                    <div class="information-tooltip" style="margin: 10px 0;">
+                        <label class="checkbox-inline" for="cascade-mappings">
+                            <input type="checkbox" id="cascade-mappings" checked="checked">
+                            Automatically add associated mappings
+                        </label>
+                        <button type="button" class="btn btn-question btn-circle" data-toggle="tooltip"
+                                data-placement="right"
+                                title="A concept's associated mappings are mappings that originate from the specified concept (the 'from concept') and that are stored in the same source">
+                            <strong>?</strong></button>
+                    </div>
+                {% endif %}
+
 
             </div>
             <div class="modal-footer">
@@ -45,7 +48,7 @@
                     <div class="alert alert-warning">
                         References listed below could not be added.
                     </div>
-                    <ul id='add-to-collection-error-list' class="list-group">
+                    <ul id='add-to-collection-error-list' class="list-group" style="overflow-wrap: break-word;">
                     </ul>
                 </div>
 
@@ -53,7 +56,7 @@
                     <div class="alert alert-success">
                         Following references were added to the collection:
                     </div>
-                    <ul id="add-to-collection-success-list" class="list-group">
+                    <ul id="add-to-collection-success-list" class="list-group" style="overflow-wrap: break-word;">
                     </ul>
                 </div>
             </div>
@@ -69,18 +72,21 @@
 </div>
 
 <script>
-    $(document).on('addToCollectionConfirmationRequired', function (e, numberOfResources, collectionLabel, collectionURI) {
+    var textOfReference = "";
+    var collectionName = "";
 
+    $(document).on('addToCollectionConfirmationRequired', function (e, numberOfResources, collectionLabel, collectionURI) {
         $('[data-toggle="tooltip"]').tooltip();
 
         $('#add-to-collection-confirm').modal('show');
         $('#number-of-selected-resources').text(numberOfResources);
-        $('#references-label').text(numberOfResources == 1 ? 'reference' : 'references');
+        textOfReference = numberOfResources == 1 ? 'reference' : 'references';
+        $('#references-label').text(textOfReference);
+        collectionName = collectionLabel;
         $('#collection-name').text(collectionLabel);
 
         $('#close-error-modal').attr("href", collectionURI + "references/");
     });
-
 
     $(document).ready(function () {
 
@@ -107,7 +113,7 @@
                     });
 
                 if (errors.length < 1) {
-                    displaySuccessMessage();
+                    displaySuccessMessage("Added the " + textOfReference + " to the collection " + collectionName + " successfully.");
                     return;
                 }
 
@@ -124,17 +130,18 @@
         });
 
         $('#close-modal').click(function () {
-            clearSelection();
-            clearDropDown();
         });
     });
 
-    function displaySuccessMessage() {
-        $('#add-to-collection-result-information').show();
+    function displaySuccessMessage(message) {
+        var messageBar = $('#add-to-collection-result-information');
+        messageBar.html(message);
+        messageBar.show();
     }
 
     function hideSuccessMessage() {
-        $('#add-to-collection-result-information').hide();
+        var messageBar = $('#add-to-collection-result-information');
+        messageBar.hide();
     }
 
     function displayResultModal(errors, added) {
@@ -143,7 +150,6 @@
         errors.forEach(function (error) {
             $('#add-to-collection-error-list').append("<li class='list-group-item'><strong>" + error.expression + ":</strong> " + error.message[0] + "</li>");
         });
-
 
         if (added.length < 1) {
             hideSuccessMessage();
@@ -188,11 +194,16 @@
         $('.add-to-collection-save').attr('disabled', true);
     }
 
+    function clearCascadeMappingsCheckbox() {
+        $('#cascade-mappings').prop('checked', true);
+    }
+
     function resetModal() {
         $('#close-error-modal').hide();
         $('#add-to-collection-success-list-container').hide();
         $('#add-to-collection-success-list').html("");
         $('#add-to-collection-error-list').html("");
+        clearCascadeMappingsCheckbox();
     }
 
 </script>

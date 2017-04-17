@@ -709,6 +709,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
     $scope.pageObj = {};
     $scope.ownerType = 'orgs';
     $scope.resourceContainerType = 'sources';
+    $scope.pageObj.cascadeMappings = true;
     $scope.REFERENCE_LIMIT = 10;
 
     $scope.getOwners = function () {
@@ -841,16 +842,17 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
     };
 
     $scope.multipleReferencesAddButtonClicked = function () {
-        $scope.pageObj.selectedConceptCount = $scope.pageObj.selectAllConcepts ? $scope.concepts.items.length : _getResourceExpressions($scope.concepts).length;
-        if ($scope.pageObj.selectedConceptCount > 0) {
+        var selectedConceptCount = $scope.pageObj.selectAllConcepts ? $scope.concepts.items.length : _getResourceExpressions($scope.concepts).length;
+        var selectedMappingCount = $scope.pageObj.selectAllMappings ? $scope.mappings.items.length : _getResourceExpressions($scope.mappings).length;
+        $scope.pageObj.selectedReferenceCount = selectedConceptCount + selectedMappingCount;
+        if (selectedConceptCount > 0) {
             $scope.openConfirmModal();
         } else {
-           $scope.addMultipleReferences();
+            $scope.addMultipleReferences();
         }
     };
 
     $scope.openConfirmModal = function () {
-        $scope.pageObj.cascadeMappings = true;
         $scope.confirmModal = $uibModal.open({
             animation: true,
             templateUrl: 'confirm-modal.html',
@@ -918,6 +920,7 @@ app.controller('AddReferencesController', function ($scope, $uibModal, Reference
             })
             .finally(function () {
                 $scope.loading = false;
+                $scope.pageObj.cascadeMappings = true;
             });
     };
 
@@ -968,7 +971,7 @@ app.factory('Reference', function ($http) {
     };
 
     Reference.addReferences = function (references, cascadeParameter) {
-        return $http.post(location.href + '?cascade=' + cascadeParameter, references);
+        return $http.post(location.href + '?cascade=' + cascadeParameter + '&warning=show', references);
     };
 
     return this;
@@ -1184,45 +1187,6 @@ app.directive('conceptDescription', function () {
             };
         }
     };
-});
-
-
-$('a.delete-reference').on('click', function () {
-    var selectedReferences = $("input[name='reference']:checked"),
-
-        references = _.map(selectedReferences, function (el) {
-            return el.value;
-        }),
-
-        url = ' /' + window.location.pathname.split('/').slice(1, 5).join('/') + '/references/delete/' + '?references=' + references,
-
-        confirmSuccess = function () {
-            $.ajax({
-                type: "DELETE",
-                url: url,
-                headers: {
-                    'X-CSRFToken': $.cookie('csrftoken'),
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                dataType: 'json'
-            }).done(function () {
-                _.each($(".references input[type=checkbox]:checked"), function (el) {
-                    $(el).parent().parent().remove();
-                });
-
-                alertify.success('Successfully removed.', 3);
-                $('.alert.alert-info').parent().remove();
-            }).fail(function (err) {
-                alertify.error('Something unexpected happened!', 3);
-                console.log(err)
-            });
-        };
-    if (_.size(references) > 0) {
-        alertify.confirm('Delete Reference', 'Do you want to remove the selected Reference(s) and associated values from Concepts and Mappings tab?', confirmSuccess, function () {
-        });
-    } else {
-        alertify.warning('Please select references!')
-    }
 });
 
 $('div.release_unrelease_section #id_release').on('click', function (el) {

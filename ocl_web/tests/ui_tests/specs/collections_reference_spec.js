@@ -10,7 +10,6 @@ var EC = require('protractor').ExpectedConditions;
 const timeout = configuration.get('timeout');
 const baseUrl = configuration.get('baseUrl');
 
-
 describe('Collection Reference Page', function () {
 
     var loginPage,
@@ -51,7 +50,7 @@ describe('Collection Reference Page', function () {
 
     it('add concept single reference with version number', function () {
         collectionReferencePage.deleteReference();
-        var expectedMessage = 'Added concept: '+ sourceId +'-C1.1.1.2- version ' + conceptVersionNumber;
+        var expectedMessage = 'Added concept: ' + sourceId + '-C1.1.1.2- version ' + conceptVersionNumber;
         collectionReferencePage.createNewSingleReference(conceptVersionUrl);
         browser.wait(EC.presenceOf(collectionReferencePage.successModal), timeout);
 
@@ -180,11 +179,11 @@ describe('Collection Reference Page', function () {
 
         browser.get(baseUrl + 'orgs/' + organization + '/');
         orgPage.createNewOrgCollection(
-             collectionShortCode,
-             data.col_name + id,
-             data.full_name + id,
-             data.supported_locale,
-             data.custom_validation_schema
+            collectionShortCode,
+            data.col_name + id,
+            data.full_name + id,
+            data.supported_locale,
+            data.custom_validation_schema
         );
 
         browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + collectionShortCode);
@@ -217,5 +216,21 @@ describe('Collection Reference Page', function () {
         collectionReferencePage.closeErrorModal.click();
         browser.wait(EC.presenceOf(collectionReferencePage.checkReference), timeout);
         expect(collectionReferencePage.countOfReferences.count()).toEqual(3);
+    });
+
+    it('delete concept reference with related mappings', function () {
+        const organization = data.org_short_code + id;
+        const collectionShortCode = data.short_code + id + id;
+        const conceptId = 'C1\\.1\\.1\\.2-' + id + id;
+
+        browser.get(baseUrl + 'orgs/' + organization + '/collections/' + collectionShortCode + '/references/');
+        collectionReferencePage.deleteAllReferences();
+        browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + collectionShortCode);
+        collectionReferencePage.createNewMultipleReferencesWithConceptAndMapping(organization, sourceId, 'HEAD', conceptId);
+        browser.wait(EC.presenceOf(collectionReferencePage.warningModal), timeout);
+        expect(collectionReferencePage.countOfReferences.count()).toEqual(2);
+        collectionReferencePage.deleteReferenceBySpecificIndex('2');
+        browser.wait(EC.invisibilityOf(collectionReferencePage.warningModal), timeout);
+        expect(collectionReferencePage.countOfReferences.count()).toEqual(0);
     });
 });

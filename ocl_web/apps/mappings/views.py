@@ -149,6 +149,10 @@ class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
         context['selected_tab'] = 'Details'
         context['mapping'] = mapping
 
+        if self.request.user.is_authenticated():
+            api = OclApi(self.request, debug=True, facets=True)
+            context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
+
         return context
 
 class MappingVersionsView(UserOrOrgMixin, MappingReadBaseView):
@@ -184,6 +188,10 @@ class MappingVersionsView(UserOrOrgMixin, MappingReadBaseView):
         context['selected_tab'] = 'History'
         context['mapping'] = mapping
         context['mapping_versions'] = searcher.search_results
+
+        if self.request.user.is_authenticated():
+            api = OclApi(self.request, debug=True, facets=True)
+            context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
 
         return context
 

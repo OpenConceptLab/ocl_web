@@ -239,6 +239,9 @@ class CollectionMappingsView(CollectionsBaseView, TemplateView):
         context['search_query'] = searcher.get_query()
         context['search_filters'] = searcher.search_filter_list
 
+        if self.request.user.is_authenticated():
+            context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
+
         # Set debug variables
         context['url_params'] = self.request.GET
         context['search_params'] = searcher.search_params
@@ -596,7 +599,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
             self.collection_id,
             'references',
             data=data,
-            params = {'cascade': request.GET.get('cascade', 'sourcemappings')}
+            params={'cascade': request.GET.get('cascade', 'sourcemappings')}
         )
 
         results = result.json()
@@ -604,7 +607,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
 
         added_result_count = len(filter(lambda result: result['added'], results))
 
-        if added_result_count > 0:
+        if added_result_count > 0 and self.show_warning(request.GET.get('warning', 'hide')):
             self.add_version_warning_to_session(data, request, results)
 
         return HttpResponse(
@@ -631,6 +634,9 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
 
     def adding_single_reference(self, data):
         return data.has_key('expressions')
+
+    def show_warning(self, flag):
+        return flag == 'show'
 
     def version_specified(self, expression):
         return len(expression.split('/')) == 9
@@ -668,7 +674,8 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
         if self.version_specified(expression_from_form):
             request.session['add_reference_success'] = self.added_with_version_information_success_message_by_reference_type(reference_type, source, mnemonic, version_number)
         else:
-            request.session['add_reference_warning'] = self.added_without_version_information_warning_message_by_reference_type(reference_type, source, mnemonic, version_number)
+            request.session['add_reference_warning'] = self.added_without_version_information_warning_message_by_reference_type(reference_type, source, mnemonic,
+                                                                                                                                version_number)
 
     def send_message_by_source_version_information_for_multiple_reference(self, request, data):
         if self.adding_head_version(data):
@@ -681,8 +688,9 @@ class CollectionReferencesDeleteView(CollectionsBaseView, TemplateView):
     def delete(self, request, *args, **kwargs):
         self.get_args()
         references = request.GET.get('references').split(',')
+        cascade_mappings_flag = request.GET.get('cascade', 'sourcemappings')
         api = OclApi(self.request, debug=True)
-        data = {'references': references}
+        data = {'references': references, 'cascade': cascade_mappings_flag}
         res = api.delete(self.owner_type, self.owner_id, 'collections',
                          self.collection_id, 'references', **data)
         return HttpResponse(res.content, status=200)

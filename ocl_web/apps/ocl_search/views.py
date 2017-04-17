@@ -66,7 +66,7 @@ class GlobalSearchView(TemplateView):
         context['search_query'] = original_search_string
         context['hide_nav_search'] = True
 
-        if self.request.user.is_authenticated() and searcher.search_type == 'concepts':
+        if self.request.user.is_authenticated() and searcher.search_type in ['concepts', 'mappings']:
             context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
 
         # Build URL params for navigating to other resources

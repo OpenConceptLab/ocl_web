@@ -38,10 +38,13 @@
                                             <span>You do not have any existing collections. Create a collection in your profile.</span>
                                         </div>
                                     {% else %}
+                                        <div id="search-box" style="padding: 10px 10px;padding-bottom: 0;">
+                                            <input id="search-input" type="text" class="form-control" placeholder="Search">
+                                        </div>
                                         <div class="collection-list-container">
                                             {% for collection in all_collections %}
                                             <div class="{% if collection.owner_type == 'Organization' %}org-collection-radio {% endif %}collection-radio radio">
-                                                <label>
+                                                <label class="org-label">
                                                     <input type="radio" name="collections"
                                                            id="user-collection-{{ forloop.counter }}"
                                                            value="{{ forloop.counter }}">
@@ -109,7 +112,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="panel panel-default">
-                            <div class="panel-body">
+                            <div class="panel-body" style="overflow-wrap: break-word;">
                                 <h5><strong id="number-of-selected-resources">-</strong> selected <span
                                         id="references-label">references</span> will be added to collection <strong
                                         id="collection-name">-</strong></h5>
@@ -140,10 +143,30 @@
             </div>
         </div>
         <script>
+            // Register case insensitive contains
+            $.expr[':'].icontains = $.expr.createPseudo(function(text) {
+                return function(e) {
+                    return $(e).text().toUpperCase().indexOf(text.toUpperCase()) >= 0;
+                };
+            });
+
             $(document).ready(function () {
+                var collectionDropDownItems = $('.collection-list-dropdown div.radio, .collection-list-dropdown input');
+                var saveButton = $('.add-to-collection-save');
+                var searchInput = $('#search-input');
+
+                searchInput.keyup(function () {
+                    $(".org-label:icontains('" + searchInput.val() + "')").each(function (index) {
+                        $(this).parent().show();
+                    });
+                    $(".org-label:not(:icontains('" + searchInput.val() + "'))").each(function (index) {
+                        $(this).parent().hide();
+                    });
+                });
+
                 $('[data-toggle="tooltip"]').tooltip();
 
-                $('.collection-list-dropdown div.radio, .collection-list-dropdown input').click(function (e) {
+                collectionDropDownItems.click(function (e) {
                     e.stopPropagation();
 
                     if ($('input[name="collections"]:checked').val()) {
@@ -151,7 +174,7 @@
                     }
                 });
 
-                $('.add-to-collection-save').click(function () {
+                saveButton.click(function () {
                     var selectedResources = 1;
 
                     var selectedCollectionId = $('input[name="collections"]:checked').val();
@@ -193,6 +216,7 @@
                         warning.text(result.message);
                         warning.show();
                         clearDropDown();
+                        clearCascadeMappingsCheckbox();
                     }).fail(function () {
                         console.log('Fail');
                     });
@@ -200,7 +224,6 @@
                 });
 
                 $('#close-modal').click(function () {
-                    clearDropDown();
                 });
             });
 
@@ -209,6 +232,10 @@
                     $(this).prop('checked', false);
                 });
                 $('.add-to-collection-save').attr('disabled', true);
+            }
+
+            function clearCascadeMappingsCheckbox() {
+                $('#cascade-mappings').prop('checked', true);
             }
         </script>
     {% endblock resource-header %}
