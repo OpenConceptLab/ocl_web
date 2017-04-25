@@ -82,6 +82,7 @@
                                         <a id="edit-concept" href="{{ concept_edit_url }}" class="text-muted small"
                                            title="Edit Concept"><span class="glyphicon glyphicon-pencil"></span></a>
                                     {% endif_can_change concept %}
+                                    <a id="concept-version-permalink" href="{{ concept.version_url }}" class="text-muted small" title="Concept Version Permalink"><span class="glyphicon glyphicon-link"></span></a>
                                 {% endif %}
                             </div>
                             <p>
@@ -92,9 +93,9 @@
                                 <em>Class:</em> {{ concept.concept_class }},
                                 <em>Datatype:</em> {{ concept.datatype }}<br/>
                                 <span class="text-muted small">
-							<span class="glyphicon glyphicon-calendar"></span> Created on {{ concept.created_on|smart_date }}
-							&nbsp;&nbsp;
-							<span class="glyphicon glyphicon-calendar"></span> Last updated {{ concept.updated_on|smart_date }}
+							<span class="glyphicon glyphicon-calendar"></span> Created on {{ concept.created_on|smart_date }} by {{ concept.version_created_by }}
+							&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar"></span> Last updated {{ concept.updated_on|smart_date }}
+                            {% if concept.external_id %}&nbsp;&nbsp;<span class="glyphicon glyphicon-circle-arrow-right"></span> External ID: {{ concept.external_id }}{% endif %}
 						</span>
                             </p>
                         </div> <!-- /resource-header-label -->
