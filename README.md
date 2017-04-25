@@ -8,13 +8,14 @@ Client interface for Open Concept Lab terminology services API.
 ### Prerequisites
 
 1. ocl_web  
-   Fork the repo on github and clone your fork:
+   * Fork the repo on Github
+   * Clone your fork locally
    ```
    git clone https://github.com/{youruser}/ocl_web.git
+   ```   
+   * Add a remote repo to upstream in order to be able to fetch updates:
    ```
-   
-   Add a remote repo to upstream in order to be able to fetch updates:
-   ```
+   cd ocl_web
    git remote add upstream https://github.com/OpenConceptLab/ocl_web
    ```
    
@@ -33,7 +34,7 @@ Client interface for Open Concept Lab terminology services API.
    ```
 2. Create a virtualenv for the project
    ```sh 
-   virtualenv ocl #Creates a virtual env (ocl is the name of virtualenv, can give any name) 
+   virtualenv env #Creates a virtual env ("env" is the name of virtualenv by convention, but you can give it any name, just b sure to add it to the ignores list in git) 
    ```
 3. Create the file that will be used as the DB for ocl_web
    ```sh
