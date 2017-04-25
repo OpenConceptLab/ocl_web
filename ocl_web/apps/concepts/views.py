@@ -124,7 +124,30 @@ class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
         # Load the concept details
         concept = self.get_concept_details(
             self.owner_type, self.owner_id, self.source_id, self.concept_id,
-            source_version_id=self.source_version_id, concept_version_id=self.concept_version_id)
+            source_version_id=self.source_version_id, concept_version_id=self.concept_version_id,
+            include_mappings=True, include_inverse_mappings=True)
+
+        concept['has_direct_mappings'] = False
+        concept['has_inverse_mappings'] = False
+        if 'mappings' in concept and concept['mappings']:
+            for mapping in concept['mappings']:
+                if (self.proper_owner_type == mapping['to_source_owner_type'] and
+                        self.owner_id == mapping['to_source_owner'] and
+                        self.source_id == mapping['to_source_name'] and
+                        self.concept_id == mapping['to_concept_code']):
+                    mapping['is_inverse_mapping'] = True
+                    concept['has_inverse_mappings'] = True
+                    mapping['is_direct_mapping'] = False
+                else:
+                    mapping['is_direct_mapping'] = True
+                    mapping['is_inverse_mapping'] = False
+                    concept['has_direct_mappings'] = True
+                if mapping['to_concept_url']:
+                    mapping['is_internal_mapping'] = True
+                    mapping['is_external_mapping'] = False
+                else:
+                    mapping['is_internal_mapping'] = False
+                    mapping['is_external_mapping'] = True
 
         if self.request.user.is_authenticated():
             context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
