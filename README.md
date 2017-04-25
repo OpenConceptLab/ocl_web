@@ -34,7 +34,7 @@ Client interface for Open Concept Lab terminology services API.
    ```
 2. Create a virtualenv for the project
    ```sh 
-   virtualenv ocl #Creates a virtual env (ocl is the name of virtualenv, can give any name) 
+   virtualenv env #Creates a virtual env ("env" is the name of virtualenv by convention, but you can give it any name, just b sure to add it to the ignores list in git) 
    ```
 3. Create the file that will be used as the DB for ocl_web
    ```sh
