@@ -1,6 +1,6 @@
-# ocl_web [![Build Status](https://app.snap-ci.com/OpenConceptLab/ocl_web/branch/master/build_image)](https://app.snap-ci.com/OpenConceptLab/ocl_web/branch/master)
+# ocl_web
 
-Client interface for Open Concept Lab terminology services API.
+Web client interface for Open Concept Lab terminology services API.
 
 
 ## Developer Setup
@@ -32,20 +32,19 @@ Client interface for Open Concept Lab terminology services API.
    ```sh
    cd ocl_web 
    ```
-2. Create a virtualenv for the project
+2. Create a virtualenv for the project (NOTE: "env" is the name of virtualenv by convention, but you can give it any name, just be sure to add it to the ignores list in git)
    ```sh 
-   virtualenv env #Creates a virtual env ("env" is the name of virtualenv by convention, but you can give it any name, just b sure to add it to the ignores list in git) 
+   virtualenv env #Creates a virtual environment
    ```
 3. Create the file that will be used as the DB for ocl_web
    ```sh
    touch ocl.db 
    ```
-4. Activate the virtual environment created in step __2__ . For deactivation of virtual env just write 'deactivate'.
+4. Activate the virtual environment created in step __2__ . For deactivation of virtual env just write 'deactivate'. (NOTE: Replace "env" with the directory name you used to create your virtual environment)
    ```sh
-   source ./ocl/bin/activate
+   source ./env/bin/activate
    ```
-   
-5. Set the environment variables below to let web connect to API and set db location. Note that OclAPI must be already setup for this, you can see the token at http://0.0.0.0:8000/admin/authtoken/token/ (8000 is the port where oclapi server is running). Note that for a local development environment, OCL_API_HOST will typically be set to `http://localhost:8000`.
+5. Set the environment variables below to let OCL Web connect to API and set the DB location. Note that OclAPI must be already setup for this, you can see the token at http://0.0.0.0:8000/admin/authtoken/token/ (8000 is the port where oclapi server is running). Note that for a local development environment, OCL_API_HOST will typically be set to `http://localhost:8000`.
    
    ```sh
    export OCL_API_HOST='<your_api_server_ip>'
@@ -55,7 +54,7 @@ Client interface for Open Concept Lab terminology services API.
    
    ```
    
-6. Install python and node.js dependencies
+6. Install python and node.js dependencies -- NOTE: Make sure your version of pip in your virtualenv is up-to-date (e.g. pip install --upgrade pip)
    ```sh 
    pip install -r requirements/local.txt
    npm install
@@ -66,7 +65,7 @@ Client interface for Open Concept Lab terminology services API.
    ```
 8. Prepare database (create tables for models and apply migrations)
    ```sh
-   python ocl_web/manage.py syncdb 
+   python ocl_web/manage.py syncdb #You will be prompted to create an ocl_web superuser
    python ocl_web/manage.py migrate 
    ```
 9. Create a user. Make sure to get status=201 on the output. Otherwise the user is not created.
