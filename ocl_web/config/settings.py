@@ -462,6 +462,16 @@ class Production(Common):
 #    SERVER_EMAIL = EMAIL_HOST_USER
     ########## END EMAIL
 
+
+    ########## DEBUG
+    # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
+    DEBUG = values.BooleanValue(False)
+
+    # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
+    TEMPLATE_DEBUG = DEBUG
+    ########## END DEBUG
+
+
     ########## TEMPLATE CONFIGURATION
 
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
