@@ -102,6 +102,7 @@
 				<div class="panel-heading"><h3 class="panel-title">Mappings</h3></div>
 				<div class="panel-body" style="overflow-x:scroll;">
 				{% if concept.has_direct_mappings %}
+
 					<table class="table table-striped">
 						<thead>
 							<tr>
@@ -113,7 +114,7 @@
 							</tr>
 						</thead>
 						<tbody>
-						{% for mapping in concept.mappings %}
+						{% for mapping in concept.mappings|dictsort:"map_type" %}
 							{% if mapping.is_direct_mapping %}
 								{% if mapping.to_source_owner_type == 'Organization' %}
 									{% url 'org-home' org=mapping.to_source_owner as to_concept_owner_url %}
@@ -160,7 +161,7 @@
 							</tr>
 						</thead>
 						<tbody>
-						{% for mapping in concept.mappings %}
+						{% for mapping in concept.mappings|dictsort:"map_type" %}
 							{% if mapping.is_inverse_mapping %}
 								{% if mapping.to_source_owner_type == 'Organization' %}
 									{% url 'org-home' org=mapping.from_source_owner as from_concept_owner_url %}
@@ -199,6 +200,7 @@
 
 
 {% block resource-debug %}
+<h4>Mappings</h4><pre>{{ mappings|pprint }}</pre>
 <h4>URL kwargs</h4><pre>{{ kwargs|pprint }}</pre>
 <h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
 <h4>Concept</h4><pre>{{ concept|pprint }}</pre>
