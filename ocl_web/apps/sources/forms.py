@@ -70,6 +70,10 @@ class SourceNewForm(forms.Form):
         label=_('External ID'),
         required=False,
         widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
+    allow_forking = forms.BooleanField(
+        label=('Allow Forking'),
+        required=False
+    )
 
     # TODO(paynejd@gmail.com): Is this mis-named or not used?
     def clean_concept_id(self):

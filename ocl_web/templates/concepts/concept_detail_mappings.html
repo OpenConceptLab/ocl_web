@@ -24,7 +24,7 @@
 
             <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(q)"></span>
 
-        {% endverbatim %}               
+        {% endverbatim %}
             {% if request.GET.debug %}<br /><pre>{% verbatim %}{{ q }}{% endverbatim %}</pre>{% endif %}
         </div>
 
@@ -55,7 +55,7 @@
 
             <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(q)"></span>
 
-        {% endverbatim %}               
+        {% endverbatim %}
             {% if request.GET.debug %}<br /><pre>{% verbatim %}{{ q }}{% endverbatim %}</pre>{% endif %}
         </div>
 
@@ -86,7 +86,7 @@
 
             <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(q)"></span>
 
-        {% endverbatim %}               
+        {% endverbatim %}
             {% if request.GET.debug %}<br /><pre>{% verbatim %}{{ q }}{% endverbatim %}</pre>{% endif %}
         </div>
 
@@ -116,7 +116,7 @@
 
             <span class="glyphicon glyphicon-trash pull-right" ng-click="deleteItem(q)"></span>
 
-        {% endverbatim %}               
+        {% endverbatim %}
             {% if request.GET.debug %}<br /><pre>{% verbatim %}{{ q }}{% endverbatim %}</pre>{% endif %}
         </div>
 
@@ -148,7 +148,10 @@
                 <input class="form-control" type="text" name="map_type" ng-model="newItem.map_type"  typeahead-editable="false"
                     typeahead="map_type for map_type in map_types | filter:$viewValue | limitTo:8" >
                 <p class="help-block" ng-show="map_add_form.map_type.$invalid">Select a Mapping Type</p>
+
+                <h2>haogege</h2>
                 {% endverbatim %}
+
             </div>
 
             <div class="form-group required">

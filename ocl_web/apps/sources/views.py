@@ -886,7 +886,6 @@ class SourceEditView(UserOrOrgMixin, FormView):
             return super(SourceEditView, self).form_invalid(form)
 
 
-
 class SourceDeleteView(UserOrOrgMixin, FormView):
     """
     View for deleting Source.

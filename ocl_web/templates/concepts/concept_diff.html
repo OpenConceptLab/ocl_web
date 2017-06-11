@@ -1,0 +1,118 @@
+{% extends "concepts/concept_base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+{% block resource-tabs %}
+{% endblock resource-tabs %}
+
+{% block tab-content %}
+
+<div class="container" style="margin-top: 20px;">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Concept Left</h3>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <pre id="concept-left"></pre>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Concept Right</h3>
+                </div>
+            </div>
+            <div class="panel-body">
+                <pre id="concept-right"></pre>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* concept diff style*/
+pre {
+    outline: 1px solid #ccc;
+    padding:5px;
+    margin: 5px;
+}
+.difference { color: red; }
+</style>
+
+<script>
+
+    function syntaxHighlight(json, concept1, concept2) {
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            if (/:$/.test(match)) {
+                var item = match.replace(/"|\:/g, '');
+                if(concept1[item] == concept2[item]){
+                    cls = 'same';
+                }else {
+                    cls = 'difference';
+                }
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
+
+    function getJsonObejctLength(concept) {
+        var len = 0;
+        for(var item in concept){
+            len++;
+        }
+        return len;
+    }
+
+    function compare(concept1, concept2){
+        var same = 0;
+        var difference = 0;
+
+        alert(getJsonObejctLength(concept1));
+        if(getJsonObejctLength(concept1) == getJsonObejctLength(concept2)){
+            for(var item in concept1){
+                alert(item);
+                if(concept1[item] == concept2[item]){
+                    var e = $("<span>" + item + "</span><br>");
+                    $('#concept-left').append(e);
+                }
+                else {
+                    var e = $("<span> class='difference_style'" + item + "</span>");
+                    $('#concept-left').append(e);
+                }
+            }
+        }
+    }
+
+    var concept_left = {{ concept1 | safe }};
+    var concept_right = {{ concept2 | safe }};
+
+    $('#concept-left').html(syntaxHighlight(JSON.stringify(concept_left, undefined, 2), concept_left, concept_right));
+
+    $('#concept-right').html(syntaxHighlight(JSON.stringify(concept_right, undefined, 2), concept_left, concept_right));
+
+    //compare(concept_left, concept_right);
+
+</script>
+{% endblock tab-content %}
+
+
+{% block extrajavascript %}
+
+
+{% endblock %}
+
+
+{% block resource-debug %}
+<h4>URL kwargs</h4><pre>{{ kwargs|pprint }}</pre>
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Concept</h4><pre>{{ concept|pprint }}</pre>
+<h4>Concept Version History</h4><pre>{{ concept_versions|pprint }}</pre>
+{% endblock resource-debug %}

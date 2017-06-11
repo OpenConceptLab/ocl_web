@@ -284,18 +284,17 @@ app.controller('SourceVersionController', makeController('versions', ['id', 'des
 
 app.controller('ConceptVersionController', function ($scope, $http, $location) {
 
-        function loadItems() {
-            var url = make_sub_url($location.absUrl(), 'versions/');
-            set_debug($location, $scope);
-            $http.get(url)
-                .success(function (data) {
-                    $scope.item_list = data;
-                });
-        } // loadItems
+    function loadItems() {
+        var url = make_sub_url($location.absUrl(), 'versions/');
+        set_debug($location, $scope);
+        $http.get(url)
+            .success(function (data) {
+                $scope.item_list = data;
+            });
+    } // loadItems
 
-        loadItems();
-    } // ConceptVersionController
-);
+    loadItems();
+}); // ConceptVersionController
 
 app.controller('SourceSearchController', function ($scope, $http, $location) {
 
@@ -650,6 +649,44 @@ app.controller('MappingController', function ($scope, $http, $location) {
 
 }); // MappingController
 
+
+app.controller("ConceptVersionsController", function ($scope, $http, $location) {
+
+    // $scope.getSelectedFirstConceptVersion = function () {
+    //     alert($scope.selectedFirstConceptVersion);
+    // };
+
+    $scope.getSources = function () {
+
+        var url = $scope.selected_source + 'concepts/';
+
+        $http({
+            method: 'GET',
+            url: url
+        }).then(function success(response){
+            $scope.source_concepts = response['data']['items'];
+        }, function fail(response) {
+            alert("get concepts fail");
+        })
+    };
+    $scope.getConcepts = function () {
+
+        var concept_versions_url = $scope.selected_concept + 'history/';
+
+        $http({
+            method: 'GET',
+            url: concept_versions_url
+        }).then(function success(response){
+            $scope.concept_versions = response['data'];
+        }, function fail(response) {
+            alert(response.toString());
+        })
+    };
+
+    // $scope.getSelectedSecondConceptVersion = function () {
+    //     alert($scope.selectedSecondConceptVersion);
+    // };
+});
 
 // Simple function to handle removing member from org
 function removeMember(orgId, memId) {

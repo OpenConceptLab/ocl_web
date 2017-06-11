@@ -23,6 +23,7 @@
 					<hr />
 					<div class="row" style="padding-top:5px;padding-bottom:5px;"><div class="col-md-3 field-label-key">From Concept</div><div class="col-md-9">{% mapping_from_concept_label mapping label_size="small" %}</div></div>
 					<div class="row" style="padding-top:5px;padding-bottom:5px;"><div class="col-md-3 field-label-key">To Concept</div><div class="col-md-9">{% mapping_to_concept_label mapping label_size="small" %}</div></div>
+					<p>{{ mapping.external_id }}<p>
 					{% if mapping.external_id %}
 						<hr />
 						{% field_label 'External ID' mapping.external_id %}

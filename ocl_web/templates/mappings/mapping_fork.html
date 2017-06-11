@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+
+{% block title %}{{ source.owner }} / {{ source.id }} / {% trans "New Mapping" %} - Open Concept Lab{% endblock title %}
+
+
+{% block content %}
+{% if source.owner_type == 'Organization' %}
+	{% url 'source-mappings' org=source.owner source=source.id as source_mappings_url %}
+{% else %}
+	{% url 'source-mappings' user=source.owner source=source.id as source_mappings_url %}
+{% endif %}
+
+<h3>
+	{% resource_owner_label source %} / {% source_label source %}&nbsp;/&nbsp;
+	<span style="color:#e5e5e5"><span class="glyphicon glyphicon-link"></span></span>&nbsp;&nbsp;{% trans 'New Mapping' %}
+</h3>
+
+<div class="container">
+	<div class="row" style="padding-top:15px;">
+
+		<!-- New Mapping Form -->
+		<div class="col-md-8">
+			<form class="form" name="mapping_form" autocomplete="off" method="post" action=".">
+				{% csrf_token %}
+				{% bootstrap_form form %}
+
+				{% buttons %}
+					<button type="submit" class="btn btn-primary">{% trans "Create Mapping" %}</button>
+					<a href="{{ source_mappings_url }}" class="btn btn-default">{% trans "Cancel" %}</a>
+				{% endbuttons %}
+			</form>
+		</div>
+
+		<!-- Tip Panel -->
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+				<div class="panel-body">
+					<p class="small">A <strong>Mapping</strong> represents a relationship between two concepts, such as an a "Same As" identity map across sources, or a parent/child relationship between two concepts in the same source.</p>
+					<p class="small">Mappings are generally created in the same source that the "from concept" is in, but you can also group mappings into different sources, regardless of where the concepts are stored.</p>
+					<ul><li class="small">An <em>Internal Mapping</em> points to a concept that is defined in OCL (e.g. CIEL).
+						<li class="small">An <em>External Mapping</em> points to a concept that is <em>not</em> defined in OCL, such as SNOMED-CT. However, the source must exist in OCL with its <code>source_type</code> attribute set to "External".</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+{% endblock content %}
+
+
+{% block extrajavascript %}
+<script>
+$(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
+	function show_hide_mapping_fields(){
+		if($('input:radio[name="is_internal_or_external"]:checked').val() == "External") {
+			$('div#internal-mapping-form div.form-group').hide();
+			$('div#external-mapping-form div.form-group').show();
+		} else if($('input:radio[name="is_internal_or_external"]:checked').val() == "Internal") {
+			$('div#internal-mapping-form div.form-group').show();
+			$('div#external-mapping-form div.form-group').hide();
+		} else {
+			$('div#internal-mapping-form div.form-group').hide();
+			$('div#external-mapping-form div.form-group').hide();
+		}
+	}
+	show_hide_mapping_fields();
+	$('#id_is_internal_or_external input[type="radio"]').click(function (){ show_hide_mapping_fields(); });
+});
+</script>
+{% endblock extrajavascript %}
