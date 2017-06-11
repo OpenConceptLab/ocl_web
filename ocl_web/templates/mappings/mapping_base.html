@@ -12,10 +12,12 @@
     {% if mapping.owner_type == 'Organization' %}
         {% url 'mapping-home' org=mapping.owner source=mapping.source mapping=mapping.versioned_object_id as mapping_home_url %}
         {% url 'mapping-edit' org=mapping.owner source=mapping.source mapping=mapping.versioned_object_id as mapping_edit_url %}
+        {% url 'mapping-fork' org=mapping.owner source=mapping.source mapping=mapping.versioned_object_id as mapping_fork_url %}
         {% url 'source-home' org=mapping.owner source=mapping.source as source_url %}
     {% else %}
         {% url 'mapping-home' user=mapping.owner source=mapping.source mapping=mapping.versioned_object_id as mapping_home_url %}
         {% url 'mapping-edit' user=mapping.owner source=mapping.source mapping=mapping.versioned_object_id as mapping_edit_url %}
+        {% url 'mapping-fork' user=mapping.owner source=mapping.source mapping=mapping.versioned_object_id as mapping_fork_url %}
         {% url 'source-home' user=mapping.owner source=mapping.source as source_url %}
     {% endif %}
 
@@ -23,10 +25,12 @@
     {% if mapping.owner_type == 'Organization' %}
         {% url 'mapping-home' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_home_url %}
         {% url 'mapping-edit' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_edit_url %}
+        {% url 'mapping-fork' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_fork_url %}
         {% url 'source-home' org=mapping.owner source=mapping.source as source_url %}
     {% else %}
         {% url 'mapping-home' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_home_url %}
         {% url 'mapping-edit' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_edit_url %}
+        {% url 'mapping-fork' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_fork_url %}
         {% url 'source-home' user=mapping.owner source=mapping.source as source_url %}
     {% endif %}
 {% endif %}
@@ -98,6 +102,7 @@
                             {% if_can_change mapping %}
                                 &nbsp;<a href="{{ mapping_edit_url }}" class="text-muted small" title="Edit Mapping"><span class="glyphicon glyphicon-pencil"></span></a>
                             {% endif_can_change mapping %}
+                            <a href="{{ mapping_fork_url }}">Fork</a>
                         {% endif %}
 					</div>
 

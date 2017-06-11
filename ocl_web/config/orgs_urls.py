@@ -30,9 +30,9 @@ from apps.sources.views import (
     SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView, SourceVersionEditJsonView, SourceVersionDeleteView)
 from apps.concepts.views import (
     ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptEditView,
-    ConceptRetireView, ConceptNewView, ConceptDescView, ConceptNameView)
+    ConceptRetireView, ConceptNewView, ConceptForkView, ConceptDescView, ConceptNameView)
 from apps.mappings.views import (
-    MappingDetailsView, MappingNewView, MappingEditView, MappingRetireView, MappingVersionsView)
+    MappingDetailsView, MappingNewView, MappingForkView, MappingEditView, MappingRetireView, MappingVersionsView)
 from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView, CollectionAboutView, \
     CollectionVersionsView, CollectionConceptsView, CollectionMappingsView, \
     CollectionReferencesView, CollectionVersionDeleteView, CollectionDeleteView, CollectionAddReferenceView, CollectionVersionsNewView, CollectionReferencesDeleteView, CollectionVersionEditJsonView, \
@@ -193,8 +193,12 @@ urlpatterns = patterns(
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
         ConceptEditView.as_view(), name='concept-edit'),
 
+    # /orgs/:org/sources/:source/concepts/:concept/fork/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/fork/$',    # pylint: disable=C0301
+        ConceptForkView.as_view(), name='concept-fork'),
+
     # /orgs/:org/sources/:source/concepts/:concept/retire/
-    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/retire/$',    # pylint: disable=C0301
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.   ]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/retire/$',    # pylint: disable=C0301
         ConceptRetireView.as_view(), name='concept-retire'),
 
     # /orgs/:org/sources/:source/concepts/:concept/details/
@@ -309,7 +313,9 @@ urlpatterns = patterns(
     # /orgs/:org/sources/:source/mappings/:mapping/edit/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
         MappingEditView.as_view(), name='mapping-edit'),
-
+    # /orgs/:org/sources/:source/mappings/:mapping/fork/
+    url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/fork/$',    # pylint: disable=C0301
+        MappingForkView.as_view(), name='mapping-fork'),
     # /orgs/:org/sources/:source/mappings/:mapping/retire/
     url(r'^(?P<org>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/retire/$',    # pylint: disable=C0301
         MappingRetireView.as_view(), name='mapping-retire'),

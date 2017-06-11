@@ -85,6 +85,7 @@ def resource_owner_label(resource, label_size=None):
         'label_size': label_size
     }
 
+
 @register.inclusion_tag('includes/source_label_incl.html')
 def source_label(source, label_size=None):
     """

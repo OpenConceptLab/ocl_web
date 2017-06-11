@@ -1,6 +1,7 @@
 """
 OCL Concept Views
 """
+import ast
 import re
 import requests
 import logging
@@ -20,7 +21,7 @@ import json
 from braces.views import (LoginRequiredMixin, JsonRequestResponseMixin)
 # from braces.views importCsrfExemptMixin
 
-from .forms import (ConceptNewForm, ConceptEditForm, ConceptNewMappingForm, ConceptRetireForm)
+from .forms import (ConceptNewForm, ConceptForkForm, ConceptEditForm, ConceptNewMappingForm, ConceptRetireForm)
 from libs.ocl import OclApi, OclSearch, OclConstants
 from apps.core.views import UserOrOrgMixin
 from itertools import chain
@@ -337,7 +338,8 @@ class ConceptMappingsView(FormView, UserOrOrgMixin,
         base_data = {
             'from_concept_url': from_concept_url,
             'map_type': form.cleaned_data.get('map_type', ''),
-            'external_id': form.cleaned_data.get('external_id', '')
+            'external_id': form.cleaned_data.get('external_id', ''),
+            'is_internal_or_external': mapping_destination
         }
         if mapping_destination == 'Internal':
             base_data['to_concept_url'] = form.cleaned_data.get('internal_to_concept_url')
@@ -543,6 +545,161 @@ class ConceptNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
                                  _("\n".join(errors)))
             logger.warning('Concept create POST failed: %s' % result.content)
             return super(ConceptNewView, self).form_invalid(form)
+
+
+class ConceptForkView(LoginRequiredMixin, UserOrOrgMixin, FormView):
+
+    form_class = ConceptForkForm
+    template_name = "concepts/concept_fork.html"
+
+    def get_initial(self):
+        """ Set the owner and source args for use in the form """
+
+        data = super(ConceptForkView, self).get_initial()
+
+        # Set owner type and identifiers using UserOrOrgMixin.get_args()
+        self.get_args()
+        data.update({
+            'request': self.request,
+            'original_concept_from_user': self.from_user,
+            'original_concept_from_org': self.from_org,
+            'original_concept_user_id': self.user_id,
+            'original_concept_org_id': self.org_id,
+            'original_concept_owner_type': self.owner_type,
+            'original_concept_owner_id': self.owner_id,
+            'original_concept_source_id': self.source_id,
+            'original_concept_id': self.concept_id
+        })
+
+        return data
+
+    def get_context_data(self, *args, **kwargs):
+
+        context = super(ConceptForkView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        # Load the source that the new concept will belong to
+        api = OclApi(self.request, debug=True)
+        source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
+
+        context['source'] = source
+
+        return context
+
+    def form_valid(self, form, *args, **kwargs):
+
+        # Prepare the data for submission, incl. renaming fields as needed
+
+        # get the original concept using the API
+        api = OclApi(self.request, debug=True)
+        original_source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
+        allow_forking = original_source.get('allow_forking')
+
+        if not allow_forking:
+            messages.add_message(self.request, messages.INFO, _('Source can not be forked.'))
+            if self.from_org:
+                return HttpResponseRedirect(reverse('source-details',
+                                                    kwargs={'org': self.org_id,
+                                                            'source': self.source_id}))
+            else:
+                return HttpResponseRedirect(reverse('source-details',
+                                                    kwargs={'user': self.user_id,
+                                                            'source': self.source_id}))
+
+        original_concept = api.get(self.owner_type, self.owner_id, 'sources', self.source_id, 'concepts',
+                                   self.concept_id).json()
+
+        concept_id = form.cleaned_data.pop('concept_id')
+
+        original_concept_data = {
+            'id': concept_id,
+            'concept_class': original_concept.get('concept_class'),
+            'datatype': original_concept.get('datatype'),
+            'external_id': original_concept.get('external_id', ''),
+            'forked_from_url': original_concept.get('url'),
+            'version': original_concept.get('version'),
+            'Fork_Mappings': form.cleaned_data.get('Fork_Mappings')
+        }
+
+        names = original_concept['names']
+        descriptions = original_concept['descriptions']
+        extras = original_concept['extras']
+
+        destination_source = json.dumps(ast.literal_eval(form.cleaned_data['sources'].encode('utf-8')))
+        destination_source = json.loads(destination_source)
+
+        proper_owner_type = destination_source['owner_type']
+        from_org = False
+        if proper_owner_type == 'User':
+            from_user = True
+            owner_type = 'users'
+            owner_id = destination_source['owner']
+        else:
+            from_org = True
+            owner_type = 'orgs'
+            owner_id = destination_source['owner']
+        source_id = destination_source['id']
+
+        existing_concepts = api.get(owner_type, owner_id, 'sources', source_id, 'concepts').json()
+        for concept in existing_concepts:
+            if original_concept.get('url') == concept.get('forked_from_url') or \
+                    original_concept.get('source') == source_id:
+                errors = 'Concept had been forked to this source ago'
+                messages.add_message(self.request, messages.ERROR, errors)
+                logger.warning('Concept fork POST failed: %s' % errors)
+                return super(ConceptForkView, self).form_invalid(form)
+
+        result = api.fork_concept(owner_type, owner_id, source_id, original_concept_data,
+                                  names, descriptions, extras=extras)
+
+        if result.ok:
+
+            fork_mappings = form.cleaned_data.get('Fork_Mappings')
+            if fork_mappings:
+                related_mappings = api.get(self.owner_type, self.owner_id, 'sources', self.source_id, 'concepts',
+                                           self.concept_id, 'mappings').json()
+                self.fork_related_mappings(related_mappings, owner_type, owner_id, source_id, concept_id)
+
+            messages.add_message(self.request, messages.INFO, _('Concept forked.'))
+            if from_org:
+                return redirect(reverse('concept-details',
+                                        kwargs={'org': owner_id,
+                                                'source': source_id,
+                                                'concept': concept_id}))
+            else:
+                return redirect(reverse('concept-details',
+                                        kwargs={'user': owner_id,
+                                                'source': source_id,
+                                                'concept': concept_id}))
+        else:
+            errors = list(chain.from_iterable(json.loads(result.content).values()))
+            messages.add_message(self.request, messages.ERROR,
+                                 _("\n".join(errors)))
+            logger.warning('Concept fork POST failed: %s' % result.content)
+            return super(ConceptForkView, self).form_invalid(form)
+
+    def fork_related_mappings(self, related_mappings, owner_type, owner_id, source_id, concept_id):
+
+        api = OclApi(self.request, debug=True)
+        new_concept = api.get(owner_type, self.owner_id, 'sources', source_id, 'concepts', concept_id).json()
+
+        for original_mapping in related_mappings:
+            mapping_destination = original_mapping.get('is_internal_or_external')
+
+            base_data = {
+                'from_concept_url': new_concept.get('url'),
+                'map_type': original_mapping.get('map_type', ''),
+                'external_id': original_mapping.get('external_id', ''),
+                'is_internal_or_external': mapping_destination
+            }
+            if mapping_destination == 'Internal':
+                base_data['to_concept_url'] = original_mapping.get('to_concept_url')
+            elif mapping_destination == 'External':
+                base_data['to_source_url'] = original_mapping.get('to_source_url')
+                base_data['to_concept_code'] = original_mapping.get('to_concept_code')
+                base_data['to_concept_name'] = original_mapping.get('to_concept_name')
+
+            result = api.create_mapping(owner_type, owner_id, source_id, base_data)
 
 
 # TODO(paynejd@gmail.com): Retire ConceptCreateJsonView ASAP

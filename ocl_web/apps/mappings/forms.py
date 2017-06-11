@@ -5,6 +5,8 @@ Forms for mappings.
 from django.utils.translation import ugettext as _
 from django import forms
 
+from apps.core.views import _get_org_or_user_sources_list
+
 
 class MappingRetireForm(forms.Form):
     """
@@ -82,6 +84,20 @@ class MappingNewForm(forms.Form):
         widget=forms.TextInput(
             attrs={'placeholder': "e.g. Tuberculosis of lung, confirmed by culture only"}))
 
+
+class MappingForkForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(MappingForkForm, self).__init__(*args, **kwargs)
+        print 'MappingForkForm args:   ', args
+        print 'MappingForkForm kwargs: ', kwargs
+        self.fields['sources'].choices = [(s, s['id']) for s in _get_org_or_user_sources_list(**kwargs)]
+
+    sources = forms.ChoiceField(
+        choices=[],
+        label=_('source'),
+        required=True
+    )
 
 
 class MappingEditForm(MappingNewForm):

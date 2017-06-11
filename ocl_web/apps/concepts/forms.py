@@ -20,7 +20,8 @@ from django import forms
 from django.forms.formsets import formset_factory
 
 #from libs.ocl import OclApi
-from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list, _get_name_type_list, _get_description_type_list)
+from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_org_or_user_sources_list,
+                             _get_datatype_list, _get_name_type_list, _get_description_type_list)
 from libs.ocl import OclApi
 
 
@@ -89,7 +90,6 @@ class ConceptNewMappingForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
 
 
-
 class  ConceptNewForm(forms.Form):
     """
     Concept new form
@@ -131,6 +131,38 @@ class  ConceptNewForm(forms.Form):
         label=_('Concept External ID'),
         required=False,
         widget=forms.TextInput(attrs={'placeholder': "e.g. UUID from external system"}))
+
+
+class ConceptForkForm(forms.Form):
+    original_concept_id = None
+
+    def __init__(self, *args, **kwargs):
+        super(ConceptForkForm, self).__init__(*args, **kwargs)
+        self.fields['concept_id'].widget.attrs['placeholder'] = kwargs['initial']['original_concept_id']
+        self.fields['sources'].choices = [(s, s['id']) for s in _get_org_or_user_sources_list(**kwargs)]
+
+    # TODO: Validate concept ID is unique
+    concept_id = forms.CharField(
+        label=_('Concept ID'),
+        max_length=256,
+        required=True,
+        help_text=_('<small>Alphanumeric characters, hyphens and periods are allowed.<br/>'
+                    'Your fork concept will live at: '
+                    '<span id="new_concept_base_url">/[owner-type]/[owner]/sources/'
+                    '[source]/concepts/</span>'
+                    '<span id="new_concept_id" style="font-weight:bold;">'
+                    '[concept-id]</span>/</small>'),
+        widget=forms.TextInput(attrs={'placeholder': original_concept_id}))
+
+    sources = forms.ChoiceField(
+        choices=[],
+        label=_('source'),
+        required=True
+    )
+    Fork_Mappings = forms.BooleanField(
+        label=_('Fork mappings'),
+        required=False
+    )
 
 
 class ConceptEditForm(ConceptNewForm):

@@ -219,6 +219,22 @@ class ExtraJsonView(JsonRequestResponseMixin, UserOrOrgMixin, View):
         return self.render_json_response({'message': _('extra deleted')})
 
 
+def _get_org_or_user_sources_list(**kwargs):
+    sources = []
+    oclApi = OclApi(kwargs['initial']['request'], debug=True)
+    username = str(kwargs['initial']['request'].user)
+    response_user_sources = oclApi.get('users', username, 'sources', params={'limit': 20})
+    sources.extend([] if response_user_sources.status_code == 404
+                   else [source for source in response_user_sources.json()])
+    response_user_orgs = oclApi.get('users', username, 'orgs', params={'limit': 20})
+    for user_org in response_user_orgs.json():
+        response_user_orgs_sources = oclApi.get('orgs', user_org['id'], 'sources', params={'limit': 20})
+        sources.extend([] if response_user_orgs_sources.status_code == 404
+                       else [source for source in response_user_orgs_sources.json()])
+
+    return sources
+
+
 def _get_concept_class_list():
     """Return a list of concept classes.
 
