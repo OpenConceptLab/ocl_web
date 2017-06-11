@@ -223,6 +223,9 @@ def _get_org_or_user_sources_list(**kwargs):
     sources = []
     oclApi = OclApi(kwargs['initial']['request'], debug=True)
     username = str(kwargs['initial']['request'].user)
+
+    print("_get_org_or_user_sources_list:  kwargs: ", kwargs)
+
     response_user_sources = oclApi.get('users', username, 'sources', params={'limit': 20})
     sources.extend([] if response_user_sources.status_code == 404
                    else [source for source in response_user_sources.json()])

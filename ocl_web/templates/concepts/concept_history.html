@@ -22,35 +22,31 @@
                             {% url 'concept-version-diff' user=concept.owner source=concept.source concept=concept.id as concept_version_diff_url %}
                         {% endif %}
 
-                        <form action="{{ concept_version_diff_url }}" method="get">
-                            {% for concept_version in concept_versions %}
-                                {% if concept.owner_type == 'Organization' %}
-                                    {% url 'concept-version-details' org=concept.owner source=concept.source concept=concept.id concept_version=concept_version.version as concept_version_url %}
-                                {% else %}
-                                    {% url 'concept-version-details' user=concept.owner source=concept.source concept=concept.id concept_version=concept_version.version as concept_version_url %}
-                                {% endif %}
-                                <div class="row">
-                                    <div class="col-md-9">
-                                        {% if concept_version.update_comment %}{{ concept_version.update_comment }}{% else %}<span class="text-muted small"><em>No update comment</em></span>{% endif %}<br />
-                                        <span class="text-muted small">
-                                            <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Updated by {{ concept_version.version_created_by }}
-                                            &nbsp;&nbsp;&nbsp;&nbsp;
-                                            <span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Updated on {{ concept_version.version_created_on|smart_datetime }}
-                                        </span>
-                                    </div>
-                                    <div class="col-md-3" style="text-align:right;">
-                                        <input type="checkbox" name="conceptVersion" id="{{ concept_version }}" value="{{ concept_version.version }}">
-                                        <a href="{{ concept_version_url }}"><span class="glyphicon glyphicon-search"></span></a>
-                                    </div>
-                                    <!--<span><a id="concept_version_diff_url" href="{{ concept_version_diff_url }}">Diff</a> </span>-->
+                        {% for concept_version in concept_versions %}
+                            {% if concept.owner_type == 'Organization' %}
+                                {% url 'concept-version-details' org=concept.owner source=concept.source concept=concept.id concept_version=concept_version.version as concept_version_url %}
+                            {% else %}
+                                {% url 'concept-version-details' user=concept.owner source=concept.source concept=concept.id concept_version=concept_version.version as concept_version_url %}
+                            {% endif %}
+                            <div class="row">
+                                <div class="col-md-9">
+                                    {% if concept_version.update_comment %}{{ concept_version.update_comment }}{% else %}<span class="text-muted small"><em>No update comment</em></span>{% endif %}<br />
+                                    <span class="text-muted small">
+                                        <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Updated by {{ concept_version.version_created_by }}
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Updated on {{ concept_version.version_created_on|smart_datetime }}
+                                    </span>
                                 </div>
-                                {% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ concept_version|pprint }}</pre></div></div>{% endif %}
-                                {% if not forloop.last %}<hr />{% endif %}
-                            {% empty %}
-                                <h3><small>None</small></h3>
-                            {% endfor %}
-                            <button id="compare" type="submit" class="btn btn-primary btn-block" disabled="disabled">Compare</button>
-                        </form>
+                                <div class="col-md-3" style="text-align:right;">
+                                    <a href="{{ concept_version_url }}"><span class="glyphicon glyphicon-search"></span></a>
+                                </div>
+                                <!--<span><a id="concept_version_diff_url" href="{{ concept_version_diff_url }}">Diff</a> </span>-->
+                            </div>
+                            {% if request.GET.debug %}<div class="row"><div class="col-md-12"><pre>{{ concept_version|pprint }}</pre></div></div>{% endif %}
+                            {% if not forloop.last %}<hr />{% endif %}
+                        {% empty %}
+                            <h3><small>None</small></h3>
+                        {% endfor %}
                     </div>
 
                 </div>
@@ -70,63 +66,58 @@
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3 class="panel-title">Diff</h3></div>
 				<div class="panel-body">
-					<form class="form" id="compare_diff_form" method="get" action="{{ concept_version_diff_url }}">
+					<form class="form" name="compare_diff_form"
+                          ng-submit="submitCompareForm(compare_diff_form, '{{ concept_version_diff_url }}')" method="get">
 
 						{{ form.non_field_errors }}
 
 						<div class="form-group">
-							<label class="small">{% trans 'From Concept' %}</label>
+							<label class="small">{% trans 'The First Concept' %}</label>
 							<div>{% generic_resource_label resource_type='concept' resource_id=concept.id resource_name=concept.display_name resource_retired=concept.retired owner_type=concept.owner_type owner_id=concept.owner source_id=concept.source label_size='small' display_breadcrumb=True %}</div>
 						</div>
 
 						<div class="form-group required">
-							{{ form.map_type.errors }}
-							<label class="control-label required small">The First Concept Version</label>
+							<label class="control-label required small">Version</label>
                             <select class="form-control" id="first_concept_version" name="concept_version"
                             ng-model="selectedFirstConceptVersion" ng-click="getSelectedFirstConceptVersion()">
                                 {% for concept_version in concept_versions %}
                                     <option value="{{ concept_version.url }}">{{ concept_version.version }}</option>
                                 {% endfor %}
                             </select>
-							<span class="help-block small" style="margin-top:0;">{{ form.map_type.help_text }}</span>
 						</div>
 
+                        <label class="small">{% trans 'The Second Concept' %}</label>
+
                         <div class="form-group required">
-							{{ form.map_type.errors }}
 							<label class="control-label required small">Sources</label>
-                            <select class="form-control" id="second_sources" ng-click="getSources()"
+                            <select class="form-control" id="second_sources" ng-click="getConcepts()"
                             ng-model="selected_source">
                                 {% for source in all_sources %}
-                                    <option>{{ source.url }}</option>
+                                    <option value="{{ source.url }}">{{ source.id }}/ {{ source.owner }}</option>
                                 {% endfor %}
                             </select>
-							<span class="help-block small" style="margin-top:0;">{{ form.map_type.help_text }}</span>
 						</div>
                         <div class="form-group required">
-							{{ form.map_type.errors }}
                             <!--{% verbatim %}-->
 							<label class="control-label required small">Concepts</label>
                             <select class="form-control" id="second_source_concepts"
-                                    ng-model="selected_concept" ng-click="getConcepts()">
+                                    ng-model="selected_concept" ng-click="getVersions()">
                                 <option ng-repeat="concept in source_concepts" value="[[ concept.url ]]">[[ concept.id ]]</option>
                             </select>
                             <!--{% endverbatim %}-->
-							<span class="help-block small" style="margin-top:0;">{{ form.map_type.help_text }}</span>
 						</div>
 
                         <div class="form-group required">
-							{{ form.map_type.errors }}
 							<label class="control-label required small">Versions</label>
                             <select class="form-control" id="second_concept_version" name="concept_version"
                             ng-model="selectedSecondConceptVersion" ng-click="getSelectedSecondConceptVersion()">
                                 <option ng-repeat="second_concept_version in concept_versions" value="[[ second_concept_version.url ]]">
                                     [[ second_concept_version.version ]]</option>
                             </select>
-							<span class="help-block small" style="margin-top:0;">{{ form.map_type.help_text }}</span>
 						</div>
 
 						{% buttons %}
-							<button type="submit" class="btn btn-primary btn-block">Compare</button>
+							<button type="submit"  class="btn btn-primary btn-block">Compare</button>
 						{% endbuttons %}
 					</form>
 				</div> <!-- /panel-body -->
@@ -136,60 +127,6 @@
         </div>
     </div>
 </div>
-
-<script>
-
-    jQuery(document).ready(function() {
-
-        $('#compare_diff_form').submit(function (e) {
-            e.preventDefault();
-            url = '{{ concept_version_diff_url }}' + "?conceptVersion=596eb29c5b466400172cfca3&conceptVersion=5970517d5b4664037dc7b4f7";
-            alert(url);
-            window.location.href = url;
-        });
-
-        var url = '/users/hao/sources/S1/concepts/';
-
-        $('#second_sources').click(function () {
-            $.ajax({
-            url: url,
-            type: "GET",
-            headers: {
-                'X-CSRFToken': $.cookie('csrftoken'),
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-        }).done(function (data) {
-            alert(data);
-            var source_concepts = JSON.stringify(data, undefined, 2);
-
-        }).fail(function () {
-            console.log('Fail');
-        });
-        });
-
-        var s = $("input[name='conceptVersion']");
-        var selected_nums = 0;
-
-        s.each(function () {
-            $(this).click(function () {
-
-                if(this.checked == true){
-                    selected_nums++;
-                }else {
-                    selected_nums--;
-                }
-
-                if(selected_nums == 2){
-                    $('#compare').attr("disabled", false);
-                }else {
-                    $('#compare').attr("disabled", true);
-                }
-            })
-        })
-    });
-</script>
 {% endblock tab-content %}
 
 

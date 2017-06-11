@@ -656,7 +656,7 @@ app.controller("ConceptVersionsController", function ($scope, $http, $location) 
     //     alert($scope.selectedFirstConceptVersion);
     // };
 
-    $scope.getSources = function () {
+    $scope.getConcepts = function () {
 
         var url = $scope.selected_source + 'concepts/';
 
@@ -665,11 +665,9 @@ app.controller("ConceptVersionsController", function ($scope, $http, $location) 
             url: url
         }).then(function success(response){
             $scope.source_concepts = response['data']['items'];
-        }, function fail(response) {
-            alert("get concepts fail");
         })
     };
-    $scope.getConcepts = function () {
+    $scope.getVersions = function () {
 
         var concept_versions_url = $scope.selected_concept + 'history/';
 
@@ -678,14 +676,51 @@ app.controller("ConceptVersionsController", function ($scope, $http, $location) 
             url: concept_versions_url
         }).then(function success(response){
             $scope.concept_versions = response['data'];
-        }, function fail(response) {
-            alert(response.toString());
         })
     };
 
     // $scope.getSelectedSecondConceptVersion = function () {
     //     alert($scope.selectedSecondConceptVersion);
     // };
+
+    $scope.submitCompareForm = function (compareForm, concept_version_diff_url) {
+        url = concept_version_diff_url + "?conceptVersion=" + $scope.selectedFirstConceptVersion + "&conceptVersion=" +
+                $scope.selectedSecondConceptVersion;
+        window.location.href = url;
+    }
+});
+
+
+app.controller("MappingVersionsController", function ($scope, $http) {
+
+    $scope.getMappings = function () {
+
+        var url = $scope.selected_source + 'mappings/';
+
+        $http({
+            method: 'GET',
+            url: url
+        }).then(function success(response){
+            $scope.source_mappings = response['data']['items'];
+        })
+    };
+    $scope.getVersions = function () {
+
+        var mapping_versions_url = $scope.selected_Mapping + 'history/';
+
+        $http({
+            method: 'GET',
+            url: mapping_versions_url
+        }).then(function success(response){
+            $scope.mapping_versions = response['data'];
+        })
+    };
+
+    $scope.submitCompareMappingsForm = function (compareMappingsForm, mapping_version_diff_url) {
+        url = mapping_version_diff_url + "?mappingVersion=" + $scope.selectedFirstMappingVersion + "&mappingVersion=" +
+                $scope.selectedSecondMappingVersion;
+        window.location.href = url;
+    }
 });
 
 // Simple function to handle removing member from org

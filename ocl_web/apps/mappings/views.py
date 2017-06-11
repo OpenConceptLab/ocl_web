@@ -7,7 +7,7 @@ import logging
 import ast
 import re
 from django.shortcuts import redirect
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.contrib import messages
@@ -21,7 +21,7 @@ from libs.ocl import OclSearch
 from .forms import (MappingNewForm, MappingForkForm, MappingEditForm, MappingRetireForm)
 from braces.views import LoginRequiredMixin
 from libs.ocl import OclApi
-from apps.core.views import UserOrOrgMixin, _get_map_type_list
+from apps.core.views import UserOrOrgMixin, _get_map_type_list, _get_org_or_user_sources_list2
 
 logger = logging.getLogger('oclweb')
 
@@ -199,8 +199,44 @@ class MappingVersionsView(UserOrOrgMixin, MappingReadBaseView):
             api = OclApi(self.request, debug=True, facets=True)
             context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
 
+        all_sources = _get_org_or_user_sources_list2(self.request, str(self.request.user))
+        context['all_sources'] = all_sources
+
         return context
 
+    def get(self, request, *args, **kwargs):
+        self.get_args()
+        if request.is_ajax():
+            api = OclApi(self.request, debug=True)
+            result = api.get(self.owner_type, self.owner_id, 'sources', kwargs.get('source'), 'mappings',
+                             kwargs.get('mapping'), 'versions', params={'limit': '0'})
+            return HttpResponse(json.dumps(result.json()), content_type="application/json")
+        return super(MappingVersionsView, self).get(self, *args, **kwargs)
+
+
+class MappingDiffView(LoginRequiredMixin, UserOrOrgMixin, MappingReadBaseView):
+    template_name = "mappings/mappings_diff.html"
+
+    def get_context_data(self, *args, **kwargs):
+
+        mapping_versions = self.request.GET.getlist('mappingVersion')
+
+        first_mapping_version = mapping_versions[0].split("/")[1:-1]
+        second_mapping_version = mapping_versions[1].split("/")[1:-1]
+
+        context = super(MappingDiffView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        api = OclApi(self.request, debug=True)
+        mapping1 = api.get(*first_mapping_version).json()
+        mapping2 = api.get(*second_mapping_version).json()
+
+        context['kwargs'] = self.kwargs
+        context['mapping'] = mapping1
+        context['mapping1'] = json.dumps(mapping1)
+        context['mapping2'] = json.dumps(mapping2)
+
+        return context
 
 
 class MappingEditView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):

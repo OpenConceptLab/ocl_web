@@ -24,7 +24,8 @@ from apps.concepts.views import (
     ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptEditView, ConceptDiffView,
     ConceptRetireView, ConceptNewView, ConceptForkView, ConceptDescView, ConceptNameView)
 from apps.mappings.views import (
-    MappingDetailsView, MappingNewView, MappingForkView, MappingEditView, MappingRetireView, MappingVersionsView)
+    MappingDetailsView, MappingNewView, MappingForkView, MappingEditView, MappingRetireView, MappingVersionsView,
+    MappingDiffView)
 from apps.core.views import ExtraJsonView
 from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView, CollectionAboutView, \
     CollectionVersionsView, CollectionConceptsView, CollectionMappingsView, \
@@ -265,6 +266,10 @@ urlpatterns = patterns(
     # /users/:user/sources/:source/mappings/:mapping/history/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/history/$',    # pylint: disable=C0301
         MappingVersionsView.as_view(), name='mapping-versions'),
+
+    # /users/:user/sources/:source/mappings/:mapping/diff/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/diff/$',    # pylint: disable=C0301
+        MappingDiffView.as_view(), name='mapping-diff-version'),
 
     # /users/:user/sources/:source/mappings/:mapping/edit/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301

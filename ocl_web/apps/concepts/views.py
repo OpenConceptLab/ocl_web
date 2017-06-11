@@ -418,22 +418,7 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
         if self.request.user.is_authenticated():
             context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
 
-        all_sources = _get_org_or_user_sources_list2(self.request, self.owner_id)
-        # concept_versions = []
-        # source_concepts = None
-        # for i in range(len(all_sources)):
-        #     if all_sources[i]['owner_type'] == 'User':
-        #         owner_type = 'users'
-        #     else:
-        #         owner_type = 'orgs'
-        #     source_concepts = self.get_source_concepts(owner_type, all_sources[i]['owner'],
-        #                                                all_sources[i]['id'])
-        #     for j in range(len(source_concepts)):
-        #         concept_versions.extend(self.get_concept_versions(owner_type, all_sources[i]['owner'], all_sources[i]['id'],
-        #                                                      source_concepts[j]['id']))
-        #
-        # all_concepts = api.get('concepts').json()
-
+        all_sources = _get_org_or_user_sources_list2(self.request, str(self.request.user))
 
         # Set the context
         context['kwargs'] = self.kwargs
@@ -449,59 +434,36 @@ class ConceptHistoryView(UserOrOrgMixin, ConceptReadBaseView):
         return context
 
     def get(self, request, *args, **kwargs):
-        print('ConceptHistoryView: get')
         self.get_args()
         if request.is_ajax():
             api = OclApi(self.request, debug=True)
             result = api.get(self.owner_type, self.owner_id, 'sources', kwargs.get('source'), 'concepts',
                              kwargs.get('concept'), 'versions', params={'limit': '0'})
-            print('result:   ', result)
             return HttpResponse(json.dumps(result.json()), content_type="application/json")
         return super(ConceptHistoryView, self).get(self, *args, **kwargs)
-
-    def get_source_concepts(self, owner_type, owner_id, source_id):
-        api = OclApi(self.request, debug=True)
-        source_concepts = api.get(owner_type, owner_id, 'sources', source_id, 'concepts').json()
-        return source_concepts
-
-    def get_concept_versions(self, owner_type, owner_id, source_id, concept_id):
-        api = OclApi(self.request, debug=True)
-        versions = api.get(owner_type, owner_id, 'sources', source_id, 'concepts', concept_id, 'versions').json()
-        return versions
 
 
 class ConceptDiffView(LoginRequiredMixin, UserOrOrgMixin, ConceptReadBaseView):
     template_name = "concepts/concept_diff.html"
 
-    print("ConceptDiffView    ")
-
     def get_context_data(self, *args, **kwargs):
-        print('ConceptDiffView get_context_data ')
-        # print('ConceptDiffView get_context_data request: ', self.request)
-        # print('ConceptDiffView get_context_data args:  ', args)
-        # print('ConceptDiffView get_context_data kwargs: ', kwargs)
 
         concept_versions = self.request.GET.getlist('conceptVersion')
 
-        print('concept_versions:   ', concept_versions)
+        first_concept_version = concept_versions[0].split("/")[1:-1]
+        second_concept_version = concept_versions[1].split("/")[1:-1]
 
         context = super(ConceptDiffView, self).get_context_data(*args, **kwargs)
         self.get_args()
 
         api = OclApi(self.request, debug=True)
-        concept1 = self.get_concept_details(
-            self.owner_type, self.owner_id, self.source_id, self.concept_id,
-            source_version_id=self.source_version_id, concept_version_id=concept_versions[0])
-        concept2 = self.get_concept_details(
-            self.owner_type, self.owner_id, self.source_id, self.concept_id,
-            source_version_id=self.source_version_id, concept_version_id=concept_versions[1])
+        concept1 = api.get(*first_concept_version).json()
+        concept2 = api.get(*second_concept_version).json()
 
         context['kwargs'] = self.kwargs
         context['concept'] = concept1
         context['concept1'] = json.dumps(concept1)
         context['concept2'] = json.dumps(concept2)
-
-        # print('kwargs: ', context)
 
         return context
 
