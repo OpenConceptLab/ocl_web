@@ -4,6 +4,7 @@ Views for OCL Mappings.
 #import requests
 import logging
 
+import ast
 import re
 from django.shortcuts import redirect
 from django.http import Http404
@@ -17,7 +18,7 @@ import json
 
 from libs.ocl import OclConstants
 from libs.ocl import OclSearch
-from .forms import (MappingNewForm, MappingEditForm, MappingRetireForm)
+from .forms import (MappingNewForm, MappingForkForm, MappingEditForm, MappingRetireForm)
 from braces.views import LoginRequiredMixin
 from libs.ocl import OclApi
 from apps.core.views import UserOrOrgMixin, _get_map_type_list
@@ -148,6 +149,11 @@ class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Details'
         context['mapping'] = mapping
+
+        print 'MappingDetailsView context:  ', context
+        print '\n'
+        print 'MappingDetailsView external:    ', mapping.get('is_external_mapping')
+        print 'MappingDetailsView internal:  ', mapping.get('is_internal_mapping')
 
         if self.request.user.is_authenticated():
             api = OclApi(self.request, debug=True, facets=True)
@@ -339,6 +345,7 @@ class MappingNewView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
 
     def form_valid(self, form, *args, **kwargs):
         """ Submits the validated form data using the API: new mapping """
+
         # TODO: move regex validation to form
         user_concept_format = r'^/users/([a-zA-Z0-9\-\.]+)/sources/([a-zA-Z0-9\-\.]+)/concepts/([a-zA-Z0-9\-\.]+)/$'
         org_concept_format = r'^/orgs/([a-zA-Z0-9\-]+)/sources/([a-zA-Z0-9\-\.]+)/concepts/([a-zA-Z0-9\-\.]+)/$'
@@ -347,7 +354,8 @@ class MappingNewView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
         base_data = {
             'from_concept_url': form.cleaned_data.get('from_concept_url'),
             'map_type': form.cleaned_data.get('map_type', ''),
-            'external_id': form.cleaned_data.get('external_id', '')
+            'external_id': form.cleaned_data.get('external_id', ''),
+            'is_internal_or_external': mapping_destination
         }
         if not (re.compile(user_concept_format).match(base_data['from_concept_url']) or
                     re.compile(org_concept_format).match(base_data['from_concept_url'])):
@@ -391,6 +399,80 @@ class MappingNewView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
             logger.warning('Mapping create POST failed: %s' % result.content)
             return super(MappingNewView, self).form_invalid(form)
 
+
+class MappingForkView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
+    """
+    Mapping Fork view
+    """
+    form_class = MappingForkForm
+    template_name = "mappings/mapping_fork.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(MappingForkView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+        # Load the source that the new mapping will belong to
+        api = OclApi(self.request, debug=True)
+        source = api.get(self.owner_type, self.owner_id, 'sources', self.source_id).json()
+        context['source'] = source
+        return context
+
+    def form_valid(self, form, *args, **kwargs):
+
+        api = OclApi(self.request, debug=True)
+        original_mapping = api.get(self.owner_type, self.owner_id, 'sources', self.source_id, 'mappings',
+                                   self.mapping_id).json()
+
+        mapping_destination = original_mapping.get('is_internal_or_external')
+
+        base_data = {
+            'from_concept_url': original_mapping.get('from_concept_url'),
+            'map_type': original_mapping.get('map_type', ''),
+            'external_id': original_mapping.get('external_id', ''),
+            'is_internal_or_external': mapping_destination
+        }
+
+        if mapping_destination == 'Internal':
+            base_data['to_concept_url'] = original_mapping.get('to_concept_url')
+        elif mapping_destination == 'External':
+            base_data['to_source_url'] = original_mapping.get('to_source_url')
+            base_data['to_concept_code'] = original_mapping.get('to_concept_code')
+            base_data['to_concept_name'] = original_mapping.get('to_concept_name')
+
+        destination_source = json.dumps(ast.literal_eval(form.cleaned_data['sources'].encode('utf-8')))
+        destination_source = json.loads(destination_source)
+
+        proper_owner_type = destination_source['owner_type']
+        from_org = False
+        if proper_owner_type == 'User':
+            from_user = True
+            owner_type = 'users'
+            owner_id = destination_source['owner']
+        else:
+            from_org = True
+            owner_type = 'orgs'
+            owner_id = destination_source['owner']
+        source_id = destination_source['id']
+
+        result = api.create_mapping(owner_type, owner_id, source_id, base_data)
+
+        if result.ok:
+            new_mapping_id = result.json()['id']
+            messages.add_message(self.request, messages.INFO, _('Mapping created.'))
+            if from_org:
+                return redirect(reverse('mapping-home',
+                                        kwargs={'org': owner_id,
+                                                'source': source_id,
+                                                'mapping': new_mapping_id}))
+            else:
+                return redirect(reverse('mapping-home',
+                                        kwargs={'user': owner_id,
+                                                'source': source_id,
+                                                'mapping': new_mapping_id}))
+        else:
+            emsg = result.json().get('errors', 'Error: ' + result.content)
+            messages.add_message(self.request, messages.ERROR, emsg)
+            logger.warning('Mapping create POST failed: %s' % result.content)
+            return super(MappingForkView, self).form_invalid(form)
 
 
 class MappingRetireView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):

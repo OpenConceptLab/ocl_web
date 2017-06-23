@@ -343,6 +343,36 @@ class OclApi(object):
             'concepts', **data)
         return result
 
+    def fork_concept(self, source_owner_type, source_owner_id, source_id,
+                     original_concept_data=None, names=[], descriptions=[], extras=None):
+
+        """
+        Fork a concept.
+        :param source_owner_type: 'orgs' or 'users'
+        :param source_owner_id: ID of org/user owner
+        :param source_id: is the ID of the owner source
+        :param original_concept: is the forked source concept.
+        :param original_concept_data: are some attributes in original_concept
+        :param names: is a list of dictionary of name fields, optional.
+        :param descriptions: is a list of dictionary of name fields, optional.
+        :param extras: is a dictionary of name fields, optional.
+        :returns: POST result from requests package.
+        """
+
+        data = {}
+        data.update(original_concept_data)
+
+        # data['original_concept'] = original_concept
+        data['names'] = self.extract_names(names)
+        data['descriptions'] = self.extract_descriptions(descriptions)
+
+        if extras:
+            data['extras'] = extras
+
+        result = self.post(
+            source_owner_type, source_owner_id, 'sources', source_id, 'forking', **data)
+        return result
+
     def update_concept(self, source_owner_type, source_owner_id, source_id,
                        concept_id, base_data,
                        names=[], descriptions=[], extras=[]):

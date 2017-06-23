@@ -14,9 +14,11 @@
     {% block resource-header %}
         {% if concept.owner_type == 'Organization' %}
             {% url 'concept-edit' org=concept.owner source=concept.source concept=concept.id as concept_edit_url %}
+            {% url 'concept-fork' org=concept.owner source=concept.source concept=concept.id as concept_fork_url %}
             {% url 'source-home' org=concept.owner source=concept.source as source_url %}
         {% else %}
             {% url 'concept-edit' user=concept.owner source=concept.source concept=concept.id as concept_edit_url %}
+            {% url 'concept-fork' user=concept.owner source=concept.source concept=concept.id as concept_fork_url %}
             {% url 'source-home' user=concept.owner source=concept.source as source_url %}
         {% endif %}
 
@@ -83,6 +85,7 @@
                                            title="Edit Concept"><span class="glyphicon glyphicon-pencil"></span></a>
                                     {% endif_can_change concept %}
                                     <a id="concept-version-permalink" href="{{ concept.version_url }}" class="text-muted small" title="Concept Version Permalink"><span class="glyphicon glyphicon-link"></span></a>
+                                    <a href="{{ concept_fork_url }}">Fork</a>
                                 {% endif %}
                             </div>
                             <p>

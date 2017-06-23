@@ -22,9 +22,9 @@ from apps.sources.views import (
     SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView, SourceVersionDeleteView, SourceVersionEditJsonView)
 from apps.concepts.views import (
     ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptEditView,
-    ConceptRetireView, ConceptNewView, ConceptDescView, ConceptNameView)
+    ConceptRetireView, ConceptNewView, ConceptForkView, ConceptDescView, ConceptNameView)
 from apps.mappings.views import (
-    MappingDetailsView, MappingNewView, MappingEditView, MappingRetireView, MappingVersionsView)
+    MappingDetailsView, MappingNewView, MappingForkView, MappingEditView, MappingRetireView, MappingVersionsView)
 from apps.core.views import ExtraJsonView
 from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView, CollectionAboutView, \
     CollectionVersionsView, CollectionConceptsView, CollectionMappingsView, \
@@ -145,6 +145,10 @@ urlpatterns = patterns(
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
         ConceptEditView.as_view(), name='concept-edit'),
 
+    # /users/:user/sources/:source/concepts/:concept/fork/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/fork/$',    # pylint: disable=C0301
+        ConceptForkView.as_view(), name='concept-fork'),
+
     # /users/:user/sources/:source/concepts/:concept/retire/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/retire/$',    # pylint: disable=C0301
         ConceptRetireView.as_view(), name='concept-retire'),
@@ -262,6 +266,10 @@ urlpatterns = patterns(
     # /users/:user/sources/:source/mappings/:mapping/edit/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
         MappingEditView.as_view(), name='mapping-edit'),
+
+    # /users/:user/sources/:source/mappings/:mapping/fork/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/fork/$',    # pylint: disable=C0301
+        MappingForkView.as_view(), name='mapping-fork'),
 
     # /users/:user/sources/:source/mappings/:mapping/retire/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/retire/$',    # pylint: disable=C0301
