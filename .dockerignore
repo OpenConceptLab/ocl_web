@@ -45,3 +45,6 @@ ocl.db
 pylintrc
 nohup*
 env 
+
+# Git
+.git
