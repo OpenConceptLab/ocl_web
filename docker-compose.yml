@@ -1,4 +1,4 @@
-version: '3.1'
+version: '2.0'
 services:
   db_web:
     image: postgres:9.6.3
@@ -10,7 +10,6 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
     depends_on:
       - db_web
     links:
@@ -19,17 +18,16 @@ services:
       - "ocl_api:api.openconceptlab.org"
     ports:
       - "7000:7000"
-    volumes:
-      - .:/code
     environment:
       - DATABASE_URL=postgres://ocl:Ocl123@dbweb.openconceptlab.org:5432/ocl
       - OCL_API_HOST=http://api.openconceptlab.org:8000
       - OCL_API_TOKEN=65d5a5012b608cb60d10d535e003e2b36e1d3201
       - OCL_ANON_API_TOKEN=65d5a5012b608cb60d10d535e003e2b36e1d3201
-      - ROOT_PWD=Root123
+      - OCL_API_NETWORK=ocl_default
+      - ROOT_PASSWORD=Root123
 volumes:
   db_web_data:
 networks:
   default:
     external:
-      name: ocl_default
+      name: ${OCL_API_NETWORK}

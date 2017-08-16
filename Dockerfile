@@ -14,4 +14,6 @@ ADD package.json /code/
 RUN npm install
 RUN npm install -g grunt-cli
 
+EXPOSE 7000
+
 CMD bash docker-startup.sh

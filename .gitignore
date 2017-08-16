@@ -45,3 +45,5 @@ ocl.db
 pylintrc
 nohup*
 env 
+
+.env

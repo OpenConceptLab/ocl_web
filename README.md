@@ -2,8 +2,44 @@
 
 Web client interface for Open Concept Lab terminology services API.
 
+## Docker setup
 
-## Developer Setup
+### Prerequisites
+
+Docker
+
+### Production
+
+Create the .env file at the root of the project with the following variables:
+OCL_API_TOKEN=65d5a5012b608cb60d10d535e003e2b36e1d3201
+OCL_ANON_API_TOKEN=65d5a5012b608cb60d10d535e003e2b36e1d3201
+OCL_API_NETWORK=ocl_default
+
+The token needs to be taken from OCL API at http://localhost:8000/admin/authtoken/token/
+The network used by OCL API is called projectname_default, where projectname is the directory from which you started OCL API.
+
+In order to run the server in production, use the following command:
+
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+
+To take down the server use:
+docker-compose down
+
+### Development
+
+You need to build and tag a production image (first time only):
+docker build --tag=oclweb .
+
+To run the server use:
+docker-compose up
+
+To take down the server use:
+docker-compose down
+
+To take down the server and drop all data:
+docker-compose down -v
+
+## Manual Developer Setup
 
 ### Prerequisites
 
