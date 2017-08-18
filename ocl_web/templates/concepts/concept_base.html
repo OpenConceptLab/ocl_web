@@ -261,10 +261,12 @@
                 {% url 'concept-details' org=concept.owner source=concept.source concept=concept.id as concept_details_url %}
                 {% url 'concept-mappings' org=concept.owner source=concept.source concept=concept.id as concept_mappings_url %}
                 {% url 'concept-history' org=concept.owner source=concept.source concept=concept.id as concept_history_url %}
+                {% url 'concept-relationship' org=concept.owner source=concept.source concept=concept.id as concept_relationship_url %}
             {% else %}
                 {% url 'concept-details' user=concept.owner source=concept.source concept=concept.id as concept_details_url %}
                 {% url 'concept-mappings' user=concept.owner source=concept.source concept=concept.id as concept_mappings_url %}
                 {% url 'concept-history' user=concept.owner source=concept.source concept=concept.id as concept_history_url %}
+                {% url 'concept-relationship' user=concept.owner source=concept.source concept=concept.id as concept_relationship_url %}
             {% endif %}
         {% endif %}
 
@@ -276,6 +278,8 @@
                         id="mappings_link" href="{{ concept_mappings_url }}">Mappings</a></li>
                 <li role="presentation" {% if selected_tab == "History" %}class="active"{% endif %}><a
                         href="{{ concept_history_url }}">History</a></li>
+                <li role="presentation" {% if selected_tab == "Relationship" %}class="active"{% endif %}><a
+                        href="{{ concept_relationship_url }}">Relationship</a>
             </ul>
             <div style="margin-top:12px;display: none;margin-bottom: 0;" id="concept-alert" class="alert alert-warning">
                     Added the latest versions of concepts/mappings to the collection. Future updates will not be added automatically.

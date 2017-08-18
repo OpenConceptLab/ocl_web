@@ -21,7 +21,7 @@ from apps.sources.views import (
     SourceNewView, SourceEditView, SourceVersionsView, SourceExternalReferencesView,
     SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView, SourceVersionDeleteView, SourceVersionEditJsonView)
 from apps.concepts.views import (
-    ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptEditView, ConceptDiffView,
+    ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptRelationshipView, ConceptEditView, ConceptDiffView,
     ConceptRetireView, ConceptNewView, ConceptForkView, ConceptDescView, ConceptNameView)
 from apps.mappings.views import (
     MappingDetailsView, MappingNewView, MappingForkView, MappingEditView, MappingRetireView, MappingVersionsView,
@@ -165,6 +165,10 @@ urlpatterns = patterns(
     # /users/:user/sources/:source/concepts/:concept/history/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/history/$',    # pylint: disable=C0301
         ConceptHistoryView.as_view(), name='concept-history'),
+
+    # /users/:user/sources/:source/concepts/:concept/relationship/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/relationship/$',    # pylint: disable=C0301
+        ConceptRelationshipView.as_view(), name='concept-relationship'),
 
     # /users/:user/sources/:source/concepts/:concept/diff/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/diff/$',    # pylint: disable=C0301

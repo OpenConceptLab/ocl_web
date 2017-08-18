@@ -39,6 +39,9 @@ class ConceptReadBaseView(TemplateView):
         """ Get the concept details. """
         # TODO(paynejd@gmail.com): Validate input parameters
 
+        print('source_version_id:  \n', source_version_id)
+        print('concept_version_id: \n', concept_version_id)
+
         # Setup request parameters
         params = {}
         if include_mappings:
@@ -54,18 +57,21 @@ class ConceptReadBaseView(TemplateView):
             raise ValueError(
                 'Must specify only a source version or a concept version. Both were specified.')
         elif source_version_id:
+            print('11111')
             search_response = api.get(
                 owner_type, owner_id,
                 'sources', source_id, source_version_id,
                 'concepts', concept_id,
                 params=params)
         elif concept_version_id:
+            print('22222')
             search_response = api.get(
                 owner_type, owner_id,
                 'sources', source_id,
                 'concepts', concept_id, concept_version_id,
                 params=params)
         else:
+            print('33333')
             search_response = api.get(
                 owner_type, owner_id,
                 'sources', source_id,
@@ -76,8 +82,8 @@ class ConceptReadBaseView(TemplateView):
         elif search_response.status_code != 200:
             search_response.raise_for_status()
 
-        # print('search_response:     ', search_response.json())
-        # print('search_response type:  ', type(search_response))
+        # print('search_response:\n  ', search_response.json())
+        # print('search_response type:    ', type(search_response))
         # print('search_response json type: ', type(search_response.json()))
         return search_response.json()
 
@@ -133,7 +139,9 @@ class ConceptDetailsView(UserOrOrgMixin, ConceptReadBaseView):
             source_version_id=self.source_version_id, concept_version_id=self.concept_version_id,
             include_mappings=True, include_inverse_mappings=True)
 
-        print('concept type:   ', type(concept));
+        print('concept type:  ', type(concept))
+        print('source_version_id: \n', self.source_version_id)
+        print('concept_version_id: \n', self.concept_version_id)
 
         concept['has_direct_mappings'] = False
         concept['has_inverse_mappings'] = False
@@ -384,6 +392,81 @@ class ConceptMappingsView(FormView, UserOrOrgMixin,
             messages.add_message(self.request, messages.ERROR, emsg)
             logger.warning('Mapping create POST failed: %s' % result.content)
             return super(ConceptMappingsView, self).form_invalid(form)
+
+
+class ConceptRelationshipView(UserOrOrgMixin, ConceptReadBaseView):
+    template_name = "concepts/concept_relationship.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """
+                Loads the concept details.
+                """
+        # Setup the context and args
+        context = super(ConceptRelationshipView, self).get_context_data(*args, **kwargs)
+        self.get_args()
+
+        api = OclApi(self.request, debug=True, facets=True)
+
+        selected_sources = self.request.GET.getlist('selected_source')
+        print('selected_sources:   ', selected_sources)
+
+        print(len(selected_sources))
+
+        mappings = []
+
+        # Load the concept details
+        concept = self.get_concept_details(
+            self.owner_type, self.owner_id, self.source_id, self.concept_id,
+            source_version_id=self.source_version_id, concept_version_id=self.concept_version_id,
+            include_mappings=True, include_inverse_mappings=True)
+
+        mappings.extend(concept['mappings'])
+
+        if len(selected_sources) != 0:
+            for source_id in selected_sources:
+                search_response = api.get(self.owner_type, self.owner_id, 'sources', source_id, 'mappings')
+                for mapping in search_response.json()['results']:
+                    if (self.proper_owner_type == mapping['to_source_owner_type'] and
+                                self.owner_id == mapping['to_source_owner'] and
+                                self.source_id == mapping['to_source_name'] and
+                                self.concept_id == mapping['to_concept_code']):
+                        mapping['is_inverse_mapping'] = True
+                        concept['has_inverse_mappings'] = True
+                        mapping['is_direct_mapping'] = False
+                    else:
+                        mapping['is_direct_mapping'] = True
+                        mapping['is_inverse_mapping'] = False
+                        concept['has_direct_mappings'] = True
+                    if mapping['to_concept_url']:
+                        mapping['is_internal_mapping'] = True
+                        mapping['is_external_mapping'] = False
+                    else:
+                        mapping['is_internal_mapping'] = False
+                        mapping['is_external_mapping'] = True
+
+                    print('search_response :     ', mapping)
+                mappings.extend(search_response.json()['results'])
+                print('\n\n')
+
+        if self.request.user.is_authenticated():
+            context['all_collections'] = api.get_all_collections_for_user(self.request.user.username)
+
+        all_sources = _get_org_or_user_sources_list2(self.request, str(self.request.user))
+
+        print('mappings:  ', mappings)
+        print('\n\n')
+
+        # Set the context
+        context['kwargs'] = self.kwargs
+        context['url_params'] = self.request.GET
+        context['selected_tab'] = 'Relationship'
+        context['concept'] = concept
+        context['mappings'] = json.dumps(mappings)
+        context['all_sources'] = all_sources
+
+        print('\n ConceptRelationshipView concept:    ', concept)
+
+        return context
 
 
 # CLEAN
