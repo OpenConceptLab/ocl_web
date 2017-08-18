@@ -1,4 +1,4 @@
-FROM oclweb
+FROM openconceptlab/oclweb
 
 RUN apt-get update --fix-missing
 RUN ["apt-get", "install", "-y", "openssh-server"]
@@ -27,4 +27,4 @@ RUN echo "cd /code" >> /root/.bash_profile
 RUN mkdir /root/.ssh/
 RUN touch /root/.ssh/environment
 
-CMD env >> /root/.ssh/environment; export -p | grep _ >> /etc/profile; /usr/sbin/sshd -D;
+CMD bash startup-dev.sh

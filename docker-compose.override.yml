@@ -1,12 +1,12 @@
-version: '2.0'
+version: '2.1'
 services:
   db_web:
     ports:
       - "5432:5432"
   web:
     build:
+      context: .
       dockerfile: Dockerfile-dev
-    command: bash docker-startup-dev.sh
     volumes:
       - .:/code
     ports:

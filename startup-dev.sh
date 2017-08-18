@@ -2,4 +2,4 @@
 
 sudo service ssh start
 
-sh docker-startup.sh
+sh startup.sh
