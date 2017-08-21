@@ -8,6 +8,8 @@ services:
     volumes:
       - db_web_data:/var/lib/postgresql/data
     restart: always
+    healthcheck:
+      test: "exit 0"
   web:
     image: openconceptlab/oclweb:${ENVIRONMENT-production}
     depends_on:
