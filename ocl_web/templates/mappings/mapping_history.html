@@ -5,13 +5,21 @@
 
 
 {% block tab-content %}
+<div ng-controller="MappingVersionsController">
 <div class="container" style="margin-top: 20px;">
 	<div class="row">
-
 		<div class="col-md-8">
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3 class="panel-title">Mapping Version History</h3></div>
 				<div class="panel-body">
+
+                    {% if mapping.owner_type == 'Organization' %}
+                        {% url 'mapping-diff-version' org=mapping.owner source=mapping.source mapping=mapping.id as mapping_version_diff_url %}
+                    {% else %}
+                        {% url 'mapping-diff-version' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_version_diff_url %}
+                    {% endif %}
+
+                    {{ mapping_version_diff_url }}
 
 				{% for mapping_version in mapping_versions %}
 					<div class="row">
@@ -46,9 +54,70 @@
 						<strong>Mapping Version History</strong>.</p>
 				</div>
 			</div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading"><h3 class="panel-title">Diff</h3></div>
+                <div class="panel-body">
+                    <form class="form" name="compare_mappings_diff_form"
+                          ng-submit="submitCompareMappingsForm(compare_mappings_diff_form, '{{ mapping_version_diff_url }}')" method="get">
+
+                        {{ form.non_field_errors }}
+
+                        <div class="form-group">
+                            <label class="small">{% trans 'The First Mapping' %}</label>
+                            <div>{% generic_resource_label resource_type='mapping' resource_id=mapping.id resource_name=mapping.display_name resource_retired=mapping.retired owner_type=mapping.owner_type owner_id=mapping.owner source_id=mapping.source label_size='small' display_breadcrumb=True %}</div>
+                        </div>
+
+                        <div class="form-group required">
+                            <label class="control-label required small">Version</label>
+                            <select class="form-control" id="first_mapping_version" name="mapping_version"
+                            ng-model="selectedFirstMappingVersion" ng-click="getSelectedFirstMappingVersion()">
+                                {% for mapping_version in mapping_versions %}
+                                    <option value="{{ mapping_version.url }}">{{ mapping_version.version }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <label class="small">{% trans 'The Second Mapping' %}</label>
+
+                        <div class="form-group required">
+                            <label class="control-label required small">Sources</label>
+                            <select class="form-control" id="second_sources" ng-click="getMappings()"
+                            ng-model="selected_source">
+                                {% for source in all_sources %}
+                                    <option value="{{ source.url }}">{{ source.id }}/{{ source.owner }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group required">
+                            <!--{% verbatim %}-->
+                            <label class="control-label required small">Mappings</label>
+                            <select class="form-control" id="second_source_Mappings"
+                                    ng-model="selected_Mapping" ng-click="getVersions()">
+                                <option ng-repeat="mapping in source_mappings" value="[[ mapping.url ]]">[[ mapping.id ]]</option>
+                            </select>
+                            <!--{% endverbatim %}-->
+                        </div>
+
+                        <div class="form-group required">
+                            <label class="control-label required small">Versions</label>
+                            <select class="form-control" id="second_mapping_version" name="mapping_version"
+                            ng-model="selectedSecondMappingVersion" ng-click="getSelectedSecondMappingVersion()">
+                                <option ng-repeat="second_mapping_version in mapping_versions" value="[[ second_mapping_version.url ]]">
+                                    [[ second_mapping_version.version ]]</option>
+                            </select>
+                        </div>
+
+                        {% buttons %}
+                            <button type="submit"  class="btn btn-primary btn-block">Compare</button>
+                        {% endbuttons %}
+                    </form>
+                </div> <!-- /panel-body -->
+			</div> <!-- /panel -->
 		</div>
 
 	</div>
+</div>
 </div>
 {% endblock tab-content %}
 

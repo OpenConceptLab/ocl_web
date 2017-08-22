@@ -27,7 +27,6 @@ from django.utils.http import urlencode
 logger = logging.getLogger('oclweb')
 
 
-
 class SourceReadBaseView(TemplateView):
     """ Base class for Source Read views. """
 
@@ -181,7 +180,6 @@ class SourceReadBaseView(TemplateView):
         return searcher
 
 
-
 class SourceDetailsView(UserOrOrgMixin, SourceReadBaseView):
     """ Source Details view. """
     template_name = "sources/source_details.html"
@@ -203,7 +201,6 @@ class SourceDetailsView(UserOrOrgMixin, SourceReadBaseView):
         context['source'] = source
 
         return context
-
 
 
 class SourceAboutView(UserOrOrgMixin, SourceReadBaseView):
@@ -236,7 +233,6 @@ class SourceAboutView(UserOrOrgMixin, SourceReadBaseView):
         context['about'] = about
 
         return context
-
 
 
 class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
@@ -338,7 +334,6 @@ class SourceConceptsView(UserOrOrgMixin, SourceReadBaseView):
         return super(SourceConceptsView, self).get(self, *args, **kwargs)
 
 
-
 class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
     """ Source Mappings view. """
     template_name = "sources/source_mappings.html"
@@ -434,7 +429,6 @@ class SourceMappingsView(UserOrOrgMixin, SourceReadBaseView):
         return super(SourceMappingsView, self).get(self, *args, **kwargs)
 
 
-
 class SourceExternalReferencesView(UserOrOrgMixin, SourceReadBaseView):
     """ Source External References view. """
     template_name = "sources/source_extrefs.html"
@@ -497,7 +491,6 @@ class SourceExternalReferencesView(UserOrOrgMixin, SourceReadBaseView):
         return context
 
 
-
 class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
     """ Source Versions view. """
     template_name = "sources/source_versions.html"
@@ -550,7 +543,6 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
                              'versions', params={'limit': '0'})
             return HttpResponse(json.dumps(result.json()), content_type="application/json")
         return super(SourceVersionsView, self).get(self, *args, **kwargs)
-
 
 
 class SourceVersionsNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
@@ -638,7 +630,6 @@ class SourceVersionsNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.request.path)
 
 
-
 class SourceVersionsEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     """ View to edit source version """
     form_class = SourceVersionsEditForm
@@ -702,7 +693,6 @@ class SourceVersionsEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.request.path)
 
 
-
 class SourceVersionsRetireView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     """ View to retire source version """
     form_class = SourceVersionsRetireForm
@@ -711,7 +701,6 @@ class SourceVersionsRetireView(LoginRequiredMixin, UserOrOrgMixin, FormView):
     def get_initial(self):
         """ Load initial form data """
         pass
-
 
 
 class SourceNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
@@ -795,7 +784,6 @@ class SourceNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
             validator_template = ' Short Code \'%s\' is not valid. Allowed characters are : Alphabets(a-z,A-Z), Numbers(0-9) and Hyphen(-) '
             messages.add_message(self.request, messages.ERROR, validator_template % short_code)
             return HttpResponseRedirect(self.request.path)
-
 
 
 class SourceEditView(UserOrOrgMixin, FormView):
@@ -886,7 +874,6 @@ class SourceEditView(UserOrOrgMixin, FormView):
             return super(SourceEditView, self).form_invalid(form)
 
 
-
 class SourceDeleteView(UserOrOrgMixin, FormView):
     """
     View for deleting Source.
@@ -938,7 +925,6 @@ class SourceDeleteView(UserOrOrgMixin, FormView):
             return HttpResponseRedirect(self.get_success_url())
 
 
-
 class SourceVersionEditJsonView(UserOrOrgMixin, TemplateView):
     def put(self, request, *args, **kwargs):
         api = OclApi(self.request, debug=True)
@@ -958,7 +944,6 @@ class SourceVersionEditJsonView(UserOrOrgMixin, TemplateView):
                                           'sources',
                                           data)
         return HttpResponse(res.content, status=res.status_code)
-
 
 
 class SourceVersionDeleteView(UserOrOrgMixin, TemplateView):

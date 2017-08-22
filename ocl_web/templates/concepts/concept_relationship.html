@@ -1,0 +1,141 @@
+{% extends "concepts/concept_base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+
+{% block tab-content %}
+	<div class="container" style="margin-top: 20px;">
+		<div class="row">
+            <div class="col-md-8">
+                {% if concept.owner_type == 'Organization' %}
+                    {% url 'concept-relationship' org=concept.owner source=concept.source concept=concept.id as concept_relationship_url %}
+                {% else %}
+                    {% url 'concept-relationship' user=concept.owner source=concept.source concept=concept.id as concept_relationship_url %}
+                {% endif %}
+
+                <!-- List of Concept Mappings Panel -->
+			    <div class="panel panel-default">
+				    <div class="panel-heading"><h3 class="panel-title">Relations</h3></div>
+				    <div class="panel-body">
+
+                        <div class="form-group required">
+                            <form class="form" name="compare_relationship_form" action="." method="get">
+                                    <label class="control-label required small">Sources</label>
+                                    <select class="form-control" id="selected_source" name="selected_source" multiple="multiple" ng-model="selected_source">
+                                        {% for source in all_sources %}
+                                        <option value="{{ source.id }}">{{ source.id }}/ {{ source.owner }}</option>
+                                        {% endfor %}
+                                    </select>
+                                <!--{% buttons %}-->
+
+                                <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                                <!--{% endbuttons %}-->
+                            </form>
+                        </div>
+                        <div class="canvasbox">
+                            <canvas id="springydemo" width="600" height="500"/>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <!-- Tip Panel -->
+			    <div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+				<div class="panel-body">
+					<p class="small">The <strong>Concept Relations</strong> tab displays all direct and inverse mappings stored in this default source and sources the user selected.</p>
+				</div> <!-- /panel-body -->
+			</div> <!-- /panel -->
+            </div>
+        </div>
+    </div>
+
+<style>
+    .canvasbox{
+        margin:0 auto;
+        width: 600px;
+        height: 500px;
+    }
+</style>
+{% endblock tab-content %}
+
+
+{% block resource-debug %}
+<h4>URL kwargs</h4><pre>{{ kwargs|pprint }}</pre>
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Concept</h4><pre>{{ concept|pprint }}</pre>
+<h4>Mappings</h4><pre>{{ mappings|pprint }}</pre>
+{% endblock resource-debug %}
+
+
+{% block extrajavascript %}
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#selected_source').multiselect();
+
+        var mappings = {{ mappings | safe }};
+
+        var concept = {{ concept1 | safe }};
+
+        var graph = new Springy.Graph();
+
+        var nodes = [];
+
+        var conceptNode = graph.newNode({label: concept['owner'] + "/" + concept['source'] + "/" + concept['id'], url:concept['url']});
+
+        for (var i = 0; i < mappings.length; i++) {
+            var flag = true;
+            if (concept['url'] == mappings[i]['from_concept_url']) {
+                mappings[i]['label'] = mappings[i]["owner"] + "/" + mappings[i]['to_source_name'] + "/" + mappings[i]['to_concept_code'];
+                mappings[i]['link_url'] = mappings[i]['to_concept_url'];
+                console.log("mappings" + i + " label: ", mappings[i]['label']);
+                for (var j = 0; j < nodes.length; j++){
+                    if (mappings[i]['label'] == nodes[j]){
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag) {
+                    var node = graph.newNode(mappings[i]);
+                    graph.newEdge(conceptNode, node, {color: '#00A0B0', length: 0.001, label: node.data['map_type']});
+                    nodes.push(mappings[i]['label']);
+                }
+            } else {
+                mappings[i]['label'] = mappings[i]["owner"] + "/" + mappings[i]['from_source_name'] + "/" + mappings[i]['from_concept_code'];
+                mappings[i]['link_url'] = mappings[i]['from_concept_url'];
+                console.log("mappings" + i + " label: ", mappings[i]['label']);
+                for (var j = 0; j < nodes.length; j++){
+                    if (mappings[i]['label'] == nodes[j]){
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag){
+                    var node = graph.newNode(mappings[i]);
+                    graph.newEdge(conceptNode, node, {color: '#00A0B0', length: 0.001, label: node.data['map_type']});
+                    nodes.push(mappings[i]['label']);
+                }
+            }
+
+            for(var j =0; j < nodes.length; j++){
+                console.log("nodes " + j + ": " +nodes[j]);
+            }
+        }
+        $(function () {
+            var springy = window.springy = jQuery('#springydemo').springy({
+                graph: graph,
+                nodeSelected: function (node) {
+                    console.log('Node selected: ' + JSON.stringify(node.data));
+                    window.location.href = node.data['link_url'];
+                }
+            });
+        });
+    });
+
+</script>
+{% endblock extrajavascript %}

@@ -1,0 +1,88 @@
+{% extends "mappings/mapping_base.html" %}
+{% load i18n %}
+{% load ocl_tags %}
+{% load bootstrap3 %}
+
+{% block resource-tabs %}
+{% endblock resource-tabs %}
+
+{% block tab-content %}
+
+<div class="container" style="margin-top: 20px;">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Mapping Left</h3>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <pre id="mapping-left"></pre>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Mapping Right</h3>
+                </div>
+            </div>
+            <div class="panel-body">
+                <pre id="mapping-right"></pre>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* concept diff style*/
+pre {
+    outline: 1px solid #ccc;
+    padding:5px;
+    margin: 5px;
+}
+.difference { color: red; }
+</style>
+
+<script>
+
+    function syntaxHighlight(json, mapping1, mapping2) {
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            if (/:$/.test(match)) {
+                var item = match.replace(/"|\:/g, '');
+                if(mapping1[item] == mapping2[item]){
+                    cls = 'same';
+                }else {
+                    cls = 'difference';
+                }
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
+
+    var mapping_left = {{ mapping1 | safe }};
+    var mapping_right = {{ mapping2 | safe }};
+
+    $('#mapping-left').html(syntaxHighlight(JSON.stringify(mapping_left, undefined, 2), mapping_left, mapping_right));
+
+    $('#mapping-right').html(syntaxHighlight(JSON.stringify(mapping_right, undefined, 2), mapping_left, mapping_right));
+
+</script>
+{% endblock tab-content %}
+
+
+{% block extrajavascript %}
+
+
+{% endblock %}
+
+
+{% block resource-debug %}
+<h4>URL kwargs</h4><pre>{{ kwargs|pprint }}</pre>
+<h4>URL Parameters</h4><pre>{{ url_params|pprint }}</pre>
+<h4>Mapping</h4><pre>{{ mapping|pprint }}</pre>
+{% endblock resource-debug %}
+

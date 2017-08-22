@@ -284,18 +284,17 @@ app.controller('SourceVersionController', makeController('versions', ['id', 'des
 
 app.controller('ConceptVersionController', function ($scope, $http, $location) {
 
-        function loadItems() {
-            var url = make_sub_url($location.absUrl(), 'versions/');
-            set_debug($location, $scope);
-            $http.get(url)
-                .success(function (data) {
-                    $scope.item_list = data;
-                });
-        } // loadItems
+    function loadItems() {
+        var url = make_sub_url($location.absUrl(), 'versions/');
+        set_debug($location, $scope);
+        $http.get(url)
+            .success(function (data) {
+                $scope.item_list = data;
+            });
+    } // loadItems
 
-        loadItems();
-    } // ConceptVersionController
-);
+    loadItems();
+}); // ConceptVersionController
 
 app.controller('SourceSearchController', function ($scope, $http, $location) {
 
@@ -650,6 +649,83 @@ app.controller('MappingController', function ($scope, $http, $location) {
 
 }); // MappingController
 
+
+app.controller("ConceptVersionsController", function ($scope, $http, $location) {
+
+    // $scope.getSelectedFirstConceptVersion = function () {
+    //     alert($scope.selectedFirstConceptVersion);
+    // };
+
+    $scope.getConcepts = function () {
+
+        var url = $scope.selected_source + 'concepts/';
+
+        $http({
+            method: 'GET',
+            url: url
+        }).then(function success(response){
+            $scope.source_concepts = response['data']['items'];
+        })
+    };
+    $scope.getVersions = function () {
+
+        var concept_versions_url = $scope.selected_concept + 'history/';
+
+        $http({
+            method: 'GET',
+            url: concept_versions_url
+        }).then(function success(response){
+            $scope.concept_versions = response['data'];
+        })
+    };
+
+    // $scope.getSelectedSecondConceptVersion = function () {
+    //     alert($scope.selectedSecondConceptVersion);
+    // };
+
+    $scope.submitCompareForm = function (compareForm, concept_version_diff_url) {
+        url = concept_version_diff_url + "?conceptVersion=" + $scope.selectedFirstConceptVersion + "&conceptVersion=" +
+                $scope.selectedSecondConceptVersion;
+        window.location.href = url;
+    }
+});
+
+
+app.controller("MappingVersionsController", function ($scope, $http) {
+
+    $scope.getMappings = function () {
+
+        var url = $scope.selected_source + 'mappings/';
+
+        $http({
+            method: 'GET',
+            url: url
+        }).then(function success(response){
+            $scope.source_mappings = response['data']['items'];
+        })
+    };
+    $scope.getVersions = function () {
+
+        var mapping_versions_url = $scope.selected_Mapping + 'history/';
+
+        $http({
+            method: 'GET',
+            url: mapping_versions_url
+        }).then(function success(response){
+            $scope.mapping_versions = response['data'];
+        })
+    };
+
+    $scope.submitCompareMappingsForm = function (compareMappingsForm, mapping_version_diff_url) {
+        url = mapping_version_diff_url + "?mappingVersion=" + $scope.selectedFirstMappingVersion + "&mappingVersion=" +
+                $scope.selectedSecondMappingVersion;
+        window.location.href = url;
+    }
+});
+
+app.controller("ConceptRelationshipController", function ($scope, $http) {
+    pass;
+});
 
 // Simple function to handle removing member from org
 function removeMember(orgId, memId) {

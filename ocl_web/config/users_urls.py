@@ -21,10 +21,11 @@ from apps.sources.views import (
     SourceNewView, SourceEditView, SourceVersionsView, SourceExternalReferencesView,
     SourceVersionsNewView, SourceVersionsEditView, SourceVersionsRetireView, SourceDeleteView, SourceVersionDeleteView, SourceVersionEditJsonView)
 from apps.concepts.views import (
-    ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptEditView,
-    ConceptRetireView, ConceptNewView, ConceptDescView, ConceptNameView)
+    ConceptDetailsView, ConceptMappingsView, ConceptHistoryView, ConceptRelationshipView, ConceptEditView, ConceptDiffView,
+    ConceptRetireView, ConceptNewView, ConceptForkView, ConceptDescView, ConceptNameView)
 from apps.mappings.views import (
-    MappingDetailsView, MappingNewView, MappingEditView, MappingRetireView, MappingVersionsView)
+    MappingDetailsView, MappingNewView, MappingForkView, MappingEditView, MappingRetireView, MappingVersionsView,
+    MappingDiffView)
 from apps.core.views import ExtraJsonView
 from apps.collections.views import CollectionDetailView, CollectionCreateView, CollectionEditView, CollectionAboutView, \
     CollectionVersionsView, CollectionConceptsView, CollectionMappingsView, \
@@ -145,6 +146,10 @@ urlpatterns = patterns(
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
         ConceptEditView.as_view(), name='concept-edit'),
 
+    # /users/:user/sources/:source/concepts/:concept/fork/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/fork/$',    # pylint: disable=C0301
+        ConceptForkView.as_view(), name='concept-fork'),
+
     # /users/:user/sources/:source/concepts/:concept/retire/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/retire/$',    # pylint: disable=C0301
         ConceptRetireView.as_view(), name='concept-retire'),
@@ -161,6 +166,14 @@ urlpatterns = patterns(
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/history/$',    # pylint: disable=C0301
         ConceptHistoryView.as_view(), name='concept-history'),
 
+    # /users/:user/sources/:source/concepts/:concept/relationship/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/relationship/$',    # pylint: disable=C0301
+        ConceptRelationshipView.as_view(), name='concept-relationship'),
+
+    # /users/:user/sources/:source/concepts/:concept/diff/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/diff/$',    # pylint: disable=C0301
+        ConceptDiffView.as_view(), name='concept-version-diff'),
+
     # /users/:user/sources/:source/concepts/:concept/:concept-version/ - points to "concept-version-details"
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/$',    # pylint: disable=C0301
         ConceptDetailsView.as_view(), name='concept-version-home'),
@@ -176,7 +189,6 @@ urlpatterns = patterns(
     # /users/:user/sources/:source/concepts/:concept/:concept-version/history/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/concepts/(?P<concept>[a-zA-Z0-9\-\.]+)/(?P<concept_version>[a-zA-Z0-9\-\.]+)/history/$',    # pylint: disable=C0301
         ConceptHistoryView.as_view(), name='concept-version-history'),
-
 
 
     ## CONCEPT NAMES - old JSON Angular URLs
@@ -259,9 +271,17 @@ urlpatterns = patterns(
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/history/$',    # pylint: disable=C0301
         MappingVersionsView.as_view(), name='mapping-versions'),
 
+    # /users/:user/sources/:source/mappings/:mapping/diff/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/diff/$',    # pylint: disable=C0301
+        MappingDiffView.as_view(), name='mapping-diff-version'),
+
     # /users/:user/sources/:source/mappings/:mapping/edit/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/edit/$',    # pylint: disable=C0301
         MappingEditView.as_view(), name='mapping-edit'),
+
+    # /users/:user/sources/:source/mappings/:mapping/fork/
+    url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/fork/$',    # pylint: disable=C0301
+        MappingForkView.as_view(), name='mapping-fork'),
 
     # /users/:user/sources/:source/mappings/:mapping/retire/
     url(r'^(?P<user>[a-zA-Z0-9\-\.]+)/sources/(?P<source>[a-zA-Z0-9\-\.]+)/mappings/(?P<mapping>[a-zA-Z0-9\-\.]+)/retire/$',    # pylint: disable=C0301

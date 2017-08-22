@@ -557,7 +557,14 @@ class CollectionCreateView(CollectionsBaseView, FormView):
 class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
     template_name = "collections/collection_add_reference.html"
 
+    print 'CollectionReferencesView'
+
     def get_context_data(self, *args, **kwargs):
+        print 'CollectionReferencesView get_context_data'
+        print 'CollectionReferencesView self: ', self
+        print 'CollectionReferencesView args: ', args
+        print 'CollectionReferencesView kwargs: ', kwargs
+
         context = super(CollectionAddReferenceView, self).get_context_data(*args, **kwargs)
 
         self.get_args()
@@ -569,9 +576,13 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
         context['url_params'] = self.request.GET
         context['collection'] = collection
 
+        print 'CollectionReferencesView results: ', results.json()
+        print 'CollectionReferencesView context: ', context
+
         return context
 
     def get_success_url(self):
+        print 'CollectionReferencesView get_success_url'
         """ Return URL for redirecting browser """
         if self.from_org:
             return reverse('collection-references',
@@ -583,6 +594,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
                 kwargs={"user": self.request.user.username, 'collection': self.collection_id})
 
     def post(self, request, *args, **kwargs):
+        print 'CollectionReferencesView post'
         self.get_args()
         data = json.loads(request.body)
         api = OclApi(self.request, debug=True)
@@ -610,6 +622,10 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
         if added_result_count > 0 and self.show_warning(request.GET.get('warning', 'hide')):
             self.add_version_warning_to_session(data, request, results)
 
+        print 'CollectionReferencesView post data: ', data
+        print 'CollectionReferencesView post results: ', results
+        print 'CollectionReferencesView post added_result_count:  ', added_result_count
+
         return HttpResponse(
             json.dumps({
                 'update_results': results,
@@ -620,6 +636,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
         )
 
     def add_version_warning_to_session(self, data, request, results):
+        print 'CollectionReferencesView add_version_warning_to_session'
         if self.adding_single_reference(data):
             # Version Information is getting from api but it isn't getting from form
             expression_from_form = data['expressions'][0]
@@ -630,42 +647,53 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
             self.send_message_by_source_version_information_for_multiple_reference(request, data)
 
     def adding_head_version(self, data):
+        print 'CollectionReferencesView adding_head_version'
         return data['uri'].split('/')[5] == 'HEAD'
 
     def adding_single_reference(self, data):
+        print 'CollectionReferencesView adding_single_reference'
         return data.has_key('expressions')
 
     def show_warning(self, flag):
+        print 'CollectionReferencesView show_warning'
         return flag == 'show'
 
     def version_specified(self, expression):
+        print 'CollectionReferencesView version_specified'
         return len(expression.split('/')) == 9
 
     def get_reference_type_in_expression(self, expression):
+        print 'CollectionReferencesView get_reference_type_in_expression'
         return expression.split('/')[5]
 
     def get_source_in_expression(self, expression):
+        print 'CollectionReferencesView get_source_in_expression'
         return expression.split('/')[4]
 
     def get_mnemonic_in_expression(self, expression):
+        print 'CollectionReferencesView get_mnemonic_in_expression'
         return expression.split('/')[6]
 
     def get_version_information_in_expression(self, expression):
+        print 'CollectionReferencesView get_version_information_in_expression'
         return expression.split('/')[7]
 
     def added_without_version_information_warning_message_by_reference_type(self, reference_type, source, mnemonic, version_number):
+        print 'CollectionReferencesView added_without_version_information_warning_message_by_reference_type'
         if reference_type == 'concepts':
             return ENTERED_WITHOUT_VERSION_NUMBER_FOR_CONCEPT.format(source, mnemonic, version_number)
         else:
             return ENTERED_WITHOUT_VERSION_NUMBER_FOR_MAPPING.format(source, mnemonic, version_number)
 
     def added_with_version_information_success_message_by_reference_type(self, reference_type, source, mnemonic, version_number):
+        print 'CollectionReferencesView added_with_version_information_success_message_by_reference_type'
         if reference_type == 'concepts':
             return ENTERED_WITH_VERSION_NUMBER_FOR_CONCEPT.format(source, mnemonic, version_number)
         else:
             return ENTERED_WITH_VERSION_NUMBER_FOR_MAPPING.format(source, mnemonic, version_number)
 
     def send_message_by_version_information_for_single_reference(self, request, expression_from_form, expression_from_api):
+        print 'CollectionReferencesView send_message_by_version_information_for_single_reference '
         reference_type = self.get_reference_type_in_expression(expression_from_api)
         mnemonic = self.get_mnemonic_in_expression(expression_from_api)
         source = self.get_source_in_expression(expression_from_api)
@@ -678,6 +706,7 @@ class CollectionAddReferenceView(CollectionsBaseView, TemplateView):
                                                                                                                                 version_number)
 
     def send_message_by_source_version_information_for_multiple_reference(self, request, data):
+        print 'CollectionReferencesView send_message_by_source_version_information_for_multiple_reference'
         if self.adding_head_version(data):
             request.session['add_reference_warning'] = POSTED_HEAD_VERSION_OF_SOURCE
         else:
