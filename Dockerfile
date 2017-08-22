@@ -1,4 +1,4 @@
-FROM python:2.7
+FROM python:2.7.13
 ENV PYTHONUNBUFFERED 1
 
 RUN mkdir /code

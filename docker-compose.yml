@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   db_web:
-    image: postgres:9.6
+    image: postgres:9.6.4
     environment:
       - POSTGRES_USER=ocl
       - POSTGRES_PASSWORD=Ocl123
@@ -27,6 +27,7 @@ services:
       - OCL_ANON_API_TOKEN=891b4b17feab99f3ff7e5b5d04ccc5da7aa96da6
       - OCL_API_NETWORK=oclapi_default
       - ROOT_PASSWORD=Root123
+    command: ["./wait-for-it.sh", "db_web:5432", "--", "./startup.sh"]
     restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7000"]

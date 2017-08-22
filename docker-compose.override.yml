@@ -13,3 +13,4 @@ services:
       #ports for debugging
       - "7001:7001"
       - "2001:22"
+    command: ["./wait-for-it.sh", "db_web:5432", "--", "./startup-dev.sh"]
