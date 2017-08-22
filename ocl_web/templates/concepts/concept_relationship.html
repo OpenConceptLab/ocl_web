@@ -5,141 +5,62 @@
 
 
 {% block tab-content %}
-<div ng-controller="ConceptRelationshipController">
 	<div class="container" style="margin-top: 20px;">
 		<div class="row">
-			<div class="col-md-6">
+            <div class="col-md-8">
                 {% if concept.owner_type == 'Organization' %}
                     {% url 'concept-relationship' org=concept.owner source=concept.source concept=concept.id as concept_relationship_url %}
                 {% else %}
                     {% url 'concept-relationship' user=concept.owner source=concept.source concept=concept.id as concept_relationship_url %}
                 {% endif %}
 
-				<form class="form" name="compare_relationship_form"
-							  ng-submit="submitRelationshipForm(compare_relationship_form, '{{ concept_relationship_url }}')" method="get">
-					<div class="form-group required">
-						<label class="control-label required small">Sources</label>
-						<select class="form-control" id="selected_source" name="selected_source" multiple="multiple" ng-model="selected_source">
-							{% for source in all_sources %}
-                                <option value="{{ source.id }}">{{ source.id }}/ {{ source.owner }}</option>
-							{% endfor %}
-						</select>
-					</div>
-					{% buttons %}
-						<button type="submit" class="btn btn-primary btn-block">Submit</button>
-					{% endbuttons %}
-				</form>
+                <!-- List of Concept Mappings Panel -->
+			    <div class="panel panel-default">
+				    <div class="panel-heading"><h3 class="panel-title">Relations</h3></div>
+				    <div class="panel-body">
 
-                <!--<canvas id="springydemo" width="640" height="480" />-->
+                        <div class="form-group required">
+                            <form class="form" name="compare_relationship_form" action="." method="get">
+                                    <label class="control-label required small">Sources</label>
+                                    <select class="form-control" id="selected_source" name="selected_source" multiple="multiple" ng-model="selected_source">
+                                        {% for source in all_sources %}
+                                        <option value="{{ source.id }}">{{ source.id }}/ {{ source.owner }}</option>
+                                        {% endfor %}
+                                    </select>
+                                <!--{% buttons %}-->
 
-				<table>
-					{% for mapping in mappings %}
-					<tr>{{ mapping.id }}</tr><hr>
-					{% endfor %}
-				</table>
-			</div>
-
-            <!-- Concept Names, Descriptions, and Custom Attributes -->
-		<div class="col-md-6">
-			<div class="panel panel-default">
-
-				<!-- Mappings -->
-				<div class="panel-heading"><h3 class="panel-title">Mappings</h3></div>
-				<div class="panel-body" style="overflow-x:scroll;">
-				{% if concept.has_direct_mappings %}
-					<table class="table table-striped">
-						<thead>
-							<tr>
-								<th width="1">&nbsp;</th>
-								<th>Relationship</th>
-								<th>Source</th>
-								<th>Code</th>
-								<th>Name</th>
-							</tr>
-						</thead>
-						<tbody>
-						{% for mapping in mappings|dictsort:"map_type" %}
-							{% if mapping.is_direct_mapping %}
-								{% if mapping.to_source_owner_type == 'Organization' %}
-									{% url 'org-home' org=mapping.to_source_owner as to_concept_owner_url %}
-									{% url 'source-home' org=mapping.to_source_owner source=mapping.to_source_name as to_concept_source_url %}
-									{% if mapping.is_internal_mapping %}
-										{% url 'concept-home' org=mapping.to_source_owner source=mapping.to_source_name concept=mapping.to_concept_code as to_concept_url %}
-									{% endif %}
-								{% else %}
-									{% url 'users:detail' mapping.to_source_owner as to_concept_owner_url %}
-									{% url 'source-home' user=mapping.to_source_owner source=mapping.to_source_name as to_concept_source_url %}
-									{% if mapping.is_internal_mapping %}
-										{% url 'concept-home' user=mapping.to_source_owner source=mapping.to_source_name concept=mapping.to_concept_code as to_concept_url %}
-									{% endif %}
-								{% endif %}
-
-							<tr>
-								<td>{% if mapping.is_external_mapping %}<span class="glyphicon glyphicon-circle-arrow-right" title="External Mapping"></span>{% else %}&nbsp;{% endif %}</td>
-								<td>{{ mapping.map_type }}</td>
-								<td><a href="{{ to_concept_owner_url }}">{{ mapping.to_source_owner }}</a> / <a href="{{ to_concept_source_url }}">{{ mapping.to_source_name }}</a></td>
-								<td>{% if mapping.is_internal_mapping %}<a href="{{ to_concept_url }}">{{ mapping.to_concept_code }}</a>{% else %}{{ mapping.to_concept_code }}{% endif %}</td>
-								<td>{{ mapping.to_concept_name|default:"-" }}</td>
-							</tr>
-							{% endif %}
-						{% endfor %}
-						</tbody>
-					</table>
-				{% else %}
-					<h3><small>No direct mappings</small></h3>
-				{% endif %}
-				</div>
-
-				<!-- Inverse Mappings -->
-				<div class="panel-heading"><h3 class="panel-title">Inverse Mappings</h3></div>
-				<div class="panel-body" style="overflow-x:scroll;">
-				{% if concept.has_inverse_mappings %}
-					<table class="table table-striped">
-						<thead>
-							<tr>
-								<th width="1">&nbsp;</th>
-								<th>Relationship</th>
-								<th>Source</th>
-								<th>Code</th>
-								<th>Name</th>
-							</tr>
-						</thead>
-						<tbody>
-						{% for mapping in mappings|dictsort:"map_type" %}
-							{% if mapping.is_inverse_mapping %}
-								{% if mapping.to_source_owner_type == 'Organization' %}
-									{% url 'org-home' org=mapping.from_source_owner as from_concept_owner_url %}
-									{% url 'source-home' org=mapping.from_source_owner source=mapping.from_source_name as from_concept_source_url %}
-									{% url 'concept-home' org=mapping.from_source_owner source=mapping.from_source_name concept=mapping.from_concept_code as from_concept_url %}
-								{% else %}
-									{% url 'users:detail' mapping.from_source_owner as from_concept_owner_url %}
-									{% url 'source-home' user=mapping.from_source_owner source=mapping.from_source_name as from_concept_source_url %}
-									{% url 'concept-home' user=mapping.from_source_owner source=mapping.from_source_name concept=mapping.from_concept_code as from_concept_url %}
-								{% endif %}
-
-							<tr>
-								<td>{% if mapping.is_external_mapping %}<span class="glyphicon glyphicon-circle-arrow-right" title="External Mapping"></span>{% else %}&nbsp;{% endif %}</td>
-								<td>{{ mapping.map_type }}</td>
-								<td><a href="{{ from_concept_owner_url }}">{{ mapping.from_source_owner }}</a> / <a href="{{ from_concept_source_url }}">{{ mapping.from_source_name }}</a></td>
-								<td><a href="{{ from_concept_url }}">{{ mapping.from_concept_code }}</a></td>
-								<td>{{ mapping.from_concept_name|default:"-" }}</td>
-							</tr>
-							{% endif %}
-						{% endfor %}
-						</tbody>
-					</table>
-				{% else %}
-					<h3><small>No inverse mappings</small></h3>
-				{% endif %}
-				</div>
+                                <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                                <!--{% endbuttons %}-->
+                            </form>
+                        </div>
+                        <div class="canvasbox">
+                            <canvas id="springydemo" width="600" height="500"/>
+                        </div>
 
 
-				<div class="panel-footer small"><em>* Only mappings defined in this source are displayed here</em></div>
-			</div>
-		</div>
-		</div>
-	<!--</div>-->
-<!--</div>-->
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <!-- Tip Panel -->
+			    <div class="panel panel-default">
+				<div class="panel-heading"><h3 class="panel-title">Tip</h3></div>
+				<div class="panel-body">
+					<p class="small">The <strong>Concept Relations</strong> tab displays all direct and inverse mappings stored in this default source and sources the user selected.</p>
+				</div> <!-- /panel-body -->
+			</div> <!-- /panel -->
+            </div>
+        </div>
+    </div>
+
+<style>
+    .canvasbox{
+        margin:0 auto;
+        width: 600px;
+        height: 500px;
+    }
+</style>
 {% endblock tab-content %}
 
 
@@ -157,29 +78,63 @@
     $(document).ready(function() {
         $('#selected_source').multiselect();
 
-//        var mappings = {{ mappings | safe }};
+        var mappings = {{ mappings | safe }};
 
-//        var graph = new Springy.Graph();
-//
-//        for(var i=0; i<mappings.length; i++){
-//            graph.addNodes(mappings[i].id);
-//        }
-//
-//        alert(mappings.length);
-//
-//        for(var i=0; i<mappings.length; i++){
-//            for(var j=i; j<mappings.length; j++){
-//                graph.addEdges([mappings[i].id, mappings[j].id, {color: '#00A0B0', label: 'Foo bar'}]);
-//            }
-//        }
-//
-//
-//        jQuery(function(){
-//          var springy = jQuery('#springydemo').springy({
-//            graph: graph
-//          });
-//        });
+        var concept = {{ concept1 | safe }};
 
+        var graph = new Springy.Graph();
+
+        var nodes = [];
+
+        var conceptNode = graph.newNode({label: concept['owner'] + "/" + concept['source'] + "/" + concept['id'], url:concept['url']});
+
+        for (var i = 0; i < mappings.length; i++) {
+            var flag = true;
+            if (concept['url'] == mappings[i]['from_concept_url']) {
+                mappings[i]['label'] = mappings[i]["owner"] + "/" + mappings[i]['to_source_name'] + "/" + mappings[i]['to_concept_code'];
+                mappings[i]['link_url'] = mappings[i]['to_concept_url'];
+                console.log("mappings" + i + " label: ", mappings[i]['label']);
+                for (var j = 0; j < nodes.length; j++){
+                    if (mappings[i]['label'] == nodes[j]){
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag) {
+                    var node = graph.newNode(mappings[i]);
+                    graph.newEdge(conceptNode, node, {color: '#00A0B0', length: 0.001, label: node.data['map_type']});
+                    nodes.push(mappings[i]['label']);
+                }
+            } else {
+                mappings[i]['label'] = mappings[i]["owner"] + "/" + mappings[i]['from_source_name'] + "/" + mappings[i]['from_concept_code'];
+                mappings[i]['link_url'] = mappings[i]['from_concept_url'];
+                console.log("mappings" + i + " label: ", mappings[i]['label']);
+                for (var j = 0; j < nodes.length; j++){
+                    if (mappings[i]['label'] == nodes[j]){
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag){
+                    var node = graph.newNode(mappings[i]);
+                    graph.newEdge(conceptNode, node, {color: '#00A0B0', length: 0.001, label: node.data['map_type']});
+                    nodes.push(mappings[i]['label']);
+                }
+            }
+
+            for(var j =0; j < nodes.length; j++){
+                console.log("nodes " + j + ": " +nodes[j]);
+            }
+        }
+        $(function () {
+            var springy = window.springy = jQuery('#springydemo').springy({
+                graph: graph,
+                nodeSelected: function (node) {
+                    console.log('Node selected: ' + JSON.stringify(node.data));
+                    window.location.href = node.data['link_url'];
+                }
+            });
+        });
     });
 
 </script>

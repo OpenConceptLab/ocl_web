@@ -723,12 +723,9 @@ app.controller("MappingVersionsController", function ($scope, $http) {
     }
 });
 
-// app.controller("ConceptRelationshipController", function ($scope, $http) {
-//     $scope.submitRelationshipForm = function (relationshipForm, concept_relationship_url) {
-//         url = concept_relationship_url + "?selected_source=1&selected_source=2";
-//         window.location.href = url;
-//     }
-// });
+app.controller("ConceptRelationshipController", function ($scope, $http) {
+    pass;
+});
 
 // Simple function to handle removing member from org
 function removeMember(orgId, memId) {

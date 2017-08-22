@@ -57,21 +57,18 @@ class ConceptReadBaseView(TemplateView):
             raise ValueError(
                 'Must specify only a source version or a concept version. Both were specified.')
         elif source_version_id:
-            print('11111')
             search_response = api.get(
                 owner_type, owner_id,
                 'sources', source_id, source_version_id,
                 'concepts', concept_id,
                 params=params)
         elif concept_version_id:
-            print('22222')
             search_response = api.get(
                 owner_type, owner_id,
                 'sources', source_id,
                 'concepts', concept_id, concept_version_id,
                 params=params)
         else:
-            print('33333')
             search_response = api.get(
                 owner_type, owner_id,
                 'sources', source_id,
@@ -408,7 +405,7 @@ class ConceptRelationshipView(UserOrOrgMixin, ConceptReadBaseView):
         api = OclApi(self.request, debug=True, facets=True)
 
         selected_sources = self.request.GET.getlist('selected_source')
-        print('selected_sources:   ', selected_sources)
+        print('selected_sources:    ', selected_sources)
 
         print(len(selected_sources))
 
@@ -420,32 +417,16 @@ class ConceptRelationshipView(UserOrOrgMixin, ConceptReadBaseView):
             source_version_id=self.source_version_id, concept_version_id=self.concept_version_id,
             include_mappings=True, include_inverse_mappings=True)
 
-        mappings.extend(concept['mappings'])
+        if concept.get('mappings', None):
+            mappings.extend(concept.get('mappings'))
 
         if len(selected_sources) != 0:
             for source_id in selected_sources:
                 search_response = api.get(self.owner_type, self.owner_id, 'sources', source_id, 'mappings')
                 for mapping in search_response.json()['results']:
-                    if (self.proper_owner_type == mapping['to_source_owner_type'] and
-                                self.owner_id == mapping['to_source_owner'] and
-                                self.source_id == mapping['to_source_name'] and
-                                self.concept_id == mapping['to_concept_code']):
-                        mapping['is_inverse_mapping'] = True
-                        concept['has_inverse_mappings'] = True
-                        mapping['is_direct_mapping'] = False
-                    else:
-                        mapping['is_direct_mapping'] = True
-                        mapping['is_inverse_mapping'] = False
-                        concept['has_direct_mappings'] = True
-                    if mapping['to_concept_url']:
-                        mapping['is_internal_mapping'] = True
-                        mapping['is_external_mapping'] = False
-                    else:
-                        mapping['is_internal_mapping'] = False
-                        mapping['is_external_mapping'] = True
-
-                    print('search_response :     ', mapping)
-                mappings.extend(search_response.json()['results'])
+                    if mapping['from_concept_url'] == concept['url'] or mapping['to_concept_url'] == concept['url']:
+                        mappings.append(mapping)
+                        print('search_response :           ', mapping)
                 print('\n\n')
 
         if self.request.user.is_authenticated():
@@ -453,7 +434,9 @@ class ConceptRelationshipView(UserOrOrgMixin, ConceptReadBaseView):
 
         all_sources = _get_org_or_user_sources_list2(self.request, str(self.request.user))
 
-        print('mappings:  ', mappings)
+        for mapping in mappings:
+            print('mapping:  ', mapping)
+            print('\n\n')
         print('\n\n')
 
         # Set the context
@@ -461,6 +444,7 @@ class ConceptRelationshipView(UserOrOrgMixin, ConceptReadBaseView):
         context['url_params'] = self.request.GET
         context['selected_tab'] = 'Relationship'
         context['concept'] = concept
+        context['concept1'] = json.dumps(concept)
         context['mappings'] = json.dumps(mappings)
         context['all_sources'] = all_sources
 

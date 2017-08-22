@@ -161,6 +161,7 @@ class MappingDetailsView(UserOrOrgMixin, MappingReadBaseView):
 
         return context
 
+
 class MappingVersionsView(UserOrOrgMixin, MappingReadBaseView):
     """`
     Mapping Details view.
