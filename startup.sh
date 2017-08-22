@@ -10,6 +10,19 @@ then
 ./wait-for-it.sh $WAIT_FOR
 fi
 
+if [ -z $ENVIRONMENT ]
+then 
+export SETTINGS=local
+export CONFIG=Local
+elif [ "$ENVIRONMENT" = "latest" ]
+then
+export SETTINGS=local
+export CONFIG=Local
+else
+export SETTINGS=$ENVIRONMENT
+export CONFIG=${ENVIRONMENT^}
+fi
+
 python ocl_web/manage.py syncdb --noinput
 
 python ocl_web/manage.py migrate 
