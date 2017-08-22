@@ -4,6 +4,7 @@ services:
     ports:
       - "5432:5432"
   web:
+    image: openconceptlab/oclweb:dev
     build:
       context: .
       dockerfile: Dockerfile-dev
@@ -13,4 +14,5 @@ services:
       #ports for debugging
       - "7001:7001"
       - "2001:22"
-    command: ["./wait-for-it.sh", "db_web:5432", "--", "./startup-dev.sh"]
+    environment:
+      - SSH=true
