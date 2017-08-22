@@ -318,7 +318,7 @@ class OrganizationNewView(LoginRequiredMixin, FormView):
             'id': org_id,
         }
         data.update(form.cleaned_data)
-        if re.compile('^[a-zA-Z0-9\-]+$').match(org_id):
+        if re.compile('^' + OclConstants.ORG_PATTERN + '$').match(org_id):
             result = api.create_org(data)
             # TODO:  Catch exceptions that will be raised by Ocl lib.
             if result.ok:
