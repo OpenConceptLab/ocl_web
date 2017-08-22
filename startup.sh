@@ -14,7 +14,7 @@ if [ -z $ENVIRONMENT ]
 then 
 export SETTINGS=local
 export CONFIG=Local
-elif [ "$ENVIRONMENT" = "latest" ]
+elif [ "$ENVIRONMENT" = "qa" ]
 then
 export SETTINGS=local
 export CONFIG=Local
