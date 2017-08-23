@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Install test dependencies"
+pip install -r requirements/local.txt
+
 echo "Removing selenium before update"
 rm -rf ./node_modules/protractor/node_modules/webdriver-manager/selenium
 

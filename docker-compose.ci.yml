@@ -2,3 +2,5 @@ version: '2.1'
 services:
   web:
     image: ${OCLWEB_IMAGE_ID}
+networks:
+  default:
