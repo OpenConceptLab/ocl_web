@@ -51,23 +51,21 @@ class Command(BaseCommand):
         print '==================================='
 
 
-        print 'Creating Test User'
+        print 'Creating ' + self.username + ' User'
 
         if User.objects.filter(username=self.username).count() > 0:
             test_user = User.objects.get(username=self.username)
         else:
             test_user = User.objects.create_user(username=self.username)
-        test_user.email = self.username + '@example.com'
-        test_user.set_password(self.password)
-        test_user.first_name = 'Test'
-        test_user.last_name = 'User'
-        test_user.save()
 
-        print test_user
+        test_user.email = self.username + '@openconceptlab.org'
+        test_user.set_password(self.password)
+        test_user.first_name = 'Jonathan'
+        test_user.last_name = 'Payne'
+        test_user.save()
 
         if EmailAddress.objects.filter(user=test_user).count() > 0:
             email = EmailAddress.objects.get(user=test_user)
-
         else:
             email = EmailAddress.objects.create(user=test_user)
 
@@ -87,20 +85,24 @@ class Command(BaseCommand):
             "preferred_locale": 'en'
         }
 
-
-
         result = ocl.create_user(data)
-        print 'Test User Submitted to API: username=' + self.username + ', password=' + self.password + ', status_code=' + str(result.status_code)
 
         if result.status_code == 201:
+            print 'User "' + test_user.username + '" synced to API'
             print '==================================='
         elif result.status_code == 400:
+            print 'User "' + test_user.username + '" exists in API, trying to reactivate...'
             # try reactivate for now, this is very not secure, #TODO
             result = ocl.reactivate_user(test_user.username)
             if result == 204:
-                print 'reactivated'
-                print '==================================='
+                print 'User "' + test_user.username + '" reactivated in API'
+            else:
+                print 'Failed to reactivate user "' + test_user.username + '" in API. Server responded with ' + str(result.status_code)
+
+            print '==================================='
         else:
+            print 'Failed to sync user "' + test_user.username + '" to API. Server responded with ' + str(result.status_code)
+            print '==================================='
             exit(1)
 
     def handle(self, *args, **options):
