@@ -68,7 +68,7 @@ Path mappings: C:/Users/Rafal/Workspace/ocl_web/ocl_web=/code/ocl_web
 By default the OCL WEB server runs against OCL API at 8000. If you want to run it against an OCL API debug server, open the debug configuration
 and add the following environment variable: 
 ``` 
-OCL_API_HOST=http://api.openconceptlab.org:8001'
+OCL_API_HOST=http://172.17.0.1:8001'
 ``` 
 
 ## Manual Developer Setup
