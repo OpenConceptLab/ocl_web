@@ -22,6 +22,9 @@ docker-compose down
 
 ### Development
 
+Before starting the web project, you need to start the API as described in
+https://github.com/OpenConceptLab/oclapi
+
 To run the server in a development mode use:
 docker-compose up
 
@@ -30,6 +33,44 @@ docker-compose down
 
 To take down the server and drop all data:
 docker-compose down -v
+
+### Debugging
+
+Using PyCharm 2017.2
+
+1. Start the server in development mode.
+2. Import the project into PyCharm by pointing to ocl_web\ocl_web as root directory
+3. Go to Settings -> Project: ocl_web -> Project Interpreter
+4. Click the cog icon and Add Remote
+5. Choose SSH Credentials and fill in the form as follows:
+``` 
+Host: localhost
+Port: 2001
+User name: root
+Password: Root123
+Python interpreter path: /usr/local/bin/python
+``` 
+6. Accept all warnings regarding certificates.
+7. Close settings with OK
+8. Go to Run -> Edit Configurations...
+9. Click the plus icon and choose Django server
+10. Fill in the form as follows:
+``` 
+Name: oclweb
+Host: 0.0.0.0
+Port: 7001
+Working directory: C:\Users\Rafal\Workspace\ocl_web\ocl_web 
+Path mappings: C:/Users/Rafal/Workspace/ocl_web/ocl_web=/code/ocl_web
+``` 
+Adjust working directory and path mappings accordingly
+11. Confirm with OK and debug with the newly created configuration.
+12. Go to http://localhost:7001 to verify it works.
+
+By default the OCL WEB server runs against OCL API at 8000. If you want to run it against an OCL API debug server, open the debug configuration
+and add the following environment variable: 
+``` 
+OCL_API_HOST=http://api.openconceptlab.org:8001'
+``` 
 
 ## Manual Developer Setup
 
