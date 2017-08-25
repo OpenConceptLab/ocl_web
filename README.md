@@ -54,15 +54,14 @@ Python interpreter path: /usr/local/bin/python
 7. Close settings with OK
 8. Go to Run -> Edit Configurations...
 9. Click the plus icon and choose Django server
-10. Fill in the form as follows:
+10. Fill in the form as follows (adjust working directory and path mappings accordingly):
 ``` 
 Name: oclweb
 Host: 0.0.0.0
 Port: 7001
 Working directory: C:\Users\Rafal\Workspace\ocl_web\ocl_web 
 Path mappings: C:/Users/Rafal/Workspace/ocl_web/ocl_web=/code/ocl_web
-``` 
-Adjust working directory and path mappings accordingly
+```
 11. Confirm with OK and debug with the newly created configuration.
 12. Go to http://localhost:7001 to verify it works.
 
