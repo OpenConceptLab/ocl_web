@@ -16,4 +16,4 @@ services:
       - "2001:22"
     environment:
       - SSH=true
-      - ENVIRONMENT=local  
+      - ENVIRONMENT=local
