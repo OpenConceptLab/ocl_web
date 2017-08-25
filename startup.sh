@@ -26,8 +26,10 @@ fi
 hostip=$(ip route show | awk '/default/ {print $3}')
 
 echo ""
-echo "Host IP=${hostip}"
+echo "OCL_API_HOST=http://${hostip}:8000"
 echo ""
+
+export OCL_API_HOST="http://${hostip}:8000"
 
 python ocl_web/manage.py syncdb --noinput
 
