@@ -16,6 +16,7 @@ services:
       - db_web
     links:
       - "db_web:dbweb.openconceptlab.org"
+    external_links:
       - "api:api.openconceptlab.org"
     ports:
       - "7000:7000"
@@ -36,3 +37,7 @@ services:
       retries: 3
 volumes:
   db_web_data:
+networks:
+  default:
+    external:
+      name: ${OCL_API_NETWORK}
