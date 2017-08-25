@@ -10,6 +10,7 @@ services:
       dockerfile: Dockerfile-dev
     volumes:
       - .:/code
+      - .pycharm_helpers:/root/.pycharm_helpers
     ports:
       #ports for debugging
       - "7001:7001"

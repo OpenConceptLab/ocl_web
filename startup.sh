@@ -23,6 +23,12 @@ export SETTINGS=$ENVIRONMENT
 export CONFIG=${ENVIRONMENT^}
 fi
 
+hostip=$(ip route show | awk '/default/ {print $3}')
+
+echo ""
+echo "Host IP=${hostip}"
+echo ""
+
 python ocl_web/manage.py syncdb --noinput
 
 python ocl_web/manage.py migrate 
