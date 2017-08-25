@@ -51,7 +51,7 @@ class Command(BaseCommand):
         print '==================================='
 
 
-        print 'Creating ' + self.username + ' User'
+        print 'Creating "' + self.username + '" User'
 
         if User.objects.filter(username=self.username).count() > 0:
             test_user = User.objects.get(username=self.username)

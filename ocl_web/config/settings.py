@@ -124,7 +124,7 @@ class Common(Configuration):
 
     ########## DATABASE CONFIGURATION
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
-    DATABASES = values.DatabaseURLValue('postgres:///ocl_web')
+    DATABASES = values.DatabaseURLValue('postgres://ocl:Ocl123@dbweb.openconceptlab.org:5432/ocl')
     ########## END DATABASE CONFIGURATION
 
     ########## CACHING
@@ -322,9 +322,10 @@ class Common(Configuration):
     ########## Your common stuff: Below this line define 3rd party libary settings
     # API_HOST = 'http://65.99.230.144'
     # API_TOKEN = 'Token ' + '%s' % os.environ.get('OCL_API_TOKEN')
-    API_HOST = values.Value(environ_name='OCL_API_HOST', environ_prefix=None)
-    API_TOKEN = 'Token ' + '%s' % values.Value(environ_name='OCL_API_TOKEN', environ_prefix=None)
-
+    API_HOST = values.Value(default='http://api.openconceptlab.org:8000',environ_name='OCL_API_HOST', environ_prefix=None)
+    API_TOKEN = values.Value(default='891b4b17feab99f3ff7e5b5d04ccc5da7aa96da6',environ_name='OCL_API_TOKEN', environ_prefix=None)
+    API_ANON_TOKEN = values.Value(default='891b4b17feab99f3ff7e5b5d04ccc5da7aa96da6', environ_name='OCL_API_ANON_TOKEN',
+                             environ_prefix=None)
 
 class Local(Common):
     """ Local class """

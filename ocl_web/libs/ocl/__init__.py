@@ -39,8 +39,8 @@ class OclApi(object):
         self.headers = {'Content-Type': 'application/json'}
 
         # The admin api key should only be used for admin functions (duh)
-        self.admin_api_key = os.environ.get('OCL_API_TOKEN', None)
-        self.anon_api_key = os.environ.get('OCL_ANON_API_TOKEN', None)
+        self.admin_api_key = settings.API_TOKEN
+        self.anon_api_key = settings.API_ANON_TOKEN
         self.url = None
         self.api_key = None
         self.include_facets = facets
