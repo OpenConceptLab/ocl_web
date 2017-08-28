@@ -26,7 +26,7 @@ fi
 hostip=$(ip route show | awk '/default/ {print $3}')
 
 echo ""
-echo "Host IP=http://${hostip}:8000"
+echo "Host IP=${hostip}"
 echo ""
 
 python ocl_web/manage.py syncdb --noinput
