@@ -324,7 +324,7 @@ class Common(Configuration):
     # API_TOKEN = 'Token ' + '%s' % os.environ.get('OCL_API_TOKEN')
     API_HOST = values.Value(default='http://172.17.0.1:8000',environ_name='OCL_API_HOST', environ_prefix=None)
     API_TOKEN = values.Value(default='891b4b17feab99f3ff7e5b5d04ccc5da7aa96da6',environ_name='OCL_API_TOKEN', environ_prefix=None)
-    API_ANON_TOKEN = values.Value(default='891b4b17feab99f3ff7e5b5d04ccc5da7aa96da6', environ_name='OCL_API_ANON_TOKEN',
+    API_ANON_TOKEN = values.Value(default='891b4b17feab99f3ff7e5b5d04ccc5da7aa96da6', environ_name='OCL_ANON_API_TOKEN',
                              environ_prefix=None)
 
 class Local(Common):
