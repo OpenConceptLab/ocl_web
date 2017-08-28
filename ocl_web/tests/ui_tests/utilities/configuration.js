@@ -11,8 +11,8 @@ function Configuration() {
     var testExecutionEnvironment = getTestExecutionEnvironment();
     this.env = envConfig[testExecutionEnvironment];
     this.env["env"] = testExecutionEnvironment;
-    this.env["username"] = process.env.username ? process.env.username : "root";
-    this.env["password"] = process.env.password ? process.env.password : "Root123";
+    this.env["username"] = process.env.username ? process.env.username : "admin";
+    this.env["password"] = process.env.password ? process.env.password : "Admin123";
     this.env["timeout"] = process.env.timeout ? process.env.timeout : 15000;
 }
 

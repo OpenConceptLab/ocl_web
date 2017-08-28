@@ -35,5 +35,9 @@ python ocl_web/manage.py migrate
 
 python ocl_web/manage.py create_test_user --username="root" --password="${ROOT_PASSWORD}"
 
+if [ "$ENVIRONMENT" = "qa" ]
+python ocl_web/manage.py create_test_user --username="admin" --password="Admin123"
+fi
+
 echo "Starting the server"
 grunt serve
