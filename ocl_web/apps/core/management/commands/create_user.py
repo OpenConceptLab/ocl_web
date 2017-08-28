@@ -15,7 +15,7 @@ class FakeRequest(object):
 
 class Command(BaseCommand):
     """ manage.py Command 'create_sysadmin' """
-    help = 'Create test user'
+    help = 'Create user'
     option_list = BaseCommand.option_list + (
 
         make_option('--username',
@@ -28,6 +28,11 @@ class Command(BaseCommand):
                     dest='password',
                     default='test123',
                     help='Password'),
+        make_option('--superuser',
+                    action='store_true',
+                    dest='superuser',
+                    default=False,
+                    help='True, if superuser account'),
         make_option('--company_name',
                     action='store',
                     dest='company_name',
@@ -53,33 +58,44 @@ class Command(BaseCommand):
 
         print 'Creating "' + self.username + '" User'
 
+        email = self.username + '@openconceptlab.org'
+
+        user = None
+
         if User.objects.filter(username=self.username).count() > 0:
-            test_user = User.objects.get(username=self.username)
+            user = User.objects.get(username=self.username)
+            if self.superuser and not user.is_superuser:
+                user.delete();
+                user = None
+
+        if user is None:
+            if self.superuser:
+                user = User.objects.create_superuser(self.username, email, self.password)
+            else:
+                user = User.objects.create_user(username=self.username)
+
+        user.email = email
+        user.set_password(self.password)
+        user.first_name = 'none'
+        user.last_name = 'none'
+        user.save()
+
+        if EmailAddress.objects.filter(user=user).count() > 0:
+            email = EmailAddress.objects.get(user=user)
         else:
-            test_user = User.objects.create_user(username=self.username)
+            email = EmailAddress.objects.create(user=user)
 
-        test_user.email = self.username + '@openconceptlab.org'
-        test_user.set_password(self.password)
-        test_user.first_name = 'Jonathan'
-        test_user.last_name = 'Payne'
-        test_user.save()
-
-        if EmailAddress.objects.filter(user=test_user).count() > 0:
-            email = EmailAddress.objects.get(user=test_user)
-        else:
-            email = EmailAddress.objects.create(user=test_user)
-
-        email.email = test_user.email
+        email.email = user.email
         email.verified = True
         email.save()
 
         ocl = OclApi(admin=True)
 
         data = {
-            "username": test_user.username,
-            "name": test_user.first_name + ' ' + test_user.last_name,
-            "email": test_user.email,
-            'hashed_password': test_user.password,
+            "username": user.username,
+            "name": user.first_name + ' ' + user.last_name,
+            "email": user.email,
+            'hashed_password': user.password,
             "company": self.company_name,
             "location": self.location,
             "preferred_locale": 'en'
@@ -88,20 +104,20 @@ class Command(BaseCommand):
         result = ocl.create_user(data)
 
         if result.status_code == 201:
-            print 'User "' + test_user.username + '" synced to API'
+            print 'User "' + user.username + '" synced to API'
             print '==================================='
         elif result.status_code == 400:
-            print 'User "' + test_user.username + '" exists in API, trying to reactivate...'
+            print 'User "' + user.username + '" exists in API, trying to reactivate...'
             # try reactivate for now, this is very not secure, #TODO
-            result = ocl.reactivate_user(test_user.username)
+            result = ocl.reactivate_user(user.username)
             if result == 204:
-                print 'User "' + test_user.username + '" reactivated in API'
+                print 'User "' + user.username + '" reactivated in API'
             else:
-                print 'Failed to reactivate user "' + test_user.username + '" in API. Server responded with ' + str(result.status_code)
+                print 'Failed to reactivate user "' + user.username + '" in API. Server responded with ' + str(result.status_code)
 
             print '==================================='
         else:
-            print 'Failed to sync user "' + test_user.username + '" to API. Server responded with ' + str(result.status_code)
+            print 'Failed to sync user "' + user.username + '" to API. Server responded with ' + str(result.status_code)
             print '==================================='
             exit(1)
 
@@ -111,6 +127,6 @@ class Command(BaseCommand):
         self.company_name = options['company_name']
         self.username = options['username']
         self.password = options['password']
-
+        self.superuser = options['superuser']
 
         self.create_test_user()

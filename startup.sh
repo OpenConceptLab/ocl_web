@@ -33,11 +33,11 @@ python ocl_web/manage.py syncdb --noinput
 
 python ocl_web/manage.py migrate 
 
-python ocl_web/manage.py create_test_user --username="root" --password="${ROOT_PASSWORD}"
+python ocl_web/manage.py create_user --username="root" --password="${ROOT_PASSWORD}" --superuser
 
-if [ "$ENVIRONMENT" = "qa" ]
+if [ "$ENVIRONMENT" = "qa" ] || [ "$ENVIRONMENT" = "local" ]
 then
-python ocl_web/manage.py create_test_user --username="admin" --password="Admin123"
+python ocl_web/manage.py create_user --username="admin" --password="Admin123" --superuser
 fi
 
 echo "Starting the server"
