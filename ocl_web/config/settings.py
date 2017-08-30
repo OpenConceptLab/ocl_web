@@ -94,10 +94,6 @@ class Common(Configuration):
     TEMPLATE_DEBUG = DEBUG
     ########## END DEBUG
 
-    ########### SECRET KEY
-    SECRET_KEY = values.SecretValue(environ_prefix="", environ_name="SECRET_KEY")
-    ########## END SECRET KEY
-
     ########## FIXTURE CONFIGURATION
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-FIXTURE_DIRS
     FIXTURE_DIRS = (
@@ -109,7 +105,7 @@ class Common(Configuration):
     EMAIL_BACKEND = values.Value('django.core.mail.backends.smtp.EmailBackend')
     DEFAULT_FROM_EMAIL = values.Value('openconceptlab <noreply@openconceptlab.org>')
     EMAIL_HOST = values.Value(environ_name="EMAIL_HOST", environ_prefix="")
-    EMAIL_HOST_PASSWORD = values.SecretValue(environ_name="EMAIL_HOST_PASSWORD", environ_prefix="", default="")
+    EMAIL_HOST_PASSWORD = values.Value(environ_name="EMAIL_HOST_PASSWORD", environ_prefix="", default="")
     EMAIL_HOST_USER = values.Value(environ_name="EMAIL_HOST_USER", environ_prefix="")
     EMAIL_PORT = values.IntegerValue(environ_name="EMAIL_PORT", environ_prefix="", default=587)
     EMAIL_USE_TLS = values.BooleanValue(environ_name="EMAIL_USE_TLS", environ_prefix="", default=True)
@@ -337,7 +333,7 @@ class Local(Common):
     DEBUG = values.BooleanValue(True)
     TEMPLATE_DEBUG = DEBUG
 
-    SECRET_KEY = values.SecretValue(environ_name='SECRET_KEY', environ_prefix='', default='s3owRP0sLI2opDDI6qIgG3iD57')
+    SECRET_KEY = values.Value(environ_name='SECRET_KEY', environ_prefix='', default='s3owRP0sLI2opDDI6qIgG3iD57')
 
     ########## INSTALLED_APPS
     INSTALLED_APPS = Common.INSTALLED_APPS
@@ -366,6 +362,9 @@ class Local(Common):
 
 class Qa(Common):
     """ Local class """
+    ########### SECRET KEY
+    SECRET_KEY = values.SecretValue(environ_prefix="", environ_name="SECRET_KEY")
+    ########## END SECRET KEY
 
     ########## INSTALLED_APPS
     INSTALLED_APPS = Common.INSTALLED_APPS
@@ -387,6 +386,9 @@ class Qa(Common):
 
 class Production(Common):
     """ Production class -- the default """
+    ########### SECRET KEY
+    SECRET_KEY = values.SecretValue(environ_prefix="", environ_name="SECRET_KEY")
+    ########## END SECRET KEY
 
     ########## INSTALLED_APPS
     INSTALLED_APPS = Common.INSTALLED_APPS
