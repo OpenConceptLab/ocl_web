@@ -13,7 +13,9 @@ Docker
 Before starting the web project, you need to start the API as described in
 https://github.com/OpenConceptLab/oclapi
 
-In order to run the server in a production mode, use the following command:
+In order to run the server in a production mode, you need to set the SECRET_KEY environment variable in the .env file.
+
+Next use the following command:
 
 docker-compose -f docker-compose.yml up
 
