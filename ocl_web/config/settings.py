@@ -88,18 +88,15 @@ class Common(Configuration):
 
     ########## DEBUG
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-    DEBUG = values.BooleanValue(True)
+    DEBUG = values.BooleanValue(False)
 
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
     TEMPLATE_DEBUG = DEBUG
     ########## END DEBUG
 
-    ########## SECRET CONFIGURATION
-    # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
-    # Note: This key only used for development and testing.
-    #       In production, this is changed to a values.SecretValue() setting
-    SECRET_KEY = "s3ow(RP$sLI2*opDDI6q{IgG/3iD57"
-    ########## END SECRET CONFIGURATION
+    ########### SECRET KEY
+    SECRET_KEY = values.SecretValue(environ_prefix="", environ_name="SECRET_KEY")
+    ########## END SECRET KEY
 
     ########## FIXTURE CONFIGURATION
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-FIXTURE_DIRS
@@ -110,6 +107,14 @@ class Common(Configuration):
 
     ########## EMAIL CONFIGURATION
     EMAIL_BACKEND = values.Value('django.core.mail.backends.smtp.EmailBackend')
+    DEFAULT_FROM_EMAIL = values.Value('openconceptlab <noreply@openconceptlab.org>')
+    EMAIL_HOST = values.Value(environ_name="EMAIL_HOST", environ_prefix="")
+    EMAIL_HOST_PASSWORD = values.SecretValue(environ_name="EMAIL_HOST_PASSWORD", environ_prefix="")
+    EMAIL_HOST_USER = values.Value(environ_name="EMAIL_HOST_USER", environ_prefix="")
+    EMAIL_PORT = values.IntegerValue(environ_name="EMAIL_PORT", environ_prefix="", default=587)
+    EMAIL_USE_TLS = values.BooleanValue(environ_name="EMAIL_USE_TLS", environ_prefix="", default=True)
+    EMAIL_USE_SSL = values.BooleanValue(environ_name="EMAIL_USE_SSL", environ_prefix="", default=False)
+    EMAIL_SUBJECT_PREFIX = values.Value('[openconceptlab.org] ')
     ########## END EMAIL CONFIGURATION
 
     ########## MANAGER CONFIGURATION
@@ -329,6 +334,10 @@ class Common(Configuration):
 
 class Local(Common):
     """ Local class """
+    DEBUG = values.BooleanValue(True)
+    TEMPLATE_DEBUG = DEBUG
+
+    SECRET_KEY = "s3owRP0sLI2opDDI6qIgG3iD57"
 
     ########## INSTALLED_APPS
     INSTALLED_APPS = Common.INSTALLED_APPS
@@ -355,7 +364,7 @@ class Local(Common):
 
     ########## Your local stuff: Below this line define 3rd party libary settings
 
-class Showcase(Common):
+class Qa(Common):
     """ Local class """
 
     ########## INSTALLED_APPS
@@ -382,10 +391,6 @@ class Production(Common):
     ########## INSTALLED_APPS
     INSTALLED_APPS = Common.INSTALLED_APPS
     ########## END INSTALLED_APPS
-
-    ########## SECRET KEY
-    SECRET_KEY = values.SecretValue()
-    ########## END SECRET KEY
 
     ########## django-secure
     INSTALLED_APPS += ("djangosecure", )
@@ -451,28 +456,6 @@ class Production(Common):
 #    STATIC_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
     ########## END STORAGE CONFIGURATION
 
-    ########## EMAIL
-    DEFAULT_FROM_EMAIL = values.Value('ocl_web <noreply@openconceptlab.org>')
-#    EMAIL_HOST = values.Value('smtp.sendgrid.com')
-#    EMAIL_HOST_PASSWORD = values.SecretValue(environ_prefix="", environ_name="SENDGRID_PASSWORD")
-#    EMAIL_HOST_USER = values.SecretValue(environ_prefix="", environ_name="SENDGRID_USERNAME")
-#    EMAIL_PORT = values.IntegerValue(587, environ_prefix="", environ_name="EMAIL_PORT")
-    # EMAIL_SUBJECT_PREFIX = values.Value('[ocl_web] ', environ_name="EMAIL_SUBJECT_PREFIX")
-    EMAIL_SUBJECT_PREFIX = values.Value('[openconceptlab.org] ')
-#    EMAIL_USE_TLS = True
-#    SERVER_EMAIL = EMAIL_HOST_USER
-    ########## END EMAIL
-
-
-    ########## DEBUG
-    # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-    DEBUG = values.BooleanValue(False)
-
-    # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
-    TEMPLATE_DEBUG = DEBUG
-    ########## END DEBUG
-
-
     ########## TEMPLATE CONFIGURATION
 
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
@@ -524,14 +507,14 @@ class Production(Common):
             'debug_file': {
                 'level': 'DEBUG',
                 'class': 'logging.handlers.TimedRotatingFileHandler',
-                'filename': '/var/log/ocl/web_debug.log',
+                'filename': os.path.join(BASE_DIR, 'logs/debug.log'),
                 'formatter': 'normal',
                 },
             'logfile': {
                 'level': 'INFO',
                 'class': 'logging.handlers.TimedRotatingFileHandler',
                 'when': 'midnight',
-                'filename': '/var/log/ocl/web_app.log',
+                'filename': os.path.join(BASE_DIR, 'logs/web_app.log'),
                 'formatter': 'normal',
             },
         },

@@ -10,34 +10,23 @@ then
 ./wait-for-it.sh $WAIT_FOR
 fi
 
-if [ -z $ENVIRONMENT ]
-then 
-export SETTINGS=local
-export CONFIG=Local
-elif [ "$ENVIRONMENT" = "qa" ]
-then
-export SETTINGS=local
-export CONFIG=Local
-else
-export SETTINGS=$ENVIRONMENT
-export CONFIG=${ENVIRONMENT^}
-fi
-
 hostip=$(ip route show | awk '/default/ {print $3}')
+
+export CONFIG=${ENVIRONMENT^}
 
 echo ""
 echo "Host IP=${hostip}"
 echo ""
 
-python ocl_web/manage.py syncdb --noinput
+python ocl_web/manage.py syncdb --noinput --configuration="${CONFIG}"
 
-python ocl_web/manage.py migrate 
+python ocl_web/manage.py migrate --configuration="${CONFIG}"
 
-python ocl_web/manage.py create_user --username="root" --password="${ROOT_PASSWORD}" --superuser
+python ocl_web/manage.py create_user --username="root" --password="${ROOT_PASSWORD}" --superuser --configuration="${CONFIG}"
 
 if [ "$ENVIRONMENT" = "qa" ] || [ "$ENVIRONMENT" = "local" ]
 then
-python ocl_web/manage.py create_user --username="admin" --password="Admin123" --superuser
+python ocl_web/manage.py create_user --username="admin" --password="Admin123" --superuser --configuration="${CONFIG}"
 fi
 
 echo "Starting the server"

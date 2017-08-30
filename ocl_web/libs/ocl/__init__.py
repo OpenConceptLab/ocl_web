@@ -46,6 +46,7 @@ class OclApi(object):
         self.include_facets = facets
 
         if admin:
+            print self.admin_api_key
             self.headers['Authorization'] = 'Token %s' % self.admin_api_key
         else:
             if request:
