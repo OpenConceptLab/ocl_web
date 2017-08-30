@@ -36,5 +36,4 @@ simplejson==3.4.0
 python-dateutil==2.2
 
 sqlparse==0.1.19
-newrelic
 
