@@ -75,6 +75,12 @@ class Common(Configuration):
     )
     ########## END APP CONFIGURATION
 
+    ########## SITE CONFIGURATION
+    # Hosts/domain names that are valid for this site
+    # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', 'openconceptlab.org', 'openmrs.org']
+    ########## END SITE CONFIGURATION
+
     ########## MIDDLEWARE CONFIGURATION
     MIDDLEWARE_CLASSES = (
         'django.contrib.sessions.middleware.SessionMiddleware',
@@ -418,12 +424,6 @@ class Production(Common):
     SESSION_COOKIE_HTTPONLY = values.BooleanValue(True)
     SECURE_SSL_REDIRECT = values.BooleanValue(True)
     ########## end django-secure
-
-    ########## SITE CONFIGURATION
-    # Hosts/domain names that are valid for this site
-    # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-    ALLOWED_HOSTS = ["*"]
-    ########## END SITE CONFIGURATION
 
     INSTALLED_APPS += ("gunicorn", )
 
