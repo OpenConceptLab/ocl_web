@@ -6,10 +6,6 @@ class OclConstants(object):
     """
     OCL Resource Constants
     """
-    # RegEx Patterns
-    ORG_PATTERN = '[a-zA-Z0-9\-]+'
-    NAMESPACE_PATTERN = '[a-zA-Z0-9\-\.]+'
-    CONCEPT_ID_PATTERN = '[a-zA-Z0-9\-\.\_]+'
 
     # Resource types
     RESOURCE_ID_USER = 0
