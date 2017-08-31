@@ -108,7 +108,7 @@ class  ConceptNewForm(forms.Form):
         label=_('Concept ID'),
         max_length=256,
         required=True,
-        help_text=_('<small>Alphanumeric characters, hyphens and periods are allowed.<br/>'
+        help_text=_('<small>Alphanumeric characters, hyphens, periods, and underscores are allowed.<br/>'
                     'Your new concept will live at: '
                     '<span id="new_concept_base_url">/[owner-type]/[owner]/sources/'
                     '[source]/concepts/</span>'
