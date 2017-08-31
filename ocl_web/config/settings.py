@@ -32,6 +32,8 @@ class Common(Configuration):
     DEFAULT_FROM_EMAIL = 'noreply@openconceptlab.org'
     ACCOUNT_EMAIL_SUBJECT_PREFIX = '[openconceptlab.org] '
 
+    USE_X_FORWARDED_HOST = True
+
     ########## APP CONFIGURATION
     DJANGO_APPS = (
         # Default Django apps:
