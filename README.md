@@ -73,6 +73,19 @@ and add the following environment variable:
 OCL_API_HOST=http://172.17.0.1:8001'
 ``` 
 
+### Running Tests
+
+#### Unit Tests
+
+`docker-compose run web bash run_unit_tests.sh`
+
+#### UI Tests
+
+```
+docker build -t openconceptlab/oclweb:dev .
+docker run openconceptlab/oclweb:dev bash run_ui_tests.sh
+```
+
 ## Manual Developer Setup
 
 ### Prerequisites
