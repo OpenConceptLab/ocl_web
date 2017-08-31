@@ -101,8 +101,7 @@ describe('OCL Org Page', function () {
         orgPage.notification.click();
     });
 
-    it('should create concept', function () {
-		pending('Needs to be fixed');
+    xit('should create concept', function () {
 		
         orgPage.createNewConcept(data.concept_id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
         collectionReferencePage.conceptVersionUrl.getText().then(function (versionUrl) {
@@ -116,8 +115,7 @@ describe('OCL Org Page', function () {
         element(by.linkText('  ' + data.src_code)).click();
     });
 
-    it('should create a mapping', function () {
-		pending('Needs to be fixed');
+    xit('should create a mapping', function () {
 	
         orgPage.createNewConcept(data.concept_id + id, data.concept_name, 'Fully Specified', data.concept_desc, data.key1, data.locale2, true);
 

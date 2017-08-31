@@ -38,7 +38,7 @@ describe('Collection Reference Page', function () {
         logoutPage.logout();
     });
 
-    it('add concept single reference without version number', function () {
+    xit('add concept single reference without version number', function () {
         browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id);
         var expectedMessage = 'OCL does not support adding the HEAD version of concepts to the collection. Added the latest version instead: ' + sourceId + '-C1.1.1.2- version';
         var conceptExpression = '/orgs/' + data.org_short_code + id + '/sources/HSTP-Indicators/concepts/C1.1.1.2-/';
@@ -48,8 +48,7 @@ describe('Collection Reference Page', function () {
         expect(collectionReferencePage.warningModal.getText()).toContain(expectedMessage);
     });
 
-    it('add concept single reference with version number', function () {
-		pending('Needs to be fixed');
+    xit('add concept single reference with version number', function () {
 		
         collectionReferencePage.deleteReference();
         var expectedMessage = 'Added concept: ' + sourceId + '-C1.1.1.2- version ' + conceptVersionNumber;
@@ -60,8 +59,7 @@ describe('Collection Reference Page', function () {
         expect(collectionReferencePage.successModal.getText()).toEqual(expectedMessage);
     });
 
-    it('add mapping single reference without version number', function () {
-		pending('Needs to be fixed');
+    xit('add mapping single reference without version number', function () {
 		
         collectionReferencePage.deleteReference();
         var expectedMessage = 'OCL does not support adding the HEAD version of mapping to the collection. Added the latest version instead: ' + sourceId + '-' + mappingId + ' version 1';
@@ -72,8 +70,7 @@ describe('Collection Reference Page', function () {
         expect(collectionReferencePage.countOfReferences.count()).toEqual(1);
     });
 
-    it('add mapping single reference with version number', function () {
-		pending('Needs to be fixed');
+    xit('add mapping single reference with version number', function () {
 		
         collectionReferencePage.deleteReference();
         var expectedMessage = 'Added mapping: ' + sourceId + '-' + mappingId + ' version ' + mappingVersion;
@@ -85,8 +82,7 @@ describe('Collection Reference Page', function () {
     });
 
 
-    it('add duplicate concept expression should fail', function () {
-		pending('Needs to be fixed');
+    xit('add duplicate concept expression should fail', function () {
 		
         browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
         collectionReferencePage.deleteReference();
@@ -102,8 +98,7 @@ describe('Collection Reference Page', function () {
         expect(collectionReferencePage.countOfReferences.count()).toEqual(0);
     });
 
-    it('add duplicate mapping expression should fail', function () {
-		pending('Needs to be fixed');
+    xit('add duplicate mapping expression should fail', function () {
 		
         browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
         collectionReferencePage.deleteReference();
@@ -120,8 +115,7 @@ describe('Collection Reference Page', function () {
         expect(collectionReferencePage.countOfReferences.count()).toEqual(0);
     });
 
-    it('fully specified name within collection should be unique', function () {
-		pending('Needs to be fixed');
+    xit('fully specified name within collection should be unique', function () {
 		
         browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
         collectionReferencePage.deleteReference();
@@ -139,8 +133,7 @@ describe('Collection Reference Page', function () {
         expect(collectionReferencePage.countOfReferences.count()).toEqual(0);
     });
 
-    it('test preferred name within collection should be unique', function () {
-		pending('Needs to be fixed');
+    xit('test preferred name within collection should be unique', function () {
 		
         browser.get(baseUrl + 'orgs/' + data.org_short_code + id + '/collections/' + data.short_code + id + '/references/');
         collectionReferencePage.deleteReference();
@@ -159,8 +152,7 @@ describe('Collection Reference Page', function () {
         expect(collectionReferencePage.countOfReferences.count()).toEqual(0);
     });
 
-    it('test when user selects HEAD version of source from dropdown in multiple references', function () {
-		pending('Needs to be fixed');
+    xit('test when user selects HEAD version of source from dropdown in multiple references', function () {
 		
         const organization = data.org_short_code + id;
         browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
@@ -169,9 +161,8 @@ describe('Collection Reference Page', function () {
         browser.wait(EC.textToBePresentInElement(collectionReferencePage.messageBox, 'When HEAD version selected, the latest version of concepts and mappings are listed'), timeout);
     });
 
-    it('test when user adds HEAD version of source in multiple references then inform the user', function () {
-		pending('Needs to be fixed');
-		
+    xit('test when user adds HEAD version of source in multiple references then inform the user', function () {
+
         const organization = data.org_short_code + id;
         browser.get(baseUrl + 'orgs/' + organization + '/collections/' + data.short_code + id + '/references/');
         collectionReferencePage.createNewMultipleReferences(organization, 'HSTP-Indicators', 'HEAD');
@@ -179,7 +170,7 @@ describe('Collection Reference Page', function () {
         expect(collectionReferencePage.warningModal.getText()).toEqual('Added the latest versions of concepts/mappings to the collection. Future updates will not be added automatically.');
     });
 
-    it('then when user adds non-HEAD version of source in multiple references then inform for success', function () {
+    xit('then when user adds non-HEAD version of source in multiple references then inform for success', function () {
         const organization = data.org_short_code + id;
         browser.get(baseUrl + 'orgs/' + organization + '/sources/HSTP-Indicators/versions/');
         orgPage.createNewSourceVersion('nonHead', 'for testing');
@@ -190,9 +181,8 @@ describe('Collection Reference Page', function () {
         expect(collectionReferencePage.successModal.getText()).toEqual('Concepts/mappings are added to collection.');
     });
 
-    it('add concept multiple reference with related mappings', function () {
-		pending('Needs to be fixed');
-		
+    xit('add concept multiple reference with related mappings', function () {
+
         const organization = data.org_short_code + id;
         const collectionShortCode = data.short_code + id + id;
         const conceptId = 'C1\\.1\\.1\\.2-' + id + id;
@@ -214,9 +204,8 @@ describe('Collection Reference Page', function () {
         expect(collectionReferencePage.countOfReferences.count()).toEqual(2);
     });
 
-    it('add concept multiple reference with related mappings and get error modal', function () {
-		pending('Needs to be fixed');
-		
+    xit('add concept multiple reference with related mappings and get error modal', function () {
+
         const organization = data.org_short_code + id;
         const collectionShortCode = data.short_code + id + id;
         const conceptId1 = 'C1\\.1\\.1\\.2-' + id + id;
@@ -240,9 +229,8 @@ describe('Collection Reference Page', function () {
         expect(collectionReferencePage.countOfReferences.count()).toEqual(3);
     });
 
-    it('delete concept reference with related mappings', function () {
-		pending('Needs to be fixed');
-		
+    xit('delete concept reference with related mappings', function () {
+
         const organization = data.org_short_code + id;
         const collectionShortCode = data.short_code + id + id;
         const conceptId = 'C1\\.1\\.1\\.2-' + id + id;
