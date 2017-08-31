@@ -342,8 +342,8 @@ class ConceptMappingsView(FormView, UserOrOrgMixin,
         if mapping_destination == 'Internal':
             base_data['to_concept_url'] = form.cleaned_data.get('internal_to_concept_url')
             # TODO: move regex validation to form
-            user_concept_format = r'^/users/([a-zA-Z0-9\-\.]+)/sources/([a-zA-Z0-9\-\.]+)/concepts/([a-zA-Z0-9\-\.]+)/$'
-            org_concept_format = r'^/orgs/([a-zA-Z0-9\-]+)/sources/([a-zA-Z0-9\-\.]+)/concepts/([a-zA-Z0-9\-\.]+)/$'
+            user_concept_format = r'^/users/(' + OclConstants.NAMESPACE_PATTERN + ')/sources/(' + OclConstants.NAMESPACE_PATTERN + ')/concepts/(' + OclConstants.CONCEPT_ID_PATTERN + ')/$'
+            org_concept_format = r'^/orgs/(' + OclConstants.ORG_PATTERN + ')/sources/(' + OclConstants.NAMESPACE_PATTERN + ')/concepts/(' + OclConstants.CONCEPT_ID_PATTERN + ')/$'
             if not (re.compile(user_concept_format).match(base_data['to_concept_url']) or
                         re.compile(org_concept_format).match(base_data['to_concept_url'])):
                 emsg = 'Invalid format of "To Concept URL" \'%s\'. valid url format is /[orgs or users]/[:org or :user]/sources/:source/concepts/:concept/' % \
