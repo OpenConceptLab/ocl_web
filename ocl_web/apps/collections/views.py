@@ -526,7 +526,7 @@ class CollectionCreateView(CollectionsBaseView, FormView):
         data = form.cleaned_data
         short_code = data.pop('short_code')
         data['id'] = short_code
-        if re.compile('^[a-zA-Z0-9\-]+$').match(short_code):
+        if re.compile('^' + OclConstants.ORG_PATTERN + '$').match(short_code):
             api = OclApi(self.request, debug=True)
             result = api.post(self.owner_type, self.owner_id, 'collections', **data)
             if not result.status_code == requests.codes.created:
