@@ -81,7 +81,8 @@ module.exports = function (grunt) {
         bg: true
       },
       runDjango: {
-        cmd: 'python <%= paths.manageScript %> runserver <%= process.env.OCL_WEB_SOCKET_ADDRESS || "0.0.0.0:7000" %>'
+        // TODO: Remove --insecure and setup serving static files as described at https://docs.djangoproject.com/en/1.11/howto/static-files/deployment/
+        cmd: 'python <%= paths.manageScript %> runserver <%= process.env.OCL_WEB_SOCKET_ADDRESS || "0.0.0.0:7000" %> --insecure'
       }
     }
   });
