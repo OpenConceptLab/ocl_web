@@ -770,7 +770,7 @@ class SourceNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         data['short_code'] = short_code
         data['id'] = short_code
         data['name'] = short_code
-        if re.compile('^' + OclConstants.ORG_PATTERN + '$').match(short_code):
+        if re.compile('^[a-zA-Z0-9\-]+$').match(short_code):
             api = OclApi(self.request, debug=True)
             result = api.create_source(self.owner_type, self.owner_id, data)
             if result.status_code == requests.codes.created:
