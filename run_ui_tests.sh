@@ -13,5 +13,3 @@ nohup  ./node_modules/protractor/bin/webdriver-manager start --standalone > nohu
 sleep 10
 
 ./node_modules/protractor/bin/protractor ./ocl_web/tests/ui_tests/conf.js --verbose
-
-cat nohup_tests.out
