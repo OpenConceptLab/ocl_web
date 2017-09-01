@@ -86,6 +86,10 @@ docker build -t openconceptlab/oclweb:dev .
 docker run openconceptlab/oclweb:dev bash run_ui_tests.sh
 ```
 
+## Continous Integration
+
+Please see https://github.com/OpenConceptLab/oclapi/blob/jetstream/README.md#continuous-integration
+
 ## Manual Developer Setup
 
 ### Prerequisites
