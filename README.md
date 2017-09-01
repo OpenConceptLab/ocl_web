@@ -41,6 +41,10 @@ docker-compose down
 To take down the server and drop all data:
 docker-compose down -v
 
+## Continuous Integration
+
+Please see https://github.com/OpenConceptLab/oclapi/blob/jetstream/README.md#continuous-integration
+
 ## Manual Developer Setup
 
 ### Prerequisites
