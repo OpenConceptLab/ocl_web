@@ -2,9 +2,10 @@ import re
 
 from django.utils.translation import ugettext_lazy as _
 from django import forms
+from config import settings
 
 from allauth.account.adapter import DefaultAccountAdapter
-
+from urlparse import urlsplit, urlunsplit
 
 class OCLAccountAdapter(DefaultAccountAdapter):
     """
@@ -23,3 +24,16 @@ class OCLAccountAdapter(DefaultAccountAdapter):
                                           "letters, digits and . -"))
 
         return super(OCLAccountAdapter, self).clean_username(username)
+
+    def send_mail(self, template_prefix, email, context):
+        if 'activate_url' in context:
+            context['activate_url'] = settings.BASE_URL + \
+                                  '/accounts/confirm-email/' + context['key']
+        if 'password_reset_url' in context:
+            reset_url = context['password_reset_url']
+            split_url = reset_url.split('/')
+            del split_url[0:3]
+            context['password_reset_url'] = settings.BASE_URL + '/' + '/'.join(split_url)
+
+        msg = self.render_mail(template_prefix, email, context)
+        msg.send()

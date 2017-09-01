@@ -337,6 +337,8 @@ class Common(Configuration):
                              environ_prefix=None)
 
 class Local(Common):
+    BASE_URL = 'http://localhost:7000'
+
     """ Local class """
     DEBUG = values.BooleanValue(True)
     TEMPLATE_DEBUG = DEBUG
@@ -369,6 +371,8 @@ class Local(Common):
     ########## Your local stuff: Below this line define 3rd party libary settings
 
 class Qa(Common):
+    BASE_URL = 'https://ocl-qa.openmrs.org'
+
     """ Local class """
     ########### SECRET KEY
     SECRET_KEY = values.SecretValue(environ_prefix="", environ_name="SECRET_KEY")
@@ -393,6 +397,8 @@ class Qa(Common):
 
 
 class Production(Common):
+    BASE_URL = 'https://ocl.openmrs.org'
+
     """ Production class -- the default """
     ########### SECRET KEY
     SECRET_KEY = values.SecretValue(environ_prefix="", environ_name="SECRET_KEY")
@@ -543,6 +549,8 @@ class Production(Common):
 
 
 class Staging(Production):
+    BASE_URL = 'https://ocl-stg.openmrs.org'
+
     ########## INSTALLED_APPS
 
     INSTALLED_APPS = Common.INSTALLED_APPS
