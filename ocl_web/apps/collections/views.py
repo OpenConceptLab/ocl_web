@@ -947,8 +947,7 @@ class CollectionVersionEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
 
         # Submit updated collection version description to the API
         data = {
-            'description':form.cleaned_data.get('description'),
-            'version_external_id':form.cleaned_data.get('version_external_id')
+            'description': form.cleaned_data.get('description')
         }
         api = OclApi(self.request, debug=True)
         result = api.update_resource_version(self.owner_type, self.owner_id, self.collection_id,

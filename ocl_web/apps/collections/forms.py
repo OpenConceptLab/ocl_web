@@ -125,11 +125,6 @@ class CollectionVersionAddForm(forms.Form):
         required=True,
         widget=forms.HiddenInput())
 
-    version_external_id = forms.CharField(
-        label=_('External ID'),
-        required=False,
-        widget=forms.TextInput(attrs={'style':'width:480px;',
-                                      'placeholder': "e.g. UUID from external system"}))
     # released = forms.BooleanField(required=False, label=_('Released'))
 
 class CollectionVersionsEditForm(CollectionVersionAddForm):

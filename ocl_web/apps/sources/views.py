@@ -614,6 +614,8 @@ class SourceVersionsNewView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         """
         Submits the form to the API
         """
+
+        print form.cleaned_data
         self.get_args()
 
         # Submit the new source version
@@ -676,12 +678,9 @@ class SourceVersionsEditView(LoginRequiredMixin, UserOrOrgMixin, FormView):
         self.get_args()
 
         # Submit updated source version description to the API
-
         data = {
-            'description':form.cleaned_data.get('description'),
-            'version_external_id':form.cleaned_data.get('version_external_id')
+            'description':form.cleaned_data.get('description')
         }
-
         api = OclApi(self.request, debug=True)
         result = api.update_resource_version(self.owner_type, self.owner_id, self.source_id,
                                              self.source_version_id, 'sources', data)
