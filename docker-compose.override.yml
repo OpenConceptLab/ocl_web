@@ -3,8 +3,16 @@ services:
   db_web:
     ports:
       - "5432:5432"
+  web_dependencies:
+    image: openconceptlab/oclweb-dependencies:dev
+    build:
+      context: .
+      dockerfile: Dockerfile-dependencies
   web:
     image: openconceptlab/oclweb:dev
+    depends_on:
+      - db_web
+      - web_dependencies
     build:
       context: .
       dockerfile: Dockerfile-dev
