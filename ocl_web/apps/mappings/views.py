@@ -340,8 +340,8 @@ class MappingNewView(LoginRequiredMixin, UserOrOrgMixin, MappingFormBaseView):
     def form_valid(self, form, *args, **kwargs):
         """ Submits the validated form data using the API: new mapping """
         # TODO: move regex validation to form
-        user_concept_format = r'^/users/([a-zA-Z0-9\-\.]+)/sources/([a-zA-Z0-9\-\.]+)/concepts/([a-zA-Z0-9\-\.]+)/$'
-        org_concept_format = r'^/orgs/([a-zA-Z0-9\-]+)/sources/([a-zA-Z0-9\-\.]+)/concepts/([a-zA-Z0-9\-\.]+)/$'
+        user_concept_format = r'^/users/(' + OclConstants.NAMESPACE_PATTERN + ')/sources/(' + OclConstants.NAMESPACE_PATTERN + ')/concepts/(' + OclConstants.CONCEPT_ID_PATTERN + ')/$'
+        org_concept_format = r'^/orgs/(' + OclConstants.ORG_PATTERN + ')/sources/(' + OclConstants.NAMESPACE_PATTERN + ')/concepts/(' + OclConstants.CONCEPT_ID_PATTERN + ')/$'
         # Prepare the data form submission, incl. renaming fields as needed
         mapping_destination = form.cleaned_data.get('is_internal_or_external')
         base_data = {
