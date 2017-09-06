@@ -469,9 +469,6 @@ class OclApi(object):
             data['released'] = base_data['released']
         if 'retired' in base_data:
             data['retired'] = base_data['retired']
-        if 'version_external_id' in base_data:
-            data['version_external_id'] = base_data['version_external_id']
-
         result = self.put(owner_type, owner_id, resource_type, resource_id, version_id, **data)
         return result
 

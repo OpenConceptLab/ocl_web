@@ -123,11 +123,6 @@ class SourceVersionsNewForm(forms.Form):
         required=True,
         widget=forms.HiddenInput())
 
-    version_external_id = forms.CharField(
-        label=_('External ID'),
-        required=False,
-        widget=forms.TextInput(attrs={'style':'width:480px;',
-                                      'placeholder': "e.g. UUID from external system"}))
 
 class SourceVersionsEditForm(SourceVersionsNewForm):
     """ Form to edit a source version """
