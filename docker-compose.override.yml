@@ -18,6 +18,8 @@ services:
       dockerfile: Dockerfile-dev
     volumes:
       - .:/code
+      - /code/node_modules
+      - /code/backups
       - .pycharm_helpers:/root/.pycharm_helpers
     ports:
       #ports for debugging
