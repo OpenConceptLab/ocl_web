@@ -24,7 +24,8 @@
                         <h4>{{ org.name }}</h4>
                         <span class="text-muted small">
                         {% if org.location %}<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;{{ org.location }}&nbsp;&nbsp;&nbsp;{% endif %}
-                        <span class="glyphicon glyphicon-calendar"></span> Created on {{ org.created_on|smart_date }} by {{ org.created_by }}
+                        <span class="glyphicon glyphicon-calendar"></span> Created on {{ org.created_on|smart_date }} by {{ org.created_by }}&nbsp;&nbsp;
+                        <span class="glyphicon glyphicon-calendar"></span> Last updated {{ org.updated_on|smart_date }} by {{ org.updated_by }}
                         </span>
                     </p>
                 </div> <!-- /resource-header-label -->

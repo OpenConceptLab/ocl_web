@@ -16,9 +16,6 @@
 					{% field_label 'Company' org.company %}
 					{% field_label 'Website' org.website url=True %}
 					{% field_label 'Public Access' org.public_access %}
-					<hr />
-					{% field_label 'Updated By' org.updated_by %}
-					{% field_label 'Updated On' org.updated_on|smart_date %}
 					{% if org.extras and org.extras.items %}
 						<hr />
 						{% for k, v in org.extras.items %}
