@@ -163,8 +163,9 @@ var OrganizationPage = function () {
         }.bind(this);
 
         browser.wait(EC.visibilityOf(this.deleteSrcVersionIcon), timeout).then(clickDelete, function () {
+            //probably still processing...
             browser.refresh();
-            clickDelete();
+            browser.wait(EC.visibilityOf(this.deleteSrcVersionIcon, timeout)).then(clickDelete);
         });
     };
 
