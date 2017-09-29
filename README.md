@@ -61,8 +61,8 @@ Python interpreter path: /usr/local/bin/python
 Name: oclweb
 Host: 0.0.0.0
 Port: 7001
-Working directory: C:\Users\Rafal\Workspace\ocl_web\ocl_web 
-Path mappings: C:/Users/Rafal/Workspace/ocl_web/ocl_web=/code/ocl_web
+Working directory: C:\Users\Rafal\Workspace\ocl_web\
+Path mappings: C:/Users/Rafal/Workspace/ocl_web/=/code
 ```
 11. Confirm with OK and debug with the newly created configuration.
 12. Go to http://localhost:7001 to verify it works.
