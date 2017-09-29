@@ -371,7 +371,7 @@ class Local(Common):
     ########## Your local stuff: Below this line define 3rd party libary settings
 
 class Qa(Common):
-    BASE_URL = 'https://ocl-qa.openmrs.org'
+    BASE_URL = 'https://qa.openconceptlab.org'
 
     """ Local class """
     ########### SECRET KEY
@@ -397,7 +397,7 @@ class Qa(Common):
 
 
 class Production(Common):
-    BASE_URL = 'https://ocl.openmrs.org'
+    BASE_URL = 'https://openconceptlab.org'
 
     """ Production class -- the default """
     ########### SECRET KEY
@@ -549,7 +549,7 @@ class Production(Common):
 
 
 class Staging(Production):
-    BASE_URL = 'https://ocl-stg.openmrs.org'
+    BASE_URL = 'https://staging.openconceptlab.org'
 
     ########## INSTALLED_APPS
 
