@@ -41,7 +41,7 @@ docker-compose down -v
 Using PyCharm 2017.2
 
 1. Start the server in development mode.
-2. Import the project into PyCharm by pointing to ocl_web\ocl_web as root directory
+2. Import the project into PyCharm by pointing to ocl_web as root directory
 3. Go to Settings -> Project: ocl_web -> Project Interpreter
 4. Click the cog icon and Add Remote
 5. Choose SSH Credentials and fill in the form as follows:
