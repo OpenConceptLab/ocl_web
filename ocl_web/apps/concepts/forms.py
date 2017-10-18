@@ -101,12 +101,6 @@ class  ConceptNewForm(forms.Form):
         _concept_class_list = [(cl) for cl in _get_concept_class_list()]
         _datatype_list = [(d) for d in _get_datatype_list()]
 
-        #self.fields['concept_class'].choices = [(cl, cl) for cl in _get_concept_class_list()]
-        #self.fields['datatype'].choices = [(d, d) for d in _get_datatype_list()]
-
-        #self.fields['concept_class'].widget = ListTextWidget(data_list=_concept_class_list, name="concept_class_list")
-        #self.fields['datatype'].widget      = ListTextWidget(data_list=_datatype_list,      name="datatype_list")
-
         self.fields['concept_class'].widget = ComboBoxWidget(data_list=_concept_class_list, name="concept_class")
         self.fields['datatype'].widget      = ComboBoxWidget(data_list=_datatype_list,      name="datatype_list")
 
@@ -127,18 +121,7 @@ class  ConceptNewForm(forms.Form):
 
     concept_class = forms.CharField(label=_('Concept Class'), required=True)
 
-    #concept_class = forms.ChoiceField(
-    #    choices=[],
-    #    label=_('Concept Class'),
-    #    required=True)
-
     datatype = forms.CharField(label=_('Datatype'), required=True)
-
-    #datatype = forms.ChoiceField(
-    #    choices=[],
-    #    label=_('Datatype'),
-    #    initial='None',
-    #    required=True)
 
     external_id = forms.CharField(
         label=_('Concept External ID'),
