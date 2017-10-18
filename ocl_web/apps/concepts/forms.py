@@ -15,9 +15,8 @@ def clean_concept_id(self):
     return concept_id
 
 """
-from django import forms
 from django.utils.translation import ugettext as _
-#from django import forms
+from django import forms
 from django.forms.formsets import formset_factory
 
 #from libs.ocl import OclApi
