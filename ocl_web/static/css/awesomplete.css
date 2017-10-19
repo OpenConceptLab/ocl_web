@@ -30,12 +30,6 @@ div.awesomplete {
 	border-bottom-right-radius: 0;
 }
 
-.awesomplete .small {
-	font-size: 85%;
-	height: 30px;
-	padding: 5px 10px;
-}
-
 .awesomplete > ul {
     position: absolute;
     left: 0;
