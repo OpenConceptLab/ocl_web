@@ -25,11 +25,16 @@ div.awesomplete {
 
 .awesomplete .dropdown-input {
 	width: 100%;
-    padding-left: 10px;
+    padding: 6px 12px;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }
 
+.awesomplete .small {
+	font-size: 85%;
+	height: 30px;
+	padding: 5px 10px;
+}
 
 .awesomplete > ul {
     position: absolute;

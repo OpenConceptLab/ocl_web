@@ -18,9 +18,10 @@ class ListTextWidget(forms.TextInput):
 
 class ComboBoxWidget(forms.TextInput):
     def __init__(self, data_list, name, *args, **kwargs):
-        super(ComboBoxWidget, self).__init__(*args, **kwargs)
         self._name = name
         self._list = data_list
+        self._css_class = kwargs.pop('css_class', '')
+        super(ComboBoxWidget, self).__init__()
 
     def render(self, name, value, attrs=None):
         txt_name = "id_%s" % name
@@ -33,10 +34,10 @@ class ComboBoxWidget(forms.TextInput):
             list_count += 1
 
         text_html = super(ComboBoxWidget, self).render(name, value,
-                                                       attrs={"class":"dropdown-input form-control"})
+                                                       attrs={"class":"dropdown-input form-control {0}".format(self._css_class)})
 
-        button_html = '<button id="{0}" class="dropdown-btn form-control" type="button" onClick="Awesomplete.CBO_CLICK({1});">' \
-                      '<span class="caret"></span></button>'.format(btn_name, cbo_name)
+        button_html = '<button id="{0}" class="dropdown-btn form-control {2}" type="button" onClick="Awesomplete.CBO_CLICK({1});">' \
+                      '<span class="caret"></span></button>'.format(btn_name, cbo_name, self._css_class)
 
         script_html = '<script>' \
                       '   var {0} = document.getElementById("{0}"); ' \

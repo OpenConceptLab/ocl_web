@@ -312,7 +312,6 @@ def _get_description_type_list():
     return [] if response.status_code == 404 else [description_type['display_name'] for description_type in response.json()]
 
 
-# TODO(paynejd@gmail.com): Retire this and replace with values stored in OCL
 def _get_map_type_list():
     response = api.get('orgs', 'OCL', 'sources', 'MapTypes', 'concepts', params={'limit': 0})
     return [] if response.status_code == 404 else [description_type['display_name'] for description_type in response.json()]

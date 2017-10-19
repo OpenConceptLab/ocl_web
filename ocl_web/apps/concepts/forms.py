@@ -20,7 +20,8 @@ from django import forms
 from django.forms.formsets import formset_factory
 
 #from libs.ocl import OclApi
-from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list, _get_name_type_list, _get_description_type_list)
+from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list, _get_name_type_list,
+                             _get_description_type_list, _get_map_type_list)
 from apps.core.fields import ListTextWidget, ComboBoxWidget
 from libs.ocl import OclApi
 
@@ -49,7 +50,7 @@ class ConceptNewMappingForm(forms.Form):
         label=_('Map Type'),
         required=True,
         help_text=_('Enter the type of relationship between the concepts'),
-        widget=forms.TextInput(attrs={'placeholder': "e.g. SAME-AS, NARROWER-THAN, BROADER-THAN"}))
+        widget=ComboBoxWidget(data_list=[(t) for t in _get_map_type_list()], name="map_type_list", css_class='input-sm'))
 
     is_internal_or_external = forms.ChoiceField(
         choices=[('Internal', 'Internal'), ('External', 'External')],

@@ -39,16 +39,7 @@
 				</div>
 
 				{% bootstrap_field form.from_concept_url %}
-                <div class="form-group required">
-					{{ form.map_type.errors }}
-					<label class="control-label required" for="map_type">{{ form.map_type.label }}</label>
-                    <select class="form-control" id="map_type" name="map_type">
-                        {% for map_type in map_types %}
-                            <option {% if map_type == form.map_type.value %} selected="selected" {% endif %}>{{ map_type }}</option>
-                        {% endfor %}
-                    </select>
-					<span class="help-block small">{{ form.map_type.help_text }}</span>
-				</div>
+				{% bootstrap_field form.map_type %}
 				{% bootstrap_field form.external_id %}
 				{% bootstrap_field form.is_internal_or_external %}
 

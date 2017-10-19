@@ -97,16 +97,7 @@
 							<div>{% generic_resource_label resource_type='concept' resource_id=concept.id resource_name=concept.display_name resource_retired=concept.retired owner_type=concept.owner_type owner_id=concept.owner source_id=concept.source label_size='small' display_breadcrumb=True %}</div>
 						</div>
 
-						<div class="form-group required">
-							{{ form.map_type.errors }}
-							<label class="control-label required small" for="id_map_type">{{ form.map_type.label }}</label>
-                            <select class="form-control" id="map_type" name="map_type">
-                                {% for map_type in map_types %}
-                                    <option>{{ map_type }}</option>
-                                {% endfor %}
-                            </select>
-							<span class="help-block small" style="margin-top:0;">{{ form.map_type.help_text }}</span>
-						</div>
+						{% bootstrap_field form.map_type form_group_class='form-group small' %}
 
 						<div class="form-group">
 							{{ form.external_id.errors }}
