@@ -337,6 +337,9 @@ _.FILTER_ALL = function (text, input) {
 	return true;
 };
 
+_.SORT_STANDARD = function (a, b) {
+	return a == b? 0 : (a < b? -1 : 1);
+}
 _.SORT_BYLENGTH = function (a, b) {
 	if (a.length !== b.length) {
 		return a.length - b.length;

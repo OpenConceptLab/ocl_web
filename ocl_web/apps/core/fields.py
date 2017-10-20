@@ -21,7 +21,7 @@ class ComboBoxWidget(forms.TextInput):
         self._name = name
         self._list = data_list
         self._css_class = kwargs.pop('css_class', '')
-        super(ComboBoxWidget, self).__init__()
+        super(ComboBoxWidget, self).__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None):
         txt_name = "id_%s" % name
@@ -30,7 +30,10 @@ class ComboBoxWidget(forms.TextInput):
         list_text = ''
         list_count = 0
         for item in self._list:
-            list_text += '"%s",' % item
+            if (isinstance(item, list)):
+                list_text += '["{1}","{0}"],'.format(item[0], item[1])
+            else:
+                list_text += '"{0}",'.format(item)
             list_count += 1
 
         text_html = super(ComboBoxWidget, self).render(name, value,
@@ -52,4 +55,44 @@ class ComboBoxWidget(forms.TextInput):
 
         return '<div>{0}</div>'.format(cbo_html)
 
+class MultipleInputWidget(forms.TextInput):
+    def __init__(self, data_list, name, *args, **kwargs):
+        self._name = name
+        self._list = data_list
+        self._css_class = kwargs.pop('css_class', '')
+        super(MultipleInputWidget, self).__init__(*args, **kwargs)
 
+    def render(self, name, value, attrs=None):
+        list_text = ''
+        list_count = 0
+        for item in self._list:
+            if (isinstance(item, list)):
+                list_text += '["{1}","{0}"],'.format(item[0], item[1])
+            else:
+                list_text += '"{0}",'.format(item)
+            list_count += 1
+        print(list_text)
+        #text_html = '<input data-multiple class="{0}" />'.format(self._css_class)
+        text_html = super(MultipleInputWidget, self).render(name, value,
+                                                       attrs={'data-multiple':True, 'class':'dropdown-input form-control {0}'.format(self._css_class)})
+
+        script_html = \
+            '<script>' \
+            'new Awesomplete("input[data-multiple]", {{' \
+            '	filter: function(text, input) {{' \
+            '		return Awesomplete.FILTER_CONTAINS(text, input.match(/[^,]*$/)[0]);' \
+            '	}},' \
+            '	item: function(text, input) {{' \
+            '		return Awesomplete.ITEM(text, input.match(/[^,]*$/)[0]);' \
+            '	}},' \
+            '	replace: function(text) {{' \
+            '		var before = this.input.value.match(/^.+,\s*|/)[0];' \
+            '		this.input.value = before + text + ", ";' \
+            '	}},' \
+            '   sort: Awesomplete.SORT_STANDARD, ' \
+            '   maxItems: {0}, ' \
+            '   list: [{1}] ' \
+            '}});' \
+            '</script>'.format(str(list_count),list_text)
+
+        return text_html + script_html

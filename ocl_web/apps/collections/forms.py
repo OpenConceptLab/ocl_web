@@ -7,6 +7,7 @@ from django import forms
 from libs.ocl import OclApi
 
 from apps.core.views import _get_collection_type_list, _get_locale_list, _get_custom_validation_schema_list
+from apps.core.fields import ComboBoxWidget, MultipleInputWidget
 
 
 class CollectionCreateForm(forms.Form):
@@ -14,7 +15,6 @@ class CollectionCreateForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(CollectionCreateForm, self).__init__(*args, **kwargs)
-        self.fields['default_locale'].choices = [(l['code'], l['name']) for l in _get_locale_list()]
 
     required_css_class = 'required'
 
@@ -27,47 +27,60 @@ class CollectionCreateForm(forms.Form):
                     '<span id="new_repository_base_url">[OwnerType]/[Owner]/collections/</span>'
                     '<span id="new_repository_id" style>[CollectionCode]</span>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. c80-practice-codes"}))
+
     name = forms.CharField(
         label=_('Collection Name'),
         max_length=128,
         required=True)
+
     full_name = forms.CharField(
         label=_('Collection Full Name'),
         required=True,
         widget=forms.TextInput(
             attrs={'placeholder': "e.g. HL7 FHIR Practice Setting Code Value Set"}))
+
     website = forms.URLField(
         label=_('Website'),
         required=False,
         widget=forms.TextInput(
             attrs={'placeholder': "e.g. https://www.hl7.org/fhir/valueset-c80-practice-codes.html"}))
-    collection_type = forms.ChoiceField(
-        choices=[(v, v) for v in _get_collection_type_list()],
+
+    collection_type = forms.CharField(
         label=_('Collection Type'),
-        required=False)
-    public_access = forms.ChoiceField(
+        required=False,
+        initial=_get_collection_type_list()[0],
+        widget=ComboBoxWidget(data_list=[v for v in _get_collection_type_list()], name="collection_type_list"))
+
+    public_access = forms.CharField(
         label=_('Public Access'),
         required=False,
         initial='View',
-        choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
-    default_locale = forms.ChoiceField(
+        widget=ComboBoxWidget(data_list=[['View', 'View (default)'], ['Edit', 'Edit'], ['None', 'None']], name="public_access_list"))
+
+    default_locale = forms.CharField(
         label=_('Default Locale'),
-        choices=[],
-        required=True)
+        required=True,
+        widget=ComboBoxWidget(data_list=[[l['code'], l['name']] for l in _get_locale_list()], name="default_locale_list")
+    )
+
     supported_locales = forms.CharField(
         max_length=30,
         label=_('Supported Locales'),
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': "e.g. en,fr,es"}))
-    custom_validation_schema = forms.ChoiceField(
-        label=('Custom Validation Schema'),
-        choices=[(v,v) for v in _get_custom_validation_schema_list()],
-        required=False
-    )
+        widget=MultipleInputWidget(data_list=[l['code'] for l in _get_locale_list()], name="supported_locale_list"))
+
+
+    custom_validation_schema = forms.CharField(
+        label=_('Custom Validation Schema'),
+        required=False,
+        initial=_get_custom_validation_schema_list()[0],
+        widget=ComboBoxWidget(data_list=[(v) for v in _get_custom_validation_schema_list()], name="custom_validation_list"))
+
     description = forms.CharField(
         max_length=512,
         label=_('Description'),
         required=False)
+
     external_id = forms.CharField(
         label=_('External ID'),
         required=False,
