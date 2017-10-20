@@ -67,7 +67,7 @@ class CollectionCreateForm(forms.Form):
         max_length=30,
         label=_('Supported Locales'),
         required=True,
-        widget=MultipleInputWidget(data_list=[l['code'] for l in _get_locale_list()], name="supported_locale_list"))
+        widget=MultipleInputWidget(data_list=[l['name'] for l in _get_locale_list()], name="supported_locale_list"))
 
 
     custom_validation_schema = forms.CharField(

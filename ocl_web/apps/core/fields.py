@@ -71,10 +71,9 @@ class MultipleInputWidget(forms.TextInput):
             else:
                 list_text += '"{0}",'.format(item)
             list_count += 1
-        print(list_text)
-        #text_html = '<input data-multiple class="{0}" />'.format(self._css_class)
+
         text_html = super(MultipleInputWidget, self).render(name, value,
-                                                       attrs={'data-multiple':True, 'class':'dropdown-input form-control {0}'.format(self._css_class)})
+                                                       attrs={'data-multiple':True, 'class':'form-control {0}'.format(self._css_class)})
 
         script_html = \
             '<script>' \
@@ -86,10 +85,15 @@ class MultipleInputWidget(forms.TextInput):
             '		return Awesomplete.ITEM(text, input.match(/[^,]*$/)[0]);' \
             '	}},' \
             '	replace: function(text) {{' \
-            '		var before = this.input.value.match(/^.+,\s*|/)[0];' \
-            '		this.input.value = before + text + ", ";' \
+            '		var before = this.input.value.match(/^.+,|/)[0];' \
+            '       var code = text.match(/\[([a-z]+)\]/)[1];' \
+            '       if (before.length > 0 && before.substr(-1) != ",") {{' \
+            '           code = ", " + code;' \
+            '       }}' \
+            '		this.input.value = before + code;' \
             '	}},' \
             '   sort: Awesomplete.SORT_STANDARD, ' \
+            '   minChars: 1,' \
             '   maxItems: {0}, ' \
             '   list: [{1}] ' \
             '}});' \
