@@ -1058,16 +1058,22 @@ app.directive('conceptNameSynonym', function () {
         '<label class="control-label col-md-12">Names & Synonyms</label>' +
         '<div id="names-and-synonyms" class="form-group" ng-repeat="name in names">' +
         '<span id="id-delete-name" class="delete-name-button glyphicon glyphicon-trash pull-right" ng-click="removeName($index)"></span>' +
+
         '<div class="form-group required col-md-2">' +
         '<label class="control-label">Locale</label>' +
-        '<select class="name-locale form-control" ng-model="name.locale" ng-options="l.code as l.name for l in locales"' +
+        '<input class="awesomplete name-locale form-control" ng-model="name.locale" list="locale-list"' +
         'required="required" title="Choose the locale for the initial name and description">' +
-        '</select>' +
+        '<datalist id="locale-list">' +
+        '<option ng-repeat="l in locales" value="{{l.code}}">{{l.name}}</option>' +
+        '</datalist>'+
         '</div>' +
 
         '<div class="form-group required col-md-3">' +
         '<label class="control-label">Type</label>' +
-        '<select class="name-type form-control" required="required" ng-model="name.name_type" ng-options="t as t for t in types"></select>' +
+        '<input class="name-type form-control" required="required" ng-model="name.name_type" list="type-list">' +
+        '<datalist id="type-list">' +
+        '<option ng-repeat="t in types">{{t}}</option>' +
+        '</datalist>'+
         '</div>' +
 
         '<div class="form-group required col-md-3">' +
@@ -1132,16 +1138,22 @@ app.directive('conceptDescription', function () {
         '<label class="control-label col-md-12">Description</label>' +
         '<div id="descriptions" class="form-group" ng-repeat="description in descriptions">' +
         '<span id="id-delete-description" class="delete-description-button glyphicon glyphicon-trash pull-right" ng-click="removeDescription($index)"></span>' +
-        '<div class="form-group col-md-2">' +
+
+        '<div class="form-group required col-md-2">' +
         '<label class="control-label">Locale</label>' +
-        '<select class="form-control" ng-model="description.locale" ng-options="l.code as l.name for l in locales"' +
-        'title="Choose the locale for the initial name and description">' +
-        '</select>' +
+        '<input class="name-locale form-control" ng-model="description.locale" list="locale-list"' +
+        'required="required" title="Choose the locale for the initial name and description">' +
+        '<datalist id="locale-list">' +
+        '<option ng-repeat="l in locales" value="{{l.code}}">{{l.name}}</option>' +
+        '</datalist>'+
         '</div>' +
 
-        '<div class="form-group col-md-3">' +
+        '<div class="form-group required col-md-3">' +
         '<label class="control-label">Type</label>' +
-        '<select class="form-control" ng-model="description.description_type" ng-options="t as t for t in types"></select>' +
+        '<input class="name-type form-control" required="required" ng-model="description.description_type" list="type-list">' +
+        '<datalist id="type-list">' +
+        '<option ng-repeat="t in types">{{t}}</option>' +
+        '</datalist>'+
         '</div>' +
 
         '<div class="form-group col-md-3">' +
