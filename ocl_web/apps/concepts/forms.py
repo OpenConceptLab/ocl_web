@@ -20,7 +20,9 @@ from django import forms
 from django.forms.formsets import formset_factory
 
 #from libs.ocl import OclApi
-from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list, _get_name_type_list, _get_description_type_list)
+from apps.core.views import (_get_locale_list, _get_concept_class_list, _get_datatype_list, _get_name_type_list,
+                             _get_description_type_list, _get_map_type_list)
+from apps.core.fields import ListTextWidget, ComboBoxWidget
 from libs.ocl import OclApi
 
 
@@ -48,7 +50,7 @@ class ConceptNewMappingForm(forms.Form):
         label=_('Map Type'),
         required=True,
         help_text=_('Enter the type of relationship between the concepts'),
-        widget=forms.TextInput(attrs={'placeholder': "e.g. SAME-AS, NARROWER-THAN, BROADER-THAN"}))
+        widget=ComboBoxWidget(data_list=[(t) for t in _get_map_type_list()], name="map_type_list", css_class='input-sm'))
 
     is_internal_or_external = forms.ChoiceField(
         choices=[('Internal', 'Internal'), ('External', 'External')],
@@ -97,9 +99,11 @@ class  ConceptNewForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(ConceptNewForm, self).__init__(*args, **kwargs)
+        _concept_class_list = [(cl) for cl in _get_concept_class_list()]
+        _datatype_list = [(d) for d in _get_datatype_list()]
 
-        self.fields['concept_class'].choices = [(cl, cl) for cl in _get_concept_class_list()]
-        self.fields['datatype'].choices = [(d, d) for d in _get_datatype_list()]
+        self.fields['concept_class'].widget = ComboBoxWidget(data_list=_concept_class_list, name="concept_class")
+        self.fields['datatype'].widget      = ComboBoxWidget(data_list=_datatype_list,      name="datatype_list")
 
     required_css_class = 'required'
 
@@ -116,16 +120,9 @@ class  ConceptNewForm(forms.Form):
                     '[concept-id]</span>/</small>'),
         widget=forms.TextInput(attrs={'placeholder': "e.g. A15.0"}))
 
-    concept_class = forms.ChoiceField(
-        choices=[],
-        label=_('Concept Class'),
-        required=True)
+    concept_class = forms.CharField(label=_('Concept Class'), required=True)
 
-    datatype = forms.ChoiceField(
-        choices=[],
-        label=_('Datatype'),
-        initial='None',
-        required=True)
+    datatype = forms.CharField(label=_('Datatype'), required=True)
 
     external_id = forms.CharField(
         label=_('Concept External ID'),

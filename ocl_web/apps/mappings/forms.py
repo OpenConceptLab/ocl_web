@@ -4,7 +4,8 @@ Forms for mappings.
 """
 from django.utils.translation import ugettext as _
 from django import forms
-
+from apps.core.views import _get_map_type_list
+from apps.core.fields import ComboBoxWidget
 
 class MappingRetireForm(forms.Form):
     """
@@ -35,12 +36,11 @@ class MappingNewForm(forms.Form):
         widget=forms.TextInput(
             attrs={'placeholder':"e.g. /orgs/MyOrg/sources/MySource/concepts/1234/"}))
 
-    # TODO: Populate map_type dynamically
     map_type = forms.CharField(
         label=_('Map Type'),
         required=True,
         help_text=_('Enter the type of relationship between the concepts'),
-        widget=forms.TextInput(attrs={'placeholder':"e.g. SAME-AS, NARROWER-THAN, BROADER-THAN"}))
+        widget=ComboBoxWidget(data_list=[(t) for t in _get_map_type_list()], name="map_type_list"))
 
     external_id = forms.CharField(
         label=_('Mapping External ID'),
