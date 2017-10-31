@@ -46,11 +46,18 @@ class ConceptNewMappingForm(forms.Form):
     """
     required_css_class = 'required'
 
+    def __init__(self, *args, **kwargs):
+        super(ConceptNewMappingForm, self).__init__(*args, **kwargs)
+        # create widgets here to delay calls to api until initialization of the form
+        self.fields['map_type'].widget = ComboBoxWidget(data_list=[(t) for t in _get_map_type_list()], name="map_type_list", css_class='input-sm')
+
+
     map_type = forms.CharField(
         label=_('Map Type'),
         required=True,
         help_text=_('Enter the type of relationship between the concepts'),
-        widget=ComboBoxWidget(data_list=[(t) for t in _get_map_type_list()], name="map_type_list", css_class='input-sm'))
+        # widget defined in __init__
+    )
 
     is_internal_or_external = forms.ChoiceField(
         choices=[('Internal', 'Internal'), ('External', 'External')],

@@ -27,6 +27,11 @@ class MappingNewForm(forms.Form):
     """
     required_css_class = 'required'
 
+    def __init__(self, *args, **kwargs):
+        super(MappingNewForm, self).__init__(*args, **kwargs)
+        # create widgets here to delay calls to api until initialization of the form
+        self.fields['map_type'].widget = ComboBoxWidget(data_list=[(t) for t in _get_map_type_list()], name="map_type_list")
+
     # TODO(paynejd@gmail.com): Use dynamic resource selector for from_concept
     from_concept_url = forms.CharField(
         label=_('From Concept URL'),
@@ -40,7 +45,8 @@ class MappingNewForm(forms.Form):
         label=_('Map Type'),
         required=True,
         help_text=_('Enter the type of relationship between the concepts'),
-        widget=ComboBoxWidget(data_list=[(t) for t in _get_map_type_list()], name="map_type_list"))
+        # widget defined in __init__
+    )
 
     external_id = forms.CharField(
         label=_('Mapping External ID'),

@@ -16,6 +16,12 @@ class SourceNewForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(SourceNewForm, self).__init__(*args, **kwargs)
+        # create widgets here to delay calls to api until initialization of the form
+        self.fields['source_type'].widget = ComboBoxWidget(data_list=[(v) for v in _get_source_type_list()], name="source_type_list")
+        self.fields['default_locale'].widget = ComboBoxWidget(data_list=[[l['code'], l['name']] for l in _get_locale_list()], name="default_locale_list")
+        self.fields['supported_locales'].widget = MultipleInputWidget(data_list=[l['name'] for l in _get_locale_list()], name="supported_locale_list")
+        self.fields['custom_validation_schema'].widget = ComboBoxWidget(data_list=[(v) for v in _get_custom_validation_schema_list()], name="custom_validation_list")
+
 
     required_css_class = 'required'
 
@@ -44,7 +50,8 @@ class SourceNewForm(forms.Form):
     source_type = forms.CharField(
         label=_('Source Type'),
         required=False,
-        widget=ComboBoxWidget(data_list=[(v) for v in _get_source_type_list()], name="source_type_list"))
+        # widget defined in __init__
+    )
 
     public_access = forms.CharField(
         label=_('Public Access'),
@@ -55,20 +62,22 @@ class SourceNewForm(forms.Form):
     default_locale = forms.CharField(
         label=_('Default Locale'),
         required=True,
-        widget=ComboBoxWidget(data_list=[[l['code'], l['name']] for l in _get_locale_list()], name="default_locale_list")
+        #widget defined in __init__
     )
 
     supported_locales = forms.CharField(
         max_length=30,
         label=_('Supported Locales'),
         required=True,
-        widget=MultipleInputWidget(data_list=[l['name'] for l in _get_locale_list()], name="supported_locale_list"))
+        #widget defined in __init__
+    )
 
     custom_validation_schema = forms.CharField(
         label=_('Custom Validation Schema'),
         required=False,
         initial=_get_custom_validation_schema_list()[0],
-        widget=ComboBoxWidget(data_list=[(v) for v in _get_custom_validation_schema_list()], name="custom_validation_list"))
+        # widget defined in __init__
+    )
 
     description = forms.CharField(
         max_length=512,
