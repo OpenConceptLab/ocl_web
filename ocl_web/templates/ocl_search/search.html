@@ -196,10 +196,7 @@
                                     {% search_result_checkbox index=forloop.counter url=result_url %}
                                 {% endif %}
 
-                                <div class="hidden-xs col-sm-1 search-result-col-icon">
-                                    <span class="glyphicon glyphicon-tag search-result-icon"></span>
-                                </div>
-                                <div class="col-xs-11 col-sm-10 search-result-col-content">
+                                <div class="col-xs-11 search-result-col-content">
                                     <div class="label-container"  id="label-container-{{ forloop.counter }}">
                                         {% generic_resource_label resource_type='concept' resource_id=result.id resource_name=result.display_name resource_url=result_url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
                                     </div>
@@ -226,10 +223,7 @@
                                     {% search_result_checkbox index=forloop.counter url=result.versioned_object_url %}
                                 {% endif %}
 
-                                <!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
-                                <div class="hidden-xs col-sm-1 search-result-col-icon"><span
-                                        class="glyphicon glyphicon-link search-result-icon"></span></div>
-                                <div class="col-xs-12 col-sm-10 search-result-col-content">
+                                <div class="col-xs-11 search-result-col-content">
                                     <div class="label-container">
                                         <!-- map_type label -->
                                         {% mapping_label result label_size='small' %}
@@ -263,10 +257,7 @@
                                     {% url 'source-mappings' user=result.owner source=result.short_code as result_mappings_url %}
                                     {% url 'source-versions' user=result.owner source=result.short_code as result_versions_url %}
                                 {% endif %}
-                                <!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
-                                <div class="hidden-xs col-sm-1 search-result-col-icon"><span
-                                        class="glyphicon glyphicon-th-list search-result-icon"></span></div>
-                                <div class="col-xs-12 col-sm-11 search-result-col-content">
+                                <div class="col-xs-11 search-result-col-content">
                                     <div class="hidden-xs pull-right small text-muted" style="padding-top:12px;">
                                         <a href="{{ result_concepts_url }}" title="Active concepts in source"><span
                                                 class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}
@@ -308,10 +299,7 @@
                                     {% url 'collection-mappings' user=result.owner collection=result.short_code as result_mappings_url %}
                                     {% url 'collection-versions' user=result.owner collection=result.short_code as result_versions_url %}
                                 {% endif %}
-                                <!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
-                                <div class="hidden-xs col-sm-1 search-result-col-icon"><span
-                                        class="glyphicon glyphicon-tags search-result-icon"></span></div>
-                                <div class="col-xs-12 col-sm-11 search-result-col-content">
+                                <div class="col-xs-11 search-result-col-content">
                                     <div class="hidden-xs pull-right small text-muted" style="padding-top:12px;">
                                         <a href="{{ result_concepts_url }}" title="Active concepts in collection"><span
                                                 class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ result.active_concepts|intcomma }}
@@ -343,10 +331,7 @@
 
                             {% elif search_type == 'orgs' %}
                                 {% url 'org-home' org=result.id as result_url %}
-                                <!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
-                                <div class="hidden-xs col-sm-1 search-result-col-icon"><span
-                                        class="glyphicon glyphicon-home search-result-icon"></span></div>
-                                <div class="col-xs-12 col-sm-11 search-result-col-content">
+                                <div class="col-xs-11 search-result-col-content">
                                     <div class="hidden-xs pull-right small text-muted" style="padding-top:12px;">
                                         <a href="{{ result_url }}#members" title="Members in organization"><span
                                                 class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ result.members|intcomma }}
@@ -381,10 +366,7 @@
 
                             {% elif search_type == 'users' %}
                                 {% url 'users:detail' result.username as result_url %}
-                                <!--div class="col-md-1 search-result-col-checkbox"><input type="checkbox" /></div-->
-                                <div class="hidden-xs col-sm-1 search-result-col-icon"><span
-                                        class="glyphicon glyphicon-user search-result-icon"></span></div>
-                                <div class="col-xs-12 col-sm-11 search-result-col-content">
+                                <div class="col-xs-11 search-result-col-content">
                                     <div class="hidden-xs pull-right small text-muted" style="padding-top:12px;">
                                         <a href="{{ result_url }}?tab=Organizations"
                                            title="Organization membership"><span
