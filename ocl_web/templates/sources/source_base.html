@@ -29,9 +29,14 @@
 						{% endif_can_change source %}
             {% endif %}
 					</div>
+					<h4>{{ source.full_name }}</h4>
 					<p>
 						<em>Source Type:</em> {{ source.source_type }}<br />
-						<span class="text-muted small"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last Updated ({{ source.updated_on|smart_datetime }})</span>
+						<span class="text-muted small">
+							<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Created on {{ source.created_on|smart_date }} by {{ source.created_by }}&nbsp;&nbsp;&nbsp;&nbsp;
+							<span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Last updated {{ source.updated_on|smart_date }} by  by {{ source.updated_by }}
+							{% if source.external_id %}&nbsp;&nbsp;<span class="glyphicon glyphicon-circle-arrow-right"></span> External ID: {{ source.external_id }}{% endif %}
+						</span>
 						<span class="resource-privacy">{% if source.public_access == 'View' or org.public_access = 'Edit' %}public{% else %}private{% endif %}</span>
                 	</p>
 				</div> <!-- /resource-header-label -->
