@@ -22,7 +22,7 @@ class OclApi(object):
     :logging: This class outputs debug level information to the "oclapi" logger.
     """
 
-    logger = logging.getLogger('oclapi')
+    logger = logging.getLogger('oclapi.request')
 
 
     def __init__(self, request=None, debug=False, admin=False, facets=False):

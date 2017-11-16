@@ -258,70 +258,73 @@ class Common(Configuration):
     ########## END SLUGLIFIER
 
     ########## LOGGING CONFIGURATION
-    # See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
-    # A sample logging configuration. The only tangible logging
-    # performed by this configuration is to send an email to
-    # the site admins on every HTTP 500 error when DEBUG=False.
-    # See http://docs.djangoproject.com/en/dev/topics/logging for
-    # more details on how to customize your logging configuration.
+    def ignore_404_and_401_errors(record):
+        if ' 404' in record.message or ' 401' in record.message:
+            return False
+        return True
+
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
         'filters': {
             'require_debug_false': {
                 '()': 'django.utils.log.RequireDebugFalse'
+            },
+            'ignore_404_errors': {
+                '()': 'django.utils.log.CallbackFilter',
+                'callback': ignore_404_and_401_errors
             }
         },
 
-
         'formatters': {
             'normal': {
-                'format': "[%(asctime)s] %(levelname)-8s: %(message)s",
+                'format': "%(levelname)s %(asctime)s [%(module)s %(filename)s:%(lineno)s %(funcName)s()] %(message)s",
                 'datefmt': "%Y/%m/%d %H:%M:%S"
             },
         },
 
         'handlers': {
+            'sentry': {
+                'level': 'ERROR',
+                'filters': ['ignore_404_errors', 'require_debug_false'],
+                'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+                'tags': {'custom-tag': 'x'},
+            },
             'mail_admins': {
                 'level': 'ERROR',
                 'filters': ['require_debug_false'],
                 'class': 'django.utils.log.AdminEmailHandler'
             },
-            'null': {
-                'class': 'django.utils.log.NullHandler',
-                },
             'console': {
+                'level': 'DEBUG',
                 'class': 'logging.StreamHandler',
                 'formatter': 'normal',
-                },
-            'debug_file': {
-                'level': 'DEBUG',
-                'class': 'logging.FileHandler',
-                'filename': os.path.join(BASE_DIR, 'logs/debug.log'),
-                'formatter': 'normal',
-                },
+            },
             'logfile': {
-                'level': 'INFO',
+                'level': 'DEBUG',
                 'class': 'logging.handlers.TimedRotatingFileHandler',
                 'when': 'midnight',
-                'filename': os.path.join(BASE_DIR, 'logs/app.log'),
+                'filename': os.path.join(BASE_DIR, 'oclweb.log'),
                 'formatter': 'normal',
             },
         },
 
         'loggers': {
             'django.request': {
-                'handlers': ['mail_admins'],
-                'level': 'ERROR',
-                'propagate': True,
+                'handlers': ['mail_admins', 'console', 'logfile', 'sentry'],
+                'level': 'DEBUG',
+            },
+            'oclapi.request': {
+                'handlers': ['console', 'logfile', 'sentry'],
+                'level': 'INFO',
             },
             'oclapi': {
-                'handlers': ['debug_file'],
+                'handlers': ['console', 'logfile', 'sentry'],
                 'level': 'DEBUG',
             },
-            'oclweb': {
-                'handlers': ['console', 'logfile'],
-                'level': 'DEBUG',
+            '': {
+                'handlers': ['console', 'logfile', 'sentry'],
+                'level': 'INFO',
             },
         }
     }
@@ -378,6 +381,11 @@ class Qa(Common):
     SECRET_KEY = values.SecretValue(environ_prefix="", environ_name="SECRET_KEY")
     ########## END SECRET KEY
 
+    # used to push logs to sentry.io/openconceptlab
+    RAVEN_CONFIG = {
+        'dsn': os.environ.get('SENTRY_DSN_KEY', ''),
+    }
+
     ########## INSTALLED_APPS
     INSTALLED_APPS = Common.INSTALLED_APPS
     INSTALLED_APPS += ('django_extensions',)
@@ -395,7 +403,6 @@ class Qa(Common):
     }
     ########## end django-debug-toolbar
 
-
 class Production(Common):
     BASE_URL = 'https://openconceptlab.org'
 
@@ -403,6 +410,11 @@ class Production(Common):
     ########### SECRET KEY
     SECRET_KEY = values.SecretValue(environ_prefix="", environ_name="SECRET_KEY")
     ########## END SECRET KEY
+
+    # used to push logs to sentry.io/openconceptlab
+    RAVEN_CONFIG = {
+        'dsn': os.environ.get('SENTRY_DSN_KEY', ''),
+    }
 
     ########## INSTALLED_APPS
     INSTALLED_APPS = Common.INSTALLED_APPS
@@ -482,70 +494,6 @@ class Production(Common):
     # memcacheify is painful to install on windows.
 #    CACHES = values.CacheURLValue(default="memcached://127.0.0.1:11211")
     ########## END CACHING
-
-    ########## Your production stuff: Below this line define 3rd party libary settings
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'filters': {
-            'require_debug_false': {
-                '()': 'django.utils.log.RequireDebugFalse'
-            }
-        },
-
-
-        'formatters': {
-            'normal': {
-                'format': "[%(asctime)s] %(levelname)-8s: %(message)s",
-                'datefmt': "%Y/%m/%d %H:%M:%S"
-            },
-        },
-
-        'handlers': {
-            'mail_admins': {
-                'level': 'ERROR',
-                'filters': ['require_debug_false'],
-                'class': 'django.utils.log.AdminEmailHandler'
-            },
-            'null': {
-                'class': 'django.utils.log.NullHandler',
-                },
-            'console': {
-                'class': 'logging.StreamHandler',
-                'formatter': 'normal',
-                },
-            'debug_file': {
-                'level': 'DEBUG',
-                'class': 'logging.handlers.TimedRotatingFileHandler',
-                'filename': os.path.join(BASE_DIR, 'logs/debug.log'),
-                'formatter': 'normal',
-                },
-            'logfile': {
-                'level': 'INFO',
-                'class': 'logging.handlers.TimedRotatingFileHandler',
-                'when': 'midnight',
-                'filename': os.path.join(BASE_DIR, 'logs/web_app.log'),
-                'formatter': 'normal',
-            },
-        },
-
-        'loggers': {
-            'django.request': {
-                'handlers': ['mail_admins'],
-                'level': 'ERROR',
-                'propagate': True,
-            },
-            'oclapi': {
-                'handlers': ['debug_file'],
-                'level': 'DEBUG',
-            },
-            'oclweb': {
-                'handlers': ['console', 'logfile'],
-                'level': 'DEBUG',
-            },
-        }
-    }
-    ########## END LOGGING CONFIGURATION
 
 
 class Staging(Production):
