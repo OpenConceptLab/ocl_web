@@ -20,8 +20,6 @@ class SourceNewForm(forms.Form):
         self.fields['source_type'].widget = ComboBoxWidget(data_list=[(v) for v in _get_source_type_list()], name="source_type_list")
         self.fields['default_locale'].widget = ComboBoxWidget(data_list=[[l['code'], l['name']] for l in _get_locale_list()], name="default_locale_list")
         self.fields['supported_locales'].widget = MultipleInputWidget(data_list=[l['name'] for l in _get_locale_list()], name="supported_locale_list")
-        self.fields['custom_validation_schema'].widget = ComboBoxWidget(data_list=[(v) for v in _get_custom_validation_schema_list()], name="custom_validation_list")
-
 
     required_css_class = 'required'
 
@@ -53,11 +51,11 @@ class SourceNewForm(forms.Form):
         # widget defined in __init__
     )
 
-    public_access = forms.CharField(
+    public_access = forms.ChoiceField(
         label=_('Public Access'),
         required=False,
         initial='View',
-        widget=ComboBoxWidget(data_list=[['View', 'View (default)'], ['Edit', 'Edit'], ['None', 'None']], name="public_access_list"))
+        choices=(('View', 'View (default)'), ('Edit', 'Edit'), ('None', 'None')))
 
     default_locale = forms.CharField(
         label=_('Default Locale'),
@@ -72,11 +70,10 @@ class SourceNewForm(forms.Form):
         #widget defined in __init__
     )
 
-    custom_validation_schema = forms.CharField(
-        label=_('Custom Validation Schema'),
-        required=False,
-        initial=_get_custom_validation_schema_list()[0],
-        # widget defined in __init__
+    custom_validation_schema = forms.ChoiceField(
+        label=('Custom Validation Schema'),
+        choices=[(v,v) for v in _get_custom_validation_schema_list()],
+        required=False
     )
 
     description = forms.CharField(
