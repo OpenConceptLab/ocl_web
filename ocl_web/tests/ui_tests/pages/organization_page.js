@@ -28,6 +28,7 @@ var OrganizationPage = function () {
     this.createNewCollection = element(by.linkText(' New Collection'));
     this.collShortCode = $('#id_short_code');
     this.fullName = $('#id_full_name');
+    this.defaultLocale = $('#id_default_locale');
     this.supportedLocale = $('#id_supported_locales');
     this.addOrgCollectionButton = element(by.buttonText('Add'));
 
@@ -112,6 +113,7 @@ var OrganizationPage = function () {
         this.createNewOrgSource.click();
         this.shortCode.sendKeys(src_shortCode);
         this.fullName.sendKeys(full_name);
+        this.defaultLocale.sendKeys('en');
         this.supportedLocale.sendKeys(locale);
         this.createSourceButton.click();
     };
