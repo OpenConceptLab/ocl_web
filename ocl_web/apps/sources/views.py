@@ -524,13 +524,6 @@ class SourceVersionsView(UserOrOrgMixin, SourceReadBaseView):
         search_results_paginator = Paginator(range(searcher.num_found), searcher.num_per_page)
         search_results_current_page = search_results_paginator.page(searcher.current_page)
 
-        # Set "is_processing" attribute if "_ocl_processing" is true, because Django
-        # does not support attributes that begin with underscore
-        # TODO(paynejd@gmail.com): Rename _ocl_processing in the API
-        for source_version in searcher.search_results:
-            if '_ocl_processing' in source_version and source_version['_ocl_processing']:
-                source_version['is_processing'] = 'True'
-
         # Set the context
         context['kwargs'] = self.kwargs
         context['current_page'] = search_results_current_page
