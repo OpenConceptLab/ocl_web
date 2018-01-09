@@ -15,6 +15,8 @@ var ConceptPage = function () {
     this.newConceptLink = element(by.id('id-new-concept'));
     this.conceptId = $('#id_concept_id');
     this.addNameSynonymLink = $('#add-name-synonym');
+    this.conceptClass = $('#id_concept_class');
+    this.conceptDatatype = $('#id_datatype');
 
     this.parentSourceLink = element(by.css(".resource-label.source"));
 
@@ -90,6 +92,8 @@ var ConceptPage = function () {
         this.conceptsLink.click();
         this.newConceptLink.click();
         this.setConceptId(this.getRandomId());
+        this.conceptClass.sendKeys('Misc');
+        this.conceptDatatype.sendKeys('None');
     };
 
     this.setConceptId = function (id) {
@@ -127,14 +131,14 @@ var ConceptPage = function () {
     };
 
     this.setNameType = function (item, option) {
-        item.element(by.model('name.name_type')).element(by.cssContainingText("option", option)).click();
+        item.element(by.model('name.name_type')).sendKeys(option);
     };
 
     this.setNameLocale = function (item, option) {
         if (option === undefined) {
-            option = "English [en]"
+            option = "en"
         }
-        item.element(by.model('name.locale')).element(by.cssContainingText("option", option)).click();
+        item.element(by.model('name.locale')).sendKeys(option);
     };
 
     this.setName = function (item, nameText, nameType, localePreferred, nameLocale) {
@@ -155,7 +159,7 @@ var ConceptPage = function () {
     this.createConceptWithFullySpecifiedName = function (id, name) {
         this.prepareToCreateConcept();
         this.setConceptId(id);
-        this.setName(this.getNamesAndSynonyms().first(), name, "Fully Specified", true, "English [en]");
+        this.setName(this.getNamesAndSynonyms().first(), name, "Fully Specified", true, "en");
         this.fillDescriptionField();
         this.createConcept();
     };

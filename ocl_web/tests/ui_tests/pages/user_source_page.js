@@ -8,6 +8,7 @@ var UserSourcePage = function() {
     this.newUserSrclink = element(by.id('new-user-source'));
     this.shortCode = $('#id_short_name');
     this.srcFullName = $('#id_full_name');
+    this.defaultLocale = $('#id_default_locale');
     this.supportedLocale = $('#id_supported_locales');
     this.customValidationSchema = $('#id_custom_validation_schema');
     this.createUsrSourceButton = element(by.buttonText('Create Source'));
@@ -43,8 +44,14 @@ var UserSourcePage = function() {
        this.supportedLocale.sendKeys(locale)
     };
 
+    this.setDefaultLocale = function (locale) {
+       this.defaultLocale.sendKeys(locale)
+    };
+
     this.setCustomValidationSchema = function (custom_validation_schema) {
-       this.customValidationSchema.sendKeys(custom_validation_schema)
+        if (typeof custom_validation_schema !== 'undefined') {
+            this.customValidationSchema.element(by.cssContainingText("option", custom_validation_schema)).click();
+        }
     };
 
     this.clickCreateUsrSrcButton = function () {
@@ -55,6 +62,7 @@ var UserSourcePage = function() {
         this.clickNewUsrSrcLink();
         this.setShortCode(code);
         this.setSrcFullName(full_name);
+        this.setDefaultLocale('en');
         this.setSupportedLocale(locale);
         this.setCustomValidationSchema(custom_validation_schema);
         this.clickCreateUsrSrcButton();

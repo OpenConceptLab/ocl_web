@@ -153,7 +153,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setLocalePreferred(false)
                     .setNameType('Fully Specified')
-                    .setNameLocale('English [en')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 

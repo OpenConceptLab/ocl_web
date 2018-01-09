@@ -7,6 +7,7 @@ var CollectionsPage = function() {
     this.shortCode = $('#id_short_code');
     this.collName = $('#id_name');
     this.fullName = $('#id_full_name');
+    this.defaultLocale = $('#id_default_locale');
     this.supportedLocale = $('#id_supported_locales');
     this.customValidationSchema = $('#id_custom_validation_schema');
     this.addCollectionButton = element(by.buttonText('Add'));
@@ -43,8 +44,12 @@ var CollectionsPage = function() {
         this.fullName.sendKeys(full_name);
     };
 
-    this.setSupportedLocale = function (locale) {
+    this.setDefaultLocale = function (locale) {
         this.supportedLocale.sendKeys(locale)
+    };
+
+    this.setSupportedLocale = function (locale) {
+        this.defaultLocale.sendKeys(locale)
     };
 
     this.setCustomValidationSchema = function (custom_validation_schema) {
@@ -88,6 +93,7 @@ var CollectionsPage = function() {
         this.setShortCode(short_code);
         this.setCollName(name);
         this.setFullName(full_name);
+        this.setDefaultLocale('en');
         this.setSupportedLocale(locale);
         this.clickAddCollection();
         this.setCustomValidationSchema(custom_validation_schema);

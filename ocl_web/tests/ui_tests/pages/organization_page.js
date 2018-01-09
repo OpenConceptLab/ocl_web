@@ -68,6 +68,8 @@ var OrganizationPage = function () {
     this.newConceptLink = element(by.linkText(' New Concept'));
     this.conceptId = $('#id_concept_id');
     this.createConceptButton = element(by.buttonText('Create Concept'));
+    this.conceptClass = $('#id_concept_class');
+    this.conceptDatatype = $('#id_datatype');
     this.select_name_locale = element(by.model('name.locale'));
     this.select_desc_locale = element(by.model('description.locale'));
     this.localePreferred = element(by.css('.name-locale-preferred'));
@@ -86,6 +88,13 @@ var OrganizationPage = function () {
     this.toConcept = $('#id_internal_to_concept_url');
     this.createMappingButton = element(by.buttonText('Create Mapping'));
 
+    this.setCustomValidationSchema = function (custom_validation_schema) {
+        if (typeof custom_validation_schema !== 'undefined') {
+            this.customValidationSchema.element(by.cssContainingText("option", custom_validation_schema)).click();
+        }
+    };
+
+
     this.createNewOrg = function (org_ShortCode, org_name, website, company, loc) {
         this.orgTab.click();
         this.createNewOrgLink.click();
@@ -103,7 +112,8 @@ var OrganizationPage = function () {
         this.collShortCode.sendKeys(short_code);
         this.name.sendKeys(coll_name);
         this.fullName.sendKeys(full_name);
-        this.customValidationSchema.sendKeys(customValidationSchema);
+        this.setCustomValidationSchema(customValidationSchema);
+        this.defaultLocale.sendKeys('en');
         this.supportedLocale.sendKeys(locale);
         this.addOrgCollectionButton.click();
     };
@@ -138,9 +148,11 @@ var OrganizationPage = function () {
         this.conceptsLink.click();
         this.newConceptLink.click();
         this.conceptId.sendKeys(id);
-        this.select_name_locale.$('[label="' + locale + '"]').click();
+        this.conceptClass.sendKeys('Misc');
+        this.conceptDatatype.sendKeys('None');
+        this.select_name_locale.sendKeys(locale);
         this.conceptName.sendKeys(name);
-        this.select_desc_locale.$('[label="' + locale + '"]').click();
+        this.select_desc_locale.sendKeys(locale);
         this.conceptDesc.sendKeys(desc);
         this.nameType.sendKeys(nameType);
         this.localePreferred.sendKeys(localePreferred);
