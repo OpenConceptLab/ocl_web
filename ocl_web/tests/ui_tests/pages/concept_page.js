@@ -8,6 +8,7 @@ var ConceptPage = function () {
     this.updateButton = element(by.id("update-concept"));
     this.editLink = element(by.id("edit-concept"));
     this.descriptionField = element(by.model('description.description'));
+    this.descriptionTypeField = element(by.model('description.description_type'));
     this.deleteDescriptionAreaButton = element(by.id("id-delete-description"));
     this.deleteNameAreaButton = element(by.id("id-delete-name"));
 
@@ -67,7 +68,8 @@ var ConceptPage = function () {
     };
 
     this.fillDescriptionField = function () {
-        this.descriptionField.sendKeys(chance.word({length: 4}))
+        this.descriptionField.sendKeys(chance.word({length: 4}));
+        this.descriptionTypeField.sendKeys('None');
     };
 
     this.clearDescriptionField = function () {
@@ -131,14 +133,14 @@ var ConceptPage = function () {
     };
 
     this.setNameType = function (item, option) {
-        item.element(by.model('name.name_type')).sendKeys(option);
+        item.element(by.model('name.name_type')).clear().sendKeys(option);
     };
 
     this.setNameLocale = function (item, option) {
         if (option === undefined) {
             option = "en"
         }
-        item.element(by.model('name.locale')).sendKeys(option);
+        item.element(by.model('name.locale')).clear().sendKeys(option);
     };
 
     this.setName = function (item, nameText, nameType, localePreferred, nameLocale) {

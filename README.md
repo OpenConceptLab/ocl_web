@@ -83,7 +83,7 @@ OCL_API_HOST=http://172.17.0.1:8001'
 
 ```
 docker build -t openconceptlab/oclweb:dev .
-docker run openconceptlab/oclweb:dev bash run_ui_tests.sh
+docker run --rm openconceptlab/oclweb:dev bash run_ui_tests.sh
 ```
 
 ## Continous Integration

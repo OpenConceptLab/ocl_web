@@ -180,15 +180,21 @@ var OrganizationPage = function () {
             //probably still processing...
             browser.refresh();
             browser.wait(EC.visibilityOf(this.deleteSrcVersionIcon, timeout)).then(clickDelete);
-        });
+        }.bind(this));
     };
 
     this.deleteCollectionVersion = function () {
-        browser.wait(EC.visibilityOf(this.deleteColVersionIcon), timeout);
-        this.deleteColVersionIcon.click();
+        var clickDelete = function() {
+            this.deleteColVersionIcon.click();
+            browser.wait(EC.visibilityOf(this.okButton), timeout);
+            this.okButton.click();
+        }.bind(this);
 
-        browser.wait(EC.visibilityOf(this.okButton), timeout);
-        this.okButton.click();
+        browser.wait(EC.visibilityOf(this.deleteColVersionIcon), timeout).then(clickDelete, function() {
+            //still processing...
+            browser.refresh();
+            browser.wait(EC.visibilityOf(this.deleteColVersionIcon), timeout).then(clickDelete);
+        }.bind(this));
     };
 };
 OrganizationPage.prototype = BasePage;

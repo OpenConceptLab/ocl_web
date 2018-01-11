@@ -109,7 +109,8 @@ describe('OCL User Source Validation Page', function () {
 
         });
 
-        it('should succeed when an invalid concept is fixed', function(){
+
+        xit('should succeed when an invalid concept is fixed', function(){
             var concept1EditUrl = baseUrl + 'users/' + username + '/sources/' + basicValidationSourceId + '/concepts/' + concept1Id + '/edit/';
 
             browser.get(concept1EditUrl);
@@ -117,6 +118,7 @@ describe('OCL User Source Validation Page', function () {
             conceptPage.setNameText(conceptPage.getNamesAndSynonyms().first(), 'NewGrip');
             conceptPage.fillInUpdateTextRandomly();
             conceptPage.updateConcept();
+            expect(conceptPage.getStatus()).toEqual('Concept updated');
 
             // Go back to source edit
             conceptPage.parentSourceLink.click();

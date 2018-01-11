@@ -129,7 +129,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setLocalePreferred(false)
                     .setNameType('Short')
-                    .setNameLocale("French [fr]")
+                    .setNameLocale("fr")
                     .fillToFields()
                     .build();
 
@@ -139,14 +139,14 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setLocalePreferred(false)
                     .setNameType('Fully Specified')
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
                 expect(conceptPage.getStatus()).toEqual('Concept created.');
             });
 
-            it('should have combobox with values in concept mapping creation form', function () {
+            xit('should have combobox with values in concept mapping creation form', function () {
                 conceptBuilder
                     .prepareConceptPage()
                     .setNameAndSynonym(conceptPage.getNamesAndSynonyms().first())
@@ -172,7 +172,7 @@ describe('Concept', function () {
                     .setNameText(expectedName)
                     .setLocalePreferred(true)
                     .setNameType('Short')
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -183,7 +183,7 @@ describe('Concept', function () {
                     .setNameText(expectedName)
                     .setLocalePreferred(true)
                     .setNameType('Short')
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -201,7 +201,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setLocalePreferred(true)
                     .setNameType('Fully Specified')
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillDescriptionField()
                     .fillToFields()
                     .build();
@@ -230,7 +230,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setLocalePreferred(true)
                     .setNameType('Fully Specified')
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillDescriptionField()
                     .fillToFields()
                     .build();
@@ -254,7 +254,7 @@ describe('Concept', function () {
                     .setNameText(expectedName)
                     .setLocalePreferred(false)
                     .setNameType("Fully Specified")
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
@@ -299,7 +299,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setLocalePreferred(true)
                     .setNameType('Fully Specified')
-                    .setNameLocale('French [fr]')
+                    .setNameLocale('fr')
                     .fillToFields();
 
                 var randomName = conceptPage.getRandomName();
@@ -309,7 +309,7 @@ describe('Concept', function () {
                     .setNameText(randomName)
                     .setLocalePreferred(true)
                     .setNameType('Fully Specified')
-                    .setNameLocale('French [fr]')
+                    .setNameLocale('fr')
                     .fillToFields()
                     .build();
 
@@ -325,7 +325,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setNameType('Fully Specified')
                     .setLocalePreferred(false)
-                    .setNameLocale('French [fr]')
+                    .setNameLocale('fr')
                     .fillToFields()
                     .build();
 
@@ -337,7 +337,7 @@ describe('Concept', function () {
                     .setNameText(randomName)
                     .setNameType('Short')
                     .setLocalePreferred(true)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -354,7 +354,7 @@ describe('Concept', function () {
                     .setNameText(expectedName)
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
@@ -365,7 +365,7 @@ describe('Concept', function () {
                     .setNameText(expectedName)
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
@@ -382,7 +382,7 @@ describe('Concept', function () {
                     .setNameText('sameFullySpecified')
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("French [fr]")
+                    .setNameLocale("fr")
                     .fillToFields();
 
                 conceptBuilder
@@ -393,7 +393,7 @@ describe('Concept', function () {
                     .setNameText('requiredFullySpecified')
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("French [fr]")
+                    .setNameLocale("fr")
                     .fillToFields();
 
                 conceptBuilder
@@ -401,7 +401,7 @@ describe('Concept', function () {
                     .setNameText('sameFullySpecified')
                     .setNameType("Fully Specified")
                     .setLocalePreferred(false)
-                    .setNameLocale("French [fr]")
+                    .setNameLocale("fr")
                     .fillToFields()
                     .build();
 
@@ -415,7 +415,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setNameType('Fully Specified')
                     .setLocalePreferred(true)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .deleteDescriptionArea()
                     .build();
 
@@ -431,7 +431,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setNameType('Fully Specified')
                     .setLocalePreferred(true)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields();
 
                 const randomName = conceptPage.getRandomName();
@@ -441,7 +441,7 @@ describe('Concept', function () {
                     .setNameText(randomName)
                     .setNameType('Fully Specified')
                     .setLocalePreferred(false)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -456,7 +456,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setNameType('Short')
                     .setLocalePreferred(false)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -472,7 +472,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setNameType('Fully Specified')
                     .setLocalePreferred(true)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields();
 
                 const randomName = conceptPage.getRandomName();
@@ -482,7 +482,7 @@ describe('Concept', function () {
                     .setNameText(randomName)
                     .setNameType('Short')
                     .setLocalePreferred(true)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -498,7 +498,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setNameType('Fully Specified')
                     .setLocalePreferred(false)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields();
 
                 const randomName = conceptPage.getRandomName();
@@ -508,7 +508,7 @@ describe('Concept', function () {
                     .setNameText(randomName)
                     .setNameType('Short')
                     .setLocalePreferred(true)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -524,7 +524,7 @@ describe('Concept', function () {
                     .setNameText('sameText')
                     .setNameType('Fully Specified')
                     .setLocalePreferred(true)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields();
 
                 conceptBuilder
@@ -532,7 +532,7 @@ describe('Concept', function () {
                     .setNameText('sameText')
                     .setNameType('Fully Specified')
                     .setLocalePreferred(false)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -549,7 +549,7 @@ describe('Concept', function () {
                     .setNameText('sameText')
                     .setNameType('Fully Specified')
                     .setLocalePreferred(true)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields();
 
                 conceptBuilder
@@ -557,7 +557,7 @@ describe('Concept', function () {
                     .setNameText('sameText')
                     .setNameType('Short')
                     .setLocalePreferred(false)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -574,7 +574,7 @@ describe('Concept', function () {
                     .setNameText(expectedName)
                     .setNameType('Short')
                     .setLocalePreferred(true)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -585,7 +585,7 @@ describe('Concept', function () {
                     .setNameText(expectedName)
                     .setNameType('Short')
                     .setLocalePreferred(false)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -600,7 +600,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setNameType('Short')
                     .setLocalePreferred(false)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -615,7 +615,7 @@ describe('Concept', function () {
                     .setNameText('name33')
                     .setNameType('Fully Specified')
                     .setLocalePreferred(true)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -626,7 +626,7 @@ describe('Concept', function () {
                     .setNameText('name33')
                     .setNameType('Fully Specified')
                     .setLocalePreferred(true)
-                    .setNameLocale('English [en]')
+                    .setNameLocale('en')
                     .fillToFields()
                     .build();
 
@@ -645,7 +645,7 @@ describe('Concept', function () {
                     .setNameText('name1')
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
@@ -656,7 +656,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
@@ -681,7 +681,7 @@ describe('Concept', function () {
                     .setNameText(expectedName)
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
@@ -702,7 +702,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
@@ -729,7 +729,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
@@ -756,7 +756,7 @@ describe('Concept', function () {
                     .setNameText("fullySpecified1")
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
@@ -767,7 +767,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
@@ -792,7 +792,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
@@ -802,15 +802,14 @@ describe('Concept', function () {
                 expect(conceptPage.getError()).toEqual(CONCEPT_MUST_HAVE_AT_LEAST_ONE_NAME);
             });
 
-            it('deleting description field should not get error #341', function () {
+            xit('deleting description field should not get error #341', function () {
                 conceptBuilder
                     .prepareConceptPage()
                     .setId(conceptPage.getRandomId())
-                    .setNameAndSynonym(conceptPage.getNamesAndSynonyms().first())
                     .setNameText(conceptPage.getRandomName())
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillDescriptionField()
                     .fillToFields()
                     .build();
@@ -829,7 +828,7 @@ describe('Concept', function () {
                     .setNameText('name35')
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
@@ -840,7 +839,7 @@ describe('Concept', function () {
                     .setNameText(conceptPage.getRandomName())
                     .setNameType("Fully Specified")
                     .setLocalePreferred(true)
-                    .setNameLocale("English [en]")
+                    .setNameLocale("en")
                     .fillToFields()
                     .build();
 
