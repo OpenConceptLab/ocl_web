@@ -559,26 +559,5 @@ class OclApi(object):
         return result
 
     def get_all_collections_for_user(self, username):
-        return self.get_user_collections(username) + self.get_user_org_collections(username)
-
-    def get_user_collections(self, username):
-        if self.include_facets:
-            return self.get('users', username, 'collections', params={'limit': 0}).json()['results']
-        else:
-            return self.get('users', username, 'collections', params={'limit': 0}).json()
-
-    def get_user_org_collections(self, username):
-        user_orgs = self.get('users', username, 'orgs', params={'limit': 0}).json()
-        all_org_collections = []
-
-        if self.include_facets:
-            for org in user_orgs:
-                org_collections = self.get('orgs', org['id'], 'collections', params={'limit': 0}).json()['results']
-                all_org_collections += org_collections
-        else:
-            for org in user_orgs:
-                org_collections = self.get('orgs', org['id'], 'collections', params={'limit': 0}).json()
-                all_org_collections += org_collections
-
-        return all_org_collections if len(all_org_collections) > 0 else []
+        return self.get('collections', params={'user': username, 'limit': 0}).json()
 
