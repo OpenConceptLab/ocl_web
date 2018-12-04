@@ -28,3 +28,4 @@ services:
     environment:
       - SSH=true
       - ENVIRONMENT=${ENVIRONMENT-local}
+      - IMPORT_DEMO_DATA=${IMPORT_DEMO_DATA-true}
