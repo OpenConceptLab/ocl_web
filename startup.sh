@@ -24,7 +24,7 @@ python ocl_web/manage.py migrate --configuration="${CONFIG}"
 
 python ocl_web/manage.py create_user --username="root" --password="${ROOT_PASSWORD}" --superuser --configuration="${CONFIG}"
 
-if [ "$ENVIRONMENT" = "qa" ] || [ "$ENVIRONMENT" = "local" ]
+if [ "$IMPORT_DEMO_DATA" = "true" ]
 then
 python ocl_web/manage.py create_user --username="admin" --password="Admin123" --superuser --configuration="${CONFIG}"
 fi
