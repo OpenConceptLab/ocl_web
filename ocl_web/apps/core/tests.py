@@ -12,23 +12,23 @@ class FakeRequest(object):
 class SearchStringFormatterTests(TestCase):
     def test_add_wildcard_without_exact_match(self):
         query_dict = QueryDict('', mutable=True)
-        query_dict.update(**{'q': 'string', 'exact_match': False})
+        query_dict.update(**{'q': 'some search phrase', 'exact_match': False})
         query_dict._mutable = False
         request = FakeRequest(query_dict)
 
         SearchStringFormatter.add_wildcard(request)
 
-        self.assertEquals(request.GET['q'], '*string*')
+        self.assertEquals(request.GET['q'], 'some* search* phrase*')
 
     def test_add_wildcard_with_exact_match(self):
         query_dict = QueryDict('', mutable=True)
-        query_dict.update(**{'q': 'string', 'exact_match': True})
+        query_dict.update(**{'q': 'some search phrase', 'exact_match': True})
         query_dict._mutable = False
         request = FakeRequest(query_dict)
 
         SearchStringFormatter.add_wildcard(request)
 
-        self.assertEquals(request.GET['q'], 'string')
+        self.assertEquals(request.GET['q'], 'some search phrase')
 
     def test_add_wildcard_with_empty_query_string(self):
         query_dict = QueryDict('', mutable=True)
