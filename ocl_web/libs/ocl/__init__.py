@@ -72,7 +72,7 @@ class OclApi(object):
                                                               sort_keys=True, indent=4,
                                                               separators=(',', ': '))))
             except json.JSONDecodeError:
-                self.logger.error('JSON: Error decoding it: %s' % results.content[:40])
+                self.logger.error('%s %s JSON: Error decoding it: %s' % (results.request.method, results.request.path_url, results.content[:40]))
         else:
             self.logger.debug('%s no content.' % results.request.method)
 
