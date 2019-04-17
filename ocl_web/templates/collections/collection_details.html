@@ -23,7 +23,11 @@
                 {% field_label 'Public Access' collection.public_access %}
                 <hr />
                 {% field_label 'Default Locale' collection.default_locale %}
-                {% field_label 'Supported Locales' collection.supported_locales|join:"," %}
+                {% if collection.supported_locales %}
+                    {% field_label 'Supported Locales' collection.supported_locales|join:"," %}
+                {% else %}
+                    {% field_label 'Supported Locales' '' %}
+                {% endif %}
                 {% field_label 'Custom Validation Schema' collection.custom_validation_schema %}
                 <div id="id_coll_externalId">{% if collection.external_id %}<hr />{% field_label 'External ID' collection.external_id %}{% endif %}</div>
                 <hr />
