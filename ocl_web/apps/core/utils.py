@@ -1,3 +1,5 @@
+import re
+
 class SearchStringFormatter:
     @staticmethod
     def add_wildcard(request):
@@ -5,4 +7,5 @@ class SearchStringFormatter:
             request.GET._mutable = True
 
         if request.GET.get('q') and not request.GET.get('exact_match'):
-            request.GET['q'] = "*" + request.GET['q'] + "*"
+            words = re.split('\s+', request.GET.get('q'))
+            request.GET['q'] = '* '.join(words) + '*'
