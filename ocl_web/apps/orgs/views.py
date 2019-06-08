@@ -470,7 +470,7 @@ class OrganizationMemberRemoveView(LoginRequiredMixin,
         #    return self.render_bad_request_response({'message': result.status_code})
 
 
-class OrgJsonView(View):
+class OrgJsonView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         api = OclApi(self.request, debug=True)
         result = api.get('orgs', params={'limit':'0'})

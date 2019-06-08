@@ -144,21 +144,29 @@ class UserListView(LoginRequiredMixin, ListView):
     slug_url_kwarg = "username"
 
 
-class UserJsonView(View):
+class UserJsonView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return HttpResponse(status=401)
         api = OclApi(self.request, debug=True)
         result = api.get('users', params={'limit': '0'})
         return HttpResponse(json.dumps(result.json()), content_type="application/json")
 
 
-class UserSourcesView(View):
+class UserSourcesView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
+        username = kwargs.get("user")
+        if not (request.user.is_staff or request.user.username == username):
+            return HttpResponse(status=401)
         api = OclApi(self.request, debug=True)
-        result = api.get('users', kwargs.get("user"), "sources", params={'limit': '0'})
+        result = api.get('users', username, "sources", params={'limit': '0'})
         return HttpResponse(json.dumps(result.json()), content_type="application/json")
 
-class UserCollectionsView(View):
+class UserCollectionsView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
+        username = kwargs.get("user")
+        if not (request.user.is_staff or request.user.username == username):
+            return HttpResponse(status=401)
         api = OclApi(self.request, debug=True)
-        result = api.get('users', kwargs.get("user"), "collections", params={'limit': '0'})
+        result = api.get('users', username, "collections", params={'limit': '0'})
         return HttpResponse(json.dumps(result.json()), content_type="application/json")
