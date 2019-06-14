@@ -287,13 +287,16 @@ class OclApi(object):
         return result
 
 
-    def get_user_auth(self, username, password):
+    def get_user_auth(self, username, password, hashed=True):
         """
         Get the user AUTH token for the specified user.
         :param username: is a string containing the user name.
         :returns: ??
         """
-        result = self.post('users', 'login', username=username, password=password)
+        if hashed:
+            result = self.post('users', 'login', username=username, hashed_password=password)
+        else:
+            result = self.post('users', 'login', username=username, password=password)
         return result
 
 

@@ -25,12 +25,13 @@ def user_created_handler(sender, request, user, **kwargs):
     if result.status_code == 201:
         # result.json() has data
         pass
-
     elif result.status_code == 400:
         # try reactivate for now, this is very not secure, #TODO
         result = ocl.reactivate_user(user.username)
         if result == 204:
             print 'reactivated'
+
+
 
 
 def email_confirmed_handler(sender, request, email_address, **kwargs):
@@ -49,13 +50,15 @@ def user_logged_in_handler(sender, request, user, **kwargs):
     Signal handler called when a user logged into the web app.
     We need to retrieve the backend auth token for subsequent access.
     The token is saved in the session.
-
-    TODO: Cannot get to, or hashed_password is not saved, so this
-    fails with an invalid password.
     """
     print 'User logged in Signal for:', user.username
+
     ocl = OclApi(admin=True, debug=True)
-    result = ocl.get_user_auth(user.username, request.POST['password'])
+    if 'password' in request.POST:
+        #Login with not hashed password by default, because some users have been created prior to api and web using to the same hashing
+        result = ocl.get_user_auth(user.username, request.POST['password'], False)
+    else:
+        result = ocl.get_user_auth(user.username, user.password)
     if result.status_code == 200:
         print 'LOGIN auth code:', result.json()
         ocl.save_auth_token(request, result.json())
