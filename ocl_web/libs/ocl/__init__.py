@@ -40,7 +40,6 @@ class OclApi(object):
 
         # The admin api key should only be used for admin functions (duh)
         self.admin_api_key = settings.API_TOKEN
-        self.anon_api_key = settings.API_ANON_TOKEN
         self.url = None
         self.api_key = None
         self.include_facets = facets
@@ -50,10 +49,9 @@ class OclApi(object):
             self.headers['Authorization'] = 'Token %s' % self.admin_api_key
         else:
             if request:
-                # Todo: the KEY constant needs to be somewhere else
-                key = request.session.get(SESSION_TOKEN_KEY, self.anon_api_key)
                 self.api_key = request.session.get(SESSION_TOKEN_KEY, None)
-                self.headers['Authorization'] = 'Token %s' % key
+                if self.api_key:
+                    self.headers['Authorization'] = 'Token %s' % self.api_key
 
     def debug_result(self, results):
         """

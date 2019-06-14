@@ -25,7 +25,6 @@ services:
       - ENVIRONMENT=${ENVIRONMENT-production}
       - OCL_API_HOST=${OCL_API_HOST-http://172.17.0.1:8000}
       - OCL_API_TOKEN=${OCL_API_TOKEN-891b4b17feab99f3ff7e5b5d04ccc5da7aa96da6}
-      - OCL_ANON_API_TOKEN=${OCL_ANON_API_TOKEN-891b4b17feab99f3ff7e5b5d04ccc5da7aa96da6}
       - ROOT_PASSWORD=${ROOT_PASSWORD-Root123}
       - EMAIL_HOST=${EMAIL_HOST-smtp.gmail.com}
       - EMAIL_PORT=${EMAIL_PORT-587}
