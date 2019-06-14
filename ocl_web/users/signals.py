@@ -55,7 +55,7 @@ def user_logged_in_handler(sender, request, user, **kwargs):
     """
     print 'User logged in Signal for:', user.username
     ocl = OclApi(admin=True, debug=True)
-    result = ocl.get_user_auth(user.username, user.password)
+    result = ocl.get_user_auth(user.username, request.POST['password'])
     if result.status_code == 200:
         print 'LOGIN auth code:', result.json()
         ocl.save_auth_token(request, result.json())
