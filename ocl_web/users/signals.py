@@ -21,13 +21,13 @@ def user_created_handler(sender, request, user, **kwargs):
     }
     result = ocl.create_user(data)
     if result.status_code == 201:
-        pass
+        return
     elif result.status_code == 400:
         # try reactivate for now, this is very not secure, #TODO
         result = ocl.reactivate_user(user.username)
         if result != 204:
-            pass
-
+            return
+    
     raise Exception('Failed to create user due to: %s' % result)
 
 
