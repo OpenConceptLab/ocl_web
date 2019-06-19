@@ -45,7 +45,6 @@ class OclApi(object):
         self.include_facets = facets
 
         if admin:
-            print self.admin_api_key
             self.headers['Authorization'] = 'Token %s' % self.admin_api_key
         else:
             if request:
@@ -304,7 +303,7 @@ class OclApi(object):
         """
         sync password with backend
         """
-        result = self.post('users/%s/' % user.username, hashed_password=user.password)
+        result = self.post('users/%s' % user.username, hashed_password=user.password)
         return result
 
     def extract_names(self, names):

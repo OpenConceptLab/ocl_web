@@ -12,7 +12,6 @@ def user_created_handler(sender, request, user, **kwargs):
     Signal handler called when a new user is created, so that we can create
     a corresponding user at the backend.
     """
-    print 'user created handler %s' % user.username
     ocl = OclApi(admin=True, debug=True)
     data = {
         'username': user.username,
@@ -21,15 +20,15 @@ def user_created_handler(sender, request, user, **kwargs):
         'name': '%s %s' % (user.first_name, user.last_name),  # not great
     }
     result = ocl.create_user(data)
-    print result.status_code
     if result.status_code == 201:
-        # result.json() has data
         pass
     elif result.status_code == 400:
         # try reactivate for now, this is very not secure, #TODO
         result = ocl.reactivate_user(user.username)
-        if result == 204:
-            print 'reactivated'
+        if result != 204:
+            pass
+
+    raise Exception('Failed to create user due to: %s' % result)
 
 
 
@@ -51,16 +50,20 @@ def user_logged_in_handler(sender, request, user, **kwargs):
     We need to retrieve the backend auth token for subsequent access.
     The token is saved in the session.
     """
-    print 'User logged in Signal for:', user.username
-
-    ocl = OclApi(admin=True, debug=True)
+    ocl = OclApi()
     if 'password' in request.POST:
         #Login with not hashed password by default, because some users have been created prior to api and web using to the same hashing
         result = ocl.get_user_auth(user.username, request.POST['password'], False)
     else:
         result = ocl.get_user_auth(user.username, user.password)
     if result.status_code == 200:
-        print 'LOGIN auth code:', result.json()
         ocl.save_auth_token(request, result.json())
 
+def user_password_reset_handler(sender, request, user, **kwargs):
+    ocl = OclApi(admin=True, debug=True)
+    result = ocl.sync_password(user)
+    if result.status_code == 200:
+        result = ocl.get_user_auth(user.username, user.password)
+        if result.status_code == 200:
+            ocl.save_auth_token(request, result.json())
 
