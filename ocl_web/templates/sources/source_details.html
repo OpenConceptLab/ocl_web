@@ -18,7 +18,11 @@
                 {% field_label 'Public Access' source.public_access %}
                 <hr />
                 {% field_label 'Default Locale' source.default_locale %}
-                {% field_label 'Supported Locales' source.supported_locales|join:", " %}
+                {% if source.supported_locales %}
+                    {% field_label 'Supported Locales' source.supported_locales|join:", " %}
+                {% else %}
+                    {% field_label 'Supported Locales' '' %}
+                {% endif %}
                 {% field_label 'Custom Validation Schema' source.custom_validation_schema %}
                 {% if source.extras and source.extras.items %}
                     <hr />
