@@ -496,3 +496,6 @@ class Staging(Production):
     INSTALLED_APPS = Common.INSTALLED_APPS
 
     ########## END INSTALLED_APPS
+
+class Demo(Production):
+    pass
