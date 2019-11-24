@@ -2,7 +2,7 @@
 #	production that isn't in development.
 -r base.txt
 
-psycopg2==2.5.2
+psycopg2==2.8.3
 gunicorn==18.0
 django-storages==1.1.8
 Collectfast==0.1.13
