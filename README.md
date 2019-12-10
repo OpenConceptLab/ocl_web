@@ -8,20 +8,6 @@ Web client interface for Open Concept Lab terminology services API.
 
 Docker
 
-### Production
-
-Before starting the web project, you need to start the API as described in
-https://github.com/OpenConceptLab/oclapi
-
-In order to run the server in a production mode, you need to set the SECRET_KEY environment variable in the .env file.
-
-Next use the following command:
-
-docker-compose -f docker-compose.yml up
-
-To take down the server use:
-docker-compose down
-
 ### Development
 
 Before starting the web project, you need to start the API as described in
