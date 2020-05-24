@@ -2,11 +2,13 @@
 """
     Forms for users.
 """
+from allauth.account.adapter import get_adapter
+from allauth.account.forms import SignupForm as AllAuthSignupForm
 from django.utils.translation import ugettext as _
 from django import forms
-#from django.core.urlresolvers import reverse
 
 from .models import User
+
 
 class UserForm(forms.Form):
     """ User edit form """
@@ -32,31 +34,16 @@ class UserForm(forms.Form):
         return data
 
 
-class SignupForm(forms.ModelForm):
-    """
-    Custom form for user to sign up for an account, used by django-allauth
-    """
-    required_css_class = 'required'
-
-    first_name = forms.CharField(max_length=30, label=_('First Name'), required=True)
-    last_name = forms.CharField(max_length=30, label=_('Last Name'), required=True)
-
-    class Meta:
-        """ Meta class """
-        # Set this form to use the User model.
-        model = User
-
-        # Constrain the UserForm to just these fields.
-        fields = ("first_name", "last_name")
-
-    def signup(self, request, user):
-        """ signup """
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
-        user.save()
-
-    def save(self, user):
-        """ save """
-        print 'In SignupForm save:', user.username
-        print user.first_name, user.email
+class SignupForm(AllAuthSignupForm):
+    def save(self, request):
+        """
+        Carried from `allauth.account.forms.SignupForm` as of django-allauth==0.15.0.
+        We override the view and use this form to stop the form saving EmailAddresses.
+        """
+        adapter = get_adapter()
+        user = adapter.new_user(request)
+        adapter.save_user(request, user, self)
+        # formerly
+        # super(SignupForm, self).save(user)
+        # setup_user_email(request, user, [])
         return user

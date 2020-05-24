@@ -237,14 +237,14 @@ class Common(Configuration):
     ########## AUTHENTICATION CONFIGURATION
     AUTHENTICATION_BACKENDS = (
         "django.contrib.auth.backends.ModelBackend",
-        "allauth.account.auth_backends.AuthenticationBackend",
+        "users.auth_backends.APIAuthenticationBackend",
     )
 
     # Some really nice defaults
     ACCOUNT_AUTHENTICATION_METHOD = "username"
     ACCOUNT_EMAIL_REQUIRED = True
-    ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-    ACCOUNT_SIGNUP_FORM_CLASS = 'users.forms.SignupForm'
+    ACCOUNT_EMAIL_VERIFICATION = "none"  # API does not yet support email verification
+    ACCOUNT_SIGNUP_FORM_CLASS = 'users.base_forms.BaseSignupForm'  # refer to class for context
     ACCOUNT_ADAPTER = 'users.adapter.OCLAccountAdapter'
 
     ########## END AUTHENTICATION CONFIGURATION
