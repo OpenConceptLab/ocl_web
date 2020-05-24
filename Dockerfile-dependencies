@@ -23,11 +23,12 @@ RUN gem install --no-rdoc --no-ri compass -v 1.0.3
 
 RUN mkdir /code
 
-ADD requirements.txt /code/
-ADD requirements/ /code/requirements/
 ADD package.json /code/
 WORKDIR /code
 
-RUN pip install -r requirements.txt
 RUN npm install
 RUN npm install -g grunt-cli
+
+ADD requirements.txt /code/
+ADD requirements/ /code/requirements/
+RUN pip install -r requirements.txt
