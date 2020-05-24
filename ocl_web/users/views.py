@@ -2,6 +2,7 @@
 """
 
 import simplejson as json
+from allauth.account.views import SignupView as AllAuthSignupView
 
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
@@ -19,13 +20,19 @@ from braces.views import LoginRequiredMixin
 # Import the form from users/forms.py
 from django.views.generic import View
 
-from .forms import UserForm
+from .forms import UserForm, SignupForm
 
 # Import the customized User model
 from .models import User
 from libs.ocl import OclApi
 from django.http import HttpResponse
 
+
+class SignupView(AllAuthSignupView):
+    form_class = SignupForm
+
+
+signup = SignupView.as_view()
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):

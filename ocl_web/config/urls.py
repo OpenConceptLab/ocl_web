@@ -18,6 +18,9 @@ from apps.tests.views import TestTagsView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+
+from users.views import signup
+
 admin.autodiscover()
 
 
@@ -39,6 +42,7 @@ urlpatterns = patterns(
 
     # User management
     url(r'^users/', include("users.urls", namespace="users")),
+    url(r"^accounts/signup/$", signup, name="account_signup"),  # override signup to stop the form saving EmailAddresses
     url(r'^accounts/', include('allauth.urls')),
 
     # User avatars - /avatar/...
