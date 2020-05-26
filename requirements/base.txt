@@ -37,3 +37,5 @@ python-dateutil==2.2
 
 sqlparse==0.1.19
 
+# explicitly call out this because later versions dropped python2 support
+django-appconf==1.0.2
