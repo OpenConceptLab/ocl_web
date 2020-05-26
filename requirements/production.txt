@@ -3,7 +3,7 @@
 -r base.txt
 
 psycopg2==2.7.7
-gunicorn==18.0
+gunicorn==19.5.0
 django-storages==1.1.8
 Collectfast==0.1.13
 gevent==1.1.2
