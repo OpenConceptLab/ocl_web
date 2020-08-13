@@ -67,7 +67,7 @@
 							{% if kwargs and "source_version" in kwargs %}
 								{% url 'source-version-concepts' user=source.owner source=source.id source_version=kwargs.source_version as source_concepts_url %}
 							{% else %}
-								{% url 'source-concepts' org=source.owner source=source.id as source_concepts_url %}
+								{% url 'source-concepts' user=source.owner source=source.id as source_concepts_url %}
 							{% endif %}
 						{% endif %}
 						<li {% if search_sort == sort_option_def.value %}class="active"{% endif %}><a href="{{ source_concepts_url }}?{{ transferrable_search_params }}&amp;sort={{ sort_option_def.value|urlencode }}"><span class="glyphicon {{ sort_option_def.icon }}"></span>&nbsp;{{ sort_option_def.display }}</a></li>
