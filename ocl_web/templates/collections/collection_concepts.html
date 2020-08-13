@@ -67,7 +67,7 @@
 							{% if kwargs and "collection_version" in kwargs %}
 								{% url 'collection-version-concepts' user=collection.owner collection=collection.id collection_version=kwargs.collection_version as collection_concepts_url %}
 							{% else %}
-								{% url 'collection-concepts' org=collection.owner collection=collection.id as collection_concepts_url %}
+								{% url 'collection-concepts' user=collection.owner collection=collection.id as collection_concepts_url %}
 							{% endif %}
 						{% endif %}
 						<li {% if search_sort == sort_option_def.value %}class="active"{% endif %}><a href="{{ collection_concepts_url }}?{{ transferrable_search_params }}&amp;sort={{ sort_option_def.value|urlencode }}"><span class="glyphicon {{ sort_option_def.icon }}"></span>&nbsp;{{ sort_option_def.display }}</a></li>
