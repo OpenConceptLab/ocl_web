@@ -24,7 +24,6 @@ class OclApi(object):
 
     logger = logging.getLogger('oclapi.request')
 
-
     def __init__(self, request=None, debug=False, admin=False, facets=False):
         """
         :param request: gives API access to the current active session, to get Authorization etc.
@@ -51,7 +50,8 @@ class OclApi(object):
             self.headers['Authorization'] = 'Token %s' % self.admin_api_key
         else:
             if request:
-                self.api_key = request.session.get(SESSION_TOKEN_KEY, None)
+
+                self.api_key = request.session.get(SESSION_TOKEN_KEY, None) or request.user.token
                 if self.api_key:
                     self.headers['Authorization'] = 'Token %s' % self.api_key
 
