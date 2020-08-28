@@ -57,7 +57,9 @@ def user_logged_in_handler(sender, request, user, **kwargs):
     else:
         result = ocl.get_user_auth(user.username, user.password)
     if result.status_code == 200:
-        ocl.save_auth_token(request, result.json())
+        json_data = result.json()
+        user.sync_token(json_data.get('token', None))
+        ocl.save_auth_token(request, json_data)
 
 def user_password_reset_handler(sender, request, user, **kwargs):
     ocl = OclApi(admin=True, debug=True)

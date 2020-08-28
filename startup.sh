@@ -22,6 +22,8 @@ python ocl_web/manage.py syncdb --noinput --configuration="${CONFIG}"
 
 python ocl_web/manage.py migrate --configuration="${CONFIG}"
 
+python ocl_web/manage.py create_ocl_api_app
+python ocl_web/manage.py sync_ocladmin_user
 python ocl_web/manage.py create_user --username="root" --password="${ROOT_PASSWORD}" --superuser --configuration="${CONFIG}"
 
 if [ "$IMPORT_DEMO_DATA" = "true" ]

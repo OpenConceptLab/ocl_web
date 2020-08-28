@@ -39,12 +39,15 @@ class OclApi(object):
         self.headers = {'Content-Type': 'application/json'}
 
         # The admin api key should only be used for admin functions (duh)
-        self.admin_api_key = settings.API_TOKEN
+        # self.admin_api_key = settings.API_TOKEN
         self.url = None
         self.api_key = None
         self.include_facets = facets
 
         if admin:
+            from users.models import User
+            user = User.objects.get(username=settings.API_SUPERUSER_USERNAME)
+            self.admin_api_key = user.token
             self.headers['Authorization'] = 'Token %s' % self.admin_api_key
         else:
             if request:
@@ -250,6 +253,7 @@ class OclApi(object):
         :param request: is the django http request
         :param api_json_data: contains the backend auth token.
         """
+
         request.session[SESSION_TOKEN_KEY] = json_data['token']
 
 

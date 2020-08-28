@@ -104,6 +104,9 @@ class Command(BaseCommand):
         result = ocl.create_user(data)
 
         if result.status_code == 201:
+            json_data = result.json()
+            user.sync_token(json_data.get('token', None))
+
             print 'User "' + user.username + '" synced to API'
             print '==================================='
         elif result.status_code == 400:
