@@ -102,7 +102,7 @@
                                     <ul class="dropdown-menu" role="menu">
                                         {% for sort_option_def in search_sort_option_defs %}
                                             <li {% if search_sort == sort_option_def.value %}class="active"{% endif %}>
-                                                <a href="{% url 'search' %}?{{ other_resource_search_params }}&amp;sort={{ sort_option_def.value|urlencode }}&amp;type={{search_type_name}}s"><span
+                                                <a href="{% url 'search' %}?{{ other_resource_search_params }}&amp;sort={{ sort_option_def.value|urlencode }}&amp;type={{search_type}}"><span
                                                         class="glyphicon {{ sort_option_def.icon }}"></span>&nbsp;{{ sort_option_def.display }}
                                                 </a></li>
                                         {% endfor %}
