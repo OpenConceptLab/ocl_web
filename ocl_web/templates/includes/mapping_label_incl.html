@@ -5,7 +5,7 @@
 	{% url 'mapping-home' user=mapping.owner source=mapping.source mapping=mapping.id as mapping_url %}
 {% endif %}
 {% if url %}
-    {% generic_resource_label resource_type='mapping' resource_id=mapping.versioned_object_id resource_name=mapping.map_type resource_url=url resource_retired=mapping.retired owner_type=mapping.owner_type owner_id=mapping.owner source_id=mapping.source label_size=label_size display_breadcrumb=True %}
+    {% generic_resource_label resource_type='mapping' resource_id=mapping.id resource_name=mapping.map_type resource_url=url resource_retired=mapping.retired owner_type=mapping.owner_type owner_id=mapping.owner source_id=mapping.source label_size=label_size display_breadcrumb=True %}
 {% else %}
-    {% generic_resource_label resource_type='mapping' resource_id=mapping.versioned_object_id resource_name=mapping.map_type resource_url=mapping.versioned_object_url resource_retired=mapping.retired owner_type=mapping.owner_type owner_id=mapping.owner source_id=mapping.source label_size=label_size display_breadcrumb=True %}
+    {% generic_resource_label resource_type='mapping' resource_id=mapping.id resource_name=mapping.map_type resource_url=mapping.versioned_object_url resource_retired=mapping.retired owner_type=mapping.owner_type owner_id=mapping.owner source_id=mapping.source label_size=label_size display_breadcrumb=True %}
 {% endif %}

@@ -164,7 +164,7 @@
 						{% if result.is_latest_version %}
 							{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
 						{% else %}
-							{% generic_resource_label resource_type='mapping' resource_id=result.versioned_object_id resource_name=result.map_type resource_version_id=result.version resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
+							{% generic_resource_label resource_type='mapping' resource_id=result.id resource_name=result.map_type resource_version_id=result.version resource_url=result.url resource_retired=result.retired owner_type=result.owner_type owner_id=result.owner source_id=result.source label_size='small' display_breadcrumb=True %}
 						{% endif %}
 					{% endif %}
 
