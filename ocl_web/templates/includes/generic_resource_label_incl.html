@@ -1,5 +1,6 @@
 {% if breadcrumb_parts %}
-{% if resource_url %}<a href="{{ resource_url }}" class="resource-label {{ resource_type }} {{ css_size_class }}">{% else %}<span class="resource-label {{ resource_type }} {{ css_size_class }}">{% endif %}
+{% if resource_url %}
+<a href="{{ resource_url }}" class="resource-label {{ resource_type }} {{ css_size_class }}">{% else %}<span class="resource-label {{ resource_type }} {{ css_size_class }}">{% endif %}
 	<span class="resource-label-id">
 		{% if display_icon %}<span class="resource-label-id-icon"><span class="glyphicon glyphicon-{{ resource_icon }}"></span></span>&nbsp;&nbsp;{% endif %}
 		<span class="resource-label-id-breadcrumb">
