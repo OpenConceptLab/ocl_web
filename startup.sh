@@ -1,11 +1,11 @@
 #!/bin/bash
 
-if [ $SSH ] 
-then 
-sudo service ssh start 
+if [ $SSH ]
+then
+sudo service ssh start
 fi
 
-if [ ! -z "$WAIT_FOR" ] 
+if [ ! -z "$WAIT_FOR" ]
 then
 ./wait-for-it.sh $WAIT_FOR
 fi
@@ -22,7 +22,7 @@ python ocl_web/manage.py syncdb --noinput --configuration="${CONFIG}"
 
 python ocl_web/manage.py migrate --configuration="${CONFIG}"
 
-python ocl_web/manage.py create_user --username="root" --password="${ROOT_PASSWORD}" --superuser --configuration="${CONFIG}"
+python ocl_web/manage.py create_user --username="${ROOT_LOGIN:-root}" --password="${ROOT_PASSWORD}" --superuser --configuration="${CONFIG}"
 
 if [ "$IMPORT_DEMO_DATA" = "true" ]
 then
