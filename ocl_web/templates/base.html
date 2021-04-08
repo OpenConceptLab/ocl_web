@@ -57,6 +57,12 @@
 <body ng-app="ConceptApp">
 {% block nav %}{% include 'includes/nav.html' %}{% endblock nav %}
 
+<div class="container">
+    <div style="margin-top:12px;" class="alert alert-warning">OpenConceptLab upgrade is scheduled on Friday, April 9th from 7am to 11am UTC (staging environment)
+        and Saturday, April 10th from 7am to 11am UTC (all other environments). The service will be down during that time frame.
+        We are sorry for any inconvenience!</div>
+</div>
+
 {% if messages %}
 <div class="container">
 	{% for message in messages %}
