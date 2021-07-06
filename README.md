@@ -1,3 +1,5 @@
+# This project has been deprecated. Please see https://github.com/OpenConceptLab/oclweb2 for the latest version.
+
 # ocl_web
 
 Web client interface for Open Concept Lab terminology services API.
